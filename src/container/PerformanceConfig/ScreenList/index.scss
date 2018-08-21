@@ -1,0 +1,33 @@
+@import "../../../style/common";
+.situation-container {
+  .situation-lists {
+    height: 104px;
+    background: $bg-color;
+    border: 1px solid #d9d9d9;
+    padding: 8px 0 8px 8px;
+    overflow: auto;
+    .icon-add {
+      font-size: 14px;
+    }
+    section {
+      & + section {
+        margin-top: 5px;
+      }
+      .situation-name, .situation-jenkins {
+        display: inline-block;
+        line-height: 40px;
+        background: #fff;
+        border: 1px solid #ccc;
+        padding-left: 10px;
+      }
+      .situation-name {
+        width: 100px;
+      }
+      .situation-jenkins {
+        margin-left: 15px;
+        width: 300px;
+      }
+
+    }
+  }
+}

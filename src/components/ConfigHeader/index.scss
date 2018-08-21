@@ -1,0 +1,43 @@
+#config-header {
+  .platform-container {
+    border-bottom: 1px solid #d9d9d9;
+    padding-left: 0;
+    .platform-delete-icon {
+      float: right;
+    }
+
+    li {
+      cursor: pointer;
+      display: inline-block;
+      padding: 20px;
+      border-left: 1px solid #ccc;
+      border-top: 1px solid #ccc;
+    }
+    li:last-of-type {
+      border-right: 1px solid #ccc;
+    }
+    .platform-active {
+      background: rgb(255, 217, 0);
+    }
+    .anticon.icon-add {
+      font-size: 20px;
+      vertical-align: baseline;
+
+    }
+    .platform-delete-icon {
+      font-size: 22px;
+      margin-top: 12px;
+      &:hover {
+        color: #f5222d;
+      }
+    }
+  }
+
+  .ant-radio-button-wrapper {
+    height: 50px;
+    span {
+      font-size: 18px;
+      line-height: 50px;
+    }
+  }
+}

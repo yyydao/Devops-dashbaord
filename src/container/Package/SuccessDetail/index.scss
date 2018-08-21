@@ -1,0 +1,22 @@
+.success-detail-container {
+  .title {
+    width: 80%;
+    font-size: 25px;
+    margin-left: 40px;
+  }
+
+  .detail-info-container {
+    margin-top: 40px;
+  }
+
+  .images {
+    display: flex;
+    justify-content: flex-end;
+    margin-right:40px;
+  }
+  .info-container{
+    li{
+      margin-bottom: 10px;
+    }
+  }
+}

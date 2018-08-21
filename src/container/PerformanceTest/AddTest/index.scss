@@ -1,0 +1,11 @@
+@import "../../../style/common";
+
+.add-test-modal {
+  .screen-select-container {
+    background: $bg-color;
+    padding-left: 10px;
+    label {
+      margin-top: 0;
+    }
+  }
+}

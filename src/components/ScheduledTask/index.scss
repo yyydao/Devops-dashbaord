@@ -1,0 +1,31 @@
+#scheduled-task {
+
+}
+
+.scheduled-task-modal {
+  .list-container {
+    height: 200px;
+    overflow: auto;
+    padding-left: 10px;
+    li {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      img {
+        width: 40px;
+        height: auto;
+        margin-right: 10px;
+      }
+      .left-part{
+        span{
+          margin-right:15px;
+        }
+      }
+      .btn-delete {
+        padding-right: 20px;
+      }
+    }
+  }
+}

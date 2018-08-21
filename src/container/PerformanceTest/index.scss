@@ -1,0 +1,28 @@
+$text-color: #1890ff;
+#performance-test {
+  .tabs {
+    cursor: pointer;
+    span {
+      display: inline-block;
+      width: 100px;
+      color: $text-color;
+      border: 1px solid $text-color;
+      border-right: none;
+      text-align: center;
+      line-height: 30px;
+      border-radius: 2px;
+      &.tab-active {
+        color: #fff;
+        background: $text-color;
+      }
+      &:last-child {
+        border-right: 1px solid $text-color;
+      }
+    }
+  }
+  .header-bar {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+  }
+}

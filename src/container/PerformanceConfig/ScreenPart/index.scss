@@ -1,0 +1,17 @@
+#screen-part {
+  margin-left: 30px;
+  header {
+    line-height: 40px;
+    span {
+      vertical-align: middle;
+    }
+    .anticon.icon-add {
+      font-size: 18px;
+      margin-left: 5px;
+      vertical-align: middle;
+    }
+  }
+  .anticon.icon-delete {
+    font-size: 20px;
+  }
+}
