@@ -11,7 +11,6 @@ import {testScreenList} from "@/api/performance/screen";
 import {failureList, unfinishList, successList,} from '@/api/performance/task'
 import qs from 'qs'
 import "./index.scss"
-
 import {connect} from 'react-redux'
 
 class PerformanceTest extends Component {
@@ -54,39 +53,65 @@ class PerformanceTest extends Component {
 
   // 获取列表
   getPackageList(id, type = 1) {
-    // 获取成功列表
     successList({projectId: id, type}).then((response) => {
       if (parseInt(response.data.code) === 0) {
+        let data = response.data.data;
         let {getMoreInfo} = this.state;
-        getMoreInfo.successPage++;
-        this.setState({
-          successList: response.data.data,
-          getMoreInfo
-        })
+        if (data.length) {
+          getMoreInfo.successPage++;
+          this.setState({
+            successList: response.data.data,
+            getMoreInfo
+          })
+        } else {
+          getMoreInfo.hasMoreSuccess = false;
+          this.setState({
+            getMoreInfo,
+            successList: []
+          })
+        }
       }
     })
 
     // 获取未完成列表
     unfinishList({projectId: id, type}).then((response) => {
       if (parseInt(response.data.code) === 0) {
+        let data = response.data.data;
         let {getMoreInfo} = this.state;
-        getMoreInfo.unfinishPage++;
-        this.setState({
-          unfinishList: response.data.data,
-          getMoreInfo
-        })
+        if (data.length) {
+          getMoreInfo.unfinishPage++;
+          this.setState({
+            unfinishList: response.data.data,
+            getMoreInfo
+          })
+        } else {
+          getMoreInfo.hasMoreUnfinish = false;
+          this.setState({
+            getMoreInfo,
+            unfinishList: []
+          })
+        }
       }
     })
 
     // 获取失败列表
     failureList({projectId: id, type}).then((response) => {
       if (parseInt(response.data.code) === 0) {
+        let data = response.data.data;
         let {getMoreInfo} = this.state;
-        getMoreInfo.failurePage++;
-        this.setState({
-          failureList: response.data.data,
-          getMoreInfo
-        })
+        if (data.length) {
+          getMoreInfo.failurePage++;
+          this.setState({
+            failureList: response.data.data,
+            getMoreInfo
+          })
+        } else {
+          getMoreInfo.hasMoreFailure = false
+          this.setState({
+            getMoreInfo,
+            failureList: []
+          })
+        }
       }
     })
   }
@@ -105,13 +130,16 @@ class PerformanceTest extends Component {
   }
 
   // 任务取消
-  async _taskCancel(buildId) {
+  async _taskCancel(buildId, index) {
+    let {unfinishList} = this.state;
     let response = await taskCancel({type: this.state.type, buildId})
-    if (parseInt(response.data.code === 0)) {
-
+    if (parseInt(response.data.code) === 0) {
+      unfinishList.splice(index, 1);
+      this.setState({
+        unfinishList
+      })
     }
   }
-
 
   // 获取分支列表
   async getBranchList() {
@@ -168,6 +196,16 @@ class PerformanceTest extends Component {
     let {type, projectId} = this.state;
     let response = await taskSubmit({projectId, branchId, type, testScene: testScene.join(','), fixedTime});
     if (parseInt(response.data.code) === 0) {
+      if (type === 1) {
+        // 提交完成后 如果是分支构建  需要获取第一条数据插入数组前面
+        let response = await unfinishList({projectId, type, page: 1, count: 1});
+        if (parseInt(response.data.code) === 0) {
+          let data = response.data.data;
+          this.setState({
+            unfinishList: [...data, ...this.state.unfinishList]
+          })
+        }
+      }
       this.setState({
         addTestVisible: false
       })
@@ -238,7 +276,6 @@ class PerformanceTest extends Component {
   // 加载更多失败列表
   async _loadMoreFailurePackage() {
     let {projectId, type, getMoreInfo} = this.state;
-    // 获取成功列表
     let response = await failureList({projectId, type, page: getMoreInfo.failurePage});
     if (parseInt(response.data.code) === 0) {
       let data = response.data.data;
@@ -292,8 +329,8 @@ class PerformanceTest extends Component {
           loadMore={(type) => {
             this._loadMorePackage(type)
           }}
-          taskCancel={(buildId) => {
-            this._taskCancel(buildId)
+          taskCancel={(buildId, index) => {
+            this._taskCancel(buildId, index)
           }}
         />
         {/*新增构建*/}

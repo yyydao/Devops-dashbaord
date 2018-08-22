@@ -21,6 +21,14 @@ class BranchBuild extends Component {
   packageDownload() {
   }
 
+  report(url) {
+    window.open(url)
+  }
+
+  download(url) {
+    window.open(url)
+  }
+
   render() {
     let {successList, unfinishList, failureList, loadMore, hasMoreSuccess, hasMoreFailure, hasMoreUnfinish} = this.props;
     return (
@@ -35,9 +43,9 @@ class BranchBuild extends Component {
                       <div className="package-item-container" key={index}>
                         <PackgeItem item={item} type="等待构建"/>
                         <div className="btn-package-container">
-                          <Button style={{width:88}} type="primary" onClick={
+                          <Button style={{width: 88}} type="primary" onClick={
                             () => {
-                              this.props.taskCancel(item.buildId)
+                              this.props.taskCancel(item.buildId,index)
                             }}>取消
                           </Button>
                         </div>
@@ -62,8 +70,13 @@ class BranchBuild extends Component {
                         <PackgeItem item={item} type="构建成功"/>
                         <div className="btn-package-container">
                           <Button type="primary" style={{marginRight: '10px'}}
-                                  onClick={this.taskCancel.bind(this, item.id)}>apk下载</Button>
-                          <Button type="primary" onClick={this.taskCancel.bind(this, item.id)}>性能报告</Button>
+                                  onClick={this.download.bind(this, item.apkDownloadUrl)}>apk下载</Button>
+                          {
+                            item.reportUrl
+                              ? <Button type="primary" onClick={this.report.bind(this, item.reportUrl)}>性能报告</Button>
+                              : <Button disabled>性能报告</Button>
+                          }
+
                         </div>
                       </div>
                     )
@@ -88,8 +101,9 @@ class BranchBuild extends Component {
                         <PackgeItem item={item} type="构建失败"/>
                         <div className="btn-package-container">
                           <Button type="primary" style={{marginRight: '10px'}}
-                                  onClick={this.taskCancel.bind(this, item.id)}>apk下载</Button>
-                          <Button type="primary" style={{width:88}} onClick={this.taskCancel.bind(this, item.id)}>日志</Button>
+                                  onClick={this.download.bind(this, item.apkDownloadUrl)}>apk下载</Button>
+                          <Button type="primary" style={{width: 88}}
+                                  onClick={this.taskCancel.bind(this, item.id)}>日志</Button>
                         </div>
                       </div>
                     )

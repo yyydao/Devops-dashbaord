@@ -26,7 +26,7 @@ class ScheduledTask extends Component {
           onOk={this.handleOk}
           onCancel={this.props.handleCancel}
           footer={null}
-          width={700}
+          width={750}
         >
           <ul className="list-container">
             {
@@ -34,9 +34,9 @@ class ScheduledTask extends Component {
                 <li key={index}>
                   <div className="left-part">
                     <img src={require('../../assets/favicon.ico')}/>
-                    <span>分支：{item.branchId}</span>
+                    <span>分支：{item.branchName}</span>
                     <span>定时时间：{item.fixTime}</span>
-                    <span>场景：{item.scene}</span>
+                    <span className="screen">场景：{item.scene}</span>
                   </div>
                   <div className="btn-delete">
                     <Button type="danger" onClick={() => {

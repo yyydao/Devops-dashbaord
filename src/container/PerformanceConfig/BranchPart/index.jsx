@@ -87,12 +87,19 @@ class ScreenPart extends Component {
           isDefaultBranch: values.isDefaultBranch ? 1 : 0
         })
         let data = response.data;
+        let {branchList} = this.state;
         if (parseInt(data.code) === 0) {
+          if (values.isDefaultBranch) {
+            branchList = branchList.map((item) => {
+              item.isDefaultBranch = 0;
+              return item;
+            })
+          }
           this.setState({
-            branchList: [...this.state.branchList, data.data],
+            branchList: [...branchList, data.data],
             addBranchVisible: false
           })
-          this.props.form.resetFields();
+          this.props.form.resetFields(['branchName']);
         }
       }
     });
@@ -165,7 +172,7 @@ class ScreenPart extends Component {
 
   render() {
     const {getFieldDecorator} = this.props.form;
-    let {envList, envActiveIndex, branchList,tempPlatformId} = this.state;
+    let {envList, envActiveIndex, branchList, tempPlatformId} = this.state;
     return (
       <div id="branch-part">
         {/*性能测试环境部分*/}
@@ -205,7 +212,7 @@ class ScreenPart extends Component {
             <span className="add-branch-txt">分支列表（选中为默认分支）</span>
             {
               tempPlatformId
-              ?<Icon
+                ? <Icon
                   type="plus-circle-o"
                   className="icon-add"
                   onClick={() => {
@@ -214,7 +221,7 @@ class ScreenPart extends Component {
                     })
                   }}
                 />
-                :null
+                : null
             }
 
             {/*分支列表*/}
