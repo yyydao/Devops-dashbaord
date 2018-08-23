@@ -129,7 +129,7 @@ class FailureList extends Component {
                           <span style={{marginRight: '20px'}}>buildId:{item.buildId}</span>
                           <span className="margin10">{item.buildTime}</span>
                           <span className="margin10">{item.description}</span>
-                          <span className="margin10 test-summary">提测概要：dflsdjfsldkfjslkdfjslkdfjslkdfjslkdfjslkdfj</span>
+                          <span className="margin10 test-summary">提测概要：{item.content}</span>
                         </p>
                       </div>
                     </div>

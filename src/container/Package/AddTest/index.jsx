@@ -19,6 +19,7 @@ class AddTest extends Component {
       branchList: [],         // 分支列表
       defaultBranch: '',     // 默认分支
       selectBranch: '',        // 选中的分支
+      preventRepeatSubmit: false // 防止多次触发表单
     }
   }
 

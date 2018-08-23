@@ -189,7 +189,7 @@ class SuccessList extends Component {
                                 <span className="margin10">buildId：{recordItem.id}</span>
                                 <span className="margin10">状态：构建成功</span>
                                 <span className="margin10">时间：{recordItem.buildTime}</span>
-                                <span className="margin10 test-summary">提测概要：dflsdjfsldkfjslkdfjslkdfjslkdfjslkdfjslkdfj</span>
+                                <span className="margin10 test-summary">提测概要：{recordItem.content}</span>
                               </p>
                             </div>
                           </div>

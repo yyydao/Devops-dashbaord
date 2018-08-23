@@ -33,10 +33,11 @@ class EnvPart extends Component {
       branchDeleteIndex: '',     // 当前分支删除的下标
       envDeleteVisible: false,  // 环境删除modal显示
       hasOpenTest: false,
-      noTestTipVisible: false,
+      noTestTipVisible: false,    // 没有性能测试project 温馨提示
       startPerformanceTest: false,  // 开启性能测试
       openTestOptions: [],// 开起性能测试平台可选列表
-      packageId: ''  // 暂存当前选中的平台id
+      packageId: '',  // 暂存当前选中的平台id
+      closeTestTipVisible: false // 关闭测试modal显示
     }
   }
 
@@ -239,9 +240,23 @@ class EnvPart extends Component {
 
   // 触发性能测试
   switchChange() {
-    this.setState({
-      startPerformanceTest: true
-    })
+    let {hasOpenTest} = this.state;
+    if (hasOpenTest) {
+      this.setState({
+        closeTestTipVisible: true
+      })
+    } else {
+      if (this.state.openTestOptions.length) {
+        this.setState({
+          startPerformanceTest: true
+        })
+      } else {
+        this.setState({
+          noTestTipVisible: true
+        })
+      }
+    }
+
   }
 
   // 开启性能测试
@@ -259,9 +274,8 @@ class EnvPart extends Component {
             }
             return item;
           })
-          console.log(values.performanceProjectId)
           this.setState({
-            hasOpenTest: !!values.performanceProjectId,
+            hasOpenTest: true,
             startPerformanceTest: false,
             envList
           })
@@ -271,6 +285,22 @@ class EnvPart extends Component {
     });
   }
 
+  // 取消性能关联
+  async _closeConnect() {
+    let {envId, envList} = this.state;
+    let response = await envUpdate({envId, performanceProjectId: 0})
+    envList = envList.map((item) => {
+      if (item.id === envId) {
+        item.performanceProjectId = 0
+      }
+      return item;
+    })
+    this.setState({
+      hasOpenTest: false,
+      closeTestTipVisible: false,
+      envList
+    })
+  }
 
   render() {
     const {getFieldDecorator} = this.props.form;
@@ -519,7 +549,7 @@ class EnvPart extends Component {
             })
           }}
         >
-          <Alert message="您还未创建测试项目，请先点击左侧【设置-性能测试配置】菜单前往创建？" type="Informational " showIcon/>
+          <Alert description="您还未创建测试项目，请先点击左侧【设置-性能测试配置】菜单前往创建？" type="warning"/>
         </Modal>
 
         {/* 开启性能测试*/}
@@ -549,7 +579,6 @@ class EnvPart extends Component {
                         <Radio key={index} value={item.id}>{item.name}</Radio>
                       ))
                     }
-                    <Radio value={0}>取消关联</Radio>
                   </RadioGroup>
                 )}
               </div>
@@ -583,6 +612,20 @@ class EnvPart extends Component {
           }}
         >
           <Alert message="确认将该分支选为默认分支？" type="Informational " showIcon/>
+        </Modal>
+
+        {/* 关闭环境提示*/}
+        <Modal
+          title="确认取消关联"
+          visible={this.state.closeTestTipVisible}
+          onOk={this._closeConnect.bind(this)}
+          onCancel={() => {
+            this.setState({
+              closeTestTipVisible: false
+            })
+          }}
+        >
+          <Alert message="确定取消关联？" type="warning" showIcon/>
         </Modal>
       </div>
     )

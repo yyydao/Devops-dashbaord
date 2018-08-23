@@ -133,7 +133,7 @@ class UnFinishList extends Component {
                           <span className="margin10">buildId：{recordItem.buildId}</span>
                           <span className="margin10">时间：{recordItem.timeStamp}</span>
                           <span className="margin10 package-desc">描述：{recordItem.description}</span>
-                          <span className="margin10 test-summary">提测概要：dflsdjfsldkfjslkdfjslkdfjslkdfjslkdfjslkdfj</span>
+                          <span className="margin10 test-summary">提测概要：{recordItem.content}</span>
                         </div>
                       </div>
                     </div>

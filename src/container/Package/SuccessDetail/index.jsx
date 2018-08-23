@@ -14,13 +14,14 @@ class SuccessDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      buildId: '',
       detailData: {},
       platformName: '',
       envName: '',
       addTestShow: false, // 新增性能测试modal显示
       testStatus: 1,    // 提测状态
       reportUrl: '',  // 报告地址
-      screenList: []     // 场景列表
+      screenList: [],     // 场景列表
     }
   }
 
@@ -28,18 +29,19 @@ class SuccessDetail extends Component {
     let parsed = qs.parse(this.props.location.search, {ignoreQueryPrefix: true});
     let buildId = parsed.buildId;
     if (buildId) {
-      this.getSubmitStatus(buildId);
       let response = await packageDetail({buildId});
       if (parseInt(response.data.code) === 0) {
         this.setState({
           detailData: response.data.data,
           platformName: parsed.platformName,
-          envName: parsed.envName
+          envName: parsed.envName,
+          buildId
         })
+        this.getSubmitStatus(buildId);
       }
     }
 
-    this.getScreen();
+
   }
 
   // 获取提测状态
@@ -48,8 +50,10 @@ class SuccessDetail extends Component {
     if (parseInt(response.data.code) === 0) {
       if (response.data.data.status) {
         this.setState({
-          screenList: response.data.data
+          screenList: response.data.data,
         })
+      } else {
+        this.getScreen(this.state.detailData && this.state.detailData.performanceProjectId)
       }
     }
   }
@@ -79,8 +83,14 @@ class SuccessDetail extends Component {
 
   // 开启性能测试
   async startTest(testScene) {
-    let {projectId} = this.state;
-    let response = await taskSubmit({projectId, testScene: testScene.join(',')});
+    let { buildId, detailData} = this.state;
+    let response = await taskSubmit({
+      testScene: testScene.join(','),
+      submitPlatformId :buildId,
+      type: 3,
+      appAddr: detailData.downloadPath,
+      projectId: detailData.performanceProjectId
+    });
     if (parseInt(response.data.code) === 0) {
       this.setState({
         addTestVisible: false
