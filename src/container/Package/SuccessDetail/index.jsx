@@ -1,7 +1,8 @@
 import React, {Component} from 'react'
-import {Row, Col, Input, Divider, Button} from 'antd';
+import {Row, Col, Input, Divider, Button, message} from 'antd';
 import {packageDetail, packageDownload} from '@/api/package/package'
 import {testScreenList} from '@/api/performance/screen'
+import {submitStatus, taskSubmit} from '@/api/performance/task'
 import AddTest from './AddTest'
 import './index.scss'
 import qs from 'qs'
@@ -16,7 +17,10 @@ class SuccessDetail extends Component {
       detailData: {},
       platformName: '',
       envName: '',
-      show: false
+      addTestShow: false, // 新增性能测试modal显示
+      testStatus: 1,    // 提测状态
+      reportUrl: '',  // 报告地址
+      screenList: []     // 场景列表
     }
   }
 
@@ -24,6 +28,7 @@ class SuccessDetail extends Component {
     let parsed = qs.parse(this.props.location.search, {ignoreQueryPrefix: true});
     let buildId = parsed.buildId;
     if (buildId) {
+      this.getSubmitStatus(buildId);
       let response = await packageDetail({buildId});
       if (parseInt(response.data.code) === 0) {
         this.setState({
@@ -33,13 +38,29 @@ class SuccessDetail extends Component {
         })
       }
     }
+
+    this.getScreen();
+  }
+
+  // 获取提测状态
+  async getSubmitStatus(id) {
+    let response = await submitStatus({submitBuildId: id});
+    if (parseInt(response.data.code) === 0) {
+      if (response.data.data.status) {
+        this.setState({
+          screenList: response.data.data
+        })
+      }
+    }
   }
 
   // 获取场景列表
-  async getScreen() {
-    let response = await testScreenList({});
+  async getScreen(projectId) {
+    let response = await testScreenList({projectId});
     if (parseInt(response.data.code) === 0) {
-
+      this.setState({
+        screenList: response.data.data
+      })
     }
   }
 
@@ -48,8 +69,32 @@ class SuccessDetail extends Component {
     packageDownload(id);
   }
 
+  // 打开性能测试报告页
+  openReport() {
+    let {reportUrl} = this.state;
+    if (reportUrl) {
+      window.open(reportUrl);
+    }
+  }
+
+  // 开启性能测试
+  async startTest(testScene) {
+    let {projectId} = this.state;
+    let response = await taskSubmit({projectId, testScene: testScene.join(',')});
+    if (parseInt(response.data.code) === 0) {
+      this.setState({
+        addTestVisible: false
+      })
+      // 修改状态为性能测试中
+      this.setState({
+        testStatus: 2
+      })
+      message.success('构建成功')
+    }
+  }
+
   render() {
-    let {detailData, platformName, envName} = this.state;
+    let {detailData, platformName, envName, testStatus} = this.state;
     return (
       <div className="success-detail-container">
         <Divider orientation="left" className="title">{platformName}-{envName}</Divider>
@@ -71,28 +116,38 @@ class SuccessDetail extends Component {
                       onClick={this.download.bind(this, detailData.buildId)}>
                 下载
               </Button>
-              {/* <Button type="primary"
-                      style={{width: '100px', height: '40px', marginLeft: 10}}
-                      onClick={() => {
-                        this.setState({show: true})
-                      }}>
-                性能测试
-              </Button>*/}
-              {/*        <Button type="primary"
-                      style={{width: '120px', height: '40px', marginLeft: 10}}
-                      onClick={() => {
-                        this.setState({show: true})
-                      }}>
-                性能测试报告
-              </Button>*/}
-              <Button
-                disabled
-                style={{background: 'rgb(190, 200, 200)', width: '120px', height: '40px', marginLeft: 10}}
-                onClick={() => {
-                  this.setState({show: true})
-                }}>
-                性能测试中
-              </Button>
+              {
+                testStatus === 1
+                  ? <Button type="primary"
+                            style={{width: '100px', height: '40px', marginLeft: 10}}
+                            onClick={() => {
+                              this.setState({addTestShow: true})
+                            }}>
+                    性能测试
+                  </Button>
+                  : null
+              }
+              {
+                testStatus === 2
+                  ? <Button type="primary"
+                            style={{width: '120px', height: '40px', marginLeft: 10}}
+                            onClick={this.openReport.bind(this)}
+                  >
+                    性能测试报告
+                  </Button>
+                  : null
+              }
+              {
+                testStatus === 3
+                  ? <Button
+                    disabled
+                    style={{background: 'rgb(190, 200, 200)', width: '120px', height: '40px', marginLeft: 10}}
+                  >
+                    性能测试中
+                  </Button>
+                  : null
+              }
+
             </Col>
             <Col offset={14}>
               <img width={256} height={256} src={detailData.imageUrl}/>
@@ -121,11 +176,14 @@ class SuccessDetail extends Component {
           </ul>
         </div>
         <AddTest
-          screenList={[]}
+          screenList={this.state.screenList}
           handleCancel={() => {
-            this.setState({show: false})
+            this.setState({addTestShow: false})
           }}
-          show={this.state.show}
+          startTest={(testScene) => {
+            this.startTest(testScene)
+          }}
+          show={this.state.addTestShow}
         />
       </div>
     )

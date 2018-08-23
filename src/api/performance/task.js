@@ -44,3 +44,12 @@ export const taskCancel = (data) => {
   req.url = `performance/task/${data.buildId}/cancle`
   return _post(req)
 }
+
+// 状态
+export const submitStatus = (data) =>{
+  let req = {
+    data
+  }
+  req.url = `performance/task/submitTest/status`
+  return _get(req)
+}

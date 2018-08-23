@@ -54,7 +54,6 @@ class AddTest extends Component {
 
       checkedList.push(item.value)
     })
-    console.log('checkedList', checkedList)
     this.setState({
       checkedList: e.target.checked ? checkedList : [],
       indeterminate: false,
@@ -67,19 +66,17 @@ class AddTest extends Component {
   }
 
   taskSubmit() {
-    let {taskBranch, checkedList} = this.state;
-    if (!taskBranch) {
-      message.error('请选择分支');
-    } else if (!checkedList.length) {
+    let {checkedList} = this.state;
+    if (!checkedList.length) {
       message.error('请选择场景');
     } else {
-      this.props.handleSubmit(taskBranch, checkedList)
+      this.props.startTest(checkedList)
     }
   }
 
   render() {
     const {getFieldDecorator} = this.props.form;
-    let { screenList, handleCancel} = this.props;
+    let {screenList, handleCancel} = this.props;
     return (
       <div>
         <Modal

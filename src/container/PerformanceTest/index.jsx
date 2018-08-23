@@ -365,4 +365,4 @@ class PerformanceTest extends Component {
 }
 
 const WrappedPerformanceTest = Form.create()(PerformanceTest);
-export default connect(state => ({}), {})(WrappedPerformanceTest);
+export default WrappedPerformanceTest

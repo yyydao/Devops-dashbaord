@@ -89,12 +89,19 @@
 
 }
 
-.start-test-modal {
-  .start-test-options {
+.open-test-modal {
+  .open-test-options {
     padding: 0 20px 20px 10px;
-    background: #f2f4f5;
+    background: $bg-color;
+  }
+  .ant-modal-body {
+    padding-top: 5px;
   }
   .ant-form-item {
     margin-bottom: 5px;
+  }
+  .ant-radio-wrapper {
+    display: block;
+    margin: 10px 0;
   }
 }

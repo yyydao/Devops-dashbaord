@@ -6,7 +6,8 @@ import {setPackageId} from '@/store/system/action'
 import './index.scss'
 import {envList, envAdd, envDelete, envUpdate} from "@/api/package/env";
 import {branchList, branchAdd, branchDelete, branchUpdate} from "@/api/package/branch";
-
+import {taskSubmit} from '@/api/performance/task'
+import {projectList} from '@/api/performance/project'
 import Edit from '@/components/Edit'
 import BranchList from '../BranchList'
 
@@ -31,15 +32,24 @@ class EnvPart extends Component {
       branchDeleteId: '',         // 删除分支的id
       branchDeleteIndex: '',     // 当前分支删除的下标
       envDeleteVisible: false,  // 环境删除modal显示
-      switchValue: false,
+      hasOpenTest: false,
       noTestTipVisible: false,
-      startPerformanceTest: false  // 开启性能测试
+      startPerformanceTest: false,  // 开启性能测试
+      openTestOptions: [],// 开起性能测试平台可选列表
+      packageId: ''  // 暂存当前选中的平台id
     }
+  }
+
+  async componentWillMount() {
+    this.getProjectList();
   }
 
   componentWillReceiveProps(props) {
     if (props.packageId !== this.state.packageId) {
       this.getEnvList(props.packageId)
+      this.setState({
+        packageId: props.packageId
+      })
     }
   }
 
@@ -47,6 +57,19 @@ class EnvPart extends Component {
     let id = this.props.packageId;
     if (id) {
       this.getEnvList(id)
+      this.setState({
+        packageId: id
+      })
+    }
+  }
+
+  // 获取性能测试平台列表
+  async getProjectList() {
+    let response = await projectList();
+    if (parseInt(response.data.code) === 0) {
+      this.setState({
+        openTestOptions: response.data.data
+      })
     }
   }
 
@@ -57,6 +80,7 @@ class EnvPart extends Component {
       let envData = envResponse.data.data;
       if (envData.length) {
         this._getBrachList(envData[0].id) // 默认获取第一个环境的分支
+        this._isOpenTest(envData[0])
         this.setState({
           envList: envData,
           envId: envData[0].id
@@ -67,6 +91,13 @@ class EnvPart extends Component {
         })
       }
     }
+  }
+
+  // 是否该环境开启性能测试
+  _isOpenTest(data) {
+    this.setState({
+      hasOpenTest: !!data.performanceProjectId
+    })
   }
 
   // 获取分支
@@ -115,7 +146,7 @@ class EnvPart extends Component {
 
   // 选择默认分支
   defaultBranch() {
-    let {envId, branchList, defaultBranchId} = this.state;
+    let {envId, branchList, defaultBranchId, openTestOptions} = this.state;
     branchUpdate({branchId: defaultBranchId, envId, isDefaultBranch: 1}).then((resposne) => {
       let data = resposne.data;
       if (parseInt(data.code) === 0) {
@@ -157,6 +188,7 @@ class EnvPart extends Component {
   // 环境切换
   envChange(id, index) {
     this._getBrachList(id)
+    this._isOpenTest(this.state.envList[index]); // 判断该环境是否开启性能测试
     this.setState({
       envId: id,
       envActiveIndex: index
@@ -208,10 +240,37 @@ class EnvPart extends Component {
   // 触发性能测试
   switchChange() {
     this.setState({
-      // noTestTipVisible: true
       startPerformanceTest: true
     })
   }
+
+  // 开启性能测试
+  openTest(e) {
+    e.preventDefault();
+    this.props.form.validateFields(['performanceProjectId'], async (err, values) => {
+      let {envId, envList} = this.state;
+      if (!err) {
+        let response = await envUpdate({envId, performanceProjectId: values.performanceProjectId})
+        let data = response.data;
+        if (parseInt(data.code) === 0) {
+          envList = envList.map((item) => {
+            if (item.id === envId) {
+              item.performanceProjectId = values.performanceProjectId
+            }
+            return item;
+          })
+          console.log(values.performanceProjectId)
+          this.setState({
+            hasOpenTest: !!values.performanceProjectId,
+            startPerformanceTest: false,
+            envList
+          })
+          this.props.form.resetFields();
+        }
+      }
+    });
+  }
+
 
   render() {
     const {getFieldDecorator} = this.props.form;
@@ -294,7 +353,7 @@ class EnvPart extends Component {
           <div className="performance-emit" style={{height: 40}}>
             <span className="label">性能测试：</span>
             <Switch
-              checked={this.state.switchValue} onChange={this.switchChange.bind(this)}/>
+              checked={this.state.hasOpenTest} onChange={this.switchChange.bind(this)}/>
           </div>
           {/*  是否需要密码
           <div className="password-require" style={{height: 40}}>
@@ -330,7 +389,6 @@ class EnvPart extends Component {
                     branchDeleteVisible: true,
                     branchDeleteId: id,
                     branchDeleteIndex: index,
-
                   })
                 }}/>
           </div>
@@ -467,9 +525,9 @@ class EnvPart extends Component {
         {/* 开启性能测试*/}
         <Modal
           title="开启性能测试"
-          className="start-test-modal"
+          className="open-test-modal"
           visible={this.state.startPerformanceTest}
-          onOk={this.defaultBranch.bind(this)}
+          onOk={this.openTest.bind(this)}
           onCancel={() => {
             this.setState({
               startPerformanceTest: false
@@ -481,11 +539,19 @@ class EnvPart extends Component {
               <span>请选择关联的测试项目</span>
             </FormItem>
             <FormItem>
-              <div className="start-test-options">
-                <CheckboxGroup options={['团贷网-Android-性能测试', '团贷网-ios-性能测试', '取消关联']}
-                               defaultValue={['团贷网-Android-性能测试']}
-                               onChange={() => {
-                               }}/>
+              <div className="open-test-options">
+                {getFieldDecorator('performanceProjectId', {
+                  rules: [{required: true, message: '请选择项目'}],
+                })(
+                  <RadioGroup>
+                    {
+                      this.state.openTestOptions.map((item, index) => (
+                        <Radio key={index} value={item.id}>{item.name}</Radio>
+                      ))
+                    }
+                    <Radio value={0}>取消关联</Radio>
+                  </RadioGroup>
+                )}
               </div>
             </FormItem>
           </Form>
