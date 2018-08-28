@@ -31,6 +31,7 @@ class ScreenPart extends Component {
   }
 
   componentWillReceiveProps(props) {
+    // 平台切换 获取该平台的分支和task信息
     if (props.performanceId !== this.state.tempPlatformId) {
       this._getBrachList(props.performanceId)
       this._getTaskName(props.performanceId)
@@ -112,6 +113,7 @@ class ScreenPart extends Component {
     branchUpdate({id: defaultBranchId, projectId: performanceId, isDefaultBranch: 1}).then((resposne) => {
       let data = resposne.data;
       if (parseInt(data.code, 10) === 0) {
+        // 设置默认分支成功后 把当前的分支标志位isDefaultBranch设置为1 其它分支设置为0
         branchList.forEach(item => {
           if (item.id === defaultBranchId) {
             item.isDefaultBranch = 1;
@@ -160,7 +162,7 @@ class ScreenPart extends Component {
       })
     }
   }
-
+  // 删除分支
   async _deleteBranch() {
     let {branchDeleteIndex, branchDeleteId} = this.state;
     let response = await branchDelete({branchId: branchDeleteId});

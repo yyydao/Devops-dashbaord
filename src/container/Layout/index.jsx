@@ -4,10 +4,11 @@ import {Layout, Menu, Icon, Tag} from 'antd';
 
 import Index from '../Index'
 import Package from '../Package'
-import Detail from '../Detail'
 import PackageIndex from '../PackageIndex'
-import PerformanceIndex from '../PerformanceIndex'
 import PackageConfig from '../PackageConfig'
+import PackageDetail from '../PackageDetail'
+
+import PerformanceIndex from '../PerformanceIndex'
 import PerformanceTest from '../PerformanceTest'
 import PerformanceConfig from '../PerformanceConfig'
 import Setting from '../Setting'
@@ -70,9 +71,8 @@ class TDLayout extends Component {
         <Header>
           <div className="header-container">
             <div style={{display: 'inline-block'}}>
-              <img src={require("../../assets/favicon.ico")} alt="" width={40} height={40}/>
-              <span
-                style={{color: '#fff', fontSize: '20px', verticalAlign: 'middle', marginLeft: '20px'}}>DevOps平台</span>
+              <img src={require("../../assets/favicon.ico")} width={40} height={40} alt="" />
+              <span style={{color: '#fff', fontSize: 20, verticalAlign: 'middle', marginLeft: 20}}>DevOps平台</span>
             </div>
             <Icon type="arrows-alt" className="full-screen" onClick={this.screenFull.bind(this)}/>
           </div>
@@ -127,7 +127,7 @@ class TDLayout extends Component {
                 <Route path='/performance' component={PerformanceIndex}/>
                 <Route path='/packageConfig' component={PackageConfig}/>
                 <Route path='/packageManager' component={Package}/>
-                <Route path='/detail' component={Detail}/>
+                <Route path='/detail' component={PackageDetail}/>
                 <Route path='/performanceTest' component={PerformanceTest}/>
                 <Route path='/setting' component={Setting}/>
                 <Route path='/performanceConfig' component={PerformanceConfig}/>

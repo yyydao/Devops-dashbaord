@@ -11,7 +11,7 @@ class ScreenList extends Component {
     this.state = {
       visible: false,
       deleteSceneId: '',  // 删除的场景id
-      deleteIndex: ''
+      deleteIndex: ''     // 当前删除item在数组的下标
     }
   }
 
@@ -23,6 +23,7 @@ class ScreenList extends Component {
     let response = await deleteScreen({deleteSceneId});
     if (parseInt(response.data.code,10) === 0) {
       message.success('删除成功');
+      // 删除成功 通知父组件对列表数据进行处理 移除该删除的item
       this.props.handleDeleteOk(this.state.deleteIndex);
       this.setState({
         deleteIndex: '',

@@ -15,10 +15,10 @@ class PlatformPart extends Component {
   constructor() {
     super();
     this.state = {
-      platformList: [],
-      envList: [],     // 环境列表
-      platformActiveIndex: 0, // 当前选中的平台在数组中的下标
-      id: '',
+      platformList: [], // 平台列表
+      envList: [],      //  环境列表
+      platformActiveIndex: 0, // 当前选中的平台在数组中的下标 用于选中高亮
+      id: '', // 当前平台选中的id
       addPlatformVisible: false, // 显示新增平台modal
       pfDeleteVisible: false      // 显示确认删除平台modal
     }
@@ -28,21 +28,6 @@ class PlatformPart extends Component {
   componentWillMount() {
     // 获取平台列表
     this.getPlatformList();
-  }
-
-
-  mapPerformanceIndex(id) {
-    let index = 0;
-    let {platformList} = this.state;
-    for (let i = 0; i < platformList.length; i++) {
-      if (platformList[i].id === id) {
-        index = i;
-        break;
-      }
-    }
-    this.setState({
-      platformActiveIndex: index
-    })
   }
 
   // 获取平台列表
@@ -58,13 +43,28 @@ class PlatformPart extends Component {
         if (this.props.packageId) {
           this.mapPerformanceIndex(parseInt(this.props.packageId,10));
         } else {
-          this.props.setPackageId(data[0].id);  // 保存当前id到redux中 用于触发环境和分支的拉取
+          this.props.setPackageId(data[0].id);  // 默认选中第一个平台 并保存当前id到redux中 用于触发环境和分支的拉取
           this.setState({
             platformActiveIndex: 0
           })
         }
       }
     }
+  }
+
+  // 根据id匹配出当前平台在数组的下标 用于选中高亮
+  mapPerformanceIndex(id) {
+    let index = 0;
+    let {platformList} = this.state;
+    for (let i = 0; i < platformList.length; i++) {
+      if (platformList[i].id === id) {
+        index = i;
+        break;
+      }
+    }
+    this.setState({
+      platformActiveIndex: index
+    })
   }
 
 

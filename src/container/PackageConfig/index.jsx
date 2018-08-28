@@ -12,7 +12,7 @@ import EnvPart from './envPart'
 class ConfigManager extends Component {
   // 获取平台列表
   async componentWillMount() {
-    // 获取当前选中平台id
+    // 获取当前选中平台id 因为从包管理首页进来该路由 会在query带上platformId
     let parsed = qs.parse(this.props.location.search, {ignoreQueryPrefix: true});
     let id = parsed.platformId;
 

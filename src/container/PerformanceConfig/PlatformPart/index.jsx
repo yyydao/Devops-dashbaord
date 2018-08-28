@@ -13,26 +13,40 @@ class PlatformPart extends Component {
   constructor() {
     super();
     this.state = {
-      platformList: [],
-      platformActiveIndex: '',
-      id: '',
+      platformList: [], // 平台列表
+      platformActiveIndex: '',  // 当前选中平台在数组中的索引下标
+      id: '', // 当前选中的平台id
       addPlatformVisible: false, // 显示新增平台modal
       pfDeleteVisible: false      // 显示确认删除平台modal
     }
   }
 
-  componentWillReceiveProps(props) {
-    if (props.id) {
-
-    }
-  }
-
-
   componentWillMount() {
     this.getPlatformList();
   }
 
+  // 获取平台列表
+  async getPlatformList() {
+    let platformRes = await projectList();
+    if (parseInt(platformRes.data.code, 10) === 0) {
+      let data = platformRes.data.data;
+      if (data.length) {
+        this.setState({
+          platformList: data
+        })
+        if (this.props.performanceId) {
+          this.mapPerformanceIndex(parseInt(this.props.performanceId, 10));
+        } else {
+          this.props.setPerformanceId(data[0].id);  // 如果没有选中平台 默认选中第一个
+          this.setState({
+            platformActiveIndex: 0
+          })
+        }
+      }
+    }
+  }
 
+  // 找出该id在数组中对应的下标 用于选中高亮
   mapPerformanceIndex(id) {
     let index = 0;
     let {platformList} = this.state;
@@ -47,27 +61,6 @@ class PlatformPart extends Component {
     })
   }
 
-  // 获取平台列表
-  async getPlatformList() {
-    let platformRes = await projectList();
-    if (parseInt(platformRes.data.code, 10) === 0) {
-      let data = platformRes.data.data;
-      if (data.length) {
-        this.setState({
-          platformList: data
-        })
-        // 如果没有选中平台 默认选中第一个
-        if (this.props.performanceId) {
-          this.mapPerformanceIndex(parseInt(this.props.performanceId, 10));
-        } else {
-          this.props.setPerformanceId(data[0].id);
-          this.setState({
-            platformActiveIndex: 0
-          })
-        }
-      }
-    }
-  }
 
   // 平台切换
   platformChange(id, index) {
@@ -93,7 +86,6 @@ class PlatformPart extends Component {
     let {performanceId} = this.props;
     let {platformList} = this.state;
     let response = await projectUpdate({id: performanceId, name: platformName, jenkinsAddr})
-    console.log('response', response)
     let data = response.data;
     if (parseInt(data.code, 10) === 0) {
       // 平台列表更新数据

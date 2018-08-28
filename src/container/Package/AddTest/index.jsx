@@ -19,7 +19,8 @@ class AddTest extends Component {
       branchList: [],         // 分支列表
       defaultBranch: '',     // 默认分支
       selectBranch: '',        // 选中的分支
-      preventRepeatSubmit: false // 防止多次触发表单
+      preventRepeatSubmit: false, // 防止多次触发表单
+      needPwd:false   // 新增提测是否需要密码
     }
   }
 
@@ -138,6 +139,20 @@ class AddTest extends Component {
                 rules: [{required: true, message: '请输入详情'}],
               })(
                 <Input placeholder="提测详情（石墨URL）"/>
+              )}
+            </FormItem>
+            <FormItem>
+              {getFieldDecorator('username', {
+                rules: [{required: true, message: '请输入账号'}],
+              })(
+                <Input placeholder="构建账号"/>
+              )}
+            </FormItem>
+            <FormItem>
+              {getFieldDecorator('password', {
+                rules: [{required: true, message: '请输入密码'}],
+              })(
+                <Input placeholder="构建密码" type="password"/>
               )}
             </FormItem>
           </Form>

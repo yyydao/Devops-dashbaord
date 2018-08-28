@@ -5,7 +5,7 @@ import FailureDetail from '../Package/FailureDetail'
 import UnFinishDetail from '../Package/UnFinishDetail'
 import "./index.scss"
 
-class Detail extends Component {
+class PackageDetail extends Component {
 
   render() {
     return (
@@ -20,4 +20,4 @@ class Detail extends Component {
   }
 }
 
-export default Detail;
+export default PackageDetail;

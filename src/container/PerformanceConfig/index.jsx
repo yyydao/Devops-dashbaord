@@ -15,13 +15,13 @@ class ConfigManager extends Component {
   constructor() {
     super();
     this.state = {
-      platformId: '',          // 平台删除用到的id
+      platformId: '',  // 平台删除用到的id
     }
   }
 
   // 获取平台列表
   async componentWillMount() {
-    // 获取当前选中平台id
+    // 获取当前选中平台id 因为从性能测试首页进来该路由 会在query带上platformId
     let parsed = qs.parse(this.props.location.search, {ignoreQueryPrefix: true});
     let id = parsed.platformId || '';
 

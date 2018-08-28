@@ -167,7 +167,15 @@ class PerformanceTest extends Component {
     let type = e.target.getAttribute('data-build-type')
     this.getPackageList(this.state.projectId, type)
     this.setState({
-      type: parseInt(type,10)
+      type: parseInt(type,10),
+      getMoreInfo: {  // 重置getMoreInfo
+        successPage: 1,  // 当前成功列表页面
+        hasMoreSuccess: true,  // 是否有更多成功列表
+        unfinishPage: 1,  // 当前未完成页面
+        hasMoreUnfinish: true,  // 是否有更多未完成列表
+        failurePage: 1,  // 当前失败页面
+        hasMoreFailure: true  // 是否有更多失败列表
+      }
     })
   }
 
@@ -183,10 +191,10 @@ class PerformanceTest extends Component {
     }
   }
 
-  // 新增构建 获取分支和场景
+  // 新增构建
   _addTest() {
-    this.getBranchList();
-    this.getScreenList();
+    this.getBranchList(); // 获取分支
+    this.getScreenList(); // 获取场景
     this.setState({addTestVisible: true})
   }
 

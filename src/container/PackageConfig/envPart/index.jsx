@@ -25,17 +25,18 @@ class EnvPart extends Component {
       addBranchVisible: false,  // 增加分支modal
       defaultBranchVisible: false,  // 默认分支选择modal
       defaultBranchId: null, // 选择默认分支的id
-      addEnvVisible: false, // 新增环境
+      addEnvVisible: false, // 新增环境modal
       branchDeleteVisible: false,  // 删除分支提示modal
       branchDeleteId: '',         // 删除分支的id
       branchDeleteIndex: '',     // 当前分支删除的下标
       envDeleteVisible: false,  // 环境删除modal显示
-      hasOpenTest: false,
+      hasOpenTest: false, // 该环境是否开启性能测试
       noTestTipVisible: false,    // 没有性能测试project 温馨提示
       startPerformanceTest: false,  // 开启性能测试
       openTestOptions: [],// 开起性能测试平台可选列表
       packageId: '',  // 暂存当前选中的平台id
-      closeTestTipVisible: false // 关闭测试modal显示
+      closeTestTipVisible: false, // 关闭测试modal显示
+      needPwd: false // 是否需要密码 用于提测时输入
     }
   }
 
@@ -79,7 +80,7 @@ class EnvPart extends Component {
       let envData = envResponse.data.data;
       if (envData.length) {
         this._getBrachList(envData[0].id) // 默认获取第一个环境的分支
-        this._isOpenTest(envData[0])
+        this._isOpenTest(envData[0])  // 判断该环境是否开启性能测试
         this.setState({
           envList: envData,
           envId: envData[0].id
@@ -136,9 +137,11 @@ class EnvPart extends Component {
       let response = await envDelete({envId});
       let data = response.data;
       if (parseInt(data.code, 10) === 0) {
-        this.state.envList.splice(this.state.envActiveIndex, 1)
+        let {envList} = this.state;
+        envList.splice(this.state.envActiveIndex, 1)
         this.setState({
           envDeleteVisible: false,
+          envList
         })
       }
     }
@@ -150,6 +153,7 @@ class EnvPart extends Component {
     branchUpdate({branchId: defaultBranchId, envId, isDefaultBranch: 1}).then((resposne) => {
       let data = resposne.data;
       if (parseInt(data.code, 10) === 0) {
+        // 设置成功后 把当前分支的标志位defaultBranch设置为1 其它分支设置为0
         branchList.forEach((item) => {
           if (item.id === defaultBranchId) {
             item.defaultBranch = 1;
@@ -187,7 +191,7 @@ class EnvPart extends Component {
 
   // 环境切换
   envChange(id, index) {
-    this._getBrachList(id)
+    this._getBrachList(id)  // 获取该环境分支列表
     this._isOpenTest(this.state.envList[index]); // 判断该环境是否开启性能测试
     this.setState({
       envId: id,
@@ -241,7 +245,6 @@ class EnvPart extends Component {
   switchChange() {
     let {hasOpenTest} = this.state;
     // 是否已经开启性能测试
-    console.log(this.state.openTestOptions)
     if (hasOpenTest) {
       this.setState({
         closeTestTipVisible: true
@@ -257,18 +260,15 @@ class EnvPart extends Component {
         })
       }
     }
-
   }
 
   // 开启性能测试
   openTest(e) {
     e.preventDefault();
-    console.log(111)
     this.props.form.validateFields(['performanceProjectId'], async (err, values) => {
       let {envId, envList} = this.state;
       if (!err) {
         let response = await envUpdate({envId, performanceProjectId: values.performanceProjectId})
-        console.log('response', response)
         let data = response.data;
         if (parseInt(data.code, 10) === 0) {
           envList = envList.map((item) => {
@@ -304,6 +304,27 @@ class EnvPart extends Component {
         closeTestTipVisible: false,
         envList
       })
+    }
+  }
+
+  // 是否需要密码
+  _isNeedPwd() {
+    let {needPwd} = this.state;
+    // 是否已经开启密码功能
+    if (needPwd) {
+      this.setState({
+        closeTestTipVisible: true
+      })
+    } else {
+      if (this.state.openTestOptions.length) {
+        this.setState({
+          startPerformanceTest: true
+        })
+      } else {
+        this.setState({
+          noTestTipVisible: true
+        })
+      }
     }
   }
 
@@ -386,14 +407,17 @@ class EnvPart extends Component {
           <div className="performance-emit" style={{height: 40}}>
             <span className="label">性能测试：</span>
             <Switch
-              checked={this.state.hasOpenTest} onChange={this.switchChange.bind(this)}/>
+              checked={this.state.hasOpenTest}
+              onChange={this.switchChange.bind(this)}
+              style={{marginLeft:32}}
+            />
           </div>
-          {/*  是否需要密码
+          {/*是否需要密码*/}
           <div className="password-require" style={{height: 40}}>
             <span className="label">是否需要密码：</span>
             <Switch
-              checked={this.state.switchValue} onChange={this.switchChange.bind(this)}/>
-          </div>*/}
+              checked={this.state.needPwd} onChange={this._isNeedPwd.bind(this)}/>
+          </div>
           <div>
             <span className="add-branch-txt">分支列表（选中为默认分支）</span>
             {

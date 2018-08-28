@@ -15,12 +15,12 @@ class SuccessDetail extends Component {
     super(props);
     this.state = {
       buildId: '',
-      detailData: {},
-      platformName: '',
-      envName: '',
+      detailData: {}, // 当前的详细信息
+      platformName: '', // 平台名 上个路由带过来的 从url的query获取
+      envName: '',  // 环境名 上个路由带过来的 从url的query获取
       addTestShow: false, // 新增性能测试modal显示
       testStatus: 1,    // 提测状态
-      statusMap: {
+      statusMap: {  // 关联性能测试的状态
         0: '性能测试报告',
         1: '性能测试',
         2: '性能测试中',
@@ -47,8 +47,6 @@ class SuccessDetail extends Component {
         this.getSubmitStatus(buildId);
       }
     }
-
-
   }
 
   // 获取提测状态
@@ -56,7 +54,7 @@ class SuccessDetail extends Component {
     let response = await submitStatus({submitBuildId: id});
     if (parseInt(response.data.code,10) === 0) {
       let data = response.data.data;
-      // status === 1 代表未构建 需要获取场景列表
+      // status === null 代表未构建 需要获取场景列表 这里把status重置为1的原因是 状态码为1是未构建 但是后来改为null也认为是未构建 所有这里把status重置
       if (data.status === null) {
         this.getScreen(this.state.detailData && this.state.detailData.performanceProjectId)
         this.setState({
@@ -71,6 +69,7 @@ class SuccessDetail extends Component {
     }
   }
 
+  // 点击性能测试按钮 根据不同status触发不同事件
   handleTestClick() {
     let {testStatus} = this.state;
     switch (testStatus) {
@@ -85,7 +84,7 @@ class SuccessDetail extends Component {
     }
   }
 
-// 获取场景列表
+   // 获取场景列表
   async getScreen(projectId) {
     let response = await testScreenList({projectId});
     if (parseInt(response.data.code,10) === 0) {
@@ -95,12 +94,12 @@ class SuccessDetail extends Component {
     }
   }
 
-// 下载
+   // 下载
   download(id) {
     packageDownload(id);
   }
 
-// 打开性能测试报告页
+   // 打开性能测试报告页
   openReport() {
     let {reportUrl} = this.state;
     if (reportUrl) {
@@ -159,7 +158,7 @@ class SuccessDetail extends Component {
                       style={{width: 120, height: 40, marginLeft: 10}}
                       onClick={this.handleTestClick.bind(this)}
               >
-                {this.state.statusMap[testStatus] || '失败'}
+                {this.state.statusMap[testStatus] || ''}
               </Button>
             </Col>
             <Col offset={14}>

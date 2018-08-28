@@ -3,25 +3,6 @@ import {Icon} from 'antd'
 import './index.scss'
 
 class BranchList extends Component {
-
-  constructor() {
-    super();
-    this.state = {
-      branchDeleteVisible: false,
-      defaultBranchVisible: false
-    }
-  }
-
-  // 删除分支
-  branchDelete(id, envId) {
-    this.setState({
-      branchDeleteVisible: true,
-      branchDeleteId: id,
-      branchDeleteEnvId: envId,
-
-    })
-  }
-
   render() {
     let {branchList} = this.props;
     return (
@@ -32,14 +13,13 @@ class BranchList extends Component {
               <li key={index}>
                 <span className="branch-name">{item.name}</span>
                 {
-                  item.defaultBranch ?
-                    <div style={{display: 'inline-block', marginLeft: 10}}>
+                  item.defaultBranch
+                    ? <div style={{display: 'inline-block', marginLeft: 10}}>
                       <span className="ant-radio ant-radio-checked">
                         <input type="radio" className="ant-radio-input" value="1"/>
                         <span className="ant-radio-inner"/></span>
                     </div>
-                    :
-                    <div style={{display: 'inline-block', marginLeft: 10}}
+                    : <div style={{display: 'inline-block', marginLeft: 10}}
                          onClick={
                            () => {
                              this.props.defaultBranch(item.id)
