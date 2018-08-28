@@ -15,11 +15,10 @@ class RebuildTest extends Component {
       if (!err) {
         let {envId, handleCancel} = this.props;
         let response = await packageRebuild({
-          envId: parseInt(envId),
+          envId: parseInt(envId, 10),
           ...values
         })
-        console.log('response', response)
-        if (response.data.code === '0' || response.data.code === 0) {
+        if (parseInt(response.data.code, 10) === 0) {
           this.props.form.resetFields();
           handleCancel();
         }

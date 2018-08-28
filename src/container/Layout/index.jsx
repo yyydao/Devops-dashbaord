@@ -70,7 +70,7 @@ class TDLayout extends Component {
         <Header>
           <div className="header-container">
             <div style={{display: 'inline-block'}}>
-              <img src={require("../../assets/favicon.ico")} width={40} height={40}/>
+              <img src={require("../../assets/favicon.ico")} alt="" width={40} height={40}/>
               <span
                 style={{color: '#fff', fontSize: '20px', verticalAlign: 'middle', marginLeft: '20px'}}>DevOps平台</span>
             </div>

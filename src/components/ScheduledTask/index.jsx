@@ -33,7 +33,7 @@ class ScheduledTask extends Component {
               taskList.map((item, index) => (
                 <li key={index}>
                   <div className="left-part">
-                    <img src={require('../../assets/favicon.ico')}/>
+                    <img src={require('../../assets/favicon.ico')} alt="" />
                     <span>分支：{item.branchName}</span>
                     <span>定时时间：{item.fixTime}</span>
                     <span className="screen">场景：{item.scene}</span>

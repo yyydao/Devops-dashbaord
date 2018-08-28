@@ -51,7 +51,7 @@ class AddTest extends Component {
   onCheckAllChange = (e) => {
     let {plainOptions} = this.state;
     let checkedList = [];
-    plainOptions.map((item) => {
+    plainOptions.forEach((item) => {
       checkedList.push(item.value)
     })
     this.setState({

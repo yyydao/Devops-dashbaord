@@ -1,8 +1,5 @@
 import React, {Component} from 'react'
-import {Collapse, Button} from 'antd'
 import './index.scss'
-
-const Panel = Collapse.Panel;
 
 class PackageItem extends Component {
   loadMoreBuild() {
@@ -32,6 +29,7 @@ class PackageItem extends Component {
           <img className="item-img"
                src={require("../../assets/favicon.ico")}
                style={{cursor: 'pointer'}}
+               alt=""
           />
         </div>
         <div className="package-detail" style={{cursor: "pointer"}}>

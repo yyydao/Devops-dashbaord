@@ -21,7 +21,7 @@ class ScreenList extends Component {
       return;
     }
     let response = await deleteScreen({deleteSceneId});
-    if (parseInt(response.data.code) === 0) {
+    if (parseInt(response.data.code,10) === 0) {
       message.success('删除成功');
       this.props.handleDeleteOk(this.state.deleteIndex);
       this.setState({

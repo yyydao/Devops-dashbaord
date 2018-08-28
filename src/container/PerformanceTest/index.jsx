@@ -11,7 +11,6 @@ import {testScreenList} from "@/api/performance/screen";
 import {failureList, unfinishList, successList,} from '@/api/performance/task'
 import qs from 'qs'
 import "./index.scss"
-import {connect} from 'react-redux'
 
 class PerformanceTest extends Component {
   constructor() {
@@ -54,7 +53,7 @@ class PerformanceTest extends Component {
   // 获取列表
   getPackageList(id, type = 1) {
     successList({projectId: id, type}).then((response) => {
-      if (parseInt(response.data.code) === 0) {
+      if (parseInt(response.data.code,10) === 0) {
         let data = response.data.data;
         let {getMoreInfo} = this.state;
         if (data.length) {
@@ -75,7 +74,7 @@ class PerformanceTest extends Component {
 
     // 获取未完成列表
     unfinishList({projectId: id, type}).then((response) => {
-      if (parseInt(response.data.code) === 0) {
+      if (parseInt(response.data.code,10) === 0) {
         let data = response.data.data;
         let {getMoreInfo} = this.state;
         if (data.length) {
@@ -96,7 +95,7 @@ class PerformanceTest extends Component {
 
     // 获取失败列表
     failureList({projectId: id, type}).then((response) => {
-      if (parseInt(response.data.code) === 0) {
+      if (parseInt(response.data.code,10) === 0) {
         let data = response.data.data;
         let {getMoreInfo} = this.state;
         if (data.length) {
@@ -119,7 +118,7 @@ class PerformanceTest extends Component {
   // 定时任务删除
   async deleteScheduledTask(timerId, index) {
     let response = await deleteTimer({timerId, projectId: this.state.projectId});
-    if (parseInt(response.data.code) === 0) {
+    if (parseInt(response.data.code,10) === 0) {
       message.success('删除成功')
       let {scheduledTaskList} = this.state;
       scheduledTaskList.splice(index, 1);
@@ -133,7 +132,7 @@ class PerformanceTest extends Component {
   async _taskCancel(buildId, index) {
     let {unfinishList} = this.state;
     let response = await taskCancel({type: this.state.type, buildId})
-    if (parseInt(response.data.code) === 0) {
+    if (parseInt(response.data.code,10) === 0) {
       unfinishList.splice(index, 1);
       this.setState({
         unfinishList
@@ -145,7 +144,7 @@ class PerformanceTest extends Component {
   async getBranchList() {
     let {projectId} = this.state;
     let response = await branchList({projectId})
-    if (parseInt(response.data.code) === 0) {
+    if (parseInt(response.data.code,10) === 0) {
       this.setState({
         branchList: response.data.data
       })
@@ -156,7 +155,7 @@ class PerformanceTest extends Component {
   async getScreenList(id) {
     let {projectId} = this.state;
     let response = await testScreenList({projectId});
-    if (parseInt(response.data.code) === 0) {
+    if (parseInt(response.data.code,10) === 0) {
       this.setState({
         screenList: response.data.data
       })
@@ -168,7 +167,7 @@ class PerformanceTest extends Component {
     let type = e.target.getAttribute('data-build-type')
     this.getPackageList(this.state.projectId, type)
     this.setState({
-      type: parseInt(type)
+      type: parseInt(type,10)
     })
   }
 
@@ -176,7 +175,7 @@ class PerformanceTest extends Component {
   async showScheduledTask() {
     let {projectId} = this.state;
     let response = await timerList({projectId});
-    if (parseInt(response.data.code) === 0) {
+    if (parseInt(response.data.code,10) === 0) {
       this.setState({
         scheduledTaskList: response.data.data,
         showTaskList: true
@@ -195,11 +194,11 @@ class PerformanceTest extends Component {
   async _taskSubmit(branchId, testScene, fixedTime) {
     let {type, projectId} = this.state;
     let response = await taskSubmit({projectId, branchId, type, testScene: testScene.join(','), fixedTime});
-    if (parseInt(response.data.code) === 0) {
+    if (parseInt(response.data.code,10) === 0) {
       if (type === 1) {
         // 提交完成后 如果是分支构建  需要获取第一条数据插入数组前面
         let response = await unfinishList({projectId, type, page: 1, count: 1});
-        if (parseInt(response.data.code) === 0) {
+        if (parseInt(response.data.code,10) === 0) {
           let data = response.data.data;
           this.setState({
             unfinishList: [...data, ...this.state.unfinishList]
@@ -229,7 +228,7 @@ class PerformanceTest extends Component {
     let {projectId, type, getMoreInfo} = this.state;
     // 获取成功列表
     let response = await successList({projectId, type, page: getMoreInfo.successPage});
-    if (parseInt(response.data.code) === 0) {
+    if (parseInt(response.data.code,10) === 0) {
       let data = response.data.data
       // 没有更多
       if (data.length === 0) {
@@ -254,7 +253,7 @@ class PerformanceTest extends Component {
     let {projectId, type, getMoreInfo} = this.state;
     // 获取成功列表
     let response = await unfinishList({projectId, type, page: getMoreInfo.unfinishPage});
-    if (parseInt(response.data.code) === 0) {
+    if (parseInt(response.data.code,10) === 0) {
       let data = response.data.data;
       if (response.data.data.length === 0) {
         getMoreInfo.hasMoreUnfinish = false;
@@ -277,7 +276,7 @@ class PerformanceTest extends Component {
   async _loadMoreFailurePackage() {
     let {projectId, type, getMoreInfo} = this.state;
     let response = await failureList({projectId, type, page: getMoreInfo.failurePage});
-    if (parseInt(response.data.code) === 0) {
+    if (parseInt(response.data.code,10) === 0) {
       let data = response.data.data;
       if (response.data.data.length === 0) {
         getMoreInfo.hasMoreFailure = false;

@@ -15,7 +15,7 @@ class PackageConfig extends Component {
   componentWillMount() {
     // 获取平台列表
     platformList().then(async (response) => {
-      if (parseInt(response.data.code) === 0) {
+      if (parseInt(response.data.code,10) === 0) {
         let data = response.data.data;
         for (let i = 0; i < data.length; i++) {
           let envResponse = await envList({platformId: data[i].id});

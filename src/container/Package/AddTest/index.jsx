@@ -39,7 +39,7 @@ class AddTest extends Component {
           ...values,
           codeBranch: selectBranch ? selectBranch : defaultBranch
         })
-        if (parseInt(response.data.code) === 0) {
+        if (parseInt(response.data.code,10) === 0) {
           handleCancel();
           /*
            *  提交成功后，刚提测的内容会进入未完成列表

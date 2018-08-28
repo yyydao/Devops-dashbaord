@@ -54,7 +54,7 @@ class ScreenPart extends Component {
   // 获取taskName
   async _getTaskName(id) {
     let response = await detailProject({projectId: id});
-    if (parseInt(response.data.code) === 0) {
+    if (parseInt(response.data.code, 10) === 0) {
       let data = response.data.data;
       let envList = this.state.envList;
       envList[0]['taskName'] = data.branchTaskName;
@@ -69,7 +69,7 @@ class ScreenPart extends Component {
   // 获取分支
   _getBrachList(id) {
     branchList({projectId: id}).then((response) => {
-      if (parseInt(response.data.code) === 0) {
+      if (parseInt(response.data.code, 10) === 0) {
         this.setState({branchList: response.data.data});
       }
     })
@@ -88,7 +88,7 @@ class ScreenPart extends Component {
         })
         let data = response.data;
         let {branchList} = this.state;
-        if (parseInt(data.code) === 0) {
+        if (parseInt(data.code, 10) === 0) {
           if (values.isDefaultBranch) {
             branchList = branchList.map((item) => {
               item.isDefaultBranch = 0;
@@ -111,7 +111,7 @@ class ScreenPart extends Component {
     let {performanceId} = this.props;
     branchUpdate({id: defaultBranchId, projectId: performanceId, isDefaultBranch: 1}).then((resposne) => {
       let data = resposne.data;
-      if (parseInt(data.code) === 0) {
+      if (parseInt(data.code, 10) === 0) {
         branchList.forEach(item => {
           if (item.id === defaultBranchId) {
             item.isDefaultBranch = 1;
@@ -147,9 +147,13 @@ class ScreenPart extends Component {
         break;
       case 2:
         key = 'submitTaskName'
+        break;
+      default:
+        key = 'branchTaskName'
+        break;
     }
     let response = await projectUpdate({id: this.props.performanceId, [key]: value.taskName});
-    if (parseInt(response.data.code) === 0) {
+    if (parseInt(response.data.code, 10) === 0) {
       envList[envActiveIndex].taskName = value.taskName;
       this.setState({
         envList
@@ -160,7 +164,7 @@ class ScreenPart extends Component {
   async _deleteBranch() {
     let {branchDeleteIndex, branchDeleteId} = this.state;
     let response = await branchDelete({branchId: branchDeleteId});
-    if (parseInt(response.data.code) === 0) {
+    if (parseInt(response.data.code, 10) === 0) {
       let branchList = this.state.branchList
       branchList.splice(branchDeleteIndex, 1);
       this.setState({
@@ -195,12 +199,12 @@ class ScreenPart extends Component {
         <div className="detail-info-container">
           <div>
             <span>环境名称：</span>
-            <span>{envList[envActiveIndex] ? envList[envActiveIndex].name : ''}</span>
+            <span>{envList[envActiveIndex] ? envList[envActiveIndex].name || '-' : ''}</span>
           </div>
           <div>
             <Edit
               label="Task名称"
-              value={envList[envActiveIndex] ? envList[envActiveIndex].taskName : ''}
+              value={envList[envActiveIndex] ? envList[envActiveIndex].taskName || '-' : ''}
               handleOk={(taskName) => {
                 this._taskNameChange({
                   taskName

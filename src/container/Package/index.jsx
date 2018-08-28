@@ -70,7 +70,7 @@ class Package extends Component {
     // 根据环境获取分支列表
     let branchRes = await branchList({envId});
     let data = branchRes.data;
-    if (parseInt(data.code) === 0) {
+    if (parseInt(data.code,10) === 0) {
       if (data.data.length) {
         this.setState({
           branchList: fromJS(data.data)
@@ -90,7 +90,7 @@ class Package extends Component {
       envId
     });
     let data = response.data;
-    if (parseInt(data.code) === 0) {
+    if (parseInt(data.code,10) === 0) {
       this.setState({
         rebuildData: data.data,
         rebuildTestVisible: true

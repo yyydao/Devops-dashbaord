@@ -121,6 +121,7 @@ class FailureList extends Component {
                                require("../../../assets/favicon.ico")}
                            onClick={this.seeDetail.bind(this, item.buildId, item.taskId)}
                            style={{cursor: 'pointer'}}
+                           alt=""
                       />
                       <div className="package-detail" style={{cursor: 'pointer'}}
                            onClick={this.seeDetail.bind(this, item.buildId, item.taskId)}>

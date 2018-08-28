@@ -17,7 +17,7 @@ class ConfigHeader extends Component {
               <RadioGroup onChange={(e) => {
                 let target = e.target;
                 this.props.platformChange(target.value, target['data-index'])
-              }} value={parseInt(id)}>
+              }} value={parseInt(id,10)}>
                 {
                   platformList.map((item, index) => (
                     <RadioButton data-index={index} key={index} value={item.id}>{item.name}</RadioButton>

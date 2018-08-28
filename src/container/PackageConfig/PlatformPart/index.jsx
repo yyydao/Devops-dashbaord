@@ -48,7 +48,7 @@ class PlatformPart extends Component {
   // 获取平台列表
   async getPlatformList() {
     let platformRes = await platformList();
-    if (parseInt(platformRes.data.code) === 0) {
+    if (parseInt(platformRes.data.code,10) === 0) {
       let data = platformRes.data.data;
       if (data.length) {
         this.setState({
@@ -56,8 +56,9 @@ class PlatformPart extends Component {
         })
         // 如果当前有选中平台 找出该平台在数组中的下标位置
         if (this.props.packageId) {
-          this.mapPerformanceIndex(parseInt(this.props.packageId));
+          this.mapPerformanceIndex(parseInt(this.props.packageId,10));
         } else {
+          this.props.setPackageId(data[0].id);  // 保存当前id到redux中 用于触发环境和分支的拉取
           this.setState({
             platformActiveIndex: 0
           })
@@ -92,7 +93,7 @@ class PlatformPart extends Component {
     let {platformList} = this.state;
     let response = await platformUpdate({platformId: packageId, platformName, jenkinsAddr})
     let data = response.data;
-    if (parseInt(data.code) === 0) {
+    if (parseInt(data.code,10) === 0) {
       // 平台列表更新数据
       platformList = platformList.map(item => {
         if (item.id === packageId) {
@@ -113,7 +114,7 @@ class PlatformPart extends Component {
     let {packageId} = this.props;
     let response = await platformDelete({platformId: packageId});
     let data = response.data;
-    if (parseInt(data.code) === 0) {
+    if (parseInt(data.code,10) === 0) {
       this.setState({
         pfDeleteVisible: false
       })
@@ -129,7 +130,7 @@ class PlatformPart extends Component {
       if (!err) {
         let response = await platformAdd({...values});
         let data = response.data;
-        if (parseInt(data.code) === 0) {
+        if (parseInt(data.code,10) === 0) {
           this.setState({
             platformList: [...this.state.platformList, data.data],
             addPlatformVisible: false
@@ -147,7 +148,7 @@ class PlatformPart extends Component {
       <div id="performance-platform-part">
         <ConfigHeader
           platformList={platformList}
-          id={this.props.packageId || platformList[0] && platformList[0].id}
+          id={this.props.packageId || (platformList[0] && platformList[0].id)}
           platformChange={(id, index) => {
             this.platformChange(id, index);
           }}

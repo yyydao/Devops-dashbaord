@@ -20,6 +20,13 @@ class SuccessDetail extends Component {
       envName: '',
       addTestShow: false, // 新增性能测试modal显示
       testStatus: 1,    // 提测状态
+      statusMap: {
+        0: '性能测试报告',
+        1: '性能测试',
+        2: '性能测试中',
+        3: '构建失败',
+        4: '放弃构建'
+      },
       reportUrl: '',  // 报告地址
       screenList: [],     // 场景列表
     }
@@ -30,7 +37,7 @@ class SuccessDetail extends Component {
     let buildId = parsed.buildId;
     if (buildId) {
       let response = await packageDetail({buildId});
-      if (parseInt(response.data.code) === 0) {
+      if (parseInt(response.data.code,10) === 0) {
         this.setState({
           detailData: response.data.data,
           platformName: parsed.platformName,
@@ -47,33 +54,53 @@ class SuccessDetail extends Component {
   // 获取提测状态
   async getSubmitStatus(id) {
     let response = await submitStatus({submitBuildId: id});
-    if (parseInt(response.data.code) === 0) {
-      if (response.data.data.status) {
+    if (parseInt(response.data.code,10) === 0) {
+      let data = response.data.data;
+      // status === 1 代表未构建 需要获取场景列表
+      if (data.status === null) {
+        this.getScreen(this.state.detailData && this.state.detailData.performanceProjectId)
         this.setState({
-          screenList: response.data.data,
+          testStatus: 1
         })
       } else {
-        this.getScreen(this.state.detailData && this.state.detailData.performanceProjectId)
+        this.setState({
+          testStatus: data.status,
+          reportUrl: data.reportUrl
+        })
       }
     }
   }
 
-  // 获取场景列表
+  handleTestClick() {
+    let {testStatus} = this.state;
+    switch (testStatus) {
+      case 0:
+        this.openReport();
+        break;
+      case 1:
+        this.setState({addTestShow: true})
+        break;
+      default:
+        break
+    }
+  }
+
+// 获取场景列表
   async getScreen(projectId) {
     let response = await testScreenList({projectId});
-    if (parseInt(response.data.code) === 0) {
+    if (parseInt(response.data.code,10) === 0) {
       this.setState({
         screenList: response.data.data
       })
     }
   }
 
-  // 下载
+// 下载
   download(id) {
     packageDownload(id);
   }
 
-  // 打开性能测试报告页
+// 打开性能测试报告页
   openReport() {
     let {reportUrl} = this.state;
     if (reportUrl) {
@@ -81,23 +108,25 @@ class SuccessDetail extends Component {
     }
   }
 
-  // 开启性能测试
+// 开启性能测试
   async startTest(testScene) {
-    let { buildId, detailData} = this.state;
-    let response = await taskSubmit({
-      testScene: testScene.join(','),
-      submitPlatformId :buildId,
-      type: 3,
-      appAddr: detailData.downloadPath,
-      projectId: detailData.performanceProjectId
-    });
-    if (parseInt(response.data.code) === 0) {
+    let {buildId, detailData} = this.state;
+    let response = await
+      taskSubmit({
+        testScene: testScene.join(','),
+        submitPlatformId: buildId,
+        type: 3,
+        appAddr: detailData.downloadPath,
+        projectId: detailData.performanceProjectId
+      });
+    if (parseInt(response.data.code,10) === 0) {
       this.setState({
         addTestVisible: false
       })
       // 修改状态为性能测试中
       this.setState({
-        testStatus: 2
+        testStatus: 2,
+        addTestShow: false
       })
       message.success('构建成功')
     }
@@ -113,54 +142,28 @@ class SuccessDetail extends Component {
             <Col span={4} style={{marginLeft: 40}}>
               <span>{detailData.fileName}</span>
             </Col>
-            <Col span={10} offset={9} style={{paddingLeft: '40px'}}>
-              <span style={{marginRight: '10px'}}>版本：{detailData.version}</span>
-              <span style={{marginRight: '10px'}}>大小：{detailData.fileSize}</span>
+            <Col span={10} offset={9} style={{paddingLeft: 40}}>
+              <span style={{marginRight: 10}}>版本：{detailData.version}</span>
+              <span style={{marginRight: 10}}>大小：{detailData.fileSize}</span>
               <span> {detailData.buildTime}</span>
             </Col>
           </Row>
           <Row>
-            <Col span={8} style={{marginTop: 40, marginLeft: '40px'}}>
+            <Col span={8} style={{marginTop: 40, marginLeft: 40}}>
               <Button type="primary"
-                      style={{width: '100px', height: '40px'}}
+                      style={{width: 100, height: 40}}
                       onClick={this.download.bind(this, detailData.buildId)}>
                 下载
               </Button>
-              {
-                testStatus === 1
-                  ? <Button type="primary"
-                            style={{width: '100px', height: '40px', marginLeft: 10}}
-                            onClick={() => {
-                              this.setState({addTestShow: true})
-                            }}>
-                    性能测试
-                  </Button>
-                  : null
-              }
-              {
-                testStatus === 2
-                  ? <Button type="primary"
-                            style={{width: '120px', height: '40px', marginLeft: 10}}
-                            onClick={this.openReport.bind(this)}
-                  >
-                    性能测试报告
-                  </Button>
-                  : null
-              }
-              {
-                testStatus === 3
-                  ? <Button
-                    disabled
-                    style={{background: 'rgb(190, 200, 200)', width: '120px', height: '40px', marginLeft: 10}}
-                  >
-                    性能测试中
-                  </Button>
-                  : null
-              }
-
+              <Button type="primary"
+                      style={{width: 120, height: 40, marginLeft: 10}}
+                      onClick={this.handleTestClick.bind(this)}
+              >
+                {this.state.statusMap[testStatus] || '失败'}
+              </Button>
             </Col>
             <Col offset={14}>
-              <img width={256} height={256} src={detailData.imageUrl}/>
+              <img width={256} height={256} src={detailData.imageUrl} alt="" />
             </Col>
           </Row>
 

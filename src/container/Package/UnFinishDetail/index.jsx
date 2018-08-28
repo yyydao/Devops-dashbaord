@@ -33,7 +33,7 @@ class UnFinishDetail extends Component {
   }
 
   render() {
-    let {detailData, platformName, envName, changeLog} = this.state;
+    let {detailData, platformName, envName} = this.state;
     return (
       <div className="failure-detail-container">
         <Divider orientation="left" className="title">{platformName}-{envName}</Divider>

@@ -13,7 +13,7 @@ class PerformanceIndex extends Component {
   componentWillMount() {
     // 获取平台列表
     projectList().then(async (response) => {
-      if (parseInt(response.data.code) === 0) {
+      if (parseInt(response.data.code, 10) === 0) {
         let data = response.data.data;
         for (let i = 0; i < data.length; i++) {
           data[i].envData = [{id: data[i].id, name: '测试环境'}];
@@ -24,7 +24,6 @@ class PerformanceIndex extends Component {
       }
     })
   }
-
 
 
   render() {

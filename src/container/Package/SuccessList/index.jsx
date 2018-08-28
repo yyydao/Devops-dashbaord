@@ -125,7 +125,7 @@ class SuccessList extends Component {
         count: buildCount
       });
     let data = response.data;
-    if (parseInt(data.code) === 0) {
+    if (parseInt(data.code,10) === 0) {
       if (data.data.length) {
         packageList[index].record = [...packageList[index].record, ...data.data]
         packageList[index].page++;
@@ -176,6 +176,7 @@ class SuccessList extends Component {
                               <img className="item-img"
                                    src={recordItem.iconUrl ? recordItem.iconUrl : require("../../../assets/favicon.ico")}
                                    style={{cursor: 'pointer'}}
+                                   alt=""
                               />
                             </div>
                             <div className="package-detail" style={{cursor: "pointer"}}>

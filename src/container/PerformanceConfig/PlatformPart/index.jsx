@@ -50,7 +50,7 @@ class PlatformPart extends Component {
   // 获取平台列表
   async getPlatformList() {
     let platformRes = await projectList();
-    if (parseInt(platformRes.data.code) === 0) {
+    if (parseInt(platformRes.data.code, 10) === 0) {
       let data = platformRes.data.data;
       if (data.length) {
         this.setState({
@@ -58,7 +58,7 @@ class PlatformPart extends Component {
         })
         // 如果没有选中平台 默认选中第一个
         if (this.props.performanceId) {
-          this.mapPerformanceIndex(parseInt(this.props.performanceId));
+          this.mapPerformanceIndex(parseInt(this.props.performanceId, 10));
         } else {
           this.props.setPerformanceId(data[0].id);
           this.setState({
@@ -95,7 +95,7 @@ class PlatformPart extends Component {
     let response = await projectUpdate({id: performanceId, name: platformName, jenkinsAddr})
     console.log('response', response)
     let data = response.data;
-    if (parseInt(data.code) === 0) {
+    if (parseInt(data.code, 10) === 0) {
       // 平台列表更新数据
       platformList = platformList.map(item => {
         if (item.id === performanceId) {
@@ -117,7 +117,7 @@ class PlatformPart extends Component {
       if (!err) {
         let response = await addProject({name: values.projectName, jenkinsAddr: values.projectJenkinsAddr});
         let data = response.data;
-        if (parseInt(data.code) === 0) {
+        if (parseInt(data.code, 10) === 0) {
           this.setState({
             platformList: [...this.state.platformList, data.data],
             addPlatformVisible: false
@@ -132,7 +132,7 @@ class PlatformPart extends Component {
   async pfDeleteHandleOk() {
     let response = await deleteProject({projectId: this.props.performanceId});
     let data = response.data;
-    if (parseInt(data.code) === 0) {
+    if (parseInt(data.code, 10) === 0) {
       this.setState({
         pfDeleteVisible: false
       })
@@ -142,12 +142,13 @@ class PlatformPart extends Component {
 
   render() {
     let {platformList, platformActiveIndex} = this.state;
+    let {performanceId} = this.props;
     const {getFieldDecorator} = this.props.form;
     return (
       <div id="performance-platform-part">
         <ConfigHeader
           platformList={platformList}
-          id={this.props.performanceId || platformList[0] && platformList[0].id}
+          id={performanceId ? performanceId : (platformList[0] && platformList[0].id)}
           platformActiveIndex={platformActiveIndex}
           platformChange={(id, index) => {
             this.platformChange(id, index);

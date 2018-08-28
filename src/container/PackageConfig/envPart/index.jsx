@@ -1,12 +1,11 @@
 import React, {Component} from 'react'
-import {Form, Modal, Alert, Input, Icon, Radio, Switch, Checkbox} from 'antd'
+import {Form, Modal, Alert, Input, Icon, Radio, Switch} from 'antd'
 import {connect} from 'react-redux'
 import {setPackageId} from '@/store/system/action'
 
 import './index.scss'
 import {envList, envAdd, envDelete, envUpdate} from "@/api/package/env";
 import {branchList, branchAdd, branchDelete, branchUpdate} from "@/api/package/branch";
-import {taskSubmit} from '@/api/performance/task'
 import {projectList} from '@/api/performance/project'
 import Edit from '@/components/Edit'
 import BranchList from '../BranchList'
@@ -14,7 +13,6 @@ import BranchList from '../BranchList'
 const FormItem = Form.Item;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
-const CheckboxGroup = Checkbox.Group;
 
 class EnvPart extends Component {
   constructor() {
@@ -67,7 +65,7 @@ class EnvPart extends Component {
   // 获取性能测试平台列表
   async getProjectList() {
     let response = await projectList();
-    if (parseInt(response.data.code) === 0) {
+    if (parseInt(response.data.code, 10) === 0) {
       this.setState({
         openTestOptions: response.data.data
       })
@@ -77,7 +75,7 @@ class EnvPart extends Component {
   // 获取环境
   async getEnvList(id) {
     let envResponse = await envList({platformId: id});
-    if (parseInt(envResponse.data.code) === 0) {
+    if (parseInt(envResponse.data.code, 10) === 0) {
       let envData = envResponse.data.data;
       if (envData.length) {
         this._getBrachList(envData[0].id) // 默认获取第一个环境的分支
@@ -89,6 +87,7 @@ class EnvPart extends Component {
       } else {
         this.setState({
           envList: [],
+          branchList: []
         })
       }
     }
@@ -104,7 +103,7 @@ class EnvPart extends Component {
   // 获取分支
   _getBrachList(id) {
     branchList({envId: id}).then((response) => {
-      if (parseInt(response.data.code) === 0) {
+      if (parseInt(response.data.code, 10) === 0) {
         this.setState({branchList: response.data.data});
       }
     })
@@ -118,7 +117,7 @@ class EnvPart extends Component {
       if (!err) {
         let response = await branchAdd({...values, envId})
         let data = response.data;
-        if (parseInt(data.code) === 0) {
+        if (parseInt(data.code, 10) === 0) {
           branchList.push(data.data)
           this.setState({
             branchList,
@@ -136,7 +135,7 @@ class EnvPart extends Component {
     if (envId) {
       let response = await envDelete({envId});
       let data = response.data;
-      if (parseInt(data.code) === 0) {
+      if (parseInt(data.code, 10) === 0) {
         this.state.envList.splice(this.state.envActiveIndex, 1)
         this.setState({
           envDeleteVisible: false,
@@ -147,10 +146,10 @@ class EnvPart extends Component {
 
   // 选择默认分支
   defaultBranch() {
-    let {envId, branchList, defaultBranchId, openTestOptions} = this.state;
+    let {envId, branchList, defaultBranchId} = this.state;
     branchUpdate({branchId: defaultBranchId, envId, isDefaultBranch: 1}).then((resposne) => {
       let data = resposne.data;
-      if (parseInt(data.code) === 0) {
+      if (parseInt(data.code, 10) === 0) {
         branchList.forEach((item) => {
           if (item.id === defaultBranchId) {
             item.defaultBranch = 1;
@@ -172,7 +171,7 @@ class EnvPart extends Component {
     if (branchDeleteId) {
       let response = await branchDelete({branchId: branchDeleteId});
       let data = response.data;
-      if (parseInt(data.code) === 0) {
+      if (parseInt(data.code, 10) === 0) {
         branchList.forEach((item, index) => {
           if (item.id === branchDeleteId) {
             branchList.splice(index, 1);
@@ -203,7 +202,7 @@ class EnvPart extends Component {
       if (!err) {
         let response = await envAdd({...values, platformId: this.props.packageId,})
         let data = response.data;
-        if (parseInt(data.code) === 0) {
+        if (parseInt(data.code, 10) === 0) {
           data.data.branchList = [];
           this.setState({
             addEnvVisible: false,
@@ -224,7 +223,7 @@ class EnvPart extends Component {
       jenkinJobName: jenckinJob
     });
     let data = response.data;
-    if (parseInt(data.code) === 0) {
+    if (parseInt(data.code, 10) === 0) {
       envList = envList.map(item => {
         if (item.id === envId) {
           item.name = envName
@@ -241,6 +240,8 @@ class EnvPart extends Component {
   // 触发性能测试
   switchChange() {
     let {hasOpenTest} = this.state;
+    // 是否已经开启性能测试
+    console.log(this.state.openTestOptions)
     if (hasOpenTest) {
       this.setState({
         closeTestTipVisible: true
@@ -262,12 +263,14 @@ class EnvPart extends Component {
   // 开启性能测试
   openTest(e) {
     e.preventDefault();
+    console.log(111)
     this.props.form.validateFields(['performanceProjectId'], async (err, values) => {
       let {envId, envList} = this.state;
       if (!err) {
         let response = await envUpdate({envId, performanceProjectId: values.performanceProjectId})
+        console.log('response', response)
         let data = response.data;
-        if (parseInt(data.code) === 0) {
+        if (parseInt(data.code, 10) === 0) {
           envList = envList.map((item) => {
             if (item.id === envId) {
               item.performanceProjectId = values.performanceProjectId
@@ -289,17 +292,19 @@ class EnvPart extends Component {
   async _closeConnect() {
     let {envId, envList} = this.state;
     let response = await envUpdate({envId, performanceProjectId: 0})
-    envList = envList.map((item) => {
-      if (item.id === envId) {
-        item.performanceProjectId = 0
-      }
-      return item;
-    })
-    this.setState({
-      hasOpenTest: false,
-      closeTestTipVisible: false,
-      envList
-    })
+    if (parseInt(response.data.code, 10) === 0) {
+      envList = envList.map((item) => {
+        if (item.id === envId) {
+          item.performanceProjectId = 0
+        }
+        return item;
+      })
+      this.setState({
+        hasOpenTest: false,
+        closeTestTipVisible: false,
+        envList
+      })
+    }
   }
 
   render() {
@@ -344,7 +349,6 @@ class EnvPart extends Component {
                 label="环境名称"
                 value={envList[envActiveIndex] ? envList[envActiveIndex].name : ''}
                 handleOk={(envName) => {
-                  console.log('envList', envList)
                   this.handleEnvRenameSubmit({
                     envName,
                     jenckinJob: envList[envActiveIndex].jenckinJob
@@ -370,9 +374,8 @@ class EnvPart extends Component {
           <div>
             <Edit
               label="Task名称"
-              value={envList[envActiveIndex] ? envList[envActiveIndex].jenckinJob : ''}
+              value={envList[envActiveIndex] ? envList[envActiveIndex].jenckinJob || '-' : ''}
               handleOk={(jenckinJob) => {
-                console.log('jenckiniJob', jenckinJob)
                 this.handleEnvRenameSubmit({
                   envName: envList[envActiveIndex].name,
                   jenckinJob
@@ -542,7 +545,11 @@ class EnvPart extends Component {
         <Modal
           title="温馨提示"
           visible={this.state.noTestTipVisible}
-          onOk={this.defaultBranch.bind(this)}
+          onOk={() => {
+            this.setState({
+              noTestTipVisible: false
+            })
+          }}
           onCancel={() => {
             this.setState({
               noTestTipVisible: false

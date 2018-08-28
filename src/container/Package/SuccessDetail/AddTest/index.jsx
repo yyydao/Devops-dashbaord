@@ -1,9 +1,7 @@
 import React, {Component} from 'react'
 import "./index.scss"
-import {Select, Row, Col, Modal, Input, Form, Checkbox, message} from 'antd';
+import {Row, Col, Modal, Form, Checkbox, message} from 'antd';
 
-const {TextArea} = Input;
-const Option = Select.Option;
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
 
@@ -27,13 +25,12 @@ class AddTest extends Component {
   formatOptions(screenList) {
     let options = [];
     if (screenList) {
-      screenList.map((item, index) => {
+      screenList.forEach((item, index) => {
         options.push({label: item.name, value: item.id})
       })
       this.setState({
         plainOptions: options,
       })
-      console.log('options', options)
     }
   }
 
@@ -50,8 +47,7 @@ class AddTest extends Component {
   onCheckAllChange = (e) => {
     let {plainOptions} = this.state;
     let checkedList = [];
-    plainOptions.map((item) => {
-
+    plainOptions.forEach((item) => {
       checkedList.push(item.value)
     })
     this.setState({
@@ -75,8 +71,7 @@ class AddTest extends Component {
   }
 
   render() {
-    const {getFieldDecorator} = this.props.form;
-    let {screenList, handleCancel} = this.props;
+    let {handleCancel} = this.props;
     return (
       <div>
         <Modal

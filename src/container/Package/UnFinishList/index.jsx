@@ -2,7 +2,6 @@ import React, {Component} from 'react'
 import {Button, Collapse} from 'antd';
 import {connect} from 'react-redux'
 import {setUnFinishList} from '@/store/system/action'
-import {packageDetail} from '@/api/package/package';
 import {unFinishList as reqUnFinishList} from '@/api/package/package';
 import {fromJS} from 'immutable'
 
@@ -46,7 +45,7 @@ class UnFinishList extends Component {
       count: packageCount
     });
     let data = response.data;
-    if (data.code === 0 || data.code === '0') {
+    if (parseInt(data.code, 10) === 0) {
       if (data.data.length) {
         setUnFinishList(fromJS(data.data));
         this.setState({
@@ -58,20 +57,6 @@ class UnFinishList extends Component {
           loadMorePackageText: '没有更多'
         })
       }
-    }
-  }
-
-  // 查看详情
-  async seeDetail(id) {
-    this.setState({
-      detailVisible: true
-    })
-    let response = await packageDetail({buildId: id});
-    let data = response.data;
-    if (data.code === 0 || data.code === '0') {
-      this.setState({
-        packageDetail: data.data
-      })
     }
   }
 
@@ -125,10 +110,12 @@ class UnFinishList extends Component {
                            src={recordItem.iconUrl ? recordItem.iconUrl : require("../../../assets/favicon.ico")}
                            onClick={this.seeDetail.bind(this, recordItem.buildId)}
                            style={{cursor: 'pointer'}}
+                           alt=""
                       />
                       <div className="package-detail" style={{cursor: 'pointer'}}
                            onClick={this.seeDetail.bind(this, recordItem.buildId)}>
-                        <span style={{color: '#01aaed'}}>{parseInt(recordItem.buildStatus) === 1 ? "未构建" : "正在构建"}</span>
+                        <span
+                          style={{color: '#01aaed'}}>{parseInt(recordItem.buildStatus, 10) === 1 ? "未构建" : "正在构建"}</span>
                         <div className="package-info">
                           <span className="margin10">buildId：{recordItem.buildId}</span>
                           <span className="margin10">时间：{recordItem.timeStamp}</span>

@@ -40,7 +40,7 @@ class ScreenPart extends Component {
   // 获取场景列表
   _getScreenList(id) {
     testScreenList({projectId: id}).then((response) => {
-      if (parseInt(response.data.code) === 0) {
+      if (parseInt(response.data.code,10) === 0) {
         this.setState({screenList: response.data.data});
       }
     })
@@ -57,7 +57,7 @@ class ScreenPart extends Component {
           jenkinsParam: values.jenkinsParam
         });
         let data = response.data;
-        if (parseInt(data.code) === 0) {
+        if (parseInt(data.code,10) === 0) {
           this.setState({
             screenList: [...this.state.screenList, data.data],
             addScreenVisible: false

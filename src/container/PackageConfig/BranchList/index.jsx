@@ -48,7 +48,6 @@ class BranchList extends Component {
                       < span className="ant-radio"><input type="radio" className="ant-radio-input" value="2"/>
                         <span className="ant-radio-inner"/></span>
                     </div>
-
                 }
                 <Icon
                   type="delete"
@@ -61,8 +60,6 @@ class BranchList extends Component {
             ))
           }
         </ul>
-
-
       </div>
     )
   }
