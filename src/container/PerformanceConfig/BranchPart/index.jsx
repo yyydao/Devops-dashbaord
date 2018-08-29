@@ -162,6 +162,7 @@ class ScreenPart extends Component {
       })
     }
   }
+
   // 删除分支
   async _deleteBranch() {
     let {branchDeleteIndex, branchDeleteId} = this.state;
@@ -229,21 +230,25 @@ class ScreenPart extends Component {
                 />
                 : null
             }
-
             {/*分支列表*/}
-            <BranchList
-              branchList={branchList}
-              defaultBranch={(branchId) => {
-                this.setState({defaultBranchVisible: true, defaultBranchId: branchId})
-              }}
-              handleDelete={
-                (id, index) => {
-                  this.setState({
-                    branchDeleteVisible: true,
-                    branchDeleteId: id,
-                    branchDeleteIndex: index,
-                  })
-                }}/>
+            {
+              envActiveIndex !== 2
+                ? <BranchList
+                  branchList={branchList}
+                  defaultBranch={(branchId) => {
+                    this.setState({defaultBranchVisible: true, defaultBranchId: branchId})
+                  }}
+                  handleDelete={
+                    (id, index) => {
+                      this.setState({
+                        branchDeleteVisible: true,
+                        branchDeleteId: id,
+                        branchDeleteIndex: index,
+                      })
+                    }}/>
+                : null
+            }
+
           </div>
         </div>
 

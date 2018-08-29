@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Form, Modal, Alert, Input, Icon, Radio, Switch} from 'antd'
+import {Form, Modal, Alert, Input, Icon, Radio, Switch,message} from 'antd'
 import {connect} from 'react-redux'
 import {setPackageId} from '@/store/system/action'
 
@@ -308,24 +308,30 @@ class EnvPart extends Component {
   }
 
   // 是否需要密码
-  _isNeedPwd() {
-    let {needPwd} = this.state;
+  async _isNeedPwd() {
+    let {envId, envList, envActiveIndex} = this.state;
     // 是否已经开启密码功能
+    let needPwd = envList[envActiveIndex].passwdBuild
     if (needPwd) {
-      this.setState({
-        closeTestTipVisible: true
-      })
-    } else {
-      if (this.state.openTestOptions.length) {
+      let response = await envUpdate({envId, passwdBuild: 0})
+      if (parseInt(response.data.code, 10) === 0) {
+        message.success('关闭成功')
+        envList[envActiveIndex].passwdBuild = 0;
         this.setState({
-          startPerformanceTest: true
+          envList
         })
-      } else {
+      }
+    } else {
+      let response = await envUpdate({envId, passwdBuild: 1})
+      if (parseInt(response.data.code, 10) === 0) {
+        message.success('开启成功')
+        envList[envActiveIndex].passwdBuild = 1;
         this.setState({
-          noTestTipVisible: true
+          envList
         })
       }
     }
+
   }
 
   render() {
@@ -409,14 +415,15 @@ class EnvPart extends Component {
             <Switch
               checked={this.state.hasOpenTest}
               onChange={this.switchChange.bind(this)}
-              style={{marginLeft:32}}
+              style={{marginLeft: 32}}
             />
           </div>
           {/*是否需要密码*/}
           <div className="password-require" style={{height: 40}}>
             <span className="label">是否需要密码：</span>
             <Switch
-              checked={this.state.needPwd} onChange={this._isNeedPwd.bind(this)}/>
+              checked={envList[envActiveIndex] ? Boolean(envList[envActiveIndex].passwdBuild) : false}
+              onChange={this._isNeedPwd.bind(this)}/>
           </div>
           <div>
             <span className="add-branch-txt">分支列表（选中为默认分支）</span>

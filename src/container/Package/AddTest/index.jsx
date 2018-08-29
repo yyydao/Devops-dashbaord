@@ -20,47 +20,62 @@ class AddTest extends Component {
       defaultBranch: '',     // 默认分支
       selectBranch: '',        // 选中的分支
       preventRepeatSubmit: false, // 防止多次触发表单
-      needPwd:false   // 新增提测是否需要密码
     }
   }
+
 
   // 提交
   handleSubmit = (e) => {
     e.preventDefault();
-    let {defaultBranch, selectBranch} = this.state;
+
     this.props.form.validateFields(['taskMaster', 'tester', 'content', 'details'], async (err, values) => {
       if (!err) {
-        let {envId, handleCancel} = this.props;
-        let {unFinishList, setUnFinishList} = this.props;
-        if (!selectBranch && !defaultBranch) {
-          return;
-        }
-        let response = await addTest({
-          envId,
-          ...values,
-          codeBranch: selectBranch ? selectBranch : defaultBranch
-        })
-        if (parseInt(response.data.code,10) === 0) {
-          handleCancel();
-          /*
-           *  提交成功后，刚提测的内容会进入未完成列表
-           *  需要手动拉去未完成列表接口的第一条信息，添加到未完成列表数组中
-          */
-          let response = await reqUnFinishList({
-            envId,
-            page: 1,
-            count: 1
-          });
-          let data = response.data;
-          unFinishList = [...unFinishList, ...data.data]
-          setUnFinishList(fromJS(unFinishList));
-          this.setState({
-            selectBranch: defaultBranch
+        if (!this.props.testNeedPwd) {
+          this.addTestRequest(values)
+        } else {
+          this.props.form.validateFields(['username', 'password'], async (err, userValues) => {
+            if (!err) {
+              this.addTestRequest({...values, ...userValues})
+            }
           })
-          this.props.form.resetFields();
         }
+
       }
     });
+  }
+
+  // 新增提测请求
+  async addTestRequest(values) {
+    let {defaultBranch, selectBranch} = this.state;
+    let {envId, handleCancel} = this.props;
+    let {unFinishList, setUnFinishList} = this.props;
+    if (!selectBranch && !defaultBranch) {
+      return;
+    }
+    let response = await addTest({
+      envId,
+      ...values,
+      codeBranch: selectBranch ? selectBranch : defaultBranch
+    })
+    if (parseInt(response.data.code, 10) === 0) {
+      handleCancel();
+      /*
+       *  提交成功后，刚提测的内容会进入未完成列表
+       *  需要手动拉去未完成列表接口的第一条信息，添加到未完成列表数组中
+      */
+      let response = await reqUnFinishList({
+        envId,
+        page: 1,
+        count: 1
+      });
+      let data = response.data;
+      unFinishList = [...unFinishList, ...data.data]
+      setUnFinishList(fromJS(unFinishList));
+      this.setState({
+        selectBranch: defaultBranch
+      })
+      this.props.form.resetFields();
+    }
   }
 
   handleSelect(value) {
@@ -85,7 +100,7 @@ class AddTest extends Component {
 
   render() {
     const {getFieldDecorator} = this.props.form;
-    let {branchList, addTestVisible, handleCancel} = this.props;
+    let {branchList, addTestVisible, handleCancel, testNeedPwd} = this.props;
     branchList = branchList.toJS();
     let {defaultBranch, selectBranch} = this.state;
     return (
@@ -141,20 +156,29 @@ class AddTest extends Component {
                 <Input placeholder="提测详情（石墨URL）"/>
               )}
             </FormItem>
-            <FormItem>
-              {getFieldDecorator('username', {
-                rules: [{required: true, message: '请输入账号'}],
-              })(
-                <Input placeholder="构建账号"/>
-              )}
-            </FormItem>
-            <FormItem>
-              {getFieldDecorator('password', {
-                rules: [{required: true, message: '请输入密码'}],
-              })(
-                <Input placeholder="构建密码" type="password"/>
-              )}
-            </FormItem>
+            {
+              testNeedPwd
+                ? <FormItem>
+                  {getFieldDecorator('username', {
+                    rules: [{required: true, message: '请输入账号'}],
+                  })(
+                    <Input placeholder="构建账号"/>
+                  )}
+                </FormItem>
+                : null
+            }
+            {
+              testNeedPwd
+                ? <FormItem>
+                  {getFieldDecorator('password', {
+                    rules: [{required: true, message: '请输入密码'}],
+                  })(
+                    <Input placeholder="构建密码"/>
+                  )}
+                </FormItem>
+                : null
+            }
+
           </Form>
         </Modal>
       </div>

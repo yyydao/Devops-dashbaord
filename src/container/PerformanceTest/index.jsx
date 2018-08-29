@@ -314,7 +314,7 @@ class PerformanceTest extends Component {
               ? <Button
                 type="primary"
                 onClick={this._addTest.bind(this)}
-                style={{display: 'inline-block', marginRight: 10}}>新增提测
+                style={{display: 'inline-block', marginRight: 10}}>新增性能测试
               </Button>
               : ''}
             {type === 2 ? <Button type="primary" onClick={this.showScheduledTask.bind(this)}>定时任务列表</Button> : ''}

@@ -1,6 +1,6 @@
 import {_get} from './index'
 
-//获取平台列表
+//获取环境列表
 export const envList = (data) => {
   let req = {
     data: data
@@ -9,7 +9,7 @@ export const envList = (data) => {
   return _get(req);
 }
 
-// 平台新增
+// 环境新增
 export const envAdd = (data) => {
   let req = {
     data
@@ -18,7 +18,7 @@ export const envAdd = (data) => {
   return _get(req)
 }
 
-// 平台删除
+// 环境删除
 export const envDelete = (data) => {
   let req = {
     data
@@ -27,11 +27,20 @@ export const envDelete = (data) => {
   return _get(req)
 }
 
-// 平台更新
+// 环境更新
 export const envUpdate = (data) => {
   let req = {
     data
   }
   req.url = 'env/update'
+  return _get(req)
+}
+
+//  环境详情
+export const envDetail = (data) =>{
+  let req = {
+    data
+  }
+  req.url = `env/${data.envId}/details`
   return _get(req)
 }

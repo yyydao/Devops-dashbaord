@@ -3,7 +3,7 @@ import {Select, Button, Form} from 'antd';
 import {platformList} from "@/api/package/platform";
 import {branchList} from '@/api/package/branch'
 import {getTestContent} from '@/api/package/task'
-import {envList} from "@/api/package/env";
+import {envList, envDetail} from "@/api/package/env";
 
 import {connect} from 'react-redux'
 import {fromJS} from 'immutable'
@@ -41,7 +41,8 @@ class Package extends Component {
       tempPlatformName: '',   // 暂存平台名
       envName: '',     // 环境名
       tempEnvName: '', // 暂存环境名
-      detailBuildId: ''        // 查看详情的buildId
+      detailBuildId: '',       // 查看详情的buildId
+      testNeedPwd: false  // 提测需要密码
     }
   }
 
@@ -54,23 +55,47 @@ class Package extends Component {
     let envName = decodeURI(parsed.envName || '');
     if (envId) {
       this.getPackageList(envId);
+      this.getEnvDetail(envId);
       this.setState({
         platformName,
         envName
       })
     }
 
+    this._getPlatromList();
+  }
+
+  // 获取平台列表
+  async _getPlatromList() {
     let response = await platformList();
-    this.setState({
-      platformList: response.data.data
-    })
+    if (parseInt(response.data.code, 10) === 0) {
+      this.setState({
+        platformList: response.data.data
+      })
+    }
+  }
+
+  // 获取当前环境详情 判断当前环境新增提测是否需要密码
+  async getEnvDetail(envId) {
+    let response = await envDetail({envId});
+    if (parseInt(response.data.code, 10) === 0) {
+      if (response.data.data.passwdBuild === 1) {
+        this.setState({
+          testNeedPwd: true
+        })
+      } else {
+        this.setState({
+          testNeedPwd: false
+        })
+      }
+    }
   }
 
   async getBranch(envId) {
     // 根据环境获取分支列表
     let branchRes = await branchList({envId});
     let data = branchRes.data;
-    if (parseInt(data.code,10) === 0) {
+    if (parseInt(data.code, 10) === 0) {
       if (data.data.length) {
         this.setState({
           branchList: fromJS(data.data)
@@ -90,7 +115,7 @@ class Package extends Component {
       envId
     });
     let data = response.data;
-    if (parseInt(data.code,10) === 0) {
+    if (parseInt(data.code, 10) === 0) {
       this.setState({
         rebuildData: data.data,
         rebuildTestVisible: true
@@ -126,6 +151,7 @@ class Package extends Component {
         this.getPackageList(values.envId);
         // 根据环境获取分支列表
         this.getBranch(values.envId)
+        this.getEnvDetail(values.envId)
         this.setState({
           platformName: this.state.tempPlatformName,
           envName: this.state.tempEnvName
@@ -147,7 +173,7 @@ class Package extends Component {
   }
 
   render() {
-    let {envId, platformName, envName, rebuildData, platformList, envList, branchList, addTestVisible, rebuildTestVisible, showSuccessPackage} = this.state;
+    let {envId, platformName, envName, rebuildData, platformList, envList, branchList, addTestVisible, rebuildTestVisible, showSuccessPackage, testNeedPwd} = this.state;
     const {getFieldDecorator} = this.props.form;
     return (
       <div id="package">
@@ -227,6 +253,7 @@ class Package extends Component {
           addTestVisible={addTestVisible}
           envId={envId}
           branchList={branchList}
+          testNeedPwd={testNeedPwd}
         />
 
         {/*版本回归提测*/}
