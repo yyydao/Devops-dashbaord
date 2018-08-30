@@ -215,25 +215,24 @@ class ScreenPart extends Component {
               }}
             />
           </div>
-          <div>
-            <span className="add-branch-txt">分支列表（选中为默认分支）</span>
-            {
-              tempPlatformId
-                ? <Icon
-                  type="plus-circle-o"
-                  className="icon-add"
-                  onClick={() => {
-                    this.setState({
-                      addBranchVisible: true
-                    })
-                  }}
-                />
-                : null
-            }
-            {/*分支列表*/}
-            {
-              envActiveIndex !== 2
-                ? <BranchList
+          {
+            envActiveIndex !== 2
+              ? <div>
+                <span className="add-branch-txt">分支列表（选中为默认分支）</span>
+                {
+                  tempPlatformId
+                    ? <Icon
+                      type="plus-circle-o"
+                      className="icon-add"
+                      onClick={() => {
+                        this.setState({
+                          addBranchVisible: true
+                        })
+                      }}
+                    />
+                    : null
+                }
+                <BranchList
                   branchList={branchList}
                   defaultBranch={(branchId) => {
                     this.setState({defaultBranchVisible: true, defaultBranchId: branchId})
@@ -246,12 +245,10 @@ class ScreenPart extends Component {
                         branchDeleteIndex: index,
                       })
                     }}/>
-                : null
-            }
-
-          </div>
+              </div>
+              : null
+          }
         </div>
-
         {/* 新增分支*/}
         <Modal
           title="新增分支"

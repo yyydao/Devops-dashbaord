@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import Edit from '@/components/Edit'
-import {Form, Modal, Alert, Input} from 'antd'
+import {Form, Modal, Alert, Input, message}  from 'antd'
 import ConfigHeader from '@/components/ConfigHeader'
 import {projectList, addProject, projectUpdate, deleteProject} from '@/api/performance/project';
 import {setPerformanceId} from '@/store/system/action'
@@ -122,6 +122,9 @@ class PlatformPart extends Component {
 
   // 确认删除平台
   async pfDeleteHandleOk() {
+    message.error('因权限未开启，暂停关闭删除平台功能，如需删除，请联系开发者');
+    return;
+
     let response = await deleteProject({projectId: this.props.performanceId});
     let data = response.data;
     if (parseInt(data.code, 10) === 0) {

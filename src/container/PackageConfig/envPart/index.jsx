@@ -132,6 +132,9 @@ class EnvPart extends Component {
 
   // 确认删除环境
   async envDeleteHandleOk() {
+    message.error('因权限未开启，暂停关闭删除平台和环境功能，如需删除，请联系开发者');
+    return;
+
     let {envId} = this.state;
     if (envId) {
       let response = await envDelete({envId});

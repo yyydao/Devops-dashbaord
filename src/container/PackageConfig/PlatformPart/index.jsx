@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Form, Modal, Alert, Input} from 'antd'
+import {Form, Modal, Alert, Input,message} from 'antd'
 
 import ConfigHeader from '@/components/ConfigHeader'
 import Edit from '@/components/Edit'
@@ -111,6 +111,10 @@ class PlatformPart extends Component {
 
   // 确认删除平台
   async pfDeleteHandleOk() {
+
+    message.error('因权限未开启，暂停关闭删除平台功能，如需删除，请联系开发者');
+    return;
+
     let {packageId} = this.props;
     let response = await platformDelete({platformId: packageId});
     let data = response.data;
