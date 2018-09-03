@@ -58,7 +58,7 @@ class RebuildTest extends Component {
               <TextArea placeholder="提测概要（多行" value={rebuildData.content} disabled rows={8}/>
             </FormItem>
             <FormItem>
-              <Input placeholder="提测详情（石墨URL）" value={rebuildData.details} disabled/>
+              <Input placeholder="提测详情（Wiki URL）" value={rebuildData.details} disabled/>
             </FormItem>
             <FormItem>
               {getFieldDecorator('changeLog', {

@@ -153,7 +153,7 @@ class AddTest extends Component {
               {getFieldDecorator('details', {
                 rules: [{required: true, message: '请输入详情'}],
               })(
-                <Input placeholder="提测详情（石墨URL）"/>
+                <Input placeholder="提测详情（Wiki URL）"/>
               )}
             </FormItem>
             {
