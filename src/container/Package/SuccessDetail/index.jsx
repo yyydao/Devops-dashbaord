@@ -115,7 +115,7 @@ class SuccessDetail extends Component {
         testScene: testScene.join(','),
         submitPlatformId: buildId,
         type: 3,
-        appAddr: detailData.downloadPath,
+        appAddr: detailData.performanceAppUrl,
         projectId: detailData.performanceProjectId
       });
     if (parseInt(response.data.code,10) === 0) {
