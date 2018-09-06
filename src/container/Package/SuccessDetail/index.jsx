@@ -24,8 +24,8 @@ class SuccessDetail extends Component {
         0: '性能测试报告',
         1: '性能测试',
         2: '性能测试中',
-        3: '构建失败',
-        4: '放弃构建'
+        3: '重新构建',
+        4: '重新构建'
       },
       reportUrl: '',  // 报告地址
       screenList: [],     // 场景列表
@@ -72,15 +72,10 @@ class SuccessDetail extends Component {
   // 点击性能测试按钮 根据不同status触发不同事件
   handleTestClick() {
     let {testStatus} = this.state;
-    switch (testStatus) {
-      case 0:
-        this.openReport();
-        break;
-      case 1:
-        this.setState({addTestShow: true})
-        break;
-      default:
-        break
+    if(testStatus === 0){
+      this.openReport();
+    }else if(testStatus === 1 || testStatus === 3 || testStatus === 4){
+      this.setState({addTestShow: true});
     }
   }
 
@@ -154,12 +149,10 @@ class SuccessDetail extends Component {
                       onClick={this.download.bind(this, detailData.buildId)}>
                 下载
               </Button>
-              <Button type="primary"
-                      style={{width: 120, height: 40, marginLeft: 10}}
-                      onClick={this.handleTestClick.bind(this)}
-              >
-                {this.state.statusMap[testStatus] || ''}
-              </Button>
+              {
+                (detailData.performanceProjectId === 0 || detailData.performanceProjectId === null) ? <Button type="primary"
+                        style={{width: 120, height: 40, marginLeft: 10}} disabled>性能测试</Button> : <Button type="primary" style={{width: 120, height: 40, marginLeft: 10}} onClick={this.handleTestClick.bind(this)}>{this.state.statusMap[testStatus] || ''}</Button>
+              }
             </Col>
             <Col offset={14}>
               <img width={256} height={256} src={detailData.imageUrl} alt="" />
