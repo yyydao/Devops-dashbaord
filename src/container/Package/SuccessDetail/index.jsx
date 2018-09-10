@@ -75,6 +75,7 @@ class SuccessDetail extends Component {
     if(testStatus === 0){
       this.openReport();
     }else if(testStatus === 1 || testStatus === 3 || testStatus === 4){
+      this.getScreen(this.state.detailData.performanceProjectId);
       this.setState({addTestShow: true});
     }
   }
