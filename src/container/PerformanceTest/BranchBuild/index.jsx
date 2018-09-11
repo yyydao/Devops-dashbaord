@@ -77,7 +77,7 @@ class BranchBuild extends Component {
                         <PackgeItem item={item} type="构建成功"/>
                         <div className="btn-package-container">
                           {
-                            item.apkDownloadUrl ? <Button type="primary" style={{marginRight: '10px'}} onClick={this.download.bind(this, item.apkDownloadUrl)}>app下载</Button> : <Button style={{marginRight: '10px'}}>apk下载</Button>
+                            item.apkDownloadUrl ? <Button type="primary" style={{marginRight: '10px'}} onClick={this.download.bind(this, item.apkDownloadUrl)}>app下载</Button> : <Button style={{marginRight: '10px'}}>app下载</Button>
                           }
                           {
                             item.reportUrl
@@ -109,7 +109,7 @@ class BranchBuild extends Component {
                         <PackgeItem item={item} type="构建失败"/>
                         <div className="btn-package-container">
                           {
-                            item.apkDownloadUrl ? <Button type="primary" style={{marginRight: '10px'}} onClick={this.download.bind(this, item.apkDownloadUrl)}>app下载</Button> : <Button type="primary" style={{marginRight: '10px'}} disabled>apk下载</Button>
+                            item.apkDownloadUrl ? <Button type="primary" style={{marginRight: '10px'}} onClick={this.download.bind(this, item.apkDownloadUrl)}>app下载</Button> : <Button type="primary" style={{marginRight: '10px'}} disabled>app下载</Button>
                           }
                           <Button type="primary" style={{width: 88}} onClick={this.showLog.bind(this, item.failureReason)}>日志</Button>
                         </div>
