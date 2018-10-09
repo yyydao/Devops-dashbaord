@@ -22,7 +22,7 @@ class PackageItem extends Component {
     }
   }
   render() {
-    let {item = {},} = this.props;
+    let {item = {}, judgeType} = this.props;
     return (
       <div id="package-item" className="item-left-part">
         <div onClick={this.seeDetail.bind(this, 0)}>
@@ -38,7 +38,9 @@ class PackageItem extends Component {
           </div>
           <div className="info">
             <span>buildId：{item.buildId}</span>
-            <span>分支：{item.branchName}</span>
+            {
+              judgeType !== 3 && <span>分支：{item.branchName}</span>
+            }
             <span>场景：{item.scene}</span>
             <span>时间：{item.timeStamp}</span>
           </div>

@@ -37,7 +37,7 @@ class BranchBuild extends Component {
   }
 
   render() {
-    let {successList, unfinishList, failureList, loadMore, hasMoreSuccess, hasMoreFailure, hasMoreUnfinish} = this.props;
+    let {successList, unfinishList, failureList, loadMore, hasMoreSuccess, hasMoreFailure, hasMoreUnfinish, type} = this.props;
     return (
       <div id="branch-build">
         {/*正在构建*/}
@@ -48,7 +48,7 @@ class BranchBuild extends Component {
                 {
                   unfinishList.map((item, index) => (
                       <div className="package-item-container" key={index}>
-                        <PackgeItem item={item} type="等待构建"/>
+                        <PackgeItem item={item} type="等待构建" judgeType={type}/>
                         <div className="btn-package-container">
                           <Button style={{width: 88}} type="primary" onClick={
                             () => {
@@ -74,10 +74,10 @@ class BranchBuild extends Component {
                 {
                   successList.map((item, index) => (
                       <div className="package-item-container" key={index}>
-                        <PackgeItem item={item} type="构建成功"/>
+                        <PackgeItem item={item} type="构建成功" judgeType={type}/>
                         <div className="btn-package-container">
                           {
-                            item.apkDownloadUrl ? <Button type="primary" style={{marginRight: '10px'}} onClick={this.download.bind(this, item.apkDownloadUrl)}>app下载</Button> : <Button style={{marginRight: '10px'}}>app下载</Button>
+                            item.apkDownloadUrl ? <Button type="primary" style={{marginRight: '10px'}} onClick={this.download.bind(this, item.apkDownloadUrl)}>app下载</Button> : <Button style={{marginRight: '10px'}} disabled>app下载</Button>
                           }
                           {
                             item.reportUrl
@@ -106,7 +106,7 @@ class BranchBuild extends Component {
                 {
                   failureList.map((item, index) => (
                       <div className="package-item-container" key={index}>
-                        <PackgeItem item={item} type="构建失败"/>
+                        <PackgeItem item={item} type="构建失败" judgeType={type}/>
                         <div className="btn-package-container">
                           {
                             item.apkDownloadUrl ? <Button type="primary" style={{marginRight: '10px'}} onClick={this.download.bind(this, item.apkDownloadUrl)}>app下载</Button> : <Button type="primary" style={{marginRight: '10px'}} disabled>app下载</Button>

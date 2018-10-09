@@ -75,7 +75,8 @@ class AddTest extends Component {
     if (this.props.type === 2 && !fixedTime) {
       message.error('请输入定时时间');
     } else {
-      this.props.handleSubmit(taskBranch, checkedList, fixedTime)
+      let checkedArr = this.state.checkAll ? [0] : checkedList;
+      this.props.handleSubmit(taskBranch, checkedArr, fixedTime)
     }
   }
 

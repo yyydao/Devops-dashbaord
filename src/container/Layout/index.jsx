@@ -30,7 +30,7 @@ class TDLayout extends Component {
         },
         {
           key: 'package',
-          name: '包管理'
+          name: '安装包'
         },
         {
           key: 'performance',
@@ -92,7 +92,7 @@ class TDLayout extends Component {
               </Menu.Item>
               <Menu.Item key="/package">
                 <Icon type="folder-open"/>
-                <span>包管理</span>
+                <span>安装包</span>
               </Menu.Item>
               <Menu.Item key="/performance">
                 <Icon type="compass"/>

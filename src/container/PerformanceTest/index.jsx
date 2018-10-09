@@ -320,9 +320,9 @@ class PerformanceTest extends Component {
             {type === 2 ? <Button type="primary" onClick={this.showScheduledTask.bind(this)}>定时任务列表</Button> : ''}
           </div>
           <div className="tabs" onClick={this.handleTypeChange.bind(this)}>
-            <span className={type === 1 ? 'tab-active' : ''} data-build-type={1}>分支构建</span>
-            <span className={type === 2 ? 'tab-active' : ''} data-build-type={2}>定时构建</span>
-            <span className={type === 3 ? 'tab-active' : ''} data-build-type={3}>提测构建</span>
+            <span className={type === 1 ? 'tab-active' : ''} data-build-type={1}>分支测试</span>
+            <span className={type === 2 ? 'tab-active' : ''} data-build-type={2}>定时测试</span>
+            <span className={type === 3 ? 'tab-active' : ''} data-build-type={3}>提测包测试</span>
           </div>
         </div>
         {/*包列表*/}
@@ -339,6 +339,7 @@ class PerformanceTest extends Component {
           taskCancel={(buildId, index) => {
             this._taskCancel(buildId, index)
           }}
+          type = {this.state.type}
         />
         {/*新增构建*/}
         <AddTest
