@@ -1,19 +1,17 @@
-import React, {Component} from 'react';
-import {HashRouter, Switch, Route} from 'react-router-dom';
-import Layout from '../container/Layout'
+import React, { Component } from 'react';
+import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 
-export default class RouteConfig extends Component {
+import Layout from '../pages/Layout';
 
-  render() {
-    return (
-      <HashRouter>
-        <Switch>
-          <Route
-            path="/"
-            component={Layout}
-          />
-        </Switch>
-      </HashRouter>
-    )
-  }
+export default class RouteConfig extends Component{
+
+	render(){
+		return(
+			<Router>
+				<Switch>
+					<Route path="/" component={Layout}></Route>
+				</Switch>
+			</Router>
+		)
+	}
 }

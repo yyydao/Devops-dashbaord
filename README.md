@@ -506,7 +506,7 @@ class Button extends Component {
 }
 ```
 
-**This is not required for React** but many people find this feature convenient. You can read about the benefits of this approach [here](https://medium.com/seek-ui-engineering/block-element-modifying-your-javascript-components-d7f99fcab52b). However you should be aware that this makes your code less portable to other build tools and environments than Webpack.
+**This is not required for React** but many people find this feature convenient. You can read about the benefits of this approach [here](https://medium.com/seek-blog/block-element-modifying-your-javascript-components-d7f99fcab52b). However you should be aware that this makes your code less portable to other build tools and environments than Webpack.
 
 In development, expressing dependencies this way allows your styles to be reloaded on the fly as you edit them. In production, all CSS files will be concatenated into a single minified `.css` file in the build output.
 
@@ -1428,6 +1428,48 @@ Import it in [`src/setupTests.js`](#initializing-test-environment) to make its m
 import 'jest-enzyme';
 ```
 
+#### Use `react-testing-library`
+
+As an alternative or companion to `enzyme`, you may consider using `react-testing-library`. [`react-testing-library`](https://github.com/kentcdodds/react-testing-library) is a library for testing React components in a way that resembles the way the components are used by end users. It is well suited for unit, integration, and end-to-end testing of React components and applications. It works more directly with DOM nodes, and therefore it's recommended to use with [`jest-dom`](https://github.com/gnapse/jest-dom) for improved assertions.
+
+To install `react-testing-library` and `jest-dom`, you can run:
+
+```sh
+npm install --save react-testing-library jest-dom
+```
+
+Alternatively you may use `yarn`:
+
+```sh
+yarn add react-testing-library jest-dom
+```
+
+Similar to `enzyme` you can create a `src/setupTests.js` file to avoid boilerplate in your test files:
+
+```js
+// react-testing-library renders your components to document.body,
+// this will ensure they're removed after each test.
+import 'react-testing-library/cleanup-after-each';
+
+// this adds jest-dom's custom assertions
+import 'jest-dom/extend-expect';
+```
+
+Here's an example of using `react-testing-library` and `jest-dom` for testing that the `<App />` component renders "Welcome to React".
+
+```js
+import React from 'react';
+import { render } from 'react-testing-library';
+import App from './App';
+
+it('renders welcome message', () => {
+  const { getByText } = render(<App />);
+  expect(getByText('Welcome to React')).toBeInTheDOM();
+});
+```
+
+Learn more about the utilities provided by `react-testing-library` to facilitate testing asynchronous interactions as well as selecting form elements from [the `react-testing-library` documentation](https://github.com/kentcdodds/react-testing-library) and [examples](https://codesandbox.io/s/github/kentcdodds/react-testing-library-examples).
+
 ### Using Third Party Assertion Libraries
 
 We recommend that you use `expect()` for assertions and `jest.fn()` for spies. If you are having issues with them please [file those against Jest](https://github.com/facebook/jest/issues/new), and we’ll fix them. We intend to keep making them better for React, supporting, for example, [pretty-printing React elements as JSX](https://github.com/facebook/jest/pull/1566).
@@ -2193,15 +2235,7 @@ npm run deploy
 ```
 
 #### Step 4: Ensure your project’s settings use `gh-pages`
-成熟度的标准
-软件过程能力高
-软件过程性能
-软件过程可规范性
-过程的一致性
-过程的稳定性
-过程的可视性
-过程的可改进行
-过程的丰富性
+
 Finally, make sure **GitHub Pages** option in your GitHub project settings is set to use the `gh-pages` branch:
 
 <img src="http://i.imgur.com/HUjEr9l.png" width="500" alt="gh-pages branch setting">
@@ -2222,9 +2256,6 @@ GitHub Pages doesn’t support routers that use the HTML5 `pushState` history AP
 ##### "/dev/tty: No such a device or address"
 
 If, when deploying, you get `/dev/tty: No such a device or address` or a similar error, try the follwing:
-框架式软件组织对技术、实践、方法、过程和经验的有序积累，是知识管理。
-过程能力并不是保障成功的唯一因素，影响产品
-项目质量的关键因素还包括开发技能和组织管理，这三者相辅相成，缺一不可。
 
 1. Create a new [Personal Access Token](https://github.com/settings/tokens)
 2. `git remote set-url origin https://<user>:<token>@github.com/<user>/<repo>` .
@@ -2234,15 +2265,7 @@ If, when deploying, you get `/dev/tty: No such a device or address` or a similar
 
 Use the [Heroku Buildpack for Create React App](https://github.com/mars/create-react-app-buildpack).<br>
 You can find instructions in [Deploying React with Zero Configuration](https://blog.heroku.com/deploying-react-with-zero-configuration).
-过程文化的类型
-过程至上，视过程未教条，以切围绕过程，组织，质量，和效率都服从于过程，过程的执行严格，过程结果可靠，稳定，认为生产的东西
-是过程的一个节点，只是全局的一部分。但效率较低，缺乏灵活性、创造性
-以过程为焦点，关注过程，强调过程的重要性，但不拘束于过程，让过程服从于质量和效率、服从于组织的业务目标
-过程只能起辅助作用，人决定一切过程可能流于形式 过程可能流于形式
 
-
-软件工程过程和管理过程都在标准化基础上成为一个有机整体，并帮助项目经理和技术人员更有效地从事开发工作。
-组织过程焦点的目的是：建立起软件组织对软件过程活动的责任，包括促进并保持对软件过程的了解、协助、制定、维护、评估以及改进的活动
 #### Resolving Heroku Deployment Errors
 
 Sometimes `npm run build` works locally but fails during deploy via Heroku. Following are the most common cases.
@@ -2256,8 +2279,7 @@ remote: Failed to create a production build. Reason:
 remote: Module not found: Error: Cannot resolve 'file' or 'directory'
 MyDirectory in /tmp/build_1234/src
 ```
-追求新技术，利用新技术，实现软件开发中的方法和新技术的革新
-框架式软件组织对技术、实践、方法、过程和经验的有序积累，是知识管理。
+
 It means you need to ensure that the lettercase of the file or directory you `import` matches the one you see on your filesystem or on GitHub.
 
 This is important because Linux (the operating system used by Heroku) is case sensitive. So `MyDirectory` and `mydirectory` are two distinct directories and thus, even though the project builds locally, the difference in case breaks the `import` statements on Heroku remotes.
@@ -2274,38 +2296,18 @@ remote:
 remote: npm ERR! Linux 3.13.0-105-generic
 remote: npm ERR! argv "/tmp/build_a2875fc163b209225122d68916f1d4df/.heroku/node/bin/node" "/tmp/build_a2875fc163b209225122d68916f1d4df/.heroku/node/bin/npm" "run" "build"
 ```
-整个组织内的软件过程都已标准化，文档化，形成有机的整体
-组织的标准软件过程
-整组织内的软件过程得到了良好的管理和监控，过程是稳定的，可重复的和连续性的。
-软件过程标准被应用到所有的项目中，可以根据项目的类型，规模和实际特点，对组织的标准软件过程进行剪裁，以适应特定项目的需求
 
-软件过程具有可预见性及防范问题的能力，能使风险的影响最小化，软件质量得到控制
-
-有专门的过程管理组织单元（如SEPG）负责软件过程活动
-全组织范围内安排培训计划，有计划地对不同的技术人员角色进行培训
-整组织内部的所有人员对已定义的软件过程的活动和任务有着深入的，一致的理解
-在定性基础上建立新的软件过程和产品评估技术
 In this case, ensure that the file is there with the proper lettercase and that’s not ignored on your local `.gitignore` or `~/.gitignore_global`.
-制定了软件过程和产品质量的详细而具体的度量标准
-定量地认识和度量软件过程和组织过程能力，更有效的管理、控制和预测软件过程和提高产品质量。保证所实施项目的生产率
+
 ### [Netlify](https://www.netlify.com/)
-在定量限度范围内，预测过程和产品质量的发展趋势，一旦意外情况出现，就可以确定导致这些意外的“特定的原因”，从而采取适当的措施来解决问题
-具有已定义及一致的度量标准来指导软件过程，并作为评价软件过程及产品的量基础
-组织内已建立软件过程数据库，保存收集到的数据，并用于各项目的软件过程
-软件过程变化较小，一般在可教授的范围内
-因为项目的每个人员都了解个人的作用与组织的关系，所以都存在强烈的团队合作意识
-不断地在定量基础上评估新技术
-整个组织特别关注软件过程改进和持续性、预见性及自身增强性。防止缺陷及问题的发生，不断地提高组织过程能力
+
 **To do a manual deploy to Netlify’s CDN:**
 
 ```sh
 npm install netlify-cli -g
 netlify deploy
 ```
-加强定量分析，通过来自过程的质量反馈和吸收新观念，新科技，使软件过程能不断地得到改进
-根据软件过程的效果，进行成本效益分析，从成功的软件过程时间中吸取经验，加以总结；对失败的案例，用SEPG进行分析以找出原因，找出过程的不足并预先改进
-全组织内推广软件过程的评价和对标准软件过程的改进，共享成功的经验和失败的教训，不断地改进软件过程
-要消除软件过程中“公共”的无效率根源，防止浪费发生整个组织都存在自觉的，强烈的团队意识，每个人都致力于过程改进，防止出现错误，力求减少错误率
+
 Choose `build` as the path to deploy.
 
 **To setup continuous delivery:**
@@ -2324,11 +2326,6 @@ To support `pushState`, make sure to create a `public/_redirects` file with the 
 ```
 /*  /index.html  200
 ```
-软件项目管理人员负责跟踪成本、进度，有能力识别及纠正过程中出现的问题\
-为需求和相应的工作产品建立基线来标志过程进展，控制过程和完整性
-定义了软件项目的标准，能保证项目在执行过程中严格遵守标准
-软件过程中，对子合同管理，保证了与转包商建立良好的供求关系
-重视人员的培训工作。建立了技术支持活动，更好地支撑了过程管理
 
 When you build the project, Create React App will place the `public` folder contents into the build output.
 
@@ -2384,7 +2381,7 @@ REACT_EDITOR | :white_check_mark: | :x: | When an app crashes in development, yo
 CHOKIDAR_USEPOLLING | :white_check_mark: | :x: | When set to `true`, the watcher runs in polling mode, as necessary inside a VM. Use this option if `npm start` isn't detecting changes.
 GENERATE_SOURCEMAP | :x: | :white_check_mark: | When set to `false`, source maps are not generated for a production build. This solves OOM issues on some smaller machines.
 NODE_PATH | :white_check_mark: |  :white_check_mark: | Same as [`NODE_PATH` in Node.js](https://nodejs.org/api/modules.html#modules_loading_from_the_global_folders), but only relative folders are allowed. Can be handy for emulating a monorepo setup by setting `NODE_PATH=src`.
-软件项目管理人员负责跟踪成本、进度，有能力识别及纠正过程中出现的问题
+
 ## Troubleshooting
 
 ### `npm start` doesn’t detect changes
@@ -2418,15 +2415,6 @@ watchman shutdown-server
 brew update
 brew reinstall watchman
 ```
-已管理级，的软件过程是量化的管理过程，在上述已定义级的基础上，以建立有关软件过程和产品质量的、一致的度量体系，采集详细的数据进行分析，从而对软件产品和过程进行有效的定量控制和管理。
-优化级，不断改善组织的软件过程能力和项目的过程性能，利用来自过程和来自新思想，新技术的先导性试验的定量反馈信息，使持续过程改进成为可能。
-为了预防缺陷出现，组织有办法识别出弱点并预先针对性地加强过程
-成熟度各个级别的软件过程特征：
-级别
-软件过程特征
-软件过程具有不稳定性和随意性
-一旦遇到危机时经常放弃或改变原有计划过程，直接进行编码和测试
-
 
 You can find [other installation methods](https://facebook.github.io/watchman/docs/install.html#build-install) on the Watchman documentation page.
 
@@ -2436,11 +2424,6 @@ There are also reports that *uninstalling* Watchman fixes the issue. So if nothi
 
 ### `npm run build` exits too early
 
-可重复性
-受管理级：
-建立了管理软件项目的方针和实施这些方针的规程，
-使软件项目的有效管理过程制度化，有能力去跟踪成本、进度和质量。一个有效过程可特征化为已文档化的、已实施的、可培训的和可测量的软件过程
-已定义级：包含一组协调的，集成的，适度定义的软件工程过程和管理过程，具有良好的文档化、标准化，使软件过程具有可视性、一致性、稳定性和可重复性，软件过程被集成为一个有机的整体
 It is reported that `npm run build` can fail on machines with limited memory and no swap space, which is common in cloud environments. Even with small projects this command can increase RAM usage in your system by hundreds of megabytes, so if you have less than 1 GB of available memory your build is likely to fail with the following message:
 
 >  The build failed because the process exited too early. This probably means the system ran out of memory or someone called `kill -9` on the process.
@@ -2453,11 +2436,7 @@ This may be a problem with case sensitive filenames.
 Please refer to [this section](#resolving-heroku-deployment-errors).
 
 ### Moment.js locales are missing
-组织中的软件过程能力体现在个人身上，而不是整个组织中稳定的过程能力，组织依靠个人能力，往往承受着很大的风险。一旦能力强的人离去，组织的过程就变
-得很不稳定
-整个软件过程具有不确定性和不可预见性，也就是说软件的计划、成本、进度、功能和产品的质量都是不可确定和不可预见的
-软件过程规范不健全，文档化不够，存在较多的不一致性等
-过程的管理方式处于一种“救火”状态，不断地应付过程中突发的事件或危机
+
 If you use a [Moment.js](https://momentjs.com/), you might notice that only the English locale is available by default. This is because the locale files are large, and you probably only need a subset of [all the locales provided by Moment.js](https://momentjs.com/#multiple-locale-support).
 
 To add a specific Moment.js locale to your bundle, you need to import it explicitly.<br>
@@ -2474,10 +2453,7 @@ If import multiple locales this way, you can later switch between them by callin
 import moment from 'moment';
 import 'moment/locale/fr';
 import 'moment/locale/es';
-在引进新技术、新方法等方面有极大的风险
-建立了软件项目管理的策略和实施这些策略的规范
-但过程管理的策略主要是针对项目建立的，而不是针对整个组织来建立的软件开发和维护的过程相对稳定，已有的成功经验可以被复用，即基于以往的成功经验来规划和管理同类的新项目
-软件过程中，引入了软件配置管理、质量保证和管理
+
 // ...
 
 moment.locale('fr');
@@ -2490,20 +2466,6 @@ This will only work for locales that have been explicitly imported before.
 Some third-party packages don't compile their code to ES5 before publishing to npm. This often causes problems in the ecosystem because neither browsers (except for most modern versions) nor some tools currently support all ES6 features. We recommend to publish code on npm as ES5 at least for a few more years.
 
 <br>
-软件标准最具有代表性的有两类：
-ISO标准体系和IEEE标准体系。
-
-
-1.CMM/CMMI的五个等级：初始级，可重复级，已定义级，已管理级，优化级。
-2.成熟度等级的行为特征
-初始级：具有明显的不成熟过程的特点
-
-
-
-
-
-
-
 To resolve this:
 
 1. Open an issue on the dependency's issue tracker and ask that the package be published pre-compiled.
@@ -2517,40 +2479,8 @@ In the future, we might start automatically compiling incompatible third-party m
 
 ## Alternatives to Ejecting
 
-一个规范的软件过程必将能带来稳定的、高水平的过程质量
-过程规范使软件组织的生产效率更高
-工程过程是软件系统、产品的定义、设计、实现以及维护的过程。
-开发过程：定义并开发软件产品的活动过程，包括需求分析、软件设计和编程等。
-运行过程：在规定的环境中为其用户提供运行计算机系统服务的活动过程，包括软件部署
-
-维护过程：提供维护软件产品服务的活动过程，也就是通过软件的修改、变更，使软件系统保持合适的运行状态，这一过程包括软件产品的移植和退役
-
-软件支持过程：文档编制、配置管理、质量保证、验证、确认、联合评审、审核、问题解决
-
-上述相应规范：软件基本过程规范，软件支持过程规范，软件组织过程规范。
-
-
 [Ejecting](#npm-run-eject) lets you customize anything, but from that point on you have to maintain the configuration and scripts yourself. This can be daunting if you have many similar projects. In such cases instead of ejecting we recommend to *fork* `react-scripts` and any other packages you need. [This article](https://auth0.com/blog/how-to-configure-create-react-app/) dives into how to do it in depth. You can find more discussion in [this issue](https://github.com/facebookincubator/create-react-app/issues/682).
 
 ## Something Missing?
 
 If you have ideas for more “How To” recipes that should be on this page, [let us know](https://github.com/facebookincubator/create-react-app/issues) or [contribute some!](https://github.com/facebookincubator/create-react-app/edit/master/packages/react-scripts/template/README.md)
-
-软件过程分为五个过程：工程过程，支持过程，管理过程，组织过程，客户—供应商过程
-
-工程过程包括：系统需求和设计，软件需求分析，软件开发设计，软件设计实施，集成并测试软件，集成并测试系统，系统与软件的维护。
-
-支持过程：文档编制，配置管理过程，质量保证过程，验证工作产品，确认工作产品，联合评审，审核，解决问题。
-软件过程规范：对输入输出和活动所构成的过程进行明文规定或约定俗成的标准。
-过程规范的影响和作用消极影响的存在和消除
-
-过程规范的影响和作用
-1.消极影响的存在和消除
-创造力来自个人，而不是组织结构或者过程
-规范存在的必要性
-过程规范的作用
-帮助团队实现共同的目标
-
-
-
-
