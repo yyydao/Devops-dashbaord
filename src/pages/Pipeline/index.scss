@@ -1,0 +1,243 @@
+.pipeline {
+  &-menu {
+    margin-bottom: 20px;
+    overflow: hidden;
+
+    button {
+      margin-right: 10px;
+    }
+  }
+
+  .ant-collapse-item {
+    margin-bottom: 10px;
+  }
+
+  .ant-collapse-header {
+    background: #e1e1e1;
+    /*color:#fff!important;*/
+    -webkit-user-select: none;
+  }
+
+  .ant-collapse-content-box {
+    padding: 8px;
+  }
+
+  &-modal {
+    &-item {
+      margin-bottom: 16px;
+      overflow: hidden;
+
+      &-label {
+        float: left;
+        width: 100px;
+      }
+
+      &-content {
+        overflow-y: auto;
+        overflow-x: hidden;
+        margin-left: 100px;
+      }
+
+      .ant-checkbox-wrapper {
+        display: block;
+        margin-left: 0;
+      }
+    }
+
+    &-checkbox-group {
+      height: 100px;
+      width: 300px;
+      padding: 5px 10px;
+      border: 1px solid #eee;
+    }
+  }
+
+  &-task-list {
+    .ant-modal-footer {
+      display: none;
+    }
+
+    &-container {
+      max-height: 440px;
+      margin-bottom: 20px;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    &-item {
+      position: relative;
+      height: 40px;
+      margin-bottom: 20px;
+      padding: 0 80px 0 50px;
+
+      img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 40px;
+        height: 40px;
+      }
+
+      &-content {
+        height: 100%;
+        font-size: 0;
+        white-space: nowrap;
+        overflow: hidden;
+
+        &:before {
+          content: '';
+          display: inline-block;
+          width: 0;
+          height: 100%;
+          vertical-align: middle;
+        }
+
+        span {
+          display: inline-block;
+          max-width: 31%;
+          margin-right: 2%;
+          font-size: 14px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          vertical-align: middle;
+        }
+      }
+
+      button {
+        position: absolute;
+        top: 50%;
+        right: 5px;
+        transform: translateY(-50%);
+      }
+
+    }
+  }
+
+  &-container {
+    position: relative;
+
+    &-load {
+      position: absolute;
+      top: 0;
+      right: 20px;
+      line-height: 46px;
+      /*color:#fff;*/
+      cursor: pointer;
+      -webkit-user-select: none;
+
+      &.act {
+        opacity: .6;
+      }
+    }
+  }
+  &-box {
+    border: 1px solid #ebedf0;
+    border-radius: 2px;
+    display: inline-block;
+    width: 100%;
+    position: relative;
+    margin: 0 0 16px;
+    -webkit-transition: all .2s;
+    transition: all .2s;
+  }
+
+  &-main {
+    border-bottom: 1px solid #ebedf0;
+    padding: 42px 24px 50px;
+    color: rgba(0, 0, 0, 0.65);
+  }
+
+  &-item {
+    margin-bottom: 14px;
+    padding: 16px 0 16px 0;
+    font-size: 12px;
+    border-bottom: 1px solid #e8e8e8;
+
+    img {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 30px;
+      height: 30px;
+      margin-top: -15px;
+    }
+
+    h2 {
+      height: 22px;
+      line-height: 22px;
+      margin-bottom: 0;
+      font-size: 14px;
+    }
+
+    p {
+      font-size: 0;
+      white-space: nowrap;
+      overflow: hidden;
+
+      span {
+        position: relative;
+        display: inline-block;
+        max-width: 30%;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        margin-right: 7px;
+        padding-right: 7px;
+        font-size: 12px;
+
+        &:not(:last-of-type):after {
+          content: '';
+          position: absolute;
+          top: 25%;
+          right: 0;
+          width: 1px;
+          height: 50%;
+          background-color: #ddd;
+        }
+
+        i {
+          color: #000;
+          font-style: normal;
+        }
+      }
+    }
+    &-header {
+      display: flex;
+      margin-bottom: 20px;
+
+    }
+    &-content {
+      display: flex;
+    }
+
+    &-main {
+      display: block;
+      flex: 1
+    }
+    &-timemeta {
+      margin-bottom: 20px;
+    }
+
+    &-ctrl {
+      width: 300px;
+      text-align: right;
+      margin-left: 58px;
+      margin-right: 60px;
+      .status {
+        font-size: 14px;
+        margin-bottom: 20px;
+        span {
+          font-weight: bold;
+          margin-right: 4px;
+        }
+      }
+      button {
+        vertical-align: middle;
+
+        &:not(:last-of-type) {
+          margin-right: 5px;
+        }
+      }
+    }
+  }
+
+}
