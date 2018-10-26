@@ -544,6 +544,7 @@ class PackageTest extends Component {
                                                         <span title={item.buildId}><i>buildId:</i>{item.buildId}</span>
                                                         <span title={item.buildTime}>{item.buildTime}</span>
                                                         <span title={item.description}>{item.content}</span>
+                                                        <span title={item.content}><i>提测概要:</i>{item.content}</span>
                                                     </p>
                                                     <div className="package-item-ctrl">
                                                         <Button type="primary"><Link to={`/package/detail/${item.buildId}`}>查看</Link></Button>
