@@ -69,7 +69,9 @@ class packageDetail extends Component {
             buildId: this.props.match.params.buildId
         }).then((res) => {
             if (res.code == 0) {
-                const {version, taskMaster, codeBranch, fileName, fileSize, buildTime, submitDetails, submitContent, rebuildContent, imageUrl, openTesting, performanceProjectId, performanceProjectStatus, downloadPath, status, envName, taskId} = res.data;
+                const {version, taskMaster, codeBranch, fileName, fileSize, buildTime, submitDetails, submitContent,
+                    rebuildContent, imageUrl, openTesting, performanceProjectId, performanceProjectStatus, downloadPath,
+                    status, envName, taskId} = res.data;
 
                 this.setState({
                     version,

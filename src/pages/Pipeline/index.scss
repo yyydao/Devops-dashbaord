@@ -201,12 +201,11 @@
       }
     }
     &-header {
-      display: flex;
       margin-bottom: 20px;
 
     }
-    &-content {
-      display: flex;
+    &-user {
+      text-align: right;
     }
 
     &-main {
@@ -218,10 +217,7 @@
     }
 
     &-ctrl {
-      width: 300px;
       text-align: right;
-      margin-left: 58px;
-      margin-right: 60px;
       .status {
         font-size: 14px;
         margin-bottom: 20px;
