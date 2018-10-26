@@ -42,6 +42,7 @@ class panelContent extends Component {
                                 <span title={item.id}><i>buildId:</i>{item.id}</span>
                                 <span><i>状态:</i>{item.status === 0 ? '构建成功' : '构建失败'}</span>
                                 <span><i>时间:</i>{item.buildTime}</span>
+                                <span title={item.content}><i>提测概要:</i>{item.content}</span>
                             </p>
                             <div className="package-item-ctrl">
                                 <Button type="primary"><a href={`/package/download?buildId=${item.id}&token=${this.props.token ? this.props.token : ''}`}>下载</a></Button>
