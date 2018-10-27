@@ -6,13 +6,14 @@ import { reqPost, reqGet } from '@/api/api'
 import filter from 'lodash.filter'
 import uniq from 'lodash.uniq'
 
-import { Steps, Breadcrumb, Card, Button, Icon, Collapse, Row, Col } from 'antd'
+import { Steps, Breadcrumb, Card, Button, Icon, Collapse, Row, Col, Select } from 'antd'
 import { Radio } from 'antd/lib/radio'
 
 
 const BreadcrumbItem = Breadcrumb.Item
 const Step = Steps.Step
 const Panel = Collapse.Panel
+const Option = Select.Option;
 
 const steps = [{
     title: '开始',
@@ -129,15 +130,45 @@ const StepList = [
     }
 ]
 
+const pipelineHistoryList = [
+       "2018-09-14 11:02:50(等待)",
+       "2018-09-14 11:02:30(等待)",
+       "2018-09-14 11:00:30",
+       "2018-09-14 09:53:38",
+       "2018-09-13 15:45:15",
+]
+
+
+let HistoryOption = [];
+
+for (let i = 0; i < pipelineHistoryList.length; i++) {
+    HistoryOption.push(<Option key={pipelineHistoryList[i]}>{pipelineHistoryList[i]}</Option>);
+}
+
+
 
 class pipelineDetail extends Component {
     constructor (props) {
         super(props)
 
         this.state = {
+            breadcrumbPath: [],
             envList: [],
-            current: 0
+            current: 0,
+            currentJob: 0
         }
+    }
+
+    handleChange = (value) =>{
+        console.log(`selected ${value}`);
+    }
+
+    handleBlur = () =>{
+        console.log('blur');
+    }
+
+    handleFocus= () => {
+        console.log('focus');
     }
 
     getPipelineDetail = () => {
@@ -186,17 +217,17 @@ class pipelineDetail extends Component {
     }
 
     componentWillMount () {
-
     }
 
     componentDidMount () {
-        this.getPipelineDetail()
+
         this.checkTaskList(taskList)
         this.checkStepList(StepList)
     }
 
     render () {
         const {
+            breadcrumbPath,
             projectID,
             taskCode,
             taskName,
@@ -206,15 +237,42 @@ class pipelineDetail extends Component {
             lastExecTime,
             createTime,
             updateTime,
-            stepList
+            stepList,
+            currentJob
         } = this.state
 
+        
         return (
             <div>
-                <div className="pipeline-menu">
-                    <Button type="primary" onClick={this.toAddPipeline}>新增流水线</Button>
-                </div>
+                <Breadcrumb className="devops-breadcrumb">
+                    <BreadcrumbItem><Link to="/home">首页</Link></BreadcrumbItem>
+                    <BreadcrumbItem><Link to="/pipeline">流水线</Link></BreadcrumbItem>
+                    <BreadcrumbItem>详情</BreadcrumbItem>
+                </Breadcrumb>
                 <section className="pipeline-box">
+                    <div className="pipeline-header">
+                        <Row type="flex" justify="space-between">
+                            <Col>
+                                <span>流水线详情</span><Button ghost type="danger" shape="circle" icon="delete" />
+                            </Col>
+                            <Col>
+                                 <span>Tips: 有{currentJob}个任务正在等待</span>
+                                <Button type="primary">编辑</Button>
+
+                                <Select
+                                    defaultValue = {pipelineHistoryList[0]}
+                                    style={{ width: 200 }}
+                                    placeholder=""
+                                    onChange={this.handleChange}
+                                    onFocus={this.handleFocus}
+                                    onBlur={this.handleBlur}
+                                >
+                                    {HistoryOption}
+                                </Select>,
+                                
+                            </Col>
+                        </Row>
+                    </div>
                     <section className="pipeline-main">
                         <div className="pipeline-item">
 
@@ -239,20 +297,48 @@ class pipelineDetail extends Component {
                                                 <span title><i>执行分支：</i>{jenkinsJob}</span>
                                                 <span title><i>执行时长：</i>{exexTime}</span>
                                             </p>
-                                            <Steps size="small" status={enumStatus[taskStatus]}
+                                            <Steps size="small"
+                                                   status={enumStatus[taskStatus]}
+                                                   labelPlacement="vertical"
                                                    current={taskStatus}>
                                                 {/*{stepList.map(item => <Step key={item.title} title={item.title}/>)}*/}
-                                                <Step description={<div>开始</div>}></Step>
-                                                <Step description={<div>构建阶段
-                                                    <ul>
-                                                        <li>source code</li>
-                                                        <li>scan</li>
-                                                        <li>compile</li>
-                                                    </ul>
+                                                <Step title="开始" description={<div>开始</div>}></Step>
+                                                <Step title="构建阶段" description={<div>
+                                                    {/*<ul>*/}
+                                                        {/*<li>source code</li>*/}
+                                                        {/*<li>scan</li>*/}
+                                                        {/*<li>compile</li>*/}
+                                                    {/*</ul>*/}
+                                                    <Card
+                                                        title="source code"
+                                                        extra={<a href="#">More</a>}
+                                                    >
+                                                        <p>Card content</p>
+                                                        <p>Card content</p>
+                                                        <p>Card content</p>
+                                                    </Card>
+                                                    <Card
+                                                        title="scan code"
+                                                        extra={<a href="#">More</a>}
+
+                                                    >
+                                                        <p>Card content</p>
+                                                        <p>Card content</p>
+                                                        <p>Card content</p>
+                                                    </Card>
+                                                    <Card
+                                                        title="compile"
+                                                        extra={<a href="#">More</a>}
+                                                        
+                                                    >
+                                                        <p>Card content</p>
+                                                        <p>Card content</p>
+                                                        <p>Card content</p>
+                                                    </Card>
                                                 </div>}></Step>
-                                                <Step description={<div>测试阶段</div>}></Step>
-                                                <Step description={<div>部署阶段</div>}></Step>
-                                                <Step description={<div>完成</div>}></Step>
+                                                <Step title="测试阶段" description={<div></div>}></Step>
+                                                <Step title="部署阶段" description={<div></div>}></Step>
+                                                <Step title="完成" description={<div></div>}></Step>
                                             </Steps>
                                         </div>
                                     </Col>

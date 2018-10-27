@@ -92,7 +92,7 @@ export default [
         component: PackageDetail
     },
     {
-        path: '/pipeline/:envID',
+        path: '/pipeline',
         name: 'pipeline',
         component: Pipeline
     },
