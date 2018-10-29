@@ -46,7 +46,10 @@ class panelContent extends Component {
                             </p>
                             <div className="package-item-ctrl">
                                 <Button type="primary"><a href={`/package/download?buildId=${item.id}&token=${this.props.token ? this.props.token : ''}`}>下载</a></Button>
-                                <Button type="primary"><Link to={`/package/detail/${item.id}`}>查看</Link></Button>
+                                <Button type="primary"><Link to={{
+                                  pathname: `/package/detail/${item.id}`,
+                                  state:{passwdBuild:this.props.passwdBuild}
+                                }}>查看</Link></Button>
                             </div>
                         </div>
             })

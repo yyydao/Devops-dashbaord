@@ -21,13 +21,13 @@ class versionPanel extends Component {
 
     propTypes: {
         version: PropTypes.string.isRequired,
-        envId: PropTypes.string.isRequired
+        envId: PropTypes.string.isRequired,
+        passwdBuild: PropTypes.string.isRequired
     }
 
     getList = (loadMore=0) => {
         const { envId, version } = this.props,
               { total, page, count } = this.state;
-        
         if (loadMore !== 0 && page > total) return;
 
         this.setState({
@@ -57,6 +57,7 @@ class versionPanel extends Component {
 
     render() {
         const { loading } = this.state;
+        const { passwdBuild } = this.props
 
         return (
             <Collapse defaultActiveKey={['0']}>
@@ -67,7 +68,7 @@ class versionPanel extends Component {
                         }
                     }>{loading && <Icon type="loading" theme="outlined" />} 加载更多</div>
 
-                    {<PanelContent list={this.state.list} />}
+                    {<PanelContent list={this.state.list} passwdBuild={passwdBuild} />}
                 </Panel>
             </Collapse>
         )

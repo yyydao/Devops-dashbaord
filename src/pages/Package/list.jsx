@@ -27,7 +27,7 @@ class PackageTest extends Component {
             modalType: 1,
             branchList: [],
             formDataBranch: null,
-            formDataName: '',
+            formDataName: JSON.parse(localStorage.getItem('userInfo')).name,
             fromDataMail: '',
             formDataDesc: '',
             formDataWiki: '',
@@ -76,7 +76,7 @@ class PackageTest extends Component {
         if (isShow) {
             this.getBranchList();
         } else {
-            newState.formDataName = '';
+            // newState.formDataName = '';
             newState.fromDataMail = '';
             newState.formDataDesc = '';
             newState.formDataWiki = '';
@@ -131,7 +131,14 @@ class PackageTest extends Component {
             message.error('请选择“开发分支”');
             return;
         }
-
+          if (!formDataDesc) {
+            message.error('请填写“提测概要”');
+            return;
+          }
+          if (!formDataWiki) {
+            message.error('请选择“提测详情”');
+            return;
+          }
         if (passwdBuild === 1) {
             if (!formDataUser) {
                 message.error('请填写“构建账号”');
@@ -281,7 +288,7 @@ class PackageTest extends Component {
         reqGet('/package/unfinish/list', {
             envId: envId,
             page: loadMore === 0 ? buildingPage : buildingPage+1,
-            count: 3
+            count: 20
         }).then((res) => {
             if (res.code === 0) {
                 this.setState({
@@ -304,7 +311,6 @@ class PackageTest extends Component {
         }
 
         let envId, envName = '', passwdBuild = null;
-
         if (this.props.location.state) {
             envId = this.props.location.state.envId;
             envName = this.props.location.state.envName;
@@ -325,7 +331,6 @@ class PackageTest extends Component {
                 }
             }
         }
-
         if (envId && passwdBuild !== null) {
             this.setState({
                 envId,
@@ -368,7 +373,7 @@ class PackageTest extends Component {
 
         return (
             <div className="package">
-                <Modal title="新增提测"
+                <Modal title={modalType===1?"新增提测":"版本回归"}
                     visible={modalVisible}
                     onOk={this.addBuild}
                     confirmLoading={modalConfirmLoading}
@@ -384,7 +389,7 @@ class PackageTest extends Component {
                         }} />
                         <Select placeholder="开发分支"
                                 showSearch
-                                value={formDataBranch}
+                                value={formDataBranch||undefined}
                                 onSearch={this.getBranchList}
                                 onChange={this.changeBranch}
                                 style={{ width: 300 }}>
@@ -461,9 +466,9 @@ class PackageTest extends Component {
                     <Button type="primary" onClick={() => {
                         this.toggleBuildModal(true, 1)
                     }}>新增提测</Button>
-                    <Button type="primary" onClick={() => {
-                        this.toggleBuildModal(true, 2)
-                    }}>版本回归</Button>
+                    {/*<Button type="primary" onClick={() => {*/}
+                        {/*this.toggleBuildModal(true, 2)*/}
+                    {/*}}>版本回归</Button>*/}
 
                     <Radio.Group value={typeValue} onChange={this.changeType} className="fr">
                         {
@@ -512,7 +517,7 @@ class PackageTest extends Component {
 
                         {
                             versionList.map((item, index) => {
-                                return <VersionPanel version={item} envId={envId} key={item} />
+                                return <VersionPanel version={item} envId={envId} passwdBuild={passwdBuild} key={item} />
                             })
                         }
 
@@ -563,6 +568,7 @@ class PackageTest extends Component {
 }
 
 PackageTest = connect((state) => {
+  console.log(state)
     return {
         projectId: state.projectId
     }

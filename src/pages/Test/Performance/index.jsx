@@ -309,7 +309,7 @@ class Performance extends Component {
             projectId: Number(this.props.projectId),
             type: this.state.typeValue,
             page: loadMore === 0 ? 1 : this.state[type].page + 1,
-            count: 3
+            count: type==='buildingList'?20:3
         }).then(res => {
             if (res.code === 0) {
                 const newState = {},
