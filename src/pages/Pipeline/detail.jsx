@@ -171,11 +171,11 @@ class pipelineDetail extends Component {
 
     getPipelineDetail = () => {
         reqGet('/pipeline/taskdetail', {
-            taskID: this.props.taskID
+            taskID: this.props.match.params.taskID
         }).then((res) => {
             if (res.code === 0) {
-                const taskList = res.data && res.data.task
-                const stepList = res.data && res.data.steps
+                const taskList = res.task
+                const stepList = res.steps
                 this.checkTaskList(taskList)
                 this.checkStepList(stepList)
             }
@@ -239,8 +239,9 @@ class pipelineDetail extends Component {
 
     componentDidMount () {
 
-        this.checkTaskList(taskList)
-        this.checkStepList(StepList)
+        // this.checkTaskList(taskList)
+        // this.checkStepList(StepList)
+        this.getPipelineDetail()
     }
 
     render () {
