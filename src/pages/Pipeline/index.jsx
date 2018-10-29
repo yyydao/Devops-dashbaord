@@ -13,19 +13,14 @@ const Panel = Collapse.Panel
 
 const steps = [{
     title: '开始',
-    content: 'First-content',
 }, {
     title: '构建阶段',
-    content: 'Second-content',
 }, {
     title: '测试阶段',
-    content: 'Last-content',
 }, {
     title: '部署阶段',
-    content: 'Second-content',
 }, {
     title: '完成',
-    content: 'Last-content',
 }]
 
 const enumStatus = {
@@ -55,179 +50,170 @@ const enumButtonText = {
     4: '开始执行'
 }
 
-const pipelineList = [
-    {
-        'taskID': 'e510246fb7a54947aceb78d016109bee817t0O',
-        'taskCode': 'td1539673436803',
-        'taskName': '测试',
-        'jenkinsJob': 'TuandaiAS2-develop-v4',
-        'taskStatus': 1,
-        'exexTime': 0,
-        'lastExecTime': 0,
-        'createTime': '2018-10-16 15:03:56.0',
-        'updateTime': '2018-10-16 15:03:56.0',
-        'buildStage': 4,
-        'step': [{
-            title: '开始',
-            content: 'First-content',
-        }, {
-            title: '构建阶段',
-            content: 'Second-content',
-        }, {
-            title: '测试阶段',
-            content: 'Last-content',
-        }, {
-            title: '部署阶段',
-            content: 'Second-content',
-        }, {
-            title: '完成',
-            content: 'Last-content',
-        }]
-    },
-    {
-        'taskID': 'e510246fb7a54947aceb78d016109bee817t0O',
-        'taskCode': 'td1539673436803',
-        'taskName': '测试',
-        'jenkinsJob': 'TuandaiAS2-develop-v4',
-        'taskStatus': 2,
-        'exexTime': 0,
-        'lastExecTime': 0,
-        'createTime': '2018-10-16 15:03:56.0',
-        'updateTime': '2018-10-16 15:03:56.0',
-        'buildStage': 3,
-        'step': [{
-            title: '开始',
-            content: 'First-content',
-        }, {
-            title: '构建阶段',
-            content: 'Second-content',
-        }, {
-            title: '测试阶段',
-            content: 'Last-content',
-        }, {
-            title: '部署阶段',
-            content: 'Second-content',
-        }, {
-            title: '完成',
-            content: 'Last-content',
-        }]
-    },
-    {
-        'taskID': 'e510246fb7a54947aceb78d016109bee817t0O',
-        'taskCode': 'td1539673436803',
-        'taskName': '测试',
-        'jenkinsJob': 'TuandaiAS2-develop-v4',
-        'taskStatus': 3,
-        'exexTime': 0,
-        'lastExecTime': 0,
-        'createTime': '2018-10-16 15:03:56.0',
-        'updateTime': '2018-10-16 15:03:56.0',
-        'buildStage': 1,
-        'step': [{
-            title: '开始',
-            content: 'First-content',
-        }, {
-            title: '构建阶段',
-            content: 'Second-content',
-        }, {
-            title: '测试阶段',
-            content: 'Last-content',
-        }, {
-            title: '部署阶段',
-            content: 'Second-content',
-        }, {
-            title: '完成',
-            content: 'Last-content',
-        }]
-    },
-    {
-        'taskID': 'e510246fb7a54947aceb78d016109bee817t0O',
-        'taskCode': 'td1539673436803',
-        'taskName': '测试',
-        'jenkinsJob': 'TuandaiAS2-develop-v4',
-        'taskStatus': 4,
-        'exexTime': 0,
-        'lastExecTime': 0,
-        'createTime': '2018-10-16 15:03:56.0',
-        'updateTime': '2018-10-16 15:03:56.0',
-        'buildStage': 2,
-        'step': [{
-            title: '开始',
-            content: 'First-content',
-        }, {
-            title: '构建阶段',
-            content: 'Second-content',
-        }, {
-            title: '测试阶段',
-            content: 'Last-content',
-        }, {
-            title: '部署阶段',
-            content: 'Second-content',
-        }, {
-            title: '完成',
-            content: 'Last-content',
-        }]
-    },
-    {
-        'taskID': 'e510246fb7a54947aceb78d016109bee817t0O',
-        'taskCode': 'td1539673436803',
-        'taskName': '测试',
-        'jenkinsJob': 'TuandaiAS2-develop-v4',
-        'taskStatus': 1,
-        'exexTime': 0,
-        'lastExecTime': 0,
-        'createTime': '2018-10-16 15:03:56.0',
-        'updateTime': '2018-10-16 15:03:56.0',
-        'buildStage': 0,
-        'step': [{
-            title: '开始',
-            content: 'First-content',
-        }, {
-            title: '构建阶段',
-            content: 'Second-content',
-        }, {
-            title: '测试阶段',
-            content: 'Last-content',
-        }, {
-            title: '部署阶段',
-            content: 'Second-content',
-        }, {
-            title: '完成',
-            content: 'Last-content',
-        }]
-    },
-]
+// const pipelineList = [
+//     {
+//         'taskID': 'e510246fb7a54947aceb78d016109bee817t0O',
+//         'taskCode': 'td1539673436803',
+//         'taskName': '测试',
+//         'jenkinsJob': 'TuandaiAS2-develop-v4',
+//         'taskStatus': 1,
+//         'exexTime': 0,
+//         'lastExecTime': 0,
+//         'createTime': '2018-10-16 15:03:56.0',
+//         'updateTime': '2018-10-16 15:03:56.0',
+//         'buildStage': 4,
+//         'step': [{
+//             title: '开始',
+//             content: 'First-content',
+//         }, {
+//             title: '构建阶段',
+//             content: 'Second-content',
+//         }, {
+//             title: '测试阶段',
+//             content: 'Last-content',
+//         }, {
+//             title: '部署阶段',
+//             content: 'Second-content',
+//         }, {
+//             title: '完成',
+//             content: 'Last-content',
+//         }]
+//     },
+//     {
+//         'taskID': 'e510246fb7a54947aceb78d016109bee817t0O',
+//         'taskCode': 'td1539673436803',
+//         'taskName': '测试',
+//         'jenkinsJob': 'TuandaiAS2-develop-v4',
+//         'taskStatus': 2,
+//         'exexTime': 0,
+//         'lastExecTime': 0,
+//         'createTime': '2018-10-16 15:03:56.0',
+//         'updateTime': '2018-10-16 15:03:56.0',
+//         'buildStage': 3,
+//         'step': [{
+//             title: '开始',
+//             content: 'First-content',
+//         }, {
+//             title: '构建阶段',
+//             content: 'Second-content',
+//         }, {
+//             title: '测试阶段',
+//             content: 'Last-content',
+//         }, {
+//             title: '部署阶段',
+//             content: 'Second-content',
+//         }, {
+//             title: '完成',
+//             content: 'Last-content',
+//         }]
+//     },
+//     {
+//         'taskID': 'e510246fb7a54947aceb78d016109bee817t0O',
+//         'taskCode': 'td1539673436803',
+//         'taskName': '测试',
+//         'jenkinsJob': 'TuandaiAS2-develop-v4',
+//         'taskStatus': 3,
+//         'exexTime': 0,
+//         'lastExecTime': 0,
+//         'createTime': '2018-10-16 15:03:56.0',
+//         'updateTime': '2018-10-16 15:03:56.0',
+//         'buildStage': 1,
+//         'step': [{
+//             title: '开始',
+//             content: 'First-content',
+//         }, {
+//             title: '构建阶段',
+//             content: 'Second-content',
+//         }, {
+//             title: '测试阶段',
+//             content: 'Last-content',
+//         }, {
+//             title: '部署阶段',
+//             content: 'Second-content',
+//         }, {
+//             title: '完成',
+//             content: 'Last-content',
+//         }]
+//     },
+//     {
+//         'taskID': 'e510246fb7a54947aceb78d016109bee817t0O',
+//         'taskCode': 'td1539673436803',
+//         'taskName': '测试',
+//         'jenkinsJob': 'TuandaiAS2-develop-v4',
+//         'taskStatus': 4,
+//         'exexTime': 0,
+//         'lastExecTime': 0,
+//         'createTime': '2018-10-16 15:03:56.0',
+//         'updateTime': '2018-10-16 15:03:56.0',
+//         'buildStage': 2,
+//         'step': [{
+//             title: '开始',
+//             content: 'First-content',
+//         }, {
+//             title: '构建阶段',
+//             content: 'Second-content',
+//         }, {
+//             title: '测试阶段',
+//             content: 'Last-content',
+//         }, {
+//             title: '部署阶段',
+//             content: 'Second-content',
+//         }, {
+//             title: '完成',
+//             content: 'Last-content',
+//         }]
+//     },
+//     {
+//         'taskID': 'e510246fb7a54947aceb78d016109bee817t0O',
+//         'taskCode': 'td1539673436803',
+//         'taskName': '测试',
+//         'jenkinsJob': 'TuandaiAS2-develop-v4',
+//         'taskStatus': 1,
+//         'exexTime': 0,
+//         'lastExecTime': 0,
+//         'createTime': '2018-10-16 15:03:56.0',
+//         'updateTime': '2018-10-16 15:03:56.0',
+//         'buildStage': 0,
+//         'step': [{
+//             title: '开始',
+//             content: 'First-content',
+//         }, {
+//             title: '构建阶段',
+//             content: 'Second-content',
+//         }, {
+//             title: '测试阶段',
+//             content: 'Last-content',
+//         }, {
+//             title: '部署阶段',
+//             content: 'Second-content',
+//         }, {
+//             title: '完成',
+//             content: 'Last-content',
+//         }]
+//     },
+// ]
 
 class Pipeline extends Component {
     constructor (props) {
         super(props)
 
         this.state = {
-            envList: [],
+            pipelineList: [],
             current: 0
         }
     }
 
     getPipelineList = () => {
         reqGet('/pipeline/tasklist', {
-            projectId: this.props.projectId,
+            projectID: this.props.projectId,
             page: 1,
-            limit: 4,
+            limit: 20,
         }).then((res) => {
+            console.log(res)
             if (res.code === 0) {
                 this.setState({
-                    envList: res.data
+                    pipelineList: res.tasks
                 })
-
-                const envList = res.data.map((item, index) => {
-                    return {
-                        id: item.id,
-                        name: item.name,
-                        passwdBuild: item.passwdBuild
-                    }
-                })
-
-                window.localStorage.setItem('envList', JSON.stringify(envList))
             }
         })
     }
@@ -246,7 +232,7 @@ class Pipeline extends Component {
     }
 
     render () {
-        const {envList, current} = this.state
+        const {pipelineList, current} = this.state
 
         return (
             <div>
@@ -271,7 +257,6 @@ class Pipeline extends Component {
                                             </Col>
                                             <Col span={12} >
                                                 <div className="pipeline-item-user">
-                                                    gitlab push by liaoshengjian
                                                 </div>
                                             </Col>
                                         </Row>
@@ -281,13 +266,13 @@ class Pipeline extends Component {
                                             <Col span={20}>
                                                 <div className="pipeline-item-main">
                                                     <p className="pipeline-item-timemeta">
-                                                        <span title><i>最近执行时间：</i>{item.lastExecTime}</span>
-                                                        <span title><i>执行分支：</i>{item.jenkinsJob}</span>
-                                                        <span title><i>执行时长：</i>{item.exexTime}</span>
+                                                        <span><i>最近执行时间：</i>{item.lastExecTime}</span>
+                                                        <span><i>执行分支：</i>{item.jenkinsJob}</span>
+                                                        <span><i>执行时长：</i>{item.exexTime}</span>
                                                     </p>
                                                     <Steps size="small" status={enumStatus[item.taskStatus]}
-                                                           current={item.buildStage}>
-                                                        {steps.map(item => <Step key={item.title} title={item.title}/>)}
+                                                           current={item.taskStatus}>
+                                                        {steps.map((item,index) => <Step key={index} title={item.title}/>)}
                                                     </Steps>
                                                 </div>
                                             </Col>
