@@ -6,6 +6,7 @@ import { reqPost, reqGet } from '@/api/api'
 import filter from 'lodash.filter'
 import toPairs from 'lodash.topairs'
 import uniq from 'lodash.uniq'
+import { Chart, Geom, Axis, Tooltip, Legend, Coord } from 'bizcharts';
 
 import { Steps, Breadcrumb, Card, Button, Icon, Collapse, Row, Col, Select } from 'antd'
 import { Radio } from 'antd/lib/radio'
@@ -138,6 +139,19 @@ const pipelineHistoryList = [
     '2018-09-13 15:45:15',
 ]
 
+const packageresult = [
+    {
+        'packageID': 1,
+        'packageName': 'com.junte',
+        'targetSdk': '23',
+        'minSdk': '',
+        'versionCode': '141',
+        'versionName': '5.3.6',
+        'appFileSize': '28.86MB',
+        'filePath': './package/e510246fb7a54947aceb78d016109bee817t0O/1/1/20181016171839/app-performance-develop.apk'
+    }
+]
+
 let HistoryOption = []
 
 for (let i = 0; i < pipelineHistoryList.length; i++) {
@@ -153,7 +167,8 @@ class pipelineDetail extends Component {
             envList: [],
             current: 0,
             currentJob: 0,
-            finalStep: []
+            finalStep: [],
+            packageresult: packageresult
         }
     }
 
@@ -178,6 +193,15 @@ class pipelineDetail extends Component {
                 const stepList = res.steps
                 this.checkTaskList(taskList)
                 this.checkStepList(stepList)
+            }
+        })
+    }
+    getPackageresult = () => {
+        reqGet('/pipeline/packageresult', {
+            taskID: this.props.match.params.taskID
+        }).then((res) => {
+            if (res.code === 0) {
+                this.setState({packageresult: res.list})
             }
         })
     }
@@ -210,26 +234,26 @@ class pipelineDetail extends Component {
 
     checkStepList = (stepList) => {
         const category = uniq(stepList.map(item => item.stepCategory))
-        console.log(category)
+        // console.log(category)
         let tempStepObject = {}
         let finalStep = []
-        category.forEach((value,index) =>{
+        category.forEach((value, index) => {
             tempStepObject[value] = []
         })
         for (let i = 0; i < stepList.length; i++) {
             const stepListElement = stepList[i]
-            console.log(stepListElement.stepCategory)
+            // console.log(stepListElement.stepCategory)
             for (const tempStepObjectKey in tempStepObject) {
-                if(stepListElement.stepCategory+'' === tempStepObjectKey+''){
+                if (stepListElement.stepCategory + '' === tempStepObjectKey + '') {
                     tempStepObject[tempStepObjectKey].push(stepListElement)
-                } 
+                }
             }
 
         }
-        finalStep =  toPairs(tempStepObject)
-        console.log(tempStepObject)
-        console.log(stepList)
-        console.log(finalStep)
+        finalStep = toPairs(tempStepObject)
+        // console.log(tempStepObject)
+        // console.log(stepList)
+        // console.log(finalStep)
         this.setState({stepList: stepList})
         this.setState({finalStep: finalStep})
     }
@@ -238,10 +262,11 @@ class pipelineDetail extends Component {
     }
 
     componentDidMount () {
-
-        // this.checkTaskList(taskList)
-        // this.checkStepList(StepList)
-        this.getPipelineDetail()
+        // this.setState({packageresult: packageresult})
+        this.checkTaskList(taskList)
+        this.checkStepList(StepList)
+        // this.getPipelineDetail()
+        //this.getPackageresult()
     }
 
     render () {
@@ -258,8 +283,23 @@ class pipelineDetail extends Component {
             updateTime,
             stepList,
             finalStep,
+            packageresult,
             currentJob
         } = this.state
+        // 数据源
+        const data = [
+            { genre: 'Sports', sold: 275, income: 2300 },
+            { genre: 'Strategy', sold: 115, income: 667 },
+            { genre: 'Action', sold: 120, income: 982 },
+            { genre: 'Shooter', sold: 350, income: 5271 },
+            { genre: 'Other', sold: 150, income: 3710 }
+        ];
+
+// 定义度量
+        const cols = {
+            sold: { alias: '销售量' },
+            genre: { alias: '游戏种类' }
+        };
 
         return (
             <div>
@@ -325,9 +365,9 @@ class pipelineDetail extends Component {
                                     <Col span={20}>
                                         <div className="pipeline-item-main">
                                             <p className="pipeline-item-timemeta">
-                                                <span title><i>最近执行时间：</i>{lastExecTime}</span>
-                                                <span title><i>执行分支：</i>{jenkinsJob}</span>
-                                                <span title><i>执行时长：</i>{exexTime}</span>
+                                                <span><i>最近执行时间：</i>{lastExecTime}</span>
+                                                <span><i>执行分支：</i>{jenkinsJob}</span>
+                                                <span><i>执行时长：</i>{exexTime}</span>
                                             </p>
 
                                         </div>
@@ -352,13 +392,13 @@ class pipelineDetail extends Component {
                                        labelPlacement="vertical"
                                        current={taskStatus}>
                                     <Step title="开始"></Step>
-                                   
+
                                     {finalStep.map((item, index) => {
-                                        return <Step title={enumStepsText[item[0]].title}  key={index} description={
-                                            item[1].map((item,index)=>{
-                                                console.log(item)
+                                        return <Step title={enumStepsText[item[0]].title} key={index} description={
+                                            item[1].map((item, index) => {
+                                                // console.log(item)
                                                 return <Card
-                                                    style={{width: 180, 'margin-left': '-40%'}}
+                                                    style={{width: 180, marginLeft: '-40%'}}
                                                     title={item.stepName}
                                                     extra={<a href="#">编辑</a>}
                                                     key={index}
@@ -377,6 +417,50 @@ class pipelineDetail extends Component {
 
                         </div>
                     </section>
+                </section>
+                <section className="pipeline-box">
+                    <Card title="基本信息">
+                    {
+                        packageresult.map((item, index) => {
+                        return <div  key={index} >
+                            <Row gutter={16} type="flex" justify="space-around" align="middle">
+                                <Col><h2>packageID</h2></Col><Col>{item.packageID}</Col>
+                            </Row>
+                            <Row gutter={16} type="flex" justify="space-around" align="middle">
+                                <Col><h2>packageName</h2></Col><Col>{item.packageName}</Col>
+                            </Row>
+                            <Row gutter={16} type="flex" justify="space-around" align="middle">
+                                <Col><h2>targetSdk</h2></Col><Col>{item.targetSdk}</Col>
+                            </Row>
+                            <Row gutter={16} type="flex" justify="space-around" align="middle">
+                                <Col><h2>minSdk</h2></Col><Col>{item.minSdk}</Col>
+                            </Row>
+                            <Row gutter={16} type="flex" justify="space-around" align="middle">
+                                <Col><h2>versionCode</h2></Col><Col>{item.versionCode}</Col>
+                            </Row>
+                            <Row gutter={16} type="flex" justify="space-around" align="middle">
+                                <Col><h2>versionName</h2></Col><Col>{item.versionName}</Col>
+                            </Row>
+                            <Row gutter={16} type="flex" justify="space-around" align="middle">
+                                <Col><h2>appFileSize</h2></Col><Col>{item.appFileSize}</Col>
+                            </Row>
+                            <Row gutter={16} type="flex" justify="space-around" align="middle">
+                                <Col><h2>filePath</h2></Col><Col>{item.filePath}</Col>
+                            </Row>
+                        </div>
+                    })}
+                    </Card>
+                </section>
+                <section className="pipeline-box" id="scan-result">
+                    <Card title="基本信息">
+                        <Chart width={600} height={400} data={data} scale={cols}>
+                            <Axis name="genre" />
+                            <Axis name="sold" />
+                            <Legend position="top" dy={-20} />
+                            <Tooltip />
+                            <Geom type="interval" position="genre*sold" color="genre" />
+                        </Chart>
+                    </Card>
                 </section>
             </div>
         )
