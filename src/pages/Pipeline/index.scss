@@ -1,4 +1,10 @@
 .pipeline {
+  &-header{
+    padding: 42px 24px 10px;
+    h2{
+      margin-bottom: 0;
+    }
+  }
   &-menu {
     margin-bottom: 20px;
     overflow: hidden;

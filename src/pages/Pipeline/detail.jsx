@@ -4,18 +4,18 @@ import { Link } from 'react-router-dom'
 import './index.scss'
 import { reqPost, reqGet } from '@/api/api'
 import filter from 'lodash.filter'
+import toPairs from 'lodash.topairs'
 import uniq from 'lodash.uniq'
 
 import { Steps, Breadcrumb, Card, Button, Icon, Collapse, Row, Col, Select } from 'antd'
 import { Radio } from 'antd/lib/radio'
 
-
 const BreadcrumbItem = Breadcrumb.Item
 const Step = Steps.Step
 const Panel = Collapse.Panel
-const Option = Select.Option;
+const Option = Select.Option
 
-const steps = [{
+const enumStepsText = [{
     title: '开始',
     content: 'First-content',
 }, {
@@ -131,21 +131,18 @@ const StepList = [
 ]
 
 const pipelineHistoryList = [
-       "2018-09-14 11:02:50(等待)",
-       "2018-09-14 11:02:30(等待)",
-       "2018-09-14 11:00:30",
-       "2018-09-14 09:53:38",
-       "2018-09-13 15:45:15",
+    '2018-09-14 11:02:50(等待)',
+    '2018-09-14 11:02:30(等待)',
+    '2018-09-14 11:00:30',
+    '2018-09-14 09:53:38',
+    '2018-09-13 15:45:15',
 ]
 
-
-let HistoryOption = [];
+let HistoryOption = []
 
 for (let i = 0; i < pipelineHistoryList.length; i++) {
-    HistoryOption.push(<Option key={pipelineHistoryList[i]}>{pipelineHistoryList[i]}</Option>);
+    HistoryOption.push(<Option key={pipelineHistoryList[i]}>{pipelineHistoryList[i]}</Option>)
 }
-
-
 
 class pipelineDetail extends Component {
     constructor (props) {
@@ -155,20 +152,21 @@ class pipelineDetail extends Component {
             breadcrumbPath: [],
             envList: [],
             current: 0,
-            currentJob: 0
+            currentJob: 0,
+            finalStep: []
         }
     }
 
-    handleChange = (value) =>{
-        console.log(`selected ${value}`);
+    handleChange = (value) => {
+        console.log(`selected ${value}`)
     }
 
-    handleBlur = () =>{
-        console.log('blur');
+    handleBlur = () => {
+        console.log('blur')
     }
 
-    handleFocus= () => {
-        console.log('focus');
+    handleFocus = () => {
+        console.log('focus')
     }
 
     getPipelineDetail = () => {
@@ -211,9 +209,29 @@ class pipelineDetail extends Component {
     }
 
     checkStepList = (stepList) => {
-        const category = uniq(stepList.map(item =>item.stepCategory))
+        const category = uniq(stepList.map(item => item.stepCategory))
         console.log(category)
-       this.setState({stepList:stepList})
+        let tempStepObject = {}
+        let finalStep = []
+        category.forEach((value,index) =>{
+            tempStepObject[value] = []
+        })
+        for (let i = 0; i < stepList.length; i++) {
+            const stepListElement = stepList[i]
+            console.log(stepListElement.stepCategory)
+            for (const tempStepObjectKey in tempStepObject) {
+                if(stepListElement.stepCategory+'' === tempStepObjectKey+''){
+                    tempStepObject[tempStepObjectKey].push(stepListElement)
+                } 
+            }
+
+        }
+        finalStep =  toPairs(tempStepObject)
+        console.log(tempStepObject)
+        console.log(stepList)
+        console.log(finalStep)
+        this.setState({stepList: stepList})
+        this.setState({finalStep: finalStep})
     }
 
     componentWillMount () {
@@ -238,10 +256,10 @@ class pipelineDetail extends Component {
             createTime,
             updateTime,
             stepList,
+            finalStep,
             currentJob
         } = this.state
 
-        
         return (
             <div>
                 <Breadcrumb className="devops-breadcrumb">
@@ -251,25 +269,38 @@ class pipelineDetail extends Component {
                 </Breadcrumb>
                 <section className="pipeline-box">
                     <div className="pipeline-header">
-                        <Row type="flex" justify="space-between">
+                        <Row gutter={16} type="flex" justify="space-between" align="middle">
                             <Col>
-                                <span>流水线详情</span><Button ghost type="danger" shape="circle" icon="delete" />
+                                <Row gutter={16} type="flex" justify="space-between" align="middle">
+                                    <Col>
+                                        <h2>流水线详情</h2>
+                                    </Col>
+                                    <Col><Button ghost type="danger" shape="circle" icon="delete"/>
+                                    </Col>
+                                </Row>
                             </Col>
                             <Col>
-                                 <span>Tips: 有{currentJob}个任务正在等待</span>
-                                <Button type="primary">编辑</Button>
+                                <Row gutter={16} type="flex" justify="space-between" align="middle">
+                                    <Col>
+                                        <span>Tips: 有{currentJob}个任务正在等待</span>
+                                    </Col>
+                                    <Col>
+                                        <Button type="primary">编辑</Button>
+                                    </Col>
+                                    <Col>
+                                        <Select
+                                            defaultValue={pipelineHistoryList[0]}
+                                            style={{width: 200}}
+                                            placeholder=""
+                                            onChange={this.handleChange}
+                                            onFocus={this.handleFocus}
+                                            onBlur={this.handleBlur}
+                                        >
+                                            {HistoryOption}
+                                        </Select>
+                                    </Col>
+                                </Row>
 
-                                <Select
-                                    defaultValue = {pipelineHistoryList[0]}
-                                    style={{ width: 200 }}
-                                    placeholder=""
-                                    onChange={this.handleChange}
-                                    onFocus={this.handleFocus}
-                                    onBlur={this.handleBlur}
-                                >
-                                    {HistoryOption}
-                                </Select>,
-                                
                             </Col>
                         </Row>
                     </div>
@@ -297,59 +328,125 @@ class pipelineDetail extends Component {
                                                 <span title><i>执行分支：</i>{jenkinsJob}</span>
                                                 <span title><i>执行时长：</i>{exexTime}</span>
                                             </p>
-                                            <Steps size="small"
-                                                   status={enumStatus[taskStatus]}
-                                                   labelPlacement="vertical"
-                                                   current={taskStatus}>
-                                                {/*{stepList.map(item => <Step key={item.title} title={item.title}/>)}*/}
-                                                <Step title="开始" description={<div>开始</div>}></Step>
-                                                <Step title="构建阶段" description={<div>
-                                                    {/*<ul>*/}
-                                                        {/*<li>source code</li>*/}
-                                                        {/*<li>scan</li>*/}
-                                                        {/*<li>compile</li>*/}
-                                                    {/*</ul>*/}
-                                                    <Card
-                                                        title="source code"
-                                                        extra={<a href="#">More</a>}
-                                                    >
-                                                        <p>Card content</p>
-                                                        <p>Card content</p>
-                                                        <p>Card content</p>
-                                                    </Card>
-                                                    <Card
-                                                        title="scan code"
-                                                        extra={<a href="#">More</a>}
 
-                                                    >
-                                                        <p>Card content</p>
-                                                        <p>Card content</p>
-                                                        <p>Card content</p>
-                                                    </Card>
-                                                    <Card
-                                                        title="compile"
-                                                        extra={<a href="#">More</a>}
-                                                        
-                                                    >
-                                                        <p>Card content</p>
-                                                        <p>Card content</p>
-                                                        <p>Card content</p>
-                                                    </Card>
-                                                </div>}></Step>
-                                                <Step title="测试阶段" description={<div></div>}></Step>
-                                                <Step title="部署阶段" description={<div></div>}></Step>
-                                                <Step title="完成" description={<div></div>}></Step>
-                                            </Steps>
                                         </div>
                                     </Col>
                                     <Col span={4}>
                                         <div className="pipeline-item-ctrl">
-                                            <div className="status">
-                                                <span>最近执行状态：</span>{enumStatusText[taskStatus]}</div>
-                                            <Button type="primary">{enumButtonText[taskStatus]}</Button>
+
+                                            {/*<div className="status">*/}
+                                            <Row gutter={16} type="flex" justify="space-between" align="middle">
+                                                <Col>
+                                                    <span>最近执行状态：</span>{enumStatusText[taskStatus]}
+                                                </Col>
+                                                <Col>
+                                                    <Button type="primary">{enumButtonText[taskStatus]}</Button>
+                                                </Col>
+                                            </Row>
                                         </div>
                                     </Col>
                                 </Row>
+                                <Steps size="small"
+                                       status={enumStatus[taskStatus]}
+                                       labelPlacement="vertical"
+                                       current={taskStatus}>
+                                    <Step title="开始"></Step>
+                                   
+                                    {finalStep.map((item, index) => {
+                                        return <Step title={enumStepsText[item[0]].title}  key={index} description={
+                                            item[1].map((item,index)=>{
+                                                console.log(item)
+                                                return <Card
+                                                    style={{width: 180, 'margin-left': '-40%'}}
+                                                    title={item.stepName}
+                                                    extra={<a href="#">编辑</a>}
+                                                    key={index}
+                                                >
+                                                    <p>{item.stepDesc}</p>
+                                                </Card>
+                                            })
+
+                                        }>
+
+                                        </Step>
+                                    })}
+                                    {/*<Step title="构建阶段" description={<div>*/}
+                                        {/*<Card*/}
+                                            {/*style={{width: 180, 'margin-left': '-40%'}}*/}
+                                            {/*title="source code"*/}
+                                            {/*extra={<a href="#">More</a>}*/}
+                                        {/*>*/}
+                                            {/*<p>Card content</p>*/}
+                                        {/*</Card>*/}
+                                        {/*<Card*/}
+                                            {/*style={{width: 180, 'margin-left': '-40%'}}*/}
+                                            {/*title="scan code"*/}
+                                            {/*extra={<a href="#">More</a>}*/}
+
+                                        {/*>*/}
+                                            {/*<p>Card content</p>*/}
+                                        {/*</Card>*/}
+                                        {/*<Card*/}
+                                            {/*style={{width: 180, 'margin-left': '-40%'}}*/}
+                                            {/*title="compile"*/}
+                                            {/*extra={<a href="#">More</a>}*/}
+
+                                        {/*>*/}
+                                            {/*<p>Card content</p>*/}
+                                        {/*</Card>*/}
+                                    {/*</div>}></Step>*/}
+                                    {/*<Step title="测试阶段" description={<div>*/}
+                                        {/*<Card*/}
+                                            {/*style={{width: 180, 'margin-left': '-40%'}}*/}
+                                            {/*title="source code"*/}
+                                            {/*extra={<a href="#">More</a>}*/}
+                                        {/*>*/}
+                                            {/*<p>Card content</p>*/}
+                                        {/*</Card>*/}
+                                        {/*<Card*/}
+                                            {/*style={{width: 180, 'margin-left': '-40%'}}*/}
+                                            {/*title="scan code"*/}
+                                            {/*extra={<a href="#">More</a>}*/}
+
+                                        {/*>*/}
+                                            {/*<p>Card content</p>*/}
+                                        {/*</Card>*/}
+                                        {/*<Card*/}
+                                            {/*style={{width: 180, 'margin-left': '-40%'}}*/}
+                                            {/*title="compile"*/}
+                                            {/*extra={<a href="#">More</a>}*/}
+
+                                        {/*>*/}
+                                            {/*<p>Card content</p>*/}
+                                        {/*</Card>*/}
+                                    {/*</div>}></Step>*/}
+                                    {/*<Step title="部署阶段" description={<div>*/}
+                                        {/*<Card*/}
+                                            {/*style={{width: 180, 'margin-left': '-40%'}}*/}
+                                            {/*title="source code"*/}
+                                            {/*extra={<a href="#">More</a>}*/}
+                                        {/*>*/}
+                                            {/*<p>Card content</p>*/}
+                                        {/*</Card>*/}
+                                        {/*<Card*/}
+                                            {/*style={{width: 180, 'margin-left': '-40%'}}*/}
+                                            {/*title="scan code"*/}
+                                            {/*extra={<a href="#">More</a>}*/}
+
+                                        {/*>*/}
+                                            {/*<p>Card content</p>*/}
+                                        {/*</Card>*/}
+                                        {/*<Card*/}
+                                            {/*style={{width: 180, 'margin-left': '-40%'}}*/}
+                                            {/*title="compile"*/}
+                                            {/*extra={<a href="#">More</a>}*/}
+
+                                        {/*>*/}
+                                            {/*<p>Card content</p>*/}
+                                        {/*</Card>*/}
+                                    {/*</div>}></Step>*/}
+                                    <Step title="完成" description={<div></div>}></Step>
+                                </Steps>
                             </div>
 
                         </div>
