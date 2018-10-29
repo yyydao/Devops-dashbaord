@@ -246,7 +246,7 @@ class Pipeline extends Component {
                 </Breadcrumb>
 
                 <div className="pipeline-menu">
-                    <Button type="primary" onClick={this.toAddPipeline}>新增流水线</Button>
+                    <Button type="primary"><Link to={`/pipeline/add`}>新增流水线</Link></Button>
                 </div>
                 <section className="pipeline-box">
                     <section className="pipeline-main">
