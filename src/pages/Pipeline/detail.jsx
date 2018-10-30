@@ -3,12 +3,11 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import './index.scss'
 import { reqPost, reqGet } from '@/api/api'
-import filter from 'lodash.filter'
 import toPairs from 'lodash.topairs'
 import uniq from 'lodash.uniq'
 import { Chart, Geom, Axis, Tooltip, Legend, Coord } from 'bizcharts';
 
-import { Steps, Breadcrumb, Card, Button, Icon, Collapse, Row, Col, Select } from 'antd'
+import { Steps, Breadcrumb, Card, Button, Icon, Collapse, Row, Col, Select, Menu, Dropdown } from 'antd'
 import { Radio } from 'antd/lib/radio'
 
 const BreadcrumbItem = Breadcrumb.Item
@@ -157,6 +156,17 @@ let HistoryOption = []
 for (let i = 0; i < pipelineHistoryList.length; i++) {
     HistoryOption.push(<Option key={pipelineHistoryList[i]}>{pipelineHistoryList[i]}</Option>)
 }
+
+const menu = (
+    <Menu>
+        <Menu.Item>
+            <a target="_blank" rel="noopener noreferrer" href="http://www.alipay.com/">编辑任务</a>
+        </Menu.Item>
+        <Menu.Item>
+            <a target="_blank" rel="noopener noreferrer" href="http://www.taobao.com/">删除任务</a>
+        </Menu.Item>
+    </Menu>
+);
 
 class pipelineDetail extends Component {
     constructor (props) {
@@ -398,13 +408,17 @@ class pipelineDetail extends Component {
                                             item[1].map((item, index) => {
                                                 // console.log(item)
                                                 return <Card
-                                                    style={{width: 180, marginLeft: '-40%'}}
-                                                    title={item.stepName}
-                                                    extra={<a href="#">编辑</a>}
-                                                    key={index}
-                                                >
-                                                    <p>{item.stepDesc}</p>
-                                                </Card>
+                                                        style={{width: 180, marginLeft: '-40%'}}
+                                                        title={item.stepName}
+                                                        extra={<Dropdown overlay={menu} placement="bottomCenter">
+                                                            <Icon type="setting" theme="outlined" />
+                                                        </Dropdown>}
+                                                        key={index}
+                                                    >
+                                                        <p>{item.stepDesc}</p>
+                                                    </Card>
+
+
                                             })
 
                                         }>

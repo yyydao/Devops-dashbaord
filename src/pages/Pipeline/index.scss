@@ -57,7 +57,7 @@
       border: 1px solid #eee;
     }
   }
-
+  
   &-task-list {
     .ant-modal-footer {
       display: none;
@@ -145,6 +145,9 @@
     margin: 0 0 16px;
     -webkit-transition: all .2s;
     transition: all .2s;
+    .ant-form:not(.ant-form-inline):not(.ant-form-vertical){
+      max-width: 800px;
+    }
   }
 
   &-main {

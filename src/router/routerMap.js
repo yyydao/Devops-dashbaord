@@ -12,6 +12,7 @@ import PerformanceConfigManager from '@/pages/Setting/ConfigManager/PerformanceC
 import Pipeline from '@/pages/Pipeline'
 import PipelineDetail from '@/pages/Pipeline/detail'
 import PipelineAdd from '@/pages/Pipeline/add'
+import pipelineTask from '@/pages/Pipeline/task'
 
 import Performance from '@/pages/Test/Performance';
 import Package from '@/pages/Package/';
@@ -106,5 +107,10 @@ export default [
         path: '/pipeline/add',
         name: 'PipelineAdd',
         component: PipelineAdd
+    },
+    {
+        path: '/pipeline/task',
+        name: 'pipelineTask',
+        component: pipelineTask
     }
 ]

@@ -24,7 +24,7 @@ import {
     Row,
     Col,
     Select,
-    Modal, TimePicker
+    Modal, TimePicker, Table
 } from 'antd'
 
 const AutoCompleteOption = AutoComplete.Option;
@@ -52,6 +52,104 @@ const enumStepsText = [{
     content: 'Last-content',
 }]
 
+const enumStatus = {
+    1: 'wait',
+    2: 'process',
+    3: 'finish',
+    4: 'error'
+}
+const enumStatusText = {
+    1: '未开始',
+    2: '执行中',
+    3: '成功',
+    4: '失败'
+}
+
+const enumButtonType = {
+    1: 'wait',
+    2: 'process',
+    3: 'finish',
+    4: 'error'
+}
+
+const enumButtonText = {
+    1: '开始执行',
+    2: '执行中',
+    3: '开始执行',
+    4: '开始执行'
+}
+
+const taskList = {
+    'projectID': 63,
+    'taskCode': 'td1539673436803',
+    'taskName': '测试',
+    'jenkinsJob': 'TuandaiAS2-develop-v4',
+    'taskStatus': 1,
+    'exexTime': 0,
+    'lastExecTime': 0,
+    'createTime': '2018-10-16 15:03:56.0',
+    'updateTime': '2018-10-16 15:03:56.0'
+}
+
+const StepList = [
+    {
+        'stepID': '0923691354af43ed8afd27d832069f37L27SA3',
+        'stepCategory': 1,
+        'stepCode': 2,
+        'stepName': '静态扫描',
+        'stepDesc': '静态扫描',
+        'webHook': 'www.baidu.com',
+        'stepParams': '[{"json_jsonParams":21232,"type":1},{"build_compileType":"wasd","type":2}]',
+        'paramSource': 2,
+        'execTime': 0,
+        'createTime': '2018-10-16 15:03:57.0',
+        'updateTime': '2018-10-16 15:03:57.0',
+        'remark': ''
+    },
+    {
+        'stepID': '0923691354af43ed8afd27d832069f37L27SA3',
+        'stepCategory': 1,
+        'stepCode': 2,
+        'stepName': '静态扫描',
+        'stepDesc': '静态扫描',
+        'webHook': 'www.baidu.com',
+        'stepParams': '[{"json_jsonParams":21232,"type":1},{"build_compileType":"wasd","type":2}]',
+        'paramSource': 2,
+        'execTime': 0,
+        'createTime': '2018-10-16 15:03:57.0',
+        'updateTime': '2018-10-16 15:03:57.0',
+        'remark': ''
+    },
+    {
+        'stepID': '0923691354af43ed8afd27d832069f37L27SA3',
+        'stepCategory': 2,
+        'stepCode': 2,
+        'stepName': '静态扫描',
+        'stepDesc': '静态扫描',
+        'webHook': 'www.baidu.com',
+        'stepParams': '[{"json_jsonParams":21232,"type":1},{"build_compileType":"wasd","type":2}]',
+        'paramSource': 2,
+        'execTime': 0,
+        'createTime': '2018-10-16 15:03:57.0',
+        'updateTime': '2018-10-16 15:03:57.0',
+        'remark': ''
+    },
+    {
+        'stepID': '0923691354af43ed8afd27d832069f37L27SA3',
+        'stepCategory': 3,
+        'stepCode': 2,
+        'stepName': '静态扫描',
+        'stepDesc': '静态扫描',
+        'webHook': 'www.baidu.com',
+        'stepParams': '[{"json_jsonParams":21232,"type":1},{"build_compileType":"wasd","type":2}]',
+        'paramSource': 2,
+        'execTime': 0,
+        'createTime': '2018-10-16 15:03:57.0',
+        'updateTime': '2018-10-16 15:03:57.0',
+        'remark': ''
+    }
+]
+
 const initialStep = [
     [1,[]],
     [2,[]],
@@ -72,13 +170,46 @@ const pipelineID= [
     {id: -1 ,name:"自定义"},
 ]
 
-class Add extends Component {
+
+class taskAdd extends Component {
     constructor (props) {
         super(props)
-
+        this.columns = [
+            {
+                title: '字段',
+                dataIndex: 'json_jsonParams',
+                key: 'json_jsonParams'
+            },
+            {
+                title: '类型',
+                dataIndex: 'type',
+                key: 'type'
+            },
+            {
+                title: '值',
+                dataIndex: 'paramSource',
+                key: 'paramSource'
+            },
+            {
+                title: '操作',
+                dataIndex: 'isPackageDefault',
+                key: 'isPackageDefault',
+                render: (text, record) => {
+                    return (
+                        <Select value={text} onChange={(value) => this.handlePackageChange(value, record)}>
+                            <Option value={0}>否</Option>
+                            <Option value={1}>是</Option>
+                        </Select>
+                    )
+                }
+            }
+        ];
         this.state = {
+            data: [],
             confirmDirty: false,
             autoCompleteResult: [],
+            finalStep: [],
+            loading: false,
         }
     }
 
@@ -135,6 +266,12 @@ class Add extends Component {
         this.setState({ autoCompleteResult });
     }
 
+    handleTableChange = (pagination, filters, sorter) => {
+        const params = { ...this.state.params };
+        params.pageNum = pagination.current;
+        this.setState({ params }, this.getBranchList);
+    }
+
     addTask = (categoryID)=> {
         console.log(categoryID)
     }
@@ -148,6 +285,8 @@ class Add extends Component {
     render() {
         const { getFieldDecorator } = this.props.form;
         const { autoCompleteResult,
+            data,
+            loading,
             addVisible,
             addConfirmLoading,
             projectID,
@@ -203,22 +342,6 @@ class Add extends Component {
 
         return (
             <div id="pipeline-add">
-                <Modal title="创建任务"
-                       visible={true}
-                       onOk={this.addItem}
-                       confirmLoading={addConfirmLoading}
-                       onCancel={this.hideModal}
-                       maskClosable={false}
-                       destroyOnClose={true}
-                >
-                    <Card>
-                        {pipelineID.map((item,index) => {
-                            return <Card.Grid key={index} style={gridStyle}>{item.name}</Card.Grid>
-                        })}
-
-                    </Card>
-
-                </Modal>
 
                 <Breadcrumb className="devops-breadcrumb">
                     <BreadcrumbItem><Link to="/home">首页</Link></BreadcrumbItem>
@@ -229,7 +352,7 @@ class Add extends Component {
                     <Form onSubmit={this.handleSubmit}>
                         <FormItem
                             {...formItemLayout}
-                            label="流水线名称"
+                            label="任务名称"
                         >
                             {getFieldDecorator('email', {
                                 rules: [{
@@ -243,7 +366,7 @@ class Add extends Component {
                         </FormItem>
                         <FormItem
                             {...formItemLayout}
-                            label="执行分支"
+                            label="任务描述"
                         >
                             {getFieldDecorator('password', {
                                 rules: [{
@@ -252,15 +375,13 @@ class Add extends Component {
                                     validator: this.validateToNextPassword,
                                 }],
                             })(
-                                <Select placeholder="Please select a country">
-                                    <Option value="china">China</Option>
-                                    <Option value="use">U.S.A</Option>
-                                </Select>
+
+                                <Input />
                             )}
                         </FormItem>
                         <FormItem
                             {...formItemLayout}
-                            label="Jenkins Job"
+                            label="webhook"
                         >
                             {getFieldDecorator('confirm', {
                                 rules: [{
@@ -269,72 +390,26 @@ class Add extends Component {
                                     validator: this.compareToFirstPassword,
                                 }],
                             })(
-                                <Input type="password" onBlur={this.handleConfirmBlur} />
+                                <Input/>
                             )}
                         </FormItem>
                         <FormItem
                             {...formItemLayout}
-                            label="钉钉消息："
+                            label="运行参数"
                         >
-                            {getFieldDecorator('switch', { valuePropName: 'checked' })(
-                                <Switch />
-                            )}
-                        </FormItem>
-                        <FormItem
-                            {...formItemLayout}
-                            label="选择流水线节点"
-                        >
+                            <Table columns={this.columns} dataSource={data} loading={loading} rowKey={record => record.id} onChange={this.handleTableChange}></Table>
                         </FormItem>
 
-                        <div className="pipeline-item-content">
-
-
-                            <Steps size="small"  labelPlacement="vertical" current={taskStatus}>
-                                <Step title="开始"></Step>
-                                {/*{enumStepsText.map((item,index) => <Step key={index} title={item.title}/>)}*/}
-                                {initialStep.map((item, index) => {
-                                    return <Step title={enumStepsText[item[0]].title} key={index} description={<div>
-                                    {item[1].map((item, index) => {
-                                            // console.log(item)
-                                            return <Card
-                                                style={{width: 180, marginLeft: '-40%'}}
-                                                title={item.stepName}
-                                                extra={<Icon type="setting" theme="outlined" />}
-                                                key={index}
-                                            >
-                                                <p>{item.stepDesc}</p>
-                                            </Card>
-                                        })}
-                                        <Button icon="plus" type="default" onClick={() => {
-                                            this.showModal(item[0])
-                                        }}>添加任务</Button>
-                                    </div>
-                                    }>
-
-                                    </Step>
-                                })}
-                                <Step title="完成" description={<div></div>}></Step>
-                            </Steps>
-                        </div>
                         <FormItem {...tailFormItemLayout}>
-                            <Button type="primary" htmlType="submit">保持</Button>
+                            <Button type="primary" htmlType="submit">保存</Button>
                         </FormItem>
                     </Form>
-                    <section className="pipeline-main">
-                        <div className="pipeline-item">
-
-
-
-
-
-                        </div>
-                    </section>
                 </section>
             </div>
         )
     }
 }
-const pipelineAdd = Form.create()(Add);
+const pipelineTask = Form.create()(taskAdd);
 
 
-export default pipelineAdd
+export default pipelineTask
