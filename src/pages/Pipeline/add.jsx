@@ -3,17 +3,12 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import './index.scss'
 import { reqPost, reqGet } from '@/api/api'
-import toPairs from 'lodash.topairs'
-import uniq from 'lodash.uniq'
 
 import {
     Steps,
     Form,
     Input,
-    Checkbox,
     Radio,
-    Tooltip,
-    Cascader,
     AutoComplete,
     Breadcrumb,
     Switch,
@@ -21,10 +16,8 @@ import {
     Button,
     Icon,
     Collapse,
-    Row,
-    Col,
     Select,
-    Modal, TimePicker
+    Modal, message
 } from 'antd'
 
 const AutoCompleteOption = AutoComplete.Option
@@ -79,6 +72,8 @@ class Add extends Component {
         this.state = {
             confirmDirty: false,
             autoCompleteResult: [],
+            branchList: [],
+            formDataBranch: null
         }
     }
 
@@ -99,23 +94,58 @@ class Add extends Component {
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 console.log('Received values of form: ', values)
+                reqPost('/pipeline/addtask', {projectID: this.props.projectId,...values}).then(res => {
+                    if(parseInt(res.code, 0) === 0){
+                        message.success('项目新增成功！');
+                        // this.setState({ proModalVisible: false });
+                        // this.props.form.resetFields();
+                        // this.getTableData();
+                    }else{
+                        message.error(res.msg);
+                    }
+                })
+            }
+        })
+
+    }
+
+    //获取分支列表
+    getBranchList = (value='') => {
+        reqPost('/branch/selectBranch', {
+            projectId: this.props.projectId,
+            branchName: value,
+            pageSize: 100,
+            pageNum: 1,
+            type: 1,
+            search: value ? 1 : ''
+        }).then(res => {
+            if (res.code === 0) {
+                this.setState({
+                    branchList: res.data
+                })
+                //
+                // this.setState({
+                //
+                // });
             }
         })
     }
 
-    handleConfirmBlur = (e) => {
-        const value = e.target.value
-        this.setState({confirmDirty: this.state.confirmDirty || !!value})
+    //修改选中分支
+    changeBranch = (formDataBranch) => {
+        console.log(formDataBranch)
+        this.setState({
+            formDataBranch
+        });
     }
 
-    toTask = (categoryID) => {
-        console.log(categoryID)
-    }
 
     componentWillMount () {
+
     }
 
     componentDidMount () {
+        this.getBranchList();
     }
 
     render () {
@@ -123,6 +153,8 @@ class Add extends Component {
         const {
             addVisible,
             addConfirmLoading,
+            branchList,
+            formDataBranch,
             projectID,
             taskCode,
             taskName,
@@ -202,7 +234,7 @@ class Add extends Component {
                             {...formItemLayout}
                             label="流水线名称"
                         >
-                            {getFieldDecorator('email', {
+                            {getFieldDecorator('taskName', {
                                 rules: [{ required: true, message: '请输入' }]
                             })(
                                 <Input/>
@@ -212,12 +244,19 @@ class Add extends Component {
                             {...formItemLayout}
                             label="执行分支"
                         >
-                            {getFieldDecorator('password', {
-                                rules: [{ required: true, message: '请输入' }]
+                            {getFieldDecorator('branchID', {
+                                rules: [{ required: true, message: '请选择开发分支' }]
                             })(
-                                <Select placeholder="Please select a country">
-                                    <Option value="china">China</Option>
-                                    <Option value="use">U.S.A</Option>
+                                <Select placeholder="请选择开发分支"
+                                        showSearch
+                                        onSearch={this.getBranchList}
+                                        onChange={this.changeBranch}
+                                        style={{ width: 300 }}>
+                                    {
+                                        this.state.branchList.map((item) => {
+                                            return <Option value={item.id} key={item.id} title={item.name}>{item.name}</Option>
+                                        })
+                                    }
                                 </Select>
                             )}
                         </FormItem>
@@ -225,17 +264,17 @@ class Add extends Component {
                             {...formItemLayout}
                             label="Jenkins Job"
                         >
-                            {getFieldDecorator('confirm', {
+                            {getFieldDecorator('jenkinsJob', {
                                 rules: [{ required: true, message: '请输入' }]
                             })(
-                                <Input type="password" onBlur={this.handleConfirmBlur}/>
+                                <Input/>
                             )}
                         </FormItem>
                         <FormItem
                             {...formItemLayout}
                             label="钉钉消息："
                         >
-                            {getFieldDecorator('switch', {valuePropName: 'checked'})(
+                            {getFieldDecorator('ddStatus', {valuePropName: 'checked'})(
                                 <Switch/>
                             )}
                         </FormItem>
@@ -243,6 +282,9 @@ class Add extends Component {
                             {...formItemLayout}
                             label="选择流水线节点"
                         >
+                            {getFieldDecorator('steps', {initialValue:[]})(
+                                <Switch/>
+                            )}
                         </FormItem>
 
                         <div className="pipeline-item-content">
@@ -276,7 +318,7 @@ class Add extends Component {
                             </Steps>
                         </div>
                         <FormItem {...tailFormItemLayout}>
-                            <Button type="primary" htmlType="submit">保持</Button>
+                            <Button type="primary" htmlType="submit">保存</Button>
                         </FormItem>
                     </Form>
                     <section className="pipeline-main">

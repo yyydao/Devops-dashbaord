@@ -204,27 +204,22 @@ class Pipeline extends Component {
     }
 
     getPipelineList = () => {
-        // reqGet('/pipeline/tasklist', {
-        //     projectID: this.props.projectId,
-        //     page: 1,
-        //     limit: 20,
-        // }).then((res) => {
-        //     console.log(res)
-        //     if (res.code === 0) {
-        //         this.setState({
-        //             // pipelineList: res.tasks
-        //             pipelineList: pipelineList
-        //         })
-        //     }
-        // })
-        this.setState({
-            pipelineList: pipelineList
+        reqGet('/pipeline/tasklist', {
+            projectID: this.props.projectId,
+            page: 1,
+            limit: 20,
+        }).then((res) => {
+            console.log(res)
+            if (res.code === 0) {
+                this.setState({
+                    // pipelineList: res.tasks
+                    pipelineList: pipelineList
+                })
+            }
         })
-    }
-
-    //
-    toAddPipeline = () => {
-
+        // this.setState({
+        //     pipelineList: pipelineList
+        // })
     }
 
     componentWillMount () {
