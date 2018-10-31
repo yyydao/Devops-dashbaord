@@ -27,149 +27,27 @@ import {
     Modal, TimePicker, Table
 } from 'antd'
 
-const AutoCompleteOption = AutoComplete.Option;
+const AutoCompleteOption = AutoComplete.Option
 const BreadcrumbItem = Breadcrumb.Item
 const Step = Steps.Step
 const Panel = Collapse.Panel
 const Option = Select.Option
-const FormItem = Form.Item;
-const RadioGroup = Radio.Group;
+const FormItem = Form.Item
+const RadioGroup = Radio.Group
 
-const enumStepsText = [{
-    title: '开始',
-    content: 'First-content',
-}, {
-    title: '构建阶段',
-    content: 'Second-content',
-}, {
-    title: '测试阶段',
-    content: 'Last-content',
-}, {
-    title: '部署阶段',
-    content: 'Second-content',
-}, {
-    title: '完成',
-    content: 'Last-content',
-}]
-
-const enumStatus = {
-    1: 'wait',
-    2: 'process',
-    3: 'finish',
-    4: 'error'
-}
-const enumStatusText = {
-    1: '未开始',
-    2: '执行中',
-    3: '成功',
-    4: '失败'
-}
-
-const enumButtonType = {
-    1: 'wait',
-    2: 'process',
-    3: 'finish',
-    4: 'error'
-}
-
-const enumButtonText = {
-    1: '开始执行',
-    2: '执行中',
-    3: '开始执行',
-    4: '开始执行'
-}
-
-const taskList = {
-    'projectID': 63,
-    'taskCode': 'td1539673436803',
-    'taskName': '测试',
-    'jenkinsJob': 'TuandaiAS2-develop-v4',
-    'taskStatus': 1,
-    'exexTime': 0,
-    'lastExecTime': 0,
-    'createTime': '2018-10-16 15:03:56.0',
-    'updateTime': '2018-10-16 15:03:56.0'
-}
-
-const StepList = [
-    {
-        'stepID': '0923691354af43ed8afd27d832069f37L27SA3',
-        'stepCategory': 1,
-        'stepCode': 2,
-        'stepName': '静态扫描',
-        'stepDesc': '静态扫描',
-        'webHook': 'www.baidu.com',
-        'stepParams': '[{"json_jsonParams":21232,"type":1},{"build_compileType":"wasd","type":2}]',
-        'paramSource': 2,
-        'execTime': 0,
-        'createTime': '2018-10-16 15:03:57.0',
-        'updateTime': '2018-10-16 15:03:57.0',
-        'remark': ''
-    },
-    {
-        'stepID': '0923691354af43ed8afd27d832069f37L27SA3',
-        'stepCategory': 1,
-        'stepCode': 2,
-        'stepName': '静态扫描',
-        'stepDesc': '静态扫描',
-        'webHook': 'www.baidu.com',
-        'stepParams': '[{"json_jsonParams":21232,"type":1},{"build_compileType":"wasd","type":2}]',
-        'paramSource': 2,
-        'execTime': 0,
-        'createTime': '2018-10-16 15:03:57.0',
-        'updateTime': '2018-10-16 15:03:57.0',
-        'remark': ''
-    },
-    {
-        'stepID': '0923691354af43ed8afd27d832069f37L27SA3',
-        'stepCategory': 2,
-        'stepCode': 2,
-        'stepName': '静态扫描',
-        'stepDesc': '静态扫描',
-        'webHook': 'www.baidu.com',
-        'stepParams': '[{"json_jsonParams":21232,"type":1},{"build_compileType":"wasd","type":2}]',
-        'paramSource': 2,
-        'execTime': 0,
-        'createTime': '2018-10-16 15:03:57.0',
-        'updateTime': '2018-10-16 15:03:57.0',
-        'remark': ''
-    },
-    {
-        'stepID': '0923691354af43ed8afd27d832069f37L27SA3',
-        'stepCategory': 3,
-        'stepCode': 2,
-        'stepName': '静态扫描',
-        'stepDesc': '静态扫描',
-        'webHook': 'www.baidu.com',
-        'stepParams': '[{"json_jsonParams":21232,"type":1},{"build_compileType":"wasd","type":2}]',
-        'paramSource': 2,
-        'execTime': 0,
-        'createTime': '2018-10-16 15:03:57.0',
-        'updateTime': '2018-10-16 15:03:57.0',
-        'remark': ''
-    }
+const pipelineID = [
+    {id: 0, name: '代码拉取'},
+    {id: 1, name: '单元测试'},
+    {id: 2, name: '静态扫描'},
+    {id: 3, name: '编译打包'},
+    {id: 4, name: '安全扫描'},
+    {id: 5, name: 'UI测试'},
+    {id: 6, name: '性能测试'},
+    {id: 7, name: '加固'},
+    {id: 8, name: '补丁'},
+    {id: 9, name: '包管理'},
+    {id: -1, name: '自定义'},
 ]
-
-const initialStep = [
-    [1,[]],
-    [2,[]],
-    [3,[]]
-]
-
-const pipelineID= [
-    {id: 0 ,name:"代码拉取"},
-    {id: 1 ,name:"单元测试"},
-    {id: 2 ,name:"静态扫描"},
-    {id: 3 ,name:"编译打包"},
-    {id: 4 ,name:"安全扫描"},
-    {id: 5 ,name:"UI测试"},
-    {id: 6 ,name:"性能测试"},
-    {id: 7 ,name:"加固"},
-    {id: 8 ,name:"补丁"},
-    {id: 9 ,name:"包管理"},
-    {id: -1 ,name:"自定义"},
-]
-
 
 class taskAdd extends Component {
     constructor (props) {
@@ -203,7 +81,7 @@ class taskAdd extends Component {
                     )
                 }
             }
-        ];
+        ]
         this.state = {
             data: [],
             confirmDirty: false,
@@ -217,98 +95,76 @@ class taskAdd extends Component {
     showModal = () => {
         this.setState({
             addVisible: true
-        });
+        })
     }
     hideModal = () => {
         this.setState({
             addVisible: false
-        });
+        })
     }
 
     handleSubmit = (e) => {
-        e.preventDefault();
+        e.preventDefault()
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-                console.log('Received values of form: ', values);
+                console.log('Received values of form: ', values)
             }
-        });
-    }
-
-    handleConfirmBlur = (e) => {
-        const value = e.target.value;
-        this.setState({ confirmDirty: this.state.confirmDirty || !!value });
-    }
-
-    compareToFirstPassword = (rule, value, callback) => {
-        const form = this.props.form;
-        if (value && value !== form.getFieldValue('password')) {
-            callback('Two passwords that you enter is inconsistent!');
-        } else {
-            callback();
-        }
-    }
-
-    validateToNextPassword = (rule, value, callback) => {
-        const form = this.props.form;
-        if (value && this.state.confirmDirty) {
-            form.validateFields(['confirm'], { force: true });
-        }
-        callback();
-    }
-
-    handleWebsiteChange = (value) => {
-        let autoCompleteResult;
-        if (!value) {
-            autoCompleteResult = [];
-        } else {
-            autoCompleteResult = ['.com', '.org', '.net'].map(domain => `${value}${domain}`);
-        }
-        this.setState({ autoCompleteResult });
+        })
     }
 
     handleTableChange = (pagination, filters, sorter) => {
-        const params = { ...this.state.params };
-        params.pageNum = pagination.current;
-        this.setState({ params }, this.getBranchList);
-    }
-
-    addTask = (categoryID)=> {
-        console.log(categoryID)
+        const params = {...this.state.params}
+        params.pageNum = pagination.current
+        this.setState({params}, this.getBranchList)
     }
 
     componentWillMount () {
+
     }
 
     componentDidMount () {
+        let taskID, disabled = false,taskName = ''
+        if (this.props.location.state) {
+            taskID = this.props.location.state.taskID
+
+        }
+        if (taskID !== -1) {
+            disabled = true
+        }
+
+
+        for (let i = 0; i < pipelineID.length; i++) {
+            const pipelineIDElement = pipelineID[i]
+            if (pipelineIDElement.id === taskID && taskID !== -1) {
+                taskName = pipelineIDElement.name
+            }
+        }
+        this.props.form.setFieldsValue({
+            name: taskName,
+        })
+
+        this.setState({disabled})
     }
 
-    render() {
-        const { getFieldDecorator } = this.props.form;
-        const { autoCompleteResult,
+    render () {
+        const {getFieldDecorator} = this.props.form
+        const {
             data,
             loading,
-            addVisible,
-            addConfirmLoading,
-            projectID,
-            taskCode,
-            taskName,
-            jenkinsJob,
-            taskStatus,
-            exexTime,
-            lastExecTime,
-            finalStep,
-            currentJob} = this.state;
+            taskID,
+            disabled
+        } = this.state
 
         const formItemLayout = {
             labelCol: {
-                xs: { span: 24 },
-                sm: { span: 8 },
+                xs: {span: 24},
+                sm: {span: 8},
             },
             wrapperCol: {
-                xs: { span: 24 },
-                sm: { span: 16 },
+                xs: {span: 24},
+                sm: {span: 16},
             },
-        };
+        }
         const tailFormItemLayout = {
             wrapperCol: {
                 xs: {
@@ -320,25 +176,7 @@ class taskAdd extends Component {
                     offset: 8,
                 },
             },
-        };
-        const prefixSelector = getFieldDecorator('prefix', {
-            initialValue: '86',
-        })(
-            <Select style={{ width: 70 }}>
-                <Option value="86">+86</Option>
-                <Option value="87">+87</Option>
-            </Select>
-        );
-
-        const websiteOptions = autoCompleteResult.map(website => (
-            <AutoCompleteOption key={website}>{website}</AutoCompleteOption>
-        ));
-
-        const gridStyle = {
-            width: '25%',
-            textAlign: 'center',
-        };
-
+        }
 
         return (
             <div id="pipeline-add">
@@ -354,14 +192,10 @@ class taskAdd extends Component {
                             {...formItemLayout}
                             label="任务名称"
                         >
-                            {getFieldDecorator('email', {
-                                rules: [{
-                                    type: 'text', message: 'The input is not valid E-mail!',
-                                }, {
-                                    required: true, message: 'Please input your E-mail!',
-                                }],
+                            {getFieldDecorator('name', {
+                                rules: [{required: true, message: '请输入'}]
                             })(
-                                <Input />
+                                <Input disabled={disabled}/>
                             )}
                         </FormItem>
                         <FormItem
@@ -369,14 +203,9 @@ class taskAdd extends Component {
                             label="任务描述"
                         >
                             {getFieldDecorator('password', {
-                                rules: [{
-                                    required: true, message: 'Please input your password!',
-                                }, {
-                                    validator: this.validateToNextPassword,
-                                }],
+                                rules: [{required: true, message: '请输入'}]
                             })(
-
-                                <Input />
+                                <Input disabled={disabled}/>
                             )}
                         </FormItem>
                         <FormItem
@@ -384,11 +213,7 @@ class taskAdd extends Component {
                             label="webhook"
                         >
                             {getFieldDecorator('confirm', {
-                                rules: [{
-                                    required: true, message: 'Please confirm your password!',
-                                }, {
-                                    validator: this.compareToFirstPassword,
-                                }],
+                                rules: [{required: true, message: '请输入'}]
                             })(
                                 <Input/>
                             )}
@@ -397,7 +222,8 @@ class taskAdd extends Component {
                             {...formItemLayout}
                             label="运行参数"
                         >
-                            <Table columns={this.columns} dataSource={data} loading={loading} rowKey={record => record.id} onChange={this.handleTableChange}></Table>
+                            <Table columns={this.columns} dataSource={data} loading={loading}
+                                   rowKey={record => record.id} onChange={this.handleTableChange}></Table>
                         </FormItem>
 
                         <FormItem {...tailFormItemLayout}>
@@ -409,7 +235,13 @@ class taskAdd extends Component {
         )
     }
 }
-const pipelineTask = Form.create()(taskAdd);
 
+taskAdd = connect((state) => {
+    return {
+        projectId: state.projectId
+    }
+})(taskAdd)
+
+const pipelineTask = Form.create()(taskAdd)
 
 export default pipelineTask

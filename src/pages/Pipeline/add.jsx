@@ -27,13 +27,13 @@ import {
     Modal, TimePicker
 } from 'antd'
 
-const AutoCompleteOption = AutoComplete.Option;
+const AutoCompleteOption = AutoComplete.Option
 const BreadcrumbItem = Breadcrumb.Item
 const Step = Steps.Step
 const Panel = Collapse.Panel
 const Option = Select.Option
-const FormItem = Form.Item;
-const RadioGroup = Radio.Group;
+const FormItem = Form.Item
+const RadioGroup = Radio.Group
 
 const enumStepsText = [{
     title: '开始',
@@ -53,23 +53,23 @@ const enumStepsText = [{
 }]
 
 const initialStep = [
-    [1,[]],
-    [2,[]],
-    [3,[]]
+    [1, []],
+    [2, []],
+    [3, []]
 ]
 
-const pipelineID= [
-    {id: 0 ,name:"代码拉取"},
-    {id: 1 ,name:"单元测试"},
-    {id: 2 ,name:"静态扫描"},
-    {id: 3 ,name:"编译打包"},
-    {id: 4 ,name:"安全扫描"},
-    {id: 5 ,name:"UI测试"},
-    {id: 6 ,name:"性能测试"},
-    {id: 7 ,name:"加固"},
-    {id: 8 ,name:"补丁"},
-    {id: 9 ,name:"包管理"},
-    {id: -1 ,name:"自定义"},
+const pipelineID = [
+    {id: 0, name: '代码拉取'},
+    {id: 1, name: '单元测试'},
+    {id: 2, name: '静态扫描'},
+    {id: 3, name: '编译打包'},
+    {id: 4, name: '安全扫描'},
+    {id: 5, name: 'UI测试'},
+    {id: 6, name: '性能测试'},
+    {id: 7, name: '加固'},
+    {id: 8, name: '补丁'},
+    {id: 9, name: '包管理'},
+    {id: -1, name: '自定义'},
 ]
 
 class Add extends Component {
@@ -86,56 +86,29 @@ class Add extends Component {
     showModal = () => {
         this.setState({
             addVisible: true
-        });
+        })
     }
     hideModal = () => {
         this.setState({
             addVisible: false
-        });
+        })
     }
 
     handleSubmit = (e) => {
-        e.preventDefault();
+        e.preventDefault()
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-                console.log('Received values of form: ', values);
+                console.log('Received values of form: ', values)
             }
-        });
+        })
     }
 
     handleConfirmBlur = (e) => {
-        const value = e.target.value;
-        this.setState({ confirmDirty: this.state.confirmDirty || !!value });
+        const value = e.target.value
+        this.setState({confirmDirty: this.state.confirmDirty || !!value})
     }
 
-    compareToFirstPassword = (rule, value, callback) => {
-        const form = this.props.form;
-        if (value && value !== form.getFieldValue('password')) {
-            callback('Two passwords that you enter is inconsistent!');
-        } else {
-            callback();
-        }
-    }
-
-    validateToNextPassword = (rule, value, callback) => {
-        const form = this.props.form;
-        if (value && this.state.confirmDirty) {
-            form.validateFields(['confirm'], { force: true });
-        }
-        callback();
-    }
-
-    handleWebsiteChange = (value) => {
-        let autoCompleteResult;
-        if (!value) {
-            autoCompleteResult = [];
-        } else {
-            autoCompleteResult = ['.com', '.org', '.net'].map(domain => `${value}${domain}`);
-        }
-        this.setState({ autoCompleteResult });
-    }
-
-    addTask = (categoryID)=> {
+    toTask = (categoryID) => {
         console.log(categoryID)
     }
 
@@ -145,9 +118,9 @@ class Add extends Component {
     componentDidMount () {
     }
 
-    render() {
-        const { getFieldDecorator } = this.props.form;
-        const { autoCompleteResult,
+    render () {
+        const {getFieldDecorator} = this.props.form
+        const {
             addVisible,
             addConfirmLoading,
             projectID,
@@ -158,18 +131,19 @@ class Add extends Component {
             exexTime,
             lastExecTime,
             finalStep,
-            currentJob} = this.state;
+            currentJob
+        } = this.state
 
         const formItemLayout = {
             labelCol: {
-                xs: { span: 24 },
-                sm: { span: 8 },
+                xs: {span: 24},
+                sm: {span: 8},
             },
             wrapperCol: {
-                xs: { span: 24 },
-                sm: { span: 16 },
+                xs: {span: 24},
+                sm: {span: 16},
             },
-        };
+        }
         const tailFormItemLayout = {
             wrapperCol: {
                 xs: {
@@ -181,30 +155,17 @@ class Add extends Component {
                     offset: 8,
                 },
             },
-        };
-        const prefixSelector = getFieldDecorator('prefix', {
-            initialValue: '86',
-        })(
-            <Select style={{ width: 70 }}>
-                <Option value="86">+86</Option>
-                <Option value="87">+87</Option>
-            </Select>
-        );
-
-        const websiteOptions = autoCompleteResult.map(website => (
-            <AutoCompleteOption key={website}>{website}</AutoCompleteOption>
-        ));
+        }
 
         const gridStyle = {
             width: '25%',
             textAlign: 'center',
-        };
-
+        }
 
         return (
             <div id="pipeline-add">
                 <Modal title="创建任务"
-                       visible={true}
+                       visible={addVisible}
                        onOk={this.addItem}
                        confirmLoading={addConfirmLoading}
                        onCancel={this.hideModal}
@@ -212,8 +173,18 @@ class Add extends Component {
                        destroyOnClose={true}
                 >
                     <Card>
-                        {pipelineID.map((item,index) => {
-                            return <Card.Grid key={index} style={gridStyle}>{item.name}</Card.Grid>
+                        {pipelineID.map((item, index) => {
+                            return (
+                                <Link key={index}
+                                      to={{
+                                          pathname: `/pipeline/task`,
+                                          state: {
+                                              taskID:item.id
+                                          }
+                                      }}>
+                                    <Card.Grid style={gridStyle}>{item.name}</Card.Grid>
+                                </Link>
+                            )
                         })}
 
                     </Card>
@@ -232,13 +203,9 @@ class Add extends Component {
                             label="流水线名称"
                         >
                             {getFieldDecorator('email', {
-                                rules: [{
-                                    type: 'text', message: 'The input is not valid E-mail!',
-                                }, {
-                                    required: true, message: 'Please input your E-mail!',
-                                }],
+                                rules: [{ required: true, message: '请输入' }]
                             })(
-                                <Input />
+                                <Input/>
                             )}
                         </FormItem>
                         <FormItem
@@ -246,11 +213,7 @@ class Add extends Component {
                             label="执行分支"
                         >
                             {getFieldDecorator('password', {
-                                rules: [{
-                                    required: true, message: 'Please input your password!',
-                                }, {
-                                    validator: this.validateToNextPassword,
-                                }],
+                                rules: [{ required: true, message: '请输入' }]
                             })(
                                 <Select placeholder="Please select a country">
                                     <Option value="china">China</Option>
@@ -263,21 +226,17 @@ class Add extends Component {
                             label="Jenkins Job"
                         >
                             {getFieldDecorator('confirm', {
-                                rules: [{
-                                    required: true, message: 'Please confirm your password!',
-                                }, {
-                                    validator: this.compareToFirstPassword,
-                                }],
+                                rules: [{ required: true, message: '请输入' }]
                             })(
-                                <Input type="password" onBlur={this.handleConfirmBlur} />
+                                <Input type="password" onBlur={this.handleConfirmBlur}/>
                             )}
                         </FormItem>
                         <FormItem
                             {...formItemLayout}
                             label="钉钉消息："
                         >
-                            {getFieldDecorator('switch', { valuePropName: 'checked' })(
-                                <Switch />
+                            {getFieldDecorator('switch', {valuePropName: 'checked'})(
+                                <Switch/>
                             )}
                         </FormItem>
                         <FormItem
@@ -289,17 +248,17 @@ class Add extends Component {
                         <div className="pipeline-item-content">
 
 
-                            <Steps size="small"  labelPlacement="vertical" current={taskStatus}>
+                            <Steps size="small" labelPlacement="vertical" current={taskStatus}>
                                 <Step title="开始"></Step>
                                 {/*{enumStepsText.map((item,index) => <Step key={index} title={item.title}/>)}*/}
                                 {initialStep.map((item, index) => {
                                     return <Step title={enumStepsText[item[0]].title} key={index} description={<div>
-                                    {item[1].map((item, index) => {
+                                        {item[1].map((item, index) => {
                                             // console.log(item)
                                             return <Card
                                                 style={{width: 180, marginLeft: '-40%'}}
                                                 title={item.stepName}
-                                                extra={<Icon type="setting" theme="outlined" />}
+                                                extra={<Icon type="setting" theme="outlined"/>}
                                                 key={index}
                                             >
                                                 <p>{item.stepDesc}</p>
@@ -322,11 +281,6 @@ class Add extends Component {
                     </Form>
                     <section className="pipeline-main">
                         <div className="pipeline-item">
-
-
-
-
-
                         </div>
                     </section>
                 </section>
@@ -334,7 +288,13 @@ class Add extends Component {
         )
     }
 }
-const pipelineAdd = Form.create()(Add);
 
+Add = connect((state) => {
+    return {
+        projectId: state.projectId
+    }
+})(Add);
+
+const pipelineAdd = Form.create()(Add)
 
 export default pipelineAdd

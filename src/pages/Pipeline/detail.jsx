@@ -281,17 +281,12 @@ class pipelineDetail extends Component {
 
     render () {
         const {
-            breadcrumbPath,
-            projectID,
             taskCode,
             taskName,
             jenkinsJob,
             taskStatus,
             exexTime,
             lastExecTime,
-            createTime,
-            updateTime,
-            stepList,
             finalStep,
             packageresult,
             currentJob
