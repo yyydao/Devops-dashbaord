@@ -4,29 +4,25 @@ import { Link } from 'react-router-dom'
 import './index.scss'
 import { reqPost, reqGet } from '@/api/api'
 
+import { setSteps } from '@/store/action'
+
 import {
     Steps,
     Form,
     Input,
-    Radio,
-    AutoComplete,
     Breadcrumb,
     Switch,
     Card,
     Button,
     Icon,
-    Collapse,
     Select,
     Modal, message
 } from 'antd'
 
-const AutoCompleteOption = AutoComplete.Option
 const BreadcrumbItem = Breadcrumb.Item
 const Step = Steps.Step
-const Panel = Collapse.Panel
 const Option = Select.Option
 const FormItem = Form.Item
-const RadioGroup = Radio.Group
 
 const enumStepsText = [{
     title: '开始',
@@ -44,12 +40,6 @@ const enumStepsText = [{
     title: '完成',
     content: 'Last-content',
 }]
-
-const initialStep = [
-    [1, []],
-    [2, []],
-    [3, []]
-]
 
 const pipelineID = [
     {id: 0, name: '代码拉取'},
@@ -73,14 +63,18 @@ class Add extends Component {
             confirmDirty: false,
             autoCompleteResult: [],
             branchList: [],
-            formDataBranch: null
+            formDataBranch: null,
+            stepCategory: 1,
+            stepsList: [[1, []], [2, []], [3, []]]
         }
     }
 
     //显示新建窗口
-    showModal = () => {
+    showModal = (stepCategory) => {
+        console.log(`stepCategory ${stepCategory}`)
         this.setState({
-            addVisible: true
+            addVisible: true,
+            stepCategory: stepCategory
         })
     }
     hideModal = () => {
@@ -94,14 +88,14 @@ class Add extends Component {
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 console.log('Received values of form: ', values)
-                reqPost('/pipeline/addtask', {projectID: this.props.projectId,...values}).then(res => {
-                    if(parseInt(res.code, 0) === 0){
-                        message.success('项目新增成功！');
+                reqPost('/pipeline/addtask', {projectID: this.props.projectId, ...values}).then(res => {
+                    if (parseInt(res.code, 0) === 0) {
+                        message.success('项目新增成功！')
                         // this.setState({ proModalVisible: false });
                         // this.props.form.resetFields();
                         // this.getTableData();
-                    }else{
-                        message.error(res.msg);
+                    } else {
+                        message.error(res.msg)
                     }
                 })
             }
@@ -110,7 +104,7 @@ class Add extends Component {
     }
 
     //获取分支列表
-    getBranchList = (value='') => {
+    getBranchList = (value = '') => {
         reqPost('/branch/selectBranch', {
             projectId: this.props.projectId,
             branchName: value,
@@ -136,16 +130,24 @@ class Add extends Component {
         console.log(formDataBranch)
         this.setState({
             formDataBranch
-        });
+        })
     }
-
 
     componentWillMount () {
 
+        let stepsList = localStorage.getItem('steps')
+        console.log()
+        console.log(Array.isArray(stepsList))
+        if (!stepsList) {
+            stepsList = [[1, []],
+                [2, []],
+                [3, []]]
+        }
+        this.setState({stepsList: JSON.parse(stepsList)})
     }
 
     componentDidMount () {
-        this.getBranchList();
+        this.getBranchList()
     }
 
     render () {
@@ -153,17 +155,9 @@ class Add extends Component {
         const {
             addVisible,
             addConfirmLoading,
-            branchList,
-            formDataBranch,
-            projectID,
-            taskCode,
-            taskName,
-            jenkinsJob,
             taskStatus,
-            exexTime,
-            lastExecTime,
-            finalStep,
-            currentJob
+            stepCategory,
+            stepsList
         } = this.state
 
         const formItemLayout = {
@@ -211,7 +205,8 @@ class Add extends Component {
                                       to={{
                                           pathname: `/pipeline/task`,
                                           state: {
-                                              taskID:item.id
+                                              taskID: item.id,
+                                              stepCategory: stepCategory
                                           }
                                       }}>
                                     <Card.Grid style={gridStyle}>{item.name}</Card.Grid>
@@ -235,7 +230,7 @@ class Add extends Component {
                             label="流水线名称"
                         >
                             {getFieldDecorator('taskName', {
-                                rules: [{ required: true, message: '请输入' }]
+                                rules: [{required: true, message: '请输入'}]
                             })(
                                 <Input/>
                             )}
@@ -245,16 +240,17 @@ class Add extends Component {
                             label="执行分支"
                         >
                             {getFieldDecorator('branchID', {
-                                rules: [{ required: true, message: '请选择开发分支' }]
+                                rules: [{required: true, message: '请选择开发分支'}]
                             })(
                                 <Select placeholder="请选择开发分支"
                                         showSearch
                                         onSearch={this.getBranchList}
                                         onChange={this.changeBranch}
-                                        style={{ width: 300 }}>
+                                        style={{width: 300}}>
                                     {
                                         this.state.branchList.map((item) => {
-                                            return <Option value={item.id} key={item.id} title={item.name}>{item.name}</Option>
+                                            return <Option value={item.id} key={item.id}
+                                                           title={item.name}>{item.name}</Option>
                                         })
                                     }
                                 </Select>
@@ -265,7 +261,7 @@ class Add extends Component {
                             label="Jenkins Job"
                         >
                             {getFieldDecorator('jenkinsJob', {
-                                rules: [{ required: true, message: '请输入' }]
+                                rules: [{required: true, message: '请输入'}]
                             })(
                                 <Input/>
                             )}
@@ -282,9 +278,6 @@ class Add extends Component {
                             {...formItemLayout}
                             label="选择流水线节点"
                         >
-                            {getFieldDecorator('steps', {initialValue:[]})(
-                                <Switch/>
-                            )}
                         </FormItem>
 
                         <div className="pipeline-item-content">
@@ -292,28 +285,28 @@ class Add extends Component {
 
                             <Steps size="small" labelPlacement="vertical" current={taskStatus}>
                                 <Step title="开始"></Step>
-                                {/*{enumStepsText.map((item,index) => <Step key={index} title={item.title}/>)}*/}
-                                {initialStep.map((item, index) => {
-                                    return <Step title={enumStepsText[item[0]].title} key={index} description={<div>
-                                        {item[1].map((item, index) => {
-                                            // console.log(item)
-                                            return <Card
-                                                style={{width: 180, marginLeft: '-40%'}}
-                                                title={item.stepName}
-                                                extra={<Icon type="setting" theme="outlined"/>}
-                                                key={index}
-                                            >
-                                                <p>{item.stepDesc}</p>
-                                            </Card>
-                                        })}
-                                        <Button icon="plus" type="default" onClick={() => {
-                                            this.showModal(item[0])
-                                        }}>添加任务</Button>
-                                    </div>
-                                    }>
-
-                                    </Step>
-                                })}
+                                {
+                                    stepsList.map((item, index) => {
+                                        return <Step title={enumStepsText[item[0]].title} key={index} description={<div>
+                                            {item[1].map((item, index) => {
+                                                // console.log(item)
+                                                return <Card
+                                                    style={{width: 180, marginLeft: '-40%'}}
+                                                    title={item.stepName}
+                                                    extra={<Icon type="setting" theme="outlined"/>}
+                                                    key={index}
+                                                >
+                                                    <p>{item.stepDesc}</p>
+                                                </Card>
+                                            })}
+                                            <Button icon="plus" type="default" onClick={() => {
+                                                this.showModal(item[0])
+                                            }}>添加任务</Button>
+                                        </div>
+                                        }>
+                                        </Step>
+                                    })
+                                }
                                 <Step title="完成" description={<div></div>}></Step>
                             </Steps>
                         </div>
@@ -335,7 +328,7 @@ Add = connect((state) => {
     return {
         projectId: state.projectId
     }
-})(Add);
+}, {setSteps})(Add)
 
 const pipelineAdd = Form.create()(Add)
 

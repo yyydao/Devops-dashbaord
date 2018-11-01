@@ -3,28 +3,21 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import './index.scss'
 import { reqPost, reqGet } from '@/api/api'
-import toPairs from 'lodash.topairs'
-import uniq from 'lodash.uniq'
+import { setSteps } from '@/store/action';
 
 import {
     Steps,
     Form,
     Input,
-    Checkbox,
     Radio,
-    Tooltip,
-    Cascader,
     AutoComplete,
     Breadcrumb,
-    Switch,
-    Card,
     Button,
-    Icon,
     Collapse,
-    Row,
-    Col,
     Select,
-    Modal, TimePicker, Table
+    Table,
+    Popconfirm,
+    Modal, message
 } from 'antd'
 
 const AutoCompleteOption = AutoComplete.Option
@@ -34,20 +27,125 @@ const Panel = Collapse.Panel
 const Option = Select.Option
 const FormItem = Form.Item
 const RadioGroup = Radio.Group
+const EditableContext = React.createContext();
+
+const EditableRow = ({ form, index, ...props }) => (
+    <EditableContext.Provider value={form}>
+        <tr {...props} />
+    </EditableContext.Provider>
+);
+
+const EditableFormRow = Form.create()(EditableRow);
+
 
 const pipelineID = [
-    {id: 0, name: '代码拉取'},
-    {id: 1, name: '单元测试'},
-    {id: 2, name: '静态扫描'},
-    {id: 3, name: '编译打包'},
-    {id: 4, name: '安全扫描'},
-    {id: 5, name: 'UI测试'},
-    {id: 6, name: '性能测试'},
-    {id: 7, name: '加固'},
-    {id: 8, name: '补丁'},
-    {id: 9, name: '包管理'},
-    {id: -1, name: '自定义'},
+    {id: 0, name: '代码拉取',description:'Gitlab 代码同步',params:[{ key: '1',json_jsonParams: 'code_branch'},{ key: '2',json_jsonParams:'code_gitServer'}]},
+    {id: 1, name: '单元测试',description:'单元测试',params:[]},
+    {id: 2, name: '静态扫描',description:'SonarQube 代码静态扫描'},
+    {id: 3, name: '编译打包',description:'项目编译打包'},
+    {id: 4, name: '安全扫描',description:'MobSF 安全检测'},
+    {id: 5, name: 'UI测试',description:'自动化UI测试'},
+    {id: 6, name: '性能测试',description:'自动化性能测试'},
+    {id: 7, name: '加固',description:'爱加密加固'},
+    {id: 8, name: '补丁',description:'生成 Tinker 补丁包'},
+    {id: 9, name: '包管理',description:'DevOps平台安装包管理'},
+    {id: -1, name: '自定义',description:''},
 ]
+
+class EditableCell extends React.Component {
+    state = {
+        editing: false,
+    }
+
+    componentDidMount() {
+        if (this.props.editable) {
+            document.addEventListener('click', this.handleClickOutside, true);
+        }
+    }
+
+    componentWillUnmount() {
+        if (this.props.editable) {
+            document.removeEventListener('click', this.handleClickOutside, true);
+        }
+    }
+
+    toggleEdit = () => {
+        const editing = !this.state.editing;
+        this.setState({ editing }, () => {
+            if (editing) {
+                this.input.focus();
+            }
+        });
+    }
+
+    handleClickOutside = (e) => {
+        const { editing } = this.state;
+        if (editing && this.cell !== e.target && !this.cell.contains(e.target)) {
+            this.save();
+        }
+    }
+
+    save = () => {
+        const { record, handleSave } = this.props;
+        this.form.validateFields((error, values) => {
+            if (error) {
+                return;
+            }
+            this.toggleEdit();
+            handleSave({ ...record, ...values });
+        });
+    }
+
+    render() {
+        const { editing } = this.state;
+        const {
+            editable,
+            dataIndex,
+            title,
+            record,
+            index,
+            handleSave,
+            ...restProps
+        } = this.props;
+        return (
+            <td ref={node => (this.cell = node)} {...restProps}>
+                {editable ? (
+                    <EditableContext.Consumer>
+                        {(form) => {
+                            this.form = form;
+                            return (
+                                editing ? (
+                                    <FormItem style={{ margin: 0 }}>
+                                        {form.getFieldDecorator(dataIndex, {
+                                            rules: [{
+                                                required: true,
+                                                message: `${title} is required.`,
+                                            }],
+                                            initialValue: record[dataIndex],
+                                        })(
+                                            <Input
+                                                ref={node => (this.input = node)}
+                                                onPressEnter={this.save}
+                                            />
+                                        )}
+                                    </FormItem>
+                                ) : (
+                                    <div
+                                        className="editable-cell-value-wrap"
+                                        style={{ paddingRight: 24 }}
+                                        onClick={this.toggleEdit}
+                                    >
+                                        {restProps.children}
+                                    </div>
+                                )
+                            );
+                        }}
+                    </EditableContext.Consumer>
+                ) : restProps.children}
+            </td>
+        );
+    }
+}
 
 class taskAdd extends Component {
     constructor (props) {
@@ -56,17 +154,20 @@ class taskAdd extends Component {
             {
                 title: '字段',
                 dataIndex: 'json_jsonParams',
-                key: 'json_jsonParams'
+                key: 'json_jsonParams',
+                editable: true,
             },
             {
                 title: '类型',
                 dataIndex: 'type',
-                key: 'type'
+                key: 'type',
+                editable: true,
             },
             {
                 title: '值',
                 dataIndex: 'paramSource',
-                key: 'paramSource'
+                key: 'paramSource',
+                editable: true,
             },
             {
                 title: '操作',
@@ -74,16 +175,18 @@ class taskAdd extends Component {
                 key: 'isPackageDefault',
                 render: (text, record) => {
                     return (
-                        <Select value={text} onChange={(value) => this.handlePackageChange(value, record)}>
-                            <Option value={0}>否</Option>
-                            <Option value={1}>是</Option>
-                        </Select>
-                    )
-                }
+                        this.state.paramsDatasource.length >= 1
+                            ? (
+                                <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDelete(record.key)}>
+                                    <a href="javascript:;">Delete</a>
+                                </Popconfirm>
+                            ) : null
+                    );
+                },
             }
         ]
         this.state = {
-            data: [],
+            paramsDatasource: [],
             confirmDirty: false,
             autoCompleteResult: [],
             finalStep: [],
@@ -104,10 +207,33 @@ class taskAdd extends Component {
     }
 
     handleSubmit = (e) => {
+        let { setSteps } = this.props;
         e.preventDefault()
+        console.log(this.state.paramsDatasource)
+        console.log(this.state.stepCategory)
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 console.log('Received values of form: ', values)
+                setSteps({
+                    stepCategory:this.state.stepCategory,
+                    stepCode: this.state.taskID,
+                    stepParams:this.state.paramsDatasource,
+                    ...values
+                })
+                // reqPost('/pipeline/addstep', {
+                //     stepCategory:this.state.stepCategory,
+                //     stepCode: this.state.taskID,
+                //     stepParams:this.state.paramsDatasource,
+                //     ...values
+                // }).then(res => {
+                //
+                //     if (res.code == 0) {
+                //         console.log('dddd')
+                //     } else {
+                //         message.error(res.msg);
+                //     }
+                //
+                // })
             }
         })
     }
@@ -118,14 +244,52 @@ class taskAdd extends Component {
         this.setState({params}, this.getBranchList)
     }
 
-    componentWillMount () {
+    handleDelete = (key) => {
+        const paramsDatasource = [...this.state.paramsDatasource];
+        this.setState({ paramsDatasource: paramsDatasource.filter(item => item.key !== key) });
+    }
 
+    handleAdd = () => {
+        const { count, paramsDatasource } = this.state;
+        const newData = {
+            key: count,
+            json_jsonParams: ``,
+            type: 32,
+            paramSource: ``,
+        };
+        this.setState({
+            paramsDatasource: [...paramsDatasource, newData],
+            count: count + 1,
+        });
+    }
+
+    handleSave = (row) => {
+        const newData = [...this.state.paramsDatasource];
+        const index = newData.findIndex(item => row.key === item.key);
+        const item = newData[index];
+        newData.splice(index, 1, {
+            ...item,
+            ...row,
+        });
+        this.setState({ paramsDatasource: newData });
+    }
+
+    paramsTableChange =(pagination, filters, sorter, extra: { currentDataSource: [] }) => {
+        console.log(`${pagination}, ${filters}, ${sorter}, ${extra}`)
+    }
+
+
+    componentWillMount () {
+        if (this.props.editable) {
+            document.removeEventListener('click', this.handleClickOutside, true);
+        }
     }
 
     componentDidMount () {
-        let taskID, disabled = false,taskName = ''
+        let taskID,stepCategory, disabled = false,taskName = '',taskDescription = '',paramsDatasource = []
         if (this.props.location.state) {
             taskID = this.props.location.state.taskID
+            stepCategory = this.props.location.state.stepCategory
 
         }
         if (taskID !== -1) {
@@ -137,22 +301,29 @@ class taskAdd extends Component {
             const pipelineIDElement = pipelineID[i]
             if (pipelineIDElement.id === taskID && taskID !== -1) {
                 taskName = pipelineIDElement.name
+                taskDescription = pipelineIDElement.description
+                paramsDatasource = pipelineIDElement.params
             }
         }
+        console.log(paramsDatasource)
         this.props.form.setFieldsValue({
-            name: taskName,
+            stepName: taskName,
+            stepDesc:taskDescription
         })
+        if (this.props.editable) {
+            document.addEventListener('click', this.handleClickOutside, true);
+        }
 
-        this.setState({disabled})
+        this.setState({disabled,paramsDatasource,stepCategory,taskID})
     }
 
     render () {
         const {getFieldDecorator} = this.props.form
         const {
-            data,
+            paramsDatasource,
             loading,
             taskID,
-            disabled
+            disabled,
         } = this.state
 
         const formItemLayout = {
@@ -177,6 +348,28 @@ class taskAdd extends Component {
                 },
             },
         }
+        const components = {
+            body: {
+                row: EditableFormRow,
+                cell: EditableCell,
+            },
+        };
+
+        const columns = this.columns.map((col) => {
+            if (!col.editable) {
+                return col;
+            }
+            return {
+                ...col,
+                onCell: record => ({
+                    record,
+                    editable: col.editable,
+                    dataIndex: col.dataIndex,
+                    title: col.title,
+                    handleSave: this.handleSave,
+                }),
+            };
+        });
 
         return (
             <div id="pipeline-add">
@@ -192,7 +385,7 @@ class taskAdd extends Component {
                             {...formItemLayout}
                             label="任务名称"
                         >
-                            {getFieldDecorator('name', {
+                            {getFieldDecorator('stepName', {
                                 rules: [{required: true, message: '请输入'}]
                             })(
                                 <Input disabled={disabled}/>
@@ -202,7 +395,7 @@ class taskAdd extends Component {
                             {...formItemLayout}
                             label="任务描述"
                         >
-                            {getFieldDecorator('password', {
+                            {getFieldDecorator('stepDesc', {
                                 rules: [{required: true, message: '请输入'}]
                             })(
                                 <Input disabled={disabled}/>
@@ -210,10 +403,10 @@ class taskAdd extends Component {
                         </FormItem>
                         <FormItem
                             {...formItemLayout}
-                            label="webhook"
+                            label="webHook"
                         >
-                            {getFieldDecorator('confirm', {
-                                rules: [{required: true, message: '请输入'}]
+                            {getFieldDecorator('webHook', {
+                                rules: [{required: false, message: '请输入'}]
                             })(
                                 <Input/>
                             )}
@@ -222,8 +415,20 @@ class taskAdd extends Component {
                             {...formItemLayout}
                             label="运行参数"
                         >
-                            <Table columns={this.columns} dataSource={data} loading={loading}
-                                   rowKey={record => record.id} onChange={this.handleTableChange}></Table>
+                            <div>
+
+                                <Table
+                                    components={components}
+                                    rowClassName={() => 'editable-row'}
+                                    bordered
+                                    dataSource={paramsDatasource}
+                                    columns={columns}
+                                    onChange={this.paramsTableChange}
+                                />
+                                <Button onClick={this.handleAdd} type="primary" style={{ marginBottom: 16 }}>
+                                    Add a row
+                                </Button>
+                            </div>
                         </FormItem>
 
                         <FormItem {...tailFormItemLayout}>
@@ -240,7 +445,7 @@ taskAdd = connect((state) => {
     return {
         projectId: state.projectId
     }
-})(taskAdd)
+},{setSteps})(taskAdd)
 
 const pipelineTask = Form.create()(taskAdd)
 

@@ -16,3 +16,7 @@ export function setPermissionList(permissionList){
 export function setProjectId(projectId){
     return { type: types.SET_PROJECTID, data: projectId };
 }
+
+export function setSteps(stepList){
+    return { type: types.SET_STEPS, data: stepList };
+}
