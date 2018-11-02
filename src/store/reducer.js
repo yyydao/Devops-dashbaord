@@ -1,5 +1,4 @@
-
-import * as types from './types';
+import * as types from './types'
 
 const initialState = {
     token: null,
@@ -14,76 +13,107 @@ const initialState = {
 
 }
 
-
-const deepClone = function(source) {
+const deepClone = function (source) {
     let target
-    const sourceType = Object.prototype.toString.call(source).toLowerCase();
+    const sourceType = Object.prototype.toString.call(source).toLowerCase()
 
     if (sourceType === '[object object]' || sourceType === '[object array]') {
-        target = sourceType.indexOf('array') >= 0 ? [] : {};
+        target = sourceType.indexOf('array') >= 0 ? [] : {}
 
         for (let i in source) {
-            target[i] = deepClone(source[i]);
+            target[i] = deepClone(source[i])
         }
     } else {
-        target = source;
+        target = source
     }
 
-    return target;
+    return target
 }
 
-
-export default function(state, action){
+export default function (state, action) {
     if (!state) {
-        return initialState;
+        return initialState
     }
 
-    const nextState = deepClone(state);
+    const nextState = deepClone(state)
 
-    switch(action.type){
+    switch (action.type) {
         case types.SET_TOKEN:
-            localStorage.setItem('token', action.data);
-            nextState.token = action.data;
-        break;
+            localStorage.setItem('token', action.data)
+            nextState.token = action.data
+            break
 
         case types.SET_USERINFO:
-            localStorage.setItem('userInfo', JSON.stringify(action.data));
-            nextState.userInfo = action.data;
-        break;
+            localStorage.setItem('userInfo', JSON.stringify(action.data))
+            nextState.userInfo = action.data
+            break
 
         case types.SET_PERMISSIONLIST:
-            nextState.permissionList = action.data;
-        break;
+            nextState.permissionList = action.data
+            break
 
         case types.SET_PROJECTID:
-            if(action.data){
-                localStorage.setItem('projectId', action.data);
-            }else{
-                localStorage.removeItem('projectId');
+            if (action.data) {
+                localStorage.setItem('projectId', action.data)
+            } else {
+                localStorage.removeItem('projectId')
             }
-            nextState.projectId = action.data;
-        break;
+            nextState.projectId = action.data
+            break
 
-        case types.SET_STEPS:
+        case types.SET_STEP:
             console.log(action.data)
-            if(action.data){
-
-                let tempList = initialState.stepList
-                console.log(tempList)
+            if (action.data) {
+                let tempList = JSON.parse(localStorage.getItem('steps'))
+                if (!tempList) {
+                    tempList = initialState.stepList
+                }
+                console.log(`reducer ${tempList}`)
                 for (let i = 0; i < tempList.length; i++) {
                     const tempListElement = tempList[i]
-                    if(tempListElement[0] === action.data.stepCategory){
+                    if (tempListElement[0] === action.data.stepCategory) {
                         tempListElement[1].push(action.data)
                     }
                 }
-                localStorage.setItem('steps', JSON.stringify(tempList));
+                localStorage.setItem('steps', JSON.stringify(tempList))
                 nextState.stepList = tempList
-            }else{
-                localStorage.setItem('steps',initialState.stepList);
+            } else {
+                localStorage.setItem('steps', initialState.stepList)
             }
 
-        break;
+            break
+        case types.SET_STEPS:
+            console.log(action.data)
+            if (action.data) {
+                localStorage.setItem('steps', JSON.stringify(action.data))
+                nextState.stepList = action.data
+            } else {
+                localStorage.setItem('steps', initialState.stepList)
+            }
+
+            break
+        case types.REMOVE_STEPS:
+            console.log(action.data)
+            if (action.data) {
+                let tempList = JSON.parse(localStorage.getItem('steps'))
+                if (!tempList) {
+                    tempList = initialState.stepList
+                }
+                console.log(`reducer ${tempList}`)
+                for (let i = 0; i < tempList.length; i++) {
+                    const tempListElement = tempList[i]
+                    if (tempListElement[0] === action.data.stepCategory) {
+                        tempListElement[1].push(action.data)
+                    }
+                }
+                localStorage.setItem('steps', JSON.stringify(tempList))
+                nextState.stepList = tempList
+            } else {
+                localStorage.setItem('steps', initialState.stepList)
+            }
+
+            break
     }
 
-    return nextState;
+    return nextState
 }

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import './index.scss'
 import { reqPost, reqGet } from '@/api/api'
 
-import { setSteps } from '@/store/action'
+import { setStep,removeSteps,setSteps } from '@/store/action'
 
 import {
     Steps,
@@ -16,7 +16,10 @@ import {
     Button,
     Icon,
     Select,
-    Modal, message
+    Modal,
+    message,
+    Dropdown,
+    Menu
 } from 'antd'
 
 const BreadcrumbItem = Breadcrumb.Item
@@ -103,6 +106,34 @@ class Add extends Component {
 
     }
 
+    handleDeleteTask = (item) =>{
+        let { setSteps } = this.props;
+        // removeSteps({item})
+        console.log(item)
+        console.log(`before remove ${JSON.stringify(this.state.stepsList)}`)
+        let stepList = this.state.stepsList
+        for (let i = 0; i < stepList.length; i++) {
+            const stepElement = stepList[i]
+            if(stepElement[0] === item.stepCategory){
+                for (let j = 0; j < stepElement[1].length; j++) {
+                    const stepElementElement = stepElement[1][j]
+                    console.log(stepElementElement)
+                    if(stepElementElement.stepCode === item.stepCode){
+                        stepElement[1].splice(j,1)
+                    }
+                }
+            }
+        }
+        console.log(stepList)
+        console.log(`result ${JSON.stringify(stepList)}`)
+        this.setState({stepsList: stepList})
+        setSteps(this.state.stepsList)
+    }
+
+    handleEditTask = (item) =>{
+        console.log(item)
+    }
+
     //获取分支列表
     getBranchList = (value = '') => {
         reqPost('/branch/selectBranch', {
@@ -136,8 +167,6 @@ class Add extends Component {
     componentWillMount () {
 
         let stepsList = localStorage.getItem('steps')
-        console.log()
-        console.log(Array.isArray(stepsList))
         if (!stepsList) {
             stepsList = [[1, []],
                 [2, []],
@@ -293,7 +322,20 @@ class Add extends Component {
                                                 return <Card
                                                     style={{width: 180, marginLeft: '-40%'}}
                                                     title={item.stepName}
-                                                    extra={<Icon type="setting" theme="outlined"/>}
+                                                    extra={<Dropdown overlay={ <Menu>
+                                                        <Menu.Item>
+                                                            <a target="_blank" rel="noopener noreferrer"  onClick={()=>{
+                                                                this.handleEditTask(item)}
+                                                            }>编辑任务</a>
+                                                        </Menu.Item>
+                                                        <Menu.Item>
+                                                            <a target="_blank" rel="noopener noreferrer" onClick={()=>{
+                                                                this.handleDeleteTask(item)}
+                                                            }>删除任务</a>
+                                                        </Menu.Item>
+                                                    </Menu>} placement="bottomCenter">
+                                                        <Icon type="setting" theme="outlined" />
+                                                    </Dropdown>}
                                                     key={index}
                                                 >
                                                     <p>{item.stepDesc}</p>
@@ -328,7 +370,7 @@ Add = connect((state) => {
     return {
         projectId: state.projectId
     }
-}, {setSteps})(Add)
+}, {setStep,removeSteps,setSteps})(Add)
 
 const pipelineAdd = Form.create()(Add)
 

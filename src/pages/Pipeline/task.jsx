@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import './index.scss'
 import { reqPost, reqGet } from '@/api/api'
-import { setSteps } from '@/store/action';
+import { setStep } from '@/store/action';
 
 import {
     Steps,
@@ -207,14 +207,14 @@ class taskAdd extends Component {
     }
 
     handleSubmit = (e) => {
-        let { setSteps } = this.props;
+        let { setStep } = this.props;
         e.preventDefault()
         console.log(this.state.paramsDatasource)
         console.log(this.state.stepCategory)
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 console.log('Received values of form: ', values)
-                setSteps({
+                setStep({
                     stepCategory:this.state.stepCategory,
                     stepCode: this.state.taskID,
                     stepParams:this.state.paramsDatasource,
@@ -445,7 +445,7 @@ taskAdd = connect((state) => {
     return {
         projectId: state.projectId
     }
-},{setSteps})(taskAdd)
+},{setStep})(taskAdd)
 
 const pipelineTask = Form.create()(taskAdd)
 

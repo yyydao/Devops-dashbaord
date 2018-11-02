@@ -17,6 +17,14 @@ export function setProjectId(projectId){
     return { type: types.SET_PROJECTID, data: projectId };
 }
 
+export function setStep(step){
+    return { type: types.SET_STEP, data: step };
+}
+
 export function setSteps(stepList){
     return { type: types.SET_STEPS, data: stepList };
+}
+
+export function removeSteps(stepList){
+    return { type: types.REMOVE_STEPS, data: stepList };
 }
