@@ -91,7 +91,7 @@ class Add extends Component {
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 console.log('Received values of form: ', values)
-                reqPost('/pipeline/addtask', {projectID: this.props.projectId, ...values}).then(res => {
+                reqPost('/pipeline/addtask', {projectID: this.props.projectId, ...values,steps:this.state.stepsList}).then(res => {
                     if (parseInt(res.code, 0) === 0) {
                         message.success('项目新增成功！')
                         // this.setState({ proModalVisible: false });

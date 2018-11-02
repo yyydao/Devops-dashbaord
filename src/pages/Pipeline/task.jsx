@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Link,withRouter } from 'react-router-dom'
 import './index.scss'
 import { reqPost, reqGet } from '@/api/api'
 import { setStep } from '@/store/action';
@@ -220,6 +220,7 @@ class taskAdd extends Component {
                     stepParams:this.state.paramsDatasource,
                     ...values
                 })
+                this.props.history.push('/pipeline/add')
                 // reqPost('/pipeline/addstep', {
                 //     stepCategory:this.state.stepCategory,
                 //     stepCode: this.state.taskID,
@@ -449,4 +450,4 @@ taskAdd = connect((state) => {
 
 const pipelineTask = Form.create()(taskAdd)
 
-export default pipelineTask
+export default withRouter(pipelineTask)
