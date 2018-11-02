@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Link,withRouter } from 'react-router-dom'
 import './index.scss'
 import { reqPost, reqGet } from '@/api/api'
-import { setStep } from '@/store/action';
+import { setStep,setSteps } from '@/store/action';
 
 import {
     Steps,
@@ -207,19 +207,33 @@ class taskAdd extends Component {
     }
 
     handleSubmit = (e) => {
-        let { setStep } = this.props;
+        let {setStep,setSteps} = this.props
         e.preventDefault()
         console.log(this.state.paramsDatasource)
         console.log(this.state.stepCategory)
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-                console.log('Received values of form: ', values)
-                setStep({
-                    stepCategory:this.state.stepCategory,
-                    stepCode: this.state.stepCode,
-                    stepParams:this.state.paramsDatasource,
-                    ...values
-                })
+                if (this.props.location.state.editable) {
+                    let oldSteps = JSON.parse(localStorage.getItem('steps'))
+                    for (let i = 0; i < oldSteps.length; i++) {
+                        if (oldSteps[i][0] === this.state.stepCategory) {
+                            for (let j = 0; j < oldSteps[i][1].length; j++) {
+                                if (oldSteps[i][1][j].stepCode === this.state.stepCode) {
+                                    oldSteps[i][1][j].stepParams = this.state.paramsDatasource
+                                }
+                            }
+                        }
+                    }
+                    setSteps(oldSteps)
+                } else {
+                    setStep({
+                        stepCategory: this.state.stepCategory,
+                        stepCode: this.state.stepCode,
+                        stepParams: this.state.paramsDatasource,
+                        ...values
+                    })
+                }
+
                 this.props.history.push('/pipeline/add')
             }
         })
@@ -274,7 +288,6 @@ class taskAdd extends Component {
 
     componentDidMount () {
         let stepCode,stepCategory, disabled = false,taskName = '',taskDescription = '',paramsDatasource = []
-        console.log(this.props.location.state)
         if (this.props.location.state) {
             stepCode = this.props.location.state.stepCode
             stepCategory = this.props.location.state.stepCategory
@@ -283,16 +296,11 @@ class taskAdd extends Component {
         if (stepCode !== -1) {
             disabled = true
         }
-        console.log(this.props.location.state)
         //判断是否是编辑
         if(this.props.location.state.editable){
             let stepsList = JSON.parse(localStorage.getItem('steps'))
-            let stepListByCategory = stepsList.find(function(item){
-                console.log(item)
-                if(item[0] === stepCategory){
-                    return item[1]
-                }
-            })
+            let stepListByCategory = stepsList.find((item) => item[0] === stepCategory)
+
             for (let i = 0; i < stepListByCategory[1].length; i++) {
                 const stepListByCategoryElement = stepListByCategory[1][i]
                 if(stepListByCategoryElement.stepCode === stepCode){
@@ -313,7 +321,6 @@ class taskAdd extends Component {
             }
         }
 
-        console.log(paramsDatasource)
         this.props.form.setFieldsValue({
             stepName: taskName,
             stepDesc:taskDescription
@@ -453,7 +460,7 @@ taskAdd = connect((state) => {
     return {
         projectId: state.projectId
     }
-},{setStep})(taskAdd)
+},{setStep,setSteps})(taskAdd)
 
 const pipelineTask = Form.create()(taskAdd)
 
