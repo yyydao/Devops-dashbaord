@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Link,withRouter } from 'react-router-dom'
 import './index.scss'
 import { reqPost, reqGet } from '@/api/api'
 
@@ -108,9 +108,6 @@ class Add extends Component {
 
     handleDeleteTask = (item) =>{
         let { setSteps } = this.props;
-        // removeSteps({item})
-        console.log(item)
-        console.log(`before remove ${JSON.stringify(this.state.stepsList)}`)
         let stepList = this.state.stepsList
         for (let i = 0; i < stepList.length; i++) {
             const stepElement = stepList[i]
@@ -124,14 +121,21 @@ class Add extends Component {
                 }
             }
         }
-        console.log(stepList)
-        console.log(`result ${JSON.stringify(stepList)}`)
         this.setState({stepsList: stepList})
         setSteps(this.state.stepsList)
     }
 
     handleEditTask = (item) =>{
         console.log(item)
+        this.props.history.push({
+            pathname:'/pipeline/task',
+            state: {
+                stepCode: item.stepCode,
+                stepCategory: item.stepCategory,
+                editable:true
+            }
+        })
+
     }
 
     //获取分支列表
@@ -234,7 +238,7 @@ class Add extends Component {
                                       to={{
                                           pathname: `/pipeline/task`,
                                           state: {
-                                              taskID: item.id,
+                                              stepCode: item.id,
                                               stepCategory: stepCategory
                                           }
                                       }}>
@@ -374,4 +378,4 @@ Add = connect((state) => {
 
 const pipelineAdd = Form.create()(Add)
 
-export default pipelineAdd
+export default withRouter(pipelineAdd)

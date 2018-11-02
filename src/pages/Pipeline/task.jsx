@@ -216,25 +216,11 @@ class taskAdd extends Component {
                 console.log('Received values of form: ', values)
                 setStep({
                     stepCategory:this.state.stepCategory,
-                    stepCode: this.state.taskID,
+                    stepCode: this.state.stepCode,
                     stepParams:this.state.paramsDatasource,
                     ...values
                 })
                 this.props.history.push('/pipeline/add')
-                // reqPost('/pipeline/addstep', {
-                //     stepCategory:this.state.stepCategory,
-                //     stepCode: this.state.taskID,
-                //     stepParams:this.state.paramsDatasource,
-                //     ...values
-                // }).then(res => {
-                //
-                //     if (res.code == 0) {
-                //         console.log('dddd')
-                //     } else {
-                //         message.error(res.msg);
-                //     }
-                //
-                // })
             }
         })
     }
@@ -287,25 +273,46 @@ class taskAdd extends Component {
     }
 
     componentDidMount () {
-        let taskID,stepCategory, disabled = false,taskName = '',taskDescription = '',paramsDatasource = []
+        let stepCode,stepCategory, disabled = false,taskName = '',taskDescription = '',paramsDatasource = []
+        console.log(this.props.location.state)
         if (this.props.location.state) {
-            taskID = this.props.location.state.taskID
+            stepCode = this.props.location.state.stepCode
             stepCategory = this.props.location.state.stepCategory
 
         }
-        if (taskID !== -1) {
+        if (stepCode !== -1) {
             disabled = true
         }
+        console.log(this.props.location.state)
+        //判断是否是编辑
+        if(this.props.location.state.editable){
+            let stepsList = JSON.parse(localStorage.getItem('steps'))
+            let stepListByCategory = stepsList.find(function(item){
+                console.log(item)
+                if(item[0] === stepCategory){
+                    return item[1]
+                }
+            })
+            for (let i = 0; i < stepListByCategory[1].length; i++) {
+                const stepListByCategoryElement = stepListByCategory[1][i]
+                if(stepListByCategoryElement.stepCode === stepCode){
+                    taskName = stepListByCategoryElement.stepName
+                    taskDescription = stepListByCategoryElement.stepDesc
+                    paramsDatasource = stepListByCategoryElement.stepParams
+                }
+            }
 
-
-        for (let i = 0; i < pipelineID.length; i++) {
-            const pipelineIDElement = pipelineID[i]
-            if (pipelineIDElement.id === taskID && taskID !== -1) {
-                taskName = pipelineIDElement.name
-                taskDescription = pipelineIDElement.description
-                paramsDatasource = pipelineIDElement.params
+        }else{
+            for (let i = 0; i < pipelineID.length; i++) {
+                const pipelineIDElement = pipelineID[i]
+                if (pipelineIDElement.id === stepCode && stepCode !== -1) {
+                    taskName = pipelineIDElement.name
+                    taskDescription = pipelineIDElement.description
+                    paramsDatasource = pipelineIDElement.params
+                }
             }
         }
+
         console.log(paramsDatasource)
         this.props.form.setFieldsValue({
             stepName: taskName,
@@ -315,7 +322,7 @@ class taskAdd extends Component {
             document.addEventListener('click', this.handleClickOutside, true);
         }
 
-        this.setState({disabled,paramsDatasource,stepCategory,taskID})
+        this.setState({disabled,paramsDatasource,stepCategory,stepCode})
     }
 
     render () {
@@ -323,7 +330,7 @@ class taskAdd extends Component {
         const {
             paramsDatasource,
             loading,
-            taskID,
+            stepCode,
             disabled,
         } = this.state
 
