@@ -5,10 +5,11 @@ import './index.scss'
 import { reqPost, reqGet } from '@/api/api'
 import toPairs from 'lodash.topairs'
 import uniq from 'lodash.uniq'
-import { Chart, Geom, Axis, Tooltip, Legend, Coord } from 'bizcharts';
+import { setStep,removeSteps,setSteps } from '@/store/action'
 
-import { Steps, Breadcrumb, Card, Button, Icon, Collapse, Row, Col, Select, Menu, Dropdown } from 'antd'
-import { Radio } from 'antd/lib/radio'
+import { Chart, Geom, Axis, Tooltip, Legend, Coord, track } from 'bizcharts';
+
+import { Steps, Breadcrumb, Card, Button, Icon, Collapse, Row, Col, Select, Menu, Dropdown, Radio } from 'antd'
 
 const BreadcrumbItem = Breadcrumb.Item
 const Step = Steps.Step
@@ -33,30 +34,30 @@ const enumStepsText = [{
 }]
 
 const enumStatus = {
-    1: 'wait',
-    2: 'process',
-    3: 'finish',
-    4: 'error'
+    0: 'wait',
+    1: 'process',
+    2: 'finish',
+    3: 'error'
 }
 const enumStatusText = {
-    1: '未开始',
-    2: '执行中',
-    3: '成功',
-    4: '失败'
+    0: '未开始',
+    1: '执行中',
+    2: '成功',
+    3: '失败'
 }
 
 const enumButtonType = {
-    1: 'wait',
-    2: 'process',
-    3: 'finish',
-    4: 'error'
+    0: 'wait',
+    1: 'process',
+    2: 'finish',
+    3: 'error'
 }
 
 const enumButtonText = {
-    1: '开始执行',
-    2: '执行中',
-    3: '开始执行',
-    4: '开始执行'
+    0: '开始执行',
+    1: '执行中',
+    2: '开始执行',
+    3: '开始执行'
 }
 
 const taskList = {
@@ -70,65 +71,6 @@ const taskList = {
     'createTime': '2018-10-16 15:03:56.0',
     'updateTime': '2018-10-16 15:03:56.0'
 }
-
-const StepList = [
-    {
-        'stepID': '0923691354af43ed8afd27d832069f37L27SA3',
-        'stepCategory': 1,
-        'stepCode': 2,
-        'stepName': '静态扫描',
-        'stepDesc': '静态扫描',
-        'webHook': 'www.baidu.com',
-        'stepParams': '[{"json_jsonParams":21232,"type":1},{"build_compileType":"wasd","type":2}]',
-        'paramSource': 2,
-        'execTime': 0,
-        'createTime': '2018-10-16 15:03:57.0',
-        'updateTime': '2018-10-16 15:03:57.0',
-        'remark': ''
-    },
-    {
-        'stepID': '0923691354af43ed8afd27d832069f37L27SA3',
-        'stepCategory': 1,
-        'stepCode': 2,
-        'stepName': '静态扫描',
-        'stepDesc': '静态扫描',
-        'webHook': 'www.baidu.com',
-        'stepParams': '[{"json_jsonParams":21232,"type":1},{"build_compileType":"wasd","type":2}]',
-        'paramSource': 2,
-        'execTime': 0,
-        'createTime': '2018-10-16 15:03:57.0',
-        'updateTime': '2018-10-16 15:03:57.0',
-        'remark': ''
-    },
-    {
-        'stepID': '0923691354af43ed8afd27d832069f37L27SA3',
-        'stepCategory': 2,
-        'stepCode': 2,
-        'stepName': '静态扫描',
-        'stepDesc': '静态扫描',
-        'webHook': 'www.baidu.com',
-        'stepParams': '[{"json_jsonParams":21232,"type":1},{"build_compileType":"wasd","type":2}]',
-        'paramSource': 2,
-        'execTime': 0,
-        'createTime': '2018-10-16 15:03:57.0',
-        'updateTime': '2018-10-16 15:03:57.0',
-        'remark': ''
-    },
-    {
-        'stepID': '0923691354af43ed8afd27d832069f37L27SA3',
-        'stepCategory': 3,
-        'stepCode': 2,
-        'stepName': '静态扫描',
-        'stepDesc': '静态扫描',
-        'webHook': 'www.baidu.com',
-        'stepParams': '[{"json_jsonParams":21232,"type":1},{"build_compileType":"wasd","type":2}]',
-        'paramSource': 2,
-        'execTime': 0,
-        'createTime': '2018-10-16 15:03:57.0',
-        'updateTime': '2018-10-16 15:03:57.0',
-        'remark': ''
-    }
-]
 
 const pipelineHistoryList = [
     '2018-09-14 11:02:50(等待)',
@@ -168,6 +110,8 @@ const menu = (
     </Menu>
 );
 
+track(false);
+
 class pipelineDetail extends Component {
     constructor (props) {
         super(props)
@@ -192,6 +136,44 @@ class pipelineDetail extends Component {
 
     handleFocus = () => {
         console.log('focus')
+    }
+
+
+    handleDeleteTask = (item) =>{
+        let { setSteps } = this.props;
+        let stepList = this.state.stepsList
+        for (let i = 0; i < stepList.length; i++) {
+            const stepElement = stepList[i]
+            if(stepElement[0] === item.stepCategory){
+                for (let j = 0; j < stepElement[1].length; j++) {
+                    const stepElementElement = stepElement[1][j]
+                    console.log(stepElementElement)
+                    if(stepElementElement.stepCode === item.stepCode){
+                        stepElement[1].splice(j,1)
+                    }
+                }
+            }
+        }
+        this.setState({stepsList: stepList})
+        setSteps(this.state.stepsList)
+    }
+
+    handleEditTask = (item) =>{
+        console.log(item)
+        this.props.history.push({
+            pathname:'/pipeline/task/edit',
+            state: {
+                stepCode: item.stepCode,
+                stepCategory: item.stepCategory,
+                taskID: this.props.match.params.taskID,
+                stepName: item.stepName,
+                stepDesc: item.stepDesc,
+                webHook: item.webHook,
+                stepID: item.stepID,
+                editable:true
+            }
+        })
+
     }
 
     getPipelineDetail = () => {
@@ -273,10 +255,10 @@ class pipelineDetail extends Component {
 
     componentDidMount () {
         // this.setState({packageresult: packageresult})
-        this.checkTaskList(taskList)
-        this.checkStepList(StepList)
-        // this.getPipelineDetail()
-        //this.getPackageresult()
+        // this.checkTaskList(taskList)
+        // this.checkStepList(StepList)
+        this.getPipelineDetail()
+        this.getPackageresult()
     }
 
     render () {
@@ -405,10 +387,21 @@ class pipelineDetail extends Component {
                                                 return <Card
                                                         style={{width: 180, marginLeft: '-40%'}}
                                                         title={item.stepName}
-                                                        extra={<Dropdown overlay={menu} placement="bottomCenter">
+                                                        extra={<Dropdown overlay={ <Menu>
+                                                            <Menu.Item>
+                                                                <a target="_blank" rel="noopener noreferrer"  onClick={()=>{
+                                                                    this.handleEditTask(item)}
+                                                                }>编辑任务</a>
+                                                            </Menu.Item>
+                                                            <Menu.Item>
+                                                                <a target="_blank" rel="noopener noreferrer" onClick={()=>{
+                                                                    this.handleDeleteTask(item)}
+                                                                }>删除任务</a>
+                                                            </Menu.Item>
+                                                        </Menu>} placement="bottomCenter">
                                                             <Icon type="setting" theme="outlined" />
                                                         </Dropdown>}
-                                                        key={index}
+                                                        key={item.stepID}
                                                     >
                                                         <p>{item.stepDesc}</p>
                                                     </Card>
@@ -480,6 +473,6 @@ pipelineDetail = connect((state) => {
     return {
         taskID: state.taskID
     }
-})(pipelineDetail)
+},{setStep,removeSteps,setSteps})(pipelineDetail)
 
 export default pipelineDetail
