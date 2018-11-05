@@ -233,8 +233,14 @@ class taskAdd extends Component {
                         ...values
                     })
                 }
+                if(this.props.location.state.existPipline){
 
-                this.props.history.push('/pipeline/add')
+                    this.props.history.push(`/pipeline/edit/${this.props.location.state.taskID}`)
+                }else{
+                    this.props.history.push('/pipeline/add')
+                }
+
+
             }
         })
     }
