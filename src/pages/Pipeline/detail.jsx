@@ -122,6 +122,8 @@ class pipelineDetail extends Component {
             current: 0,
             currentJob: 0,
             finalStep: [],
+            stepList:[],
+            fullSteps:[],
             packageresult: packageresult
         }
     }
@@ -248,6 +250,43 @@ class pipelineDetail extends Component {
         // console.log(finalStep)
         this.setState({stepList: stepList})
         this.setState({finalStep: finalStep})
+        this.setState({fullSteps: this.composeEditFinalStep(finalStep)})
+    }
+
+    composeEditFinalStep= (oldFinalStep) => {
+        if(oldFinalStep.length === 0){
+            oldFinalStep = [["1", []],
+                ["2", []],
+                ["3", []]]
+        } else if(oldFinalStep.length === 1){
+            if(oldFinalStep[0][0] === "1"){
+                oldFinalStep.splice(1,0,["2",[]],["3",[]])
+            }else if(oldFinalStep[0][0] === "2"){
+                oldFinalStep.splice(0,0,["1",[]])
+                oldFinalStep.splice(2,0,["3",[]])
+            }else if(oldFinalStep[0][0] === "3"){
+                oldFinalStep.splice(1,0,["2",[]])
+                oldFinalStep.splice(2,0,["3",[]])
+            }
+        }else if(oldFinalStep.length=== 2){
+            let tempSum = 0
+            for (let i = 0; i < oldFinalStep.length; i++) {
+                const oldFinalStepElement = oldFinalStep[i]
+                tempSum +=oldFinalStepElement[0]*1
+            }
+            switch (tempSum) {
+                case 3:
+                    oldFinalStep.splice(2,0,["3",[]])
+                    break;
+                case 4:
+                    oldFinalStep.splice(1,0,["2",[]])
+                    break;
+                case 5:
+                    oldFinalStep.splice(0,0,["1",[]])
+                    break;
+            }
+        }
+        return oldFinalStep
     }
 
     componentWillMount () {
@@ -270,6 +309,7 @@ class pipelineDetail extends Component {
             exexTime,
             lastExecTime,
             finalStep,
+            stepList,
             packageresult,
             currentJob
         } = this.state
@@ -313,7 +353,13 @@ class pipelineDetail extends Component {
                                         <span>Tips: 有{currentJob}个任务正在等待</span>
                                     </Col>
                                     <Col>
-                                        <Button type="primary">编辑</Button>
+                                        <Link to={{
+                                            pathname: `/pipeline/edit/${this.props.match.params.taskID}`,
+                                            state: {
+                                                fullSteps: this.state.fullSteps,
+                                                stepList : this.state.stepList
+                                            },
+                                        }}><Button type="primary">编辑</Button></Link>
                                     </Col>
                                     <Col>
                                         <Select

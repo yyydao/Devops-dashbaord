@@ -12,6 +12,7 @@ import PerformanceConfigManager from '@/pages/Setting/ConfigManager/PerformanceC
 import Pipeline from '@/pages/Pipeline'
 import PipelineDetail from '@/pages/Pipeline/detail'
 import PipelineAdd from '@/pages/Pipeline/add'
+import PipelineEdit from '@/pages/Pipeline/editPipeline'
 import pipelineTask from '@/pages/Pipeline/task'
 import pipelineTaskEdit from '@/pages/Pipeline/editTask'
 
@@ -118,5 +119,10 @@ export default [
         path: '/pipeline/task/edit',
         name: 'pipelineTaskEdit',
         component: pipelineTaskEdit
+    },
+    {
+        path: '/pipeline/edit/:taskID',
+        name: 'PipelineEdit',
+        component: PipelineEdit
     }
 ]
