@@ -5,7 +5,7 @@ const initialState = {
     userInfo: null,
     permissionList: null,
     projectId: null,
-    stepList: [
+    stepsList: [
         [1, []],
         [2, []],
         [3, []]
@@ -66,7 +66,7 @@ export default function (state, action) {
             if (action.data) {
                 let tempList = JSON.parse(localStorage.getItem('steps'))
                 if (!tempList) {
-                    tempList = initialState.stepList
+                    tempList = initialState.stepsList
                 }
                 console.log(`reducer ${tempList}`)
                 for (let i = 0; i < tempList.length; i++) {
@@ -76,9 +76,9 @@ export default function (state, action) {
                     }
                 }
                 localStorage.setItem('steps', JSON.stringify(tempList))
-                nextState.stepList = tempList
+                nextState.stepsList = tempList
             } else {
-                localStorage.setItem('steps', initialState.stepList)
+                localStorage.setItem('steps', initialState.stepsList)
             }
 
             break
@@ -86,9 +86,9 @@ export default function (state, action) {
             console.log(action.data)
             if (action.data) {
                 localStorage.setItem('steps', JSON.stringify(action.data))
-                nextState.stepList = action.data
+                nextState.stepsList = action.data
             } else {
-                localStorage.setItem('steps', initialState.stepList)
+                localStorage.setItem('steps', initialState.stepsList)
             }
 
             break
@@ -97,7 +97,7 @@ export default function (state, action) {
             if (action.data) {
                 let tempList = JSON.parse(localStorage.getItem('steps'))
                 if (!tempList) {
-                    tempList = initialState.stepList
+                    tempList = initialState.stepsList
                 }
                 console.log(`reducer ${tempList}`)
                 for (let i = 0; i < tempList.length; i++) {
@@ -107,9 +107,9 @@ export default function (state, action) {
                     }
                 }
                 localStorage.setItem('steps', JSON.stringify(tempList))
-                nextState.stepList = tempList
+                nextState.stepsList = tempList
             } else {
-                localStorage.setItem('steps', initialState.stepList)
+                localStorage.setItem('steps', initialState.stepsList)
             }
 
             break

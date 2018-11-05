@@ -115,9 +115,9 @@ class AddPipeline extends Component {
 
     handleDeleteTask = (item) =>{
         let { setSteps } = this.props;
-        let stepList = this.state.stepsList
-        for (let i = 0; i < stepList.length; i++) {
-            const stepElement = stepList[i]
+        let stepsList = this.state.stepsList
+        for (let i = 0; i < stepsList.length; i++) {
+            const stepElement = stepsList[i]
             if(stepElement[0] === item.stepCategory){
                 for (let j = 0; j < stepElement[1].length; j++) {
                     const stepElementElement = stepElement[1][j]
@@ -128,7 +128,7 @@ class AddPipeline extends Component {
                 }
             }
         }
-        this.setState({stepsList: stepList})
+        this.setState({stepsList: stepsList})
         setSteps(this.state.stepsList)
     }
 
