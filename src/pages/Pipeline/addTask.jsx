@@ -212,6 +212,7 @@ class taskAdd extends Component {
         console.log(this.state.paramsDatasource)
         console.log(this.state.stepCategory)
         this.props.form.validateFieldsAndScroll((err, values) => {
+            let oldSteps = [],stepsList = []
             if (!err) {
                 if (this.props.location.state.editable) {
                     let oldSteps = JSON.parse(localStorage.getItem('steps'))
@@ -227,17 +228,31 @@ class taskAdd extends Component {
                     setSteps(oldSteps)
                 } else {
                     if (this.props.location.state.existPipeline) {
-                        let oldSteps = this.props.location.state.stepsList
+                        console.log(`this.props.location ${JSON.stringify(this.props.location.state.fullSteps)}`)
+                        oldSteps = this.props.location.state.fullSteps
+                        stepsList = this.props.location.state.stepsList
                         console.log(oldSteps)
+                        console.log({...values})
+                        console.log(this.state.stepCode)
+                        console.log(this.state.paramsDatasource)
+                        console.log(this.state.stepCategory)
                         for (let i = 0; i < oldSteps.length; i++) {
                             if (oldSteps[i][0] === this.state.stepCategory) {
-                                for (let j = 0; j < oldSteps[i][1].length; j++) {
-                                    if (oldSteps[i][1][j].stepCode === this.state.stepCode) {
-                                        oldSteps[i][1][j].stepParams = this.state.paramsDatasource
-                                    }
-                                }
+                                oldSteps[i][1].push({
+                                    stepCategory: this.state.stepCategory,
+                                    stepCode: this.state.stepCode,
+                                    stepParams: this.state.paramsDatasource,
+                                    ...values
+                                })
                             }
                         }
+                        stepsList.push({
+                            stepCategory: this.state.stepCategory,
+                            stepCode: this.state.stepCode,
+                            stepParams: this.state.paramsDatasource,
+                            ...values
+                        })
+                        console.log(oldSteps)
                         setSteps(oldSteps)
                     }else{
                         setStep({
@@ -251,7 +266,13 @@ class taskAdd extends Component {
                 }
                 if(this.props.location.state.existPipeline){
 
-                    this.props.history.push(`/pipeline/edit/${this.props.location.state.taskID}`)
+                    this.props.history.push({
+                        pathname:`/pipeline/edit/${this.props.location.state.taskID}`,
+                        state: {
+                            fullSteps: oldSteps,
+                            stepsList: stepsList,
+                        }
+                    })
                 }else{
                     this.props.history.push('/pipeline/add')
                 }
