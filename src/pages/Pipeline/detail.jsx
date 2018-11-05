@@ -433,20 +433,20 @@ class pipelineDetail extends Component {
                                                 return <Card
                                                         style={{width: 180, marginLeft: '-40%'}}
                                                         title={item.stepName}
-                                                        extra={<Dropdown overlay={ <Menu>
-                                                            <Menu.Item>
-                                                                <a target="_blank" rel="noopener noreferrer"  onClick={()=>{
-                                                                    this.handleEditTask(item)}
-                                                                }>编辑任务</a>
-                                                            </Menu.Item>
-                                                            <Menu.Item>
-                                                                <a target="_blank" rel="noopener noreferrer" onClick={()=>{
-                                                                    this.handleDeleteTask(item)}
-                                                                }>删除任务</a>
-                                                            </Menu.Item>
-                                                        </Menu>} placement="bottomCenter">
-                                                            <Icon type="setting" theme="outlined" />
-                                                        </Dropdown>}
+                                                        // extra={<Dropdown overlay={ <Menu>
+                                                        //     <Menu.Item>
+                                                        //         <a target="_blank" rel="noopener noreferrer"  onClick={()=>{
+                                                        //             this.handleEditTask(item)}
+                                                        //         }>编辑任务</a>
+                                                        //     </Menu.Item>
+                                                        //     <Menu.Item>
+                                                        //         <a target="_blank" rel="noopener noreferrer" onClick={()=>{
+                                                        //             this.handleDeleteTask(item)}
+                                                        //         }>删除任务</a>
+                                                        //     </Menu.Item>
+                                                        // </Menu>} placement="bottomCenter">
+                                                        //     <Icon type="setting" theme="outlined" />
+                                                        // </Dropdown>}
                                                         key={item.stepID}
                                                     >
                                                         <p>{item.stepDesc}</p>
