@@ -58,7 +58,7 @@ const pipelineID = [
     {id: -1, name: '自定义'},
 ]
 
-class Add extends Component {
+class AddPipeline extends Component {
     constructor (props) {
         super(props)
 
@@ -377,12 +377,12 @@ class Add extends Component {
     }
 }
 
-Add = connect((state) => {
+AddPipeline = connect((state) => {
     return {
         projectId: state.projectId
     }
-}, {setStep,removeSteps,setSteps})(Add)
+}, {setStep,removeSteps,setSteps})(AddPipeline)
 
-const pipelineAdd = Form.create()(Add)
+const pipelineAdd = Form.create()(AddPipeline)
 
 export default withRouter(pipelineAdd)

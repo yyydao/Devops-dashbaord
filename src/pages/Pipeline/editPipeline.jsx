@@ -67,8 +67,8 @@ class Edit extends Component {
             autoCompleteResult: [],
             branchList: [],
             formDataBranch: null,
-            fullSteps: this.props.location.state.fullSteps,
-            stepsList: this.props.location.state.stepList
+            fullSteps: [],
+            stepsList: []
         }
     }
 
@@ -199,6 +199,18 @@ class Edit extends Component {
         //         [3, []]]
         // }
         // this.setState({stepsList: JSON.parse(stepsList)})
+        let currentEditedPipeline =JSON.parse(localStorage.getItem('currentEditedPipeline'))
+
+        if(!this.props || !this.props.location || !this.props.location.state){
+            let fullSteps = currentEditedPipeline.fullSteps
+            let stepList = currentEditedPipeline.stepList
+            this.setState({stepList})
+            this.setState({fullSteps})
+        }else{
+            this.setState({fullSteps:this.props.location.state.fullSteps})
+            this.setState({stepList:this.props.location.state.stepList})
+        }
+
         this.setPipelineInfo();
     }
 

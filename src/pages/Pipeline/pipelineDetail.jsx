@@ -161,7 +161,7 @@ class pipelineDetail extends Component {
     }
 
     handleEditTask = (item) =>{
-        console.log(item)
+
         this.props.history.push({
             pathname:'/pipeline/task/edit',
             state: {
@@ -176,6 +176,21 @@ class pipelineDetail extends Component {
             }
         })
 
+    }
+
+    gotoEditPipeline = () =>{
+        console.log(JSON.stringify(this.state.fullSteps))
+        localStorage.setItem('currentEditedPipeline',JSON.stringify({
+            fullSteps: this.state.fullSteps,
+            stepList : this.state.stepList
+        }))
+        this.props.history.push({
+            pathname: `/pipeline/edit/${this.props.match.params.taskID}`,
+            state: {
+                fullSteps: this.state.fullSteps,
+                stepList : this.state.stepList
+            },
+        })
     }
 
     getPipelineDetail = () => {
@@ -353,13 +368,9 @@ class pipelineDetail extends Component {
                                         <span>Tips: 有{currentJob}个任务正在等待</span>
                                     </Col>
                                     <Col>
-                                        <Link to={{
-                                            pathname: `/pipeline/edit/${this.props.match.params.taskID}`,
-                                            state: {
-                                                fullSteps: this.state.fullSteps,
-                                                stepList : this.state.stepList
-                                            },
-                                        }}><Button type="primary">编辑</Button></Link>
+                                        <Button type="primary" onClick={()=>{
+                                            this.gotoEditPipeline()
+                                        }}>编辑</Button>
                                     </Col>
                                     <Col>
                                         <Select

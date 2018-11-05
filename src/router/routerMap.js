@@ -10,10 +10,10 @@ import ConfigManager from '@/pages/Setting/ConfigManager';
 import PackageConfigManager from '@/pages/Setting/ConfigManager/PackageConfig';
 import PerformanceConfigManager from '@/pages/Setting/ConfigManager/PerformanceConfig';
 import Pipeline from '@/pages/Pipeline'
-import PipelineDetail from '@/pages/Pipeline/detail'
-import PipelineAdd from '@/pages/Pipeline/add'
+import PipelineDetail from '@/pages/Pipeline/pipelineDetail'
+import PipelineAdd from '@/pages/Pipeline/addPipeline'
 import PipelineEdit from '@/pages/Pipeline/editPipeline'
-import pipelineTask from '@/pages/Pipeline/task'
+import pipelineTask from '@/pages/Pipeline/addTask'
 import pipelineTaskEdit from '@/pages/Pipeline/editTask'
 
 import Performance from '@/pages/Test/Performance';

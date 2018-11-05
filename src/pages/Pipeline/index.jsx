@@ -233,6 +233,8 @@ class Pipeline extends Component {
     }
 
     componentWillMount () {
+        window.localStorage.removeItem('currentEditedPipeline')
+        window.localStorage.removeItem('steps')
         window.localStorage.setItem('oldProjectId', this.props.projectId)
     }
 
