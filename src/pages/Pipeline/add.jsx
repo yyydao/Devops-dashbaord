@@ -135,7 +135,7 @@ class Add extends Component {
     handleEditTask = (item) =>{
         console.log(item)
         this.props.history.push({
-            pathname:'/pipeline/task',
+            pathname:'/pipeline/task/add',
             state: {
                 stepCode: item.stepCode,
                 stepCategory: item.stepCategory,

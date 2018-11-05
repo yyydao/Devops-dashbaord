@@ -111,7 +111,7 @@ export default [
         component: PipelineAdd
     },
     {
-        path: '/pipeline/task',
+        path: '/pipeline/task/add',
         name: 'pipelineTask',
         component: pipelineTask
     },

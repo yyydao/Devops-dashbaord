@@ -135,12 +135,12 @@ class Edit extends Component {
     handleEditTask = (item) =>{
         console.log(item)
         this.props.history.push({
-            pathname:'/pipeline/task',
+            pathname:'/pipeline/task/edit',
             state: {
                 stepCode: item.stepCode,
                 stepCategory: item.stepCategory,
                 editable:true,
-                existPipline: true,
+                existPipeline: true,
                 taskID: this.props.match.params.taskID
             }
         })
@@ -261,7 +261,7 @@ class Edit extends Component {
                             return (
                                 <Link key={index}
                                       to={{
-                                          pathname: `/pipeline/task`,
+                                          pathname: `/pipeline/task/add`,
                                           state: {
                                               stepCode: item.id,
                                               stepCategory: stepCategory

@@ -354,7 +354,6 @@ class taskEdit extends Component {
         const {getFieldDecorator} = this.props.form
         const {
             paramsDatasource,
-            loading,
             stepCode,
             disabled,
         } = this.state
