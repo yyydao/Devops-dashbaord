@@ -177,13 +177,13 @@ class Add extends Component {
 
     componentWillMount () {
 
-        let stepsList = localStorage.getItem('steps')
-        if (!stepsList) {
-            stepsList = [[1, []],
-                [2, []],
-                [3, []]]
-        }
-        this.setState({stepsList: JSON.parse(stepsList)})
+        // let stepsList = localStorage.getItem('steps')
+        // if (!stepsList) {
+        //     stepsList = [[1, []],
+        //         [2, []],
+        //         [3, []]]
+        // }
+        // this.setState({stepsList: JSON.parse(stepsList)})
     }
 
     componentDidMount () {
