@@ -226,14 +226,30 @@ class taskAdd extends Component {
                     }
                     setSteps(oldSteps)
                 } else {
-                    setStep({
-                        stepCategory: this.state.stepCategory,
-                        stepCode: this.state.stepCode,
-                        stepParams: this.state.paramsDatasource,
-                        ...values
-                    })
+                    if (this.props.location.state.existPipeline) {
+                        let oldSteps = this.props.location.state.stepsList
+                        console.log(oldSteps)
+                        for (let i = 0; i < oldSteps.length; i++) {
+                            if (oldSteps[i][0] === this.state.stepCategory) {
+                                for (let j = 0; j < oldSteps[i][1].length; j++) {
+                                    if (oldSteps[i][1][j].stepCode === this.state.stepCode) {
+                                        oldSteps[i][1][j].stepParams = this.state.paramsDatasource
+                                    }
+                                }
+                            }
+                        }
+                        setSteps(oldSteps)
+                    }else{
+                        setStep({
+                            stepCategory: this.state.stepCategory,
+                            stepCode: this.state.stepCode,
+                            stepParams: this.state.paramsDatasource,
+                            ...values
+                        })
+                    }
+
                 }
-                if(this.props.location.state.existPipline){
+                if(this.props.location.state.existPipeline){
 
                     this.props.history.push(`/pipeline/edit/${this.props.location.state.taskID}`)
                 }else{

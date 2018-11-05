@@ -114,10 +114,10 @@ class Edit extends Component {
 
     handleDeleteTask = (item) =>{
         let { setSteps } = this.props;
-        let stepList = this.state.stepsList
-        console.log(this.stepList)
-        for (let i = 0; i < stepList.length; i++) {
-            const stepElement = stepList[i]
+        let stepsList = this.state.stepsList
+        console.log(this.stepsList)
+        for (let i = 0; i < stepsList.length; i++) {
+            const stepElement = stepsList[i]
             if(stepElement[0] === item.stepCategory){
                 for (let j = 0; j < stepElement[1].length; j++) {
                     const stepElementElement = stepElement[1][j]
@@ -128,7 +128,7 @@ class Edit extends Component {
                 }
             }
         }
-        this.setState({stepsList: stepList})
+        this.setState({stepsList: stepsList})
         setSteps(this.state.stepsList)
     }
 
@@ -202,13 +202,15 @@ class Edit extends Component {
         let currentEditedPipeline =JSON.parse(localStorage.getItem('currentEditedPipeline'))
 
         if(!this.props || !this.props.location || !this.props.location.state){
+            console.log('1')
             let fullSteps = currentEditedPipeline.fullSteps
-            let stepList = currentEditedPipeline.stepList
-            this.setState({stepList})
-            this.setState({fullSteps})
+            let stepsList = currentEditedPipeline.stepsList
+            this.setState({stepsList:stepsList})
+            this.setState({fullSteps:fullSteps})
         }else{
+            console.log('2')
             this.setState({fullSteps:this.props.location.state.fullSteps})
-            this.setState({stepList:this.props.location.state.stepList})
+            this.setState({stepsList:this.props.location.state.stepsList})
         }
 
         this.setPipelineInfo();
@@ -276,7 +278,11 @@ class Edit extends Component {
                                           pathname: `/pipeline/task/add`,
                                           state: {
                                               stepCode: item.id,
-                                              stepCategory: stepCategory
+                                              stepCategory: stepCategory,
+                                              existPipeline: true,
+                                              taskID: this.props.match.params.taskID,
+                                              fullSteps: this.state.fullSteps,
+                                              stepsList: this.state.stepsList,
                                           }
                                       }}>
                                     <Card.Grid style={gridStyle}>{item.name}</Card.Grid>

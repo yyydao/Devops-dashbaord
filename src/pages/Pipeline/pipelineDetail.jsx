@@ -122,7 +122,7 @@ class pipelineDetail extends Component {
             current: 0,
             currentJob: 0,
             finalStep: [],
-            stepList:[],
+            stepsList:[],
             fullSteps:[],
             packageresult: packageresult
         }
@@ -143,9 +143,9 @@ class pipelineDetail extends Component {
 
     handleDeleteTask = (item) =>{
         let { setSteps } = this.props;
-        let stepList = this.state.stepsList
-        for (let i = 0; i < stepList.length; i++) {
-            const stepElement = stepList[i]
+        let stepsList = this.state.stepsList
+        for (let i = 0; i < stepsList.length; i++) {
+            const stepElement = stepsList[i]
             if(stepElement[0] === item.stepCategory){
                 for (let j = 0; j < stepElement[1].length; j++) {
                     const stepElementElement = stepElement[1][j]
@@ -156,7 +156,7 @@ class pipelineDetail extends Component {
                 }
             }
         }
-        this.setState({stepsList: stepList})
+        this.setState({stepsList: stepsList})
         setSteps(this.state.stepsList)
     }
 
@@ -179,16 +179,15 @@ class pipelineDetail extends Component {
     }
 
     gotoEditPipeline = () =>{
-        console.log(JSON.stringify(this.state.fullSteps))
         localStorage.setItem('currentEditedPipeline',JSON.stringify({
             fullSteps: this.state.fullSteps,
-            stepList : this.state.stepList
+            stepsList : this.state.stepsList
         }))
         this.props.history.push({
             pathname: `/pipeline/edit/${this.props.match.params.taskID}`,
             state: {
                 fullSteps: this.state.fullSteps,
-                stepList : this.state.stepList
+                stepsList : this.state.stepsList
             },
         })
     }
@@ -199,9 +198,9 @@ class pipelineDetail extends Component {
         }).then((res) => {
             if (res.code === 0) {
                 const taskList = res.task
-                const stepList = res.steps
+                const stepsList = res.steps
                 this.checkTaskList(taskList)
-                this.checkStepList(stepList)
+                this.checkStepList(stepsList)
             }
         })
     }
@@ -241,16 +240,16 @@ class pipelineDetail extends Component {
         })
     }
 
-    checkStepList = (stepList) => {
-        const category = uniq(stepList.map(item => item.stepCategory))
+    checkStepList = (stepsList) => {
+        const category = uniq(stepsList.map(item => item.stepCategory))
         // console.log(category)
         let tempStepObject = {}
         let finalStep = []
         category.forEach((value, index) => {
             tempStepObject[value] = []
         })
-        for (let i = 0; i < stepList.length; i++) {
-            const stepListElement = stepList[i]
+        for (let i = 0; i < stepsList.length; i++) {
+            const stepListElement = stepsList[i]
             // console.log(stepListElement.stepCategory)
             for (const tempStepObjectKey in tempStepObject) {
                 if (stepListElement.stepCategory + '' === tempStepObjectKey + '') {
@@ -261,9 +260,9 @@ class pipelineDetail extends Component {
         }
         finalStep = toPairs(tempStepObject)
         // console.log(tempStepObject)
-        // console.log(stepList)
+        // console.log(stepsList)
         // console.log(finalStep)
-        this.setState({stepList: stepList})
+        this.setState({stepsList: stepsList})
         this.setState({finalStep: finalStep})
         this.setState({fullSteps: this.composeEditFinalStep(finalStep)})
     }
@@ -310,7 +309,7 @@ class pipelineDetail extends Component {
     componentDidMount () {
         // this.setState({packageresult: packageresult})
         // this.checkTaskList(taskList)
-        // this.checkStepList(StepList)
+        // this.checkStepList(stepsList)
         this.getPipelineDetail()
         this.getPackageresult()
     }
@@ -324,7 +323,7 @@ class pipelineDetail extends Component {
             exexTime,
             lastExecTime,
             finalStep,
-            stepList,
+            stepsList,
             packageresult,
             currentJob
         } = this.state
