@@ -231,11 +231,11 @@ class taskAdd extends Component {
                         console.log(`this.props.location ${JSON.stringify(this.props.location.state.fullSteps)}`)
                         oldSteps = this.props.location.state.fullSteps
                         stepsList = this.props.location.state.stepsList
-                        console.log(oldSteps)
-                        console.log({...values})
-                        console.log(this.state.stepCode)
-                        console.log(this.state.paramsDatasource)
-                        console.log(this.state.stepCategory)
+                        // console.log(oldSteps)
+                        // console.log({...values})
+                        // console.log(this.state.stepCode)
+                        // console.log(this.state.paramsDatasource)
+                        // console.log(this.state.stepCategory)
                         for (let i = 0; i < oldSteps.length; i++) {
                             if (oldSteps[i][0] === this.state.stepCategory) {
                                 oldSteps[i][1].push({
@@ -252,7 +252,7 @@ class taskAdd extends Component {
                             stepParams: this.state.paramsDatasource,
                             ...values
                         })
-                        console.log(oldSteps)
+                        // console.log(oldSteps)
                         setSteps(oldSteps)
                     }else{
                         setStep({

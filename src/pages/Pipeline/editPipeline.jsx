@@ -89,10 +89,11 @@ class Edit extends Component {
         e.preventDefault()
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-                let notFormattedSteps = this.state.stepsList, formattedSteps = [];
+                let notFormattedSteps = this.state.fullSteps, formattedSteps = [];
+                console.log(notFormattedSteps)
                 for (let i = 0; i < notFormattedSteps.length; i++) {
                     const notFormattedStep = notFormattedSteps[i]
-                    if(notFormattedStep[1].length>0){
+                    if(notFormattedStep[1] && notFormattedStep[1].length>0){
                         formattedSteps.push(...notFormattedStep[1])
                     }
 
@@ -100,9 +101,6 @@ class Edit extends Component {
                 reqPost('/pipeline/updatestep', {projectID: this.props.projectId, ...values,steps:formattedSteps}).then(res => {
                     if (parseInt(res.code, 0) === 0) {
                         message.success('项目新增成功！')
-                        // this.setState({ proModalVisible: false });
-                        // this.props.form.resetFields();
-                        // this.getTableData();
                     } else {
                         message.error(res.msg)
                     }
@@ -200,17 +198,27 @@ class Edit extends Component {
         // }
         // this.setState({stepsList: JSON.parse(stepsList)})
         let currentEditedPipeline =JSON.parse(localStorage.getItem('currentEditedPipeline'))
-
-        if(!this.props || !this.props.location || !this.props.location.state){
+        let fullSteps = currentEditedPipeline.fullSteps
+        let stepsList = currentEditedPipeline.stepsList
+        if(!this.props.location.state){
             console.log('1')
-            let fullSteps = currentEditedPipeline.fullSteps
-            let stepsList = currentEditedPipeline.stepsList
+
             this.setState({stepsList:stepsList})
             this.setState({fullSteps:fullSteps})
         }else{
             console.log('2')
-            this.setState({fullSteps:this.props.location.state.fullSteps})
-            this.setState({stepsList:this.props.location.state.stepsList})
+            if(!!this.props.location.state.fullSteps){
+                this.setState({fullSteps:this.props.location.state.fullSteps})
+            }else{
+                this.setState({fullSteps:fullSteps})
+            }
+            if(!!this.props.location.state.stepsList){
+                this.setState({stepsList:this.props.location.state.stepsList})
+            }else{
+                this.setState({stepsList:stepsList})
+            }
+
+
         }
 
         this.setPipelineInfo();
