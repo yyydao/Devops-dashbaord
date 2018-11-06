@@ -267,7 +267,7 @@ class Dashboard extends Component{
     }
     let host = window.location.host
     let url1=url.substring(url.indexOf('./')+1)
-    // return `http://${host}${url1}`
+    window.open(`http://${host}${url1}`)
   }
 
 
@@ -320,8 +320,10 @@ class Dashboard extends Component{
                   </Row>
                 </Col>
                 <Col span={4} className="btn-group">
-                  <Button type="primary" onClick={this.openUrl(basicInformation.reinforceAppPath,0)}>原包下载</Button>
-                  <Button type="primary" onClick={this.openUrl(basicInformation.reinforceAppPath,1)}>加固包下载</Button>
+                  <p>
+                    <Button type="primary" onClick={(e)=>{this.openUrl(basicInformation.reinforceAppPath,0)}}>原包下载</Button>
+                  </p>
+                  <Button type="primary" onClick={(e)=>{this.openUrl(basicInformation.reinforceAppPath,1)}}>加固包下载</Button>
                 </Col>
               </Row>
             </Card>
