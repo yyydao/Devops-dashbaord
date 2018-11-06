@@ -19,7 +19,7 @@ class CpuChart extends React.Component {
   render() {
     const scale = {
       createTime: {
-        type: "time",
+        type: "timeCat",
         mask: "MM-DD hh:mm",
         alias:'日期'
       },

@@ -51,10 +51,10 @@ class Dashboard extends Component{
       limit: 100
     }).then((res) => {
       if (res.code === 0) {
-        if(res.page.list.length > 0){
+        if(res.data.list.length > 0){
           this.setState({
-            taskList:res.page.list,
-           currentTaskId:res.page.list[0].taskID
+            taskList:res.data.list,
+           currentTaskId:res.data.list[0].taskID
           })
           this.getBasicInfor()
         }else{
@@ -262,7 +262,7 @@ class Dashboard extends Component{
    */
   openUrl = (url,type) =>{
     if(!url){
-      type?message.info('暂无原包可下载'):message.info('暂无加固包可下载')
+      type?message.info('暂无加固包可下载'):message.info('暂无原包可下载')
       return
     }
     let host = window.location.host

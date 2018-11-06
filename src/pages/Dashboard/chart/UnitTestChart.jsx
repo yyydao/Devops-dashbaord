@@ -21,7 +21,7 @@ class UnitTestChart extends React.Component {
     const { unitData } = this.props;
     const cols = {
       createTime: {
-        type: "time",
+        type: "timeCat",
         mask: "MM-DD hh:mm",
         alias:'日期'
       },

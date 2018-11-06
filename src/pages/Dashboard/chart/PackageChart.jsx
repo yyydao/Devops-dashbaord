@@ -16,7 +16,7 @@ class packageChart extends React.Component {
     const type=[,'源码','加固','补丁']
     const scale = {
       createTime: {
-        type: "time",
+        type: "timeCat",
         mask: "MM-DD hh:mm",
         alias:'日期'
         // formatter: () => {}, // 格式化文本内容

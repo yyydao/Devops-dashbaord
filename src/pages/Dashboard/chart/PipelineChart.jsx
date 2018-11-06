@@ -25,7 +25,7 @@ class pipelineChart extends React.Component {
     const type=['开始','构建','测试','部署','完成']
     const scale = {
       createTime: {
-        type: "time",
+        type: "timeCat",
         mask: "MM-DD hh:mm",
         alias:'日期'
         // formatter: () => {}, // 格式化文本内容
