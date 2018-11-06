@@ -397,7 +397,16 @@ class taskAdd extends Component {
     }
 
     importAutomation = () =>{
-
+        reqGet('pipeline/autoimport').then(res => {
+            if (res.code == 0) {
+                let paramsArray = []
+                res.list.map((item,index)=>{
+                    paramsArray.push({key:index,json_jsonParams:item})
+                })
+                this.setState({ paramsDatasource: paramsArray });
+                console.log(paramsArray)
+            }
+        })
     }
 
     paramsTableChange =(pagination, filters, sorter, extra: { currentDataSource: [] }) => {
