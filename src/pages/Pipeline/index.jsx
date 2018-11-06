@@ -212,7 +212,7 @@ class Pipeline extends Component {
             console.log(res)
             if (res.code === 0) {
                 this.setState({
-                    pipelineList: res.page.list
+                    pipelineList: res.data.list
                     // pipelineList: res.tasks
                 })
             }

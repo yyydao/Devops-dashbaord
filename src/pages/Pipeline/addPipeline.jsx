@@ -243,7 +243,7 @@ class AddPipeline extends Component {
                             return (
                                 <Link key={index}
                                       to={{
-                                          pathname: `/pipeline/task`,
+                                          pathname: `/pipeline/task/add`,
                                           state: {
                                               stepCode: item.id,
                                               stepCategory: stepCategory

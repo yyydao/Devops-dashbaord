@@ -17,9 +17,10 @@ import {
     Select,
     Table,
     Popconfirm,
-    Modal, message
+    Modal, Card, message
 } from 'antd'
 
+const {TextArea} = Input;
 const AutoCompleteOption = AutoComplete.Option
 const BreadcrumbItem = Breadcrumb.Item
 const Step = Steps.Step
@@ -27,6 +28,7 @@ const Panel = Collapse.Panel
 const Option = Select.Option
 const FormItem = Form.Item
 const RadioGroup = Radio.Group
+
 const EditableContext = React.createContext();
 
 const EditableRow = ({ form, index, ...props }) => (
@@ -37,19 +39,70 @@ const EditableRow = ({ form, index, ...props }) => (
 
 const EditableFormRow = Form.create()(EditableRow);
 
-
 const pipelineID = [
-    {id: 0, name: '代码拉取',description:'Gitlab 代码同步',params:[{ key: '1',json_jsonParams: 'code_branch'},{ key: '2',json_jsonParams:'code_gitServer'}]},
-    {id: 1, name: '单元测试',description:'单元测试',params:[]},
-    {id: 2, name: '静态扫描',description:'SonarQube 代码静态扫描'},
-    {id: 3, name: '编译打包',description:'项目编译打包'},
-    {id: 4, name: '安全扫描',description:'MobSF 安全检测'},
-    {id: 5, name: 'UI测试',description:'自动化UI测试'},
-    {id: 6, name: '性能测试',description:'自动化性能测试'},
-    {id: 7, name: '加固',description:'爱加密加固'},
-    {id: 8, name: '补丁',description:'生成 Tinker 补丁包'},
-    {id: 9, name: '包管理',description:'DevOps平台安装包管理'},
-    {id: -1, name: '自定义',description:''},
+    {
+        id: 0,
+        name: '代码拉取',
+        description: 'Gitlab 代码同步',
+        params: [{key: '1', json_jsonParams: 'code_branch'}, {key: '2', json_jsonParams: 'code_gitServer'}]
+    },
+    {id: 1, name: '单元测试', description: '单元测试', params: []},
+    {
+        id: 2,
+        name: '静态扫描',
+        description: 'SonarQube 代码静态扫描',
+        params: [{key: '1', json_jsonParams:'sonnar_sonarProjectKey',json_jsonValue:'TuandaiAS2d'},
+            {key: '2', json_jsonParams:'sonnar_code_analysis_moduleName',json_jsonValue: ''},
+            {key: '3',  json_jsonParams:'sonnar_code_analysis_all',json_jsonValue:  false}]
+    },
+    {
+        id: 3,
+        name: '编译打包',
+        description: '项目编译打包',
+        params: [{key: '1', json_jsonParams:'build_compileType',json_jsonValue:'other'},
+            {key: '2',json_jsonParams:'build_environment',json_jsonValue: 'develop'},
+            {key: '3',json_jsonParams:'build_username',json_jsonValue: 'tuandaideveloper'}, {
+                key: '4',json_jsonParams:'build_ijiami_server',json_jsonValue: 'http://10.100.12.24:10099/api'
+            },
+            {key: '5',json_jsonParams:'build_ijiami_account',json_jsonValue: 'CI'},
+            {key: '6',json_jsonParams:'build_ijiamitinker_variant',json_jsonValue: 'normal-release'},
+            {key: '7',json_jsonParams:'build_tinker_type',json_jsonValue: 'base'}]
+    },
+    {
+        id: 4, name: '安全扫描',
+        description: 'MobSF 安全检测',
+        params: [{key:'1', json_jsonParams:'safe_server',json_jsonValue: 'http://10.100.12.52:8000/'},
+            {key:'2', json_jsonParams:'safe_token',json_jsonValue: '2dc06726e9562f1713b81f07d53e7b926825cddc2aa37ee529a1f2b8f09ec252'},
+            {key:'3', json_jsonParams:'safe_gitserver',json_jsonValue: 'http://git.tuandai888.com/MPD-DevOps/SecurityAnalysis.git'}]
+    },
+    {
+        id: 5,
+        name: 'UI测试',
+        description: '自动化UI测试',
+        params: [{key:'1', json_jsonParams:'autotest_uiTestGitServer',json_jsonValue: 'http://git.tuandai888.com/MPD-DevOps/UITestScript.git'},
+            {key:'2', json_jsonParams:'autotest_noreset',json_jsonValue: 'false'}, {key:'3', json_jsonParams:'autotest_tags',json_jsonValue: '~'},
+            {key:'4', json_jsonParams:'autotest_appiumserver',json_jsonValue: '10.100.12.52:4723'},
+            {key:'5', json_jsonParams:'autotest_testusername',json_jsonValue: '13070901314'},
+            {key:'6', json_jsonParams:'autotest_testpwd',json_jsonValue: '123456a'}]
+    },
+    {
+        id: 6,
+        name: '性能测试',
+        description: '自动化性能测试',
+        params: [{key:'1', json_jsonParams:'performance_testGitServer',json_jsonValue:'http://git.tuandai888.com/MPD-DevOps/PrismReport.git'}]
+    },
+    {
+        id: 7,
+        name: '加固',
+        description: '爱加密加固',
+        params: [{key:'1', json_jsonParams:'tinker_ijiami_plan_id',json_jsonValue:  '51'},
+            {key:'2', json_jsonParams:'tinker_ijiami_sign_alias',json_jsonValue:  '团贷网'},
+            {key:'3', json_jsonParams:'tinker_ijiami_so',json_jsonValue:  `"\\"lib/armeabi-v7a/libjuntejni.so;lib/x86/libjuntejni.so\\""`
+        }]
+    },
+    {id: 8, name: '补丁', description: '生成 Tinker 补丁包', params: [{key:'1', json_jsonParams:'patch_baseapkurl',json_jsonValue: ''}]},
+    {id: 9, name: '包管理', description: 'DevOps平台安装包管理', params: [{key:'1', json_jsonParams:'deploy_ipAddress',json_jsonValue: ''}]},
+    {id: -1, name: '自定义', description: ''},
 ]
 
 class EditableCell extends React.Component {
@@ -158,15 +211,9 @@ class taskAdd extends Component {
                 editable: true,
             },
             {
-                title: '类型',
-                dataIndex: 'type',
-                key: 'type',
-                editable: true,
-            },
-            {
                 title: '值',
-                dataIndex: 'paramSource',
-                key: 'paramSource',
+                dataIndex: 'json_jsonValue',
+                key: 'json_jsonValue',
                 editable: true,
             },
             {
@@ -191,6 +238,7 @@ class taskAdd extends Component {
             autoCompleteResult: [],
             finalStep: [],
             loading: false,
+            importJSON: ''
         }
     }
 
@@ -317,6 +365,40 @@ class taskAdd extends Component {
         });
         this.setState({ paramsDatasource: newData });
     }
+    isJsonString =(str) =>{
+        try {
+            if (typeof JSON.parse(str) == "object") {
+                return true;
+            }
+        } catch(e) {
+        }
+        return false;
+    }
+
+    importByJSON = () =>{
+        let jsonText = this.state.importJSON
+        if(this.isJsonString(jsonText)){
+
+            let paramsArray = [],source = JSON.parse(jsonText),keyIndex = 1
+
+
+            for (let prop in source) {
+                console.log(source[prop])
+                paramsArray.push({key:keyIndex,json_jsonParams:prop,json_jsonValue:source[prop]})
+                keyIndex++
+            }
+
+            this.setState({ paramsDatasource: paramsArray });
+
+        }else{
+            message.error('请输入正确JSON');
+            return;
+        }
+    }
+
+    importAutomation = () =>{
+
+    }
 
     paramsTableChange =(pagination, filters, sorter, extra: { currentDataSource: [] }) => {
         console.log(`${pagination}, ${filters}, ${sorter}, ${extra}`)
@@ -340,7 +422,7 @@ class taskAdd extends Component {
             disabled = true
         }
         //判断是否是编辑
-        if(this.props.location.state.editable){
+        if(this.props.location.state && this.props.location.state.editable){
             let stepsList = JSON.parse(localStorage.getItem('steps'))
             let stepListByCategory = stepsList.find((item) => item[0] === stepCategory)
 
@@ -382,6 +464,9 @@ class taskAdd extends Component {
             loading,
             stepCode,
             disabled,
+            addVisible,
+            addConfirmLoading,
+            importJSON
         } = this.state
 
         const formItemLayout = {
@@ -437,6 +522,21 @@ class taskAdd extends Component {
                     <BreadcrumbItem><Link to="/pipeline">流水线</Link></BreadcrumbItem>
                     <BreadcrumbItem>新增</BreadcrumbItem>
                 </Breadcrumb>
+                <Modal title="JSON"
+                       visible={addVisible}
+                       onOk={this.importByJSON}
+                       confirmLoading={addConfirmLoading}
+                       onCancel={this.hideModal}
+                       maskClosable={false}
+                       destroyOnClose={true}
+                >
+                    <TextArea rows={4} value={importJSON} onChange={(e) => {
+                        console.log(e.target.value)
+                        this.setState({importJSON:e.target.value});
+                        console.log(this.state.importJSON)
+                    }}/>
+
+                </Modal>
                 <section className="pipeline-box">
                     <Form onSubmit={this.handleSubmit}>
                         <FormItem
@@ -474,7 +574,12 @@ class taskAdd extends Component {
                             label="运行参数"
                         >
                             <div>
-
+                                <Button onClick={this.showModal} type="primary" style={{ marginBottom: 16 }}>
+                                    JSON导入
+                                </Button>
+                                <Button onClick={this.importAutomation} type="primary" style={{ marginBottom: 16 }}>
+                                    自动导入
+                                </Button>
                                 <Table
                                     components={components}
                                     rowClassName={() => 'editable-row'}
@@ -484,8 +589,9 @@ class taskAdd extends Component {
                                     onChange={this.paramsTableChange}
                                 />
                                 <Button onClick={this.handleAdd} type="primary" style={{ marginBottom: 16 }}>
-                                    Add a row
+                                    增加一行
                                 </Button>
+
                             </div>
                         </FormItem>
 
