@@ -36,7 +36,8 @@ class ProjectInfo extends Component{
     }
 
     getProjectInfo(){  
-        const { projectId } = this.props;      
+        const { projectId } = this.props;
+        const platformType=['Android', 'iOS', '后端平台']
         reqPost('/project/projectInfo', { projectId: projectId }).then(res => {
             if(parseInt(res.code, 0) === 0){
                 this.props.form.setFieldsValue({
@@ -44,7 +45,9 @@ class ProjectInfo extends Component{
                     description: res.data.description,
                     gitUrl: res.data.gitUrl,
                     creator: res.data.creator,
-                    createTime: res.data.createTime
+                    createTime: res.data.createTime,
+                    jenkinsAddr: res.data.jenkinsAddr,
+                    platform:platformType[res.data.platform-1]
                 });
                 this.setState({ projectId: res.data.id });
             }else{
@@ -61,7 +64,8 @@ class ProjectInfo extends Component{
             id: projectId,
             name: form.getFieldValue('name'),
             description: form.getFieldValue('description'),
-            gitUrl: form.getFieldValue('gitUrl')
+            gitUrl: form.getFieldValue('gitUrl'),
+            jenkinsAddr: form.getFieldValue('jenkinsAddr')
         }).then(res => {
             if(parseInt(res.code, 0) === 0){
                 message.success('更新成功');
@@ -77,7 +81,7 @@ class ProjectInfo extends Component{
 
         confirm({
             title: '删除提示',
-            content: '确认删除吗？',
+            content: '该配置中可能存在重要数据，是否继续删除？（请谨慎操作！）',
             okText: '确认',
             cancelText: '取消',
             onOk: () => {
@@ -149,6 +153,20 @@ class ProjectInfo extends Component{
                                 )
                             }
                         </FormItem>
+                      <FormItem {...fromItemLayout} label="Jenkins地址">
+                        {
+                          getFieldDecorator('jenkinsAddr')(
+                              <Input />
+                          )
+                        }
+                      </FormItem>
+                      <FormItem {...fromItemLayout} label="项目平台">
+                        {
+                          getFieldDecorator('platform')(
+                              <Input disabled />
+                          )
+                        }
+                      </FormItem>
                         <FormItem {...fromItemLayout} label="创建人">
                             {
                                 getFieldDecorator('creator')(

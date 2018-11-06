@@ -20,6 +20,8 @@ import Performance from '@/pages/Test/Performance';
 import Package from '@/pages/Package/';
 import PackageList from '@/pages/Package/list';
 import PackageDetail from '@/pages/Package/detail';
+import Dashboard from '@/pages/Dashboard'
+import ThirdParty from '@/pages/Setting/ThirdPartyManager'
 
 export default [
     {
@@ -124,5 +126,14 @@ export default [
         path: '/pipeline/edit/:taskID',
         name: 'PipelineEdit',
         component: PipelineEdit
+    },{
+      path: '/dashboard',
+      name: 'dashboard',
+      component: Dashboard
+    },
+    {
+      path: '/thirdparty',
+      name: 'thirdparty',
+      component: ThirdParty
     }
 ]

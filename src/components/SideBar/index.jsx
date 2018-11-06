@@ -77,6 +77,15 @@ class SideBar extends Component{
                     name: "流水线",
                     parentId: 4428,
                     urls: "/pipeline"})
+              fakemenuList.push({appId: 104,
+                createTime: "2018-10-18T18:10:16",
+                id: 4410,
+                link: false,
+                menu: true,
+                modifyTime: "2018-10-18T18:10:16",
+                name: "仪表盘",
+                parentId: 4428,
+                urls: "/dashboard"})
                 setPermissionList(fakepermissionList)
                 const menuList = this.getMenuList(fakemenuList);
                 // setPermissionList(res.data.permissionList);
