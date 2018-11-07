@@ -32,7 +32,7 @@ class UnitTestChart extends React.Component {
     const titles={
       autoRotate: false,
       position: 'end',
-      offset: 60
+      offset: 20
     }
     const label = {
       autoRotate: false,
@@ -49,7 +49,11 @@ class UnitTestChart extends React.Component {
             <Axis
                 name="sqaleValue"
                 label={{autoRotate: false}}
-                title={titles}
+                title={{
+                  autoRotate: false,
+                  position: 'end',
+                  offset: 60
+                }}
             />
             <Tooltip
                 crosshairs={{

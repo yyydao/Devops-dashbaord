@@ -69,15 +69,15 @@ class Dashboard extends Component{
    */
   onPipeLineChange = (e) =>{
     this.setState({currentTaskId:e})
-    this.getBasicInfor()
+    this.getBasicInfor(e)
   }
 
   /**
    * @desc 获取基本数据
    */
-  getBasicInfor = () =>{
+  getBasicInfor = (currentTaskId=this.state.currentTaskId) =>{
     reqGet('/dashboard/basicInfor', {
-      taskId:this.state.currentTaskId
+      taskId:currentTaskId
     }).then((res) => {
       if (res.code === 0) {
         this.setState({
@@ -93,40 +93,18 @@ class Dashboard extends Component{
    */
   getAllMonitorReport = () =>{
     let that=this;
-    for(let key in this.state.reportType){
       reqGet('/dashboard/report', {
         taskId:this.state.currentTaskId,
-        reportType: parseInt(key)+1
       }).then((res) => {
         if (res.code === 0) {
-          let type = this.state.reportType[key]
-          let data = res.data[type]
-          let result = this.state.monitorData
-          switch (type) {
-            case 'unitTestMonitors':
-              data.map(item=>item.sqaleValue=parseFloat(item.sqaleValue))
-              result[type] = data
-              this.setState({result})
-              break;
-            case 'uiTestMonitors':
-              this.dealUiData(data)
-              break;
-            case 'cpuMemoryAnalysis':
-              this.dealCpuData(data||[])
-              break;
-            case 'fluentColdStartTimeAnalysis':
-              this.dealFluencyData(data||[])
-              break;
-            case 'packageBodyMonitors':
-              data.map(item=>item.appFileSize=parseFloat(item.appFileSize))
-              break;
-            default:
-              result[type] = data
-              this.setState({result})
-          }
+          res.data.unitTestMonitors.map(item=>item.sqaleValue=parseFloat(item.sqaleValue))
+          res.data.packageBodyMonitors.map(item=>{item.appFileSize=parseFloat(item.appFileSize);item.name='包'})
+          this.setState({monitorData:res.data})
+          this.dealUiData(res.data.uiTestMonitors)
+          this.dealCpuData(res.data.cpuMemoryAnalysis||[])
+          this.dealFluencyData(res.data.fluentColdStartTimeAnalysis||[])
         }
       })
-    }
   }
   /**
    *  @desc 处理uiTestMonitors仪表盘数据

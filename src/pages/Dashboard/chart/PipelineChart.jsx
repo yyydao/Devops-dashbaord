@@ -37,7 +37,7 @@ class pipelineChart extends React.Component {
     const titles={
       autoRotate: false,
       position: 'end',
-      offset: 70
+      offset: 20
     }
     const label = {
       autoRotate: false,
@@ -53,7 +53,11 @@ class pipelineChart extends React.Component {
             <Axis name="createTime" title={titles} label={label}/>
             <Axis
                 name="execTime"
-                title={titles}
+                title={{
+                  autoRotate: false,
+                  position: 'end',
+                  offset: 70
+                }}
                 label={{autoRotate: false}}
             />
             <Tooltip

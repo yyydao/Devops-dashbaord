@@ -22,13 +22,13 @@ class packageChart extends React.Component {
         // formatter: () => {}, // 格式化文本内容
       },
       appFileSize:{
-        alias:'文件大小(MB)'
+        alias:'占用(MB)'
       }
     };
     const titles={
       autoRotate: false,
       position: 'end',
-      offset: 50
+      offset: 20
     }
     const label = {
       autoRotate: false,
@@ -44,7 +44,11 @@ class packageChart extends React.Component {
             <Axis name="createTime" title={titles} label={label}/>
             <Axis
                 name="appFileSize"
-                title={titles}
+                title={{
+                  autoRotate: false,
+                  position: 'end',
+                  offset: 50
+                }}
                 label={{autoRotate: false}}
             />
             <Tooltip
@@ -56,12 +60,12 @@ class packageChart extends React.Component {
                 type="line"
                 position="createTime*appFileSize"
                 size={2}
-                color={''}
+                color={'name'}
                 tooltip={['packageType*appFileSize*createTime', (packageType, appFileSize,createTime) => {
                   return {
                     //自定义 tooltip 上显示的 title 显示内容等。
-                    name: `文件大小(${type[packageType]})`,
-                    value: appFileSize
+                    name: `占用(${type[packageType]})`,
+                    value: appFileSize+'MB'
                   };
                 }]}
             />
@@ -70,7 +74,7 @@ class packageChart extends React.Component {
                 position="createTime*appFileSize"
                 size={4}
                 shape={"circle"}
-                color={''}
+                color={'name'}
                 style={{
                   stroke: "#fff",
                   lineWidth: 1
@@ -78,8 +82,8 @@ class packageChart extends React.Component {
                 tooltip={['packageType*appFileSize*createTime', (packageType, appFileSize,createTime) => {
                   return {
                     //自定义 tooltip 上显示的 title 显示内容等。
-                    name: `文件大小(${type[packageType]})`,
-                    value: appFileSize
+                    name: `占用(${type[packageType]})`,
+                    value: appFileSize+'MB'
                   };
                 }]}
             />

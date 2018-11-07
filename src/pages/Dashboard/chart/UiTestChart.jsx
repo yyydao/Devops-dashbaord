@@ -37,7 +37,7 @@ class UiTestChart extends React.Component {
     const titles={
       autoRotate: false,
       position: 'end',
-      offset: 60
+      offset: 20
     }
     return (
         <div>
@@ -47,7 +47,11 @@ class UiTestChart extends React.Component {
             <Axis
                 name="successRateValue"
                 label={{autoRotate: false}}
-                title={titles}
+                title={{
+                  autoRotate: false,
+                  position: 'end',
+                  offset: 70
+                }}
             />
             <Tooltip
                 crosshairs={{

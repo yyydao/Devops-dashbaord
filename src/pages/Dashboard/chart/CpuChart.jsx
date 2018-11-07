@@ -55,7 +55,8 @@ class CpuChart extends React.Component {
                 name="createTime"
                 title={{
                   autoRotate: false,
-                  position: 'end'
+                  position: 'end',
+                  offset: 20
                 }}
                 label={label}
             />
