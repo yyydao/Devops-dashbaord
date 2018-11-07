@@ -197,6 +197,7 @@ class AddPipeline extends Component {
     }
 
     componentDidMount () {
+        let tempStep = JSON.parse(localStorage.getItem('steps'))
         this.getBranchList()
         let taskName, branchID, jenkinsJob
         if (this.props.location.state) {
@@ -211,7 +212,8 @@ class AddPipeline extends Component {
             branchID: branchID,
             jenkinsJob: jenkinsJob,
         })
-        let stepsList = JSON.parse(localStorage.getItem('steps'))
+        let stepsList = tempStep ? tempStep : this.state.stepsList
+
         this.setState({stepsList: stepsList})
     }
 
@@ -266,7 +268,7 @@ class AddPipeline extends Component {
                     <Card>
                         {pipelineID.map((item, index) => {
                             return (
-                                <Card.Grid style={gridStyle} onClick={()=>this.handleAddNewTask(item)}>{item.name}</Card.Grid>
+                                <Card.Grid key={index} style={gridStyle} onClick={()=>this.handleAddNewTask(item)}>{item.name}</Card.Grid>
                             )
                         })}
 

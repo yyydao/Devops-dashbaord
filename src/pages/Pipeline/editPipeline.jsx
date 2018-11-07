@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link,withRouter } from 'react-router-dom'
 import './index.scss'
-import { reqPost, reqGet } from '@/api/api'
+import { reqPost, reqGet, reqDelete } from '@/api/api'
 
 import { setStep,removeSteps,setSteps } from '@/store/action'
 
@@ -67,7 +67,6 @@ class Edit extends Component {
             autoCompleteResult: [],
             branchList: [],
             formDataBranch: null,
-            branchID: 0,
             fullSteps: [],
             stepsList: []
         }
@@ -102,7 +101,7 @@ class Edit extends Component {
                 reqPost('/pipeline/updatetask', {
                     projectID: this.props.projectId,
                     ...values,
-                    branchID:this.state.branchID,
+                    branchID:this.props.form.getFieldValue('branchID'),
                     ddStatus:0,
                     steps: formattedSteps,
                     taskID:this.props.match.params.taskID
@@ -119,23 +118,47 @@ class Edit extends Component {
     }
 
     handleDeleteTask = (item) =>{
+        console.log(`item ${JSON.stringify(item)}`)
         let { setSteps } = this.props;
         let stepsList = this.state.stepsList
-        console.log(this.stepsList)
-        for (let i = 0; i < stepsList.length; i++) {
-            const stepElement = stepsList[i]
-            if(stepElement[0] === item.stepCategory){
-                for (let j = 0; j < stepElement[1].length; j++) {
-                    const stepElementElement = stepElement[1][j]
-                    console.log(stepElementElement)
-                    if(stepElementElement.stepCode === item.stepCode){
-                        stepElement[1].splice(j,1)
+        let oldSteps = this.state.fullSteps
+        if(!!item.stepID){
+            reqDelete(`/pipeline/deltaskstep/${item.stepID}`,{}).then(res=>{
+                if(res.code === 0){
+
+                    for (let i = 0; i < stepsList.length; i++) {
+                        const stepElement = stepsList[i]
+                        if(stepElement.stepID+'' === item.stepID+''){
+                            stepsList.splice(i,1)
+                        }
                     }
+                    for (let i = 0; i < oldSteps.length; i++) {
+                        if (oldSteps[i][0] === item.stepCategory+'') {
+                            let steps = oldSteps[i][1]
+                            console.log(steps)
+                            for (let j = 0; j < steps.length; j++) {
+                                console.log(steps[j].stepID+'' === item.stepID+'')
+                                if(steps[j].stepID+'' === item.stepID+''){
+                                    oldSteps[i][1].splice(j,1)
+                                }
+                            }
+
+                        }
+                    }
+                    setSteps(oldSteps)
+                    this.setState({stepsList: stepsList})
+                    this.setState({fullSteps: oldSteps})
+                    this.setState({stepsList: stepsList})
+                    // setSteps(this.state.stepsList)
                 }
-            }
+            })
+        }else{
+            this.setState({stepsList: stepsList})
+            setSteps(this.state.stepsList)
         }
-        this.setState({stepsList: stepsList})
-        setSteps(this.state.stepsList)
+
+
+
     }
 
     handleEditTask = (item) =>{
@@ -186,7 +209,7 @@ class Edit extends Component {
                 this.props.form.setFieldsValue({
                     taskName: res.task.taskName,
                     // branchID:  res.task.branchID,
-                    branchID: res.task.branchName ,
+                    branchID: res.task.branchID ,
                     jenkinsJob: res.task.jenkinsJob,
                 });
             }
@@ -325,7 +348,6 @@ class Edit extends Component {
                         >
                             {getFieldDecorator('branchID', {
                                 rules: [{required: true, message: '请选择开发分支'}],
-                                initialValue:this.props.location.state && this.props.location.state.branchName
                             })(
                                 <Select placeholder="请选择开发分支"
                                         showSearch
