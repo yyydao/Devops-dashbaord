@@ -109,25 +109,16 @@ class AddPipeline extends Component {
                     }
 
                 }
-                console.log({steps: formattedSteps})
-                // let notFormattedSteps = this.state.stepsList, formattedSteps = [];
-                // for (let i = 0; i < notFormattedSteps.length; i++) {
-                //     const notFormattedStep = notFormattedSteps[i]
-                //     if(notFormattedStep[1].length>0){
-                //         formattedSteps.push(...notFormattedStep[1])
-                //     }
-                //
-                // }
-                // reqPost('/pipeline/addtask', {projectID: this.props.projectId, ...values,steps:formattedSteps}).then(res => {
-                //     if (parseInt(res.code, 0) === 0) {
-                //         message.success('项目新增成功！')
-                //         // this.setState({ proModalVisible: false });
-                //         // this.props.form.resetFields();
-                //         // this.getTableData();
-                //     } else {
-                //         message.error(res.msg)
-                //     }
-                // })
+                reqPost('/pipeline/addtask', {projectID: this.props.projectId, ...values,steps:formattedSteps}).then(res => {
+                    if (parseInt(res.code, 0) === 0) {
+                        message.success('项目新增成功！')
+                        // this.setState({ proModalVisible: false });
+                        // this.props.form.resetFields();
+                        // this.getTableData();
+                    } else {
+                        message.error(res.msg)
+                    }
+                })
             }
         })
 
