@@ -62,19 +62,20 @@ export default function (state, action) {
             break
 
         case types.SET_STEP:
-            console.log(action.data)
+            console.log(`types.SET_STEP ${JSON.stringify(action.data)}`)
             if (action.data) {
                 let tempList = JSON.parse(localStorage.getItem('steps'))
                 if (!tempList) {
                     tempList = initialState.stepsList
                 }
-                console.log(`reducer ${tempList}`)
+                console.log(`before edit ${JSON.stringify(tempList)}`)
                 for (let i = 0; i < tempList.length; i++) {
                     const tempListElement = tempList[i]
                     if (tempListElement[0] === action.data.stepCategory) {
                         tempListElement[1].push(action.data)
                     }
                 }
+                console.log(`after edit ${JSON.stringify(tempList)}`)
                 localStorage.setItem('steps', JSON.stringify(tempList))
                 nextState.stepsList = tempList
             } else {

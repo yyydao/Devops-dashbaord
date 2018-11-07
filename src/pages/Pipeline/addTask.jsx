@@ -257,12 +257,11 @@ class taskAdd extends Component {
     handleSubmit = (e) => {
         let {setStep,setSteps} = this.props
         e.preventDefault()
-        console.log(this.state.paramsDatasource)
-        console.log(this.state.stepCategory)
         this.props.form.validateFieldsAndScroll((err, values) => {
             let oldSteps = [],stepsList = []
             if (!err) {
                 if (this.props.location.state.editable) {
+                    console.log('from edit task')
                     let oldSteps = JSON.parse(localStorage.getItem('steps'))
                     for (let i = 0; i < oldSteps.length; i++) {
                         if (oldSteps[i][0] === this.state.stepCategory) {
@@ -276,6 +275,7 @@ class taskAdd extends Component {
                     setSteps(oldSteps)
                 } else {
                     if (this.props.location.state.existPipeline) {
+                        console.log('edit exist pipeline')
                         console.log(`this.props.location ${JSON.stringify(this.props.location.state.fullSteps)}`)
                         oldSteps = this.props.location.state.fullSteps
                         stepsList = this.props.location.state.stepsList
@@ -316,6 +316,13 @@ class taskAdd extends Component {
                         })
 
                     }else{
+                        console.log('add new pipeline')
+                        console.log({
+                            stepCategory: this.state.stepCategory,
+                            stepCode: this.state.stepCode,
+                            stepParams: this.state.paramsDatasource,
+                            ...values
+                        })
                         setStep({
                             stepCategory: this.state.stepCategory,
                             stepCode: this.state.stepCode,
@@ -335,7 +342,18 @@ class taskAdd extends Component {
                         }
                     })
                 }else{
-                    this.props.history.push('/pipeline/add')
+                    console.log(`add new pipeline`)
+                    console.log({taskName:this.props.location.state.taskName,
+                        branchID:this.props.location.state.branchID,
+                        jenkinsJob:this.props.location.state.jenkinsJob,})
+                    this.props.history.push({
+                        pathname:'/pipeline/add',
+                        state:{
+                            taskName:this.props.location.state.taskName,
+                            branchID:this.props.location.state.branchID,
+                            jenkinsJob:this.props.location.state.jenkinsJob,
+                        }
+                    })
                 }
 
 

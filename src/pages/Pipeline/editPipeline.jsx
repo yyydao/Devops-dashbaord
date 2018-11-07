@@ -67,6 +67,7 @@ class Edit extends Component {
             autoCompleteResult: [],
             branchList: [],
             formDataBranch: null,
+            branchID: 0,
             fullSteps: [],
             stepsList: []
         }
@@ -101,7 +102,7 @@ class Edit extends Component {
                 reqPost('/pipeline/updatetask', {
                     projectID: this.props.projectId,
                     ...values,
-                    branchID:11613,
+                    branchID:this.state.branchID,
                     ddStatus:0,
                     steps: formattedSteps,
                     taskID:this.props.match.params.taskID
@@ -171,11 +172,9 @@ class Edit extends Component {
     }
 
     //修改选中分支
-    changeBranch = (formDataBranch) => {
-        console.log(formDataBranch)
-        this.setState({
-            formDataBranch
-        })
+    changeBranch = (changedBrancID) => {
+        console.log(`changedBrancID ${changedBrancID}`)
+        this.setState({branchID:changedBrancID})
     }
 
     setPipelineInfo(){
@@ -198,13 +197,6 @@ class Edit extends Component {
 
     componentWillMount () {
 
-        // let stepsList = localStorage.getItem('steps')
-        // if (!stepsList) {
-        //     stepsList = [[1, []],
-        //         [2, []],
-        //         [3, []]]
-        // }
-        // this.setState({stepsList: JSON.parse(stepsList)})
         let currentEditedPipeline =JSON.parse(localStorage.getItem('currentEditedPipeline'))
         let fullSteps = currentEditedPipeline ? currentEditedPipeline.fullSteps: []
         let stepsList =  currentEditedPipeline ? currentEditedPipeline.stepsList: []

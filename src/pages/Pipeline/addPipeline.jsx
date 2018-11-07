@@ -134,15 +134,32 @@ class AddPipeline extends Component {
 
     handleEditTask = (item) =>{
         console.log(item)
+        let data = this.props.form.getFieldsValue();
         this.props.history.push({
             pathname:'/pipeline/task/add',
             state: {
                 stepCode: item.stepCode,
                 stepCategory: item.stepCategory,
-                editable:true
+                editable:true,
+                ...data
             }
         })
 
+    }
+
+    handleAddNewTask = (item) => {
+        console.log(`handleAddNewTask ${JSON.stringify(item)}`)
+        let data = this.props.form.getFieldsValue();
+        this.props.history.push({
+                pathname: `/pipeline/task/add`,
+                state: {
+                    stepCode: item.id,
+                    stepCategory: this.state.stepCategory,
+                    addNewPipeline: true,
+                    ...data
+                }
+            }
+        )
     }
 
     //获取分支列表
@@ -177,17 +194,25 @@ class AddPipeline extends Component {
 
     componentWillMount () {
 
-        // let stepsList = localStorage.getItem('steps')
-        // if (!stepsList) {
-        //     stepsList = [[1, []],
-        //         [2, []],
-        //         [3, []]]
-        // }
-        // this.setState({stepsList: JSON.parse(stepsList)})
     }
 
     componentDidMount () {
         this.getBranchList()
+        let taskName, branchID, jenkinsJob
+        if (this.props.location.state) {
+            taskName = this.props.location.state.taskName
+            branchID = this.props.location.state.branchID
+            jenkinsJob = this.props.location.state.jenkinsJob
+        }
+
+        this.props.form.setFieldsValue({
+            taskName: taskName,
+            // branchID:  res.task.branchID,
+            branchID: branchID,
+            jenkinsJob: jenkinsJob,
+        })
+        let stepsList = JSON.parse(localStorage.getItem('steps'))
+        this.setState({stepsList: stepsList})
     }
 
     render () {
@@ -241,16 +266,7 @@ class AddPipeline extends Component {
                     <Card>
                         {pipelineID.map((item, index) => {
                             return (
-                                <Link key={index}
-                                      to={{
-                                          pathname: `/pipeline/task/add`,
-                                          state: {
-                                              stepCode: item.id,
-                                              stepCategory: stepCategory
-                                          }
-                                      }}>
-                                    <Card.Grid style={gridStyle}>{item.name}</Card.Grid>
-                                </Link>
+                                <Card.Grid style={gridStyle} onClick={()=>this.handleAddNewTask(item)}>{item.name}</Card.Grid>
                             )
                         })}
 
