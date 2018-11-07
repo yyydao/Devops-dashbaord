@@ -169,13 +169,13 @@ class pipelineDetail extends Component {
         })
     }
     getPackageresult = () => {
-        reqGet('/pipeline/packageresult', {
-            taskID: this.props.match.params.taskID
-        }).then((res) => {
-            if (res.code === 0) {
-                this.setState({packageresult: res.list})
-            }
-        })
+        // reqGet('/pipeline/packageresult', {
+        //     taskID: this.props.match.params.taskID
+        // }).then((res) => {
+        //     if (res.code === 0) {
+        //         this.setState({packageresult: res.list})
+        //     }
+        // })
     }
 
     handleDeletePipeline = () =>{
