@@ -151,7 +151,7 @@ class AddPipeline extends Component {
             state: {
                 stepCode: item.stepCode,
                 stepCategory: item.stepCategory,
-                editable:true,
+                existPipeline: false,
                 ...data
             }
         })

@@ -179,9 +179,9 @@ class Edit extends Component {
         this.props.history.push({
             pathname:'/pipeline/task/edit',
             state: {
+                stepID:item.stepID,
                 stepCode: item.stepCode,
                 stepCategory: item.stepCategory,
-                editable:true,
                 existPipeline: true,
                 taskID: this.props.match.params.taskID
             }
