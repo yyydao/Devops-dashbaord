@@ -1,0 +1,92 @@
+
+.config-card-list{
+    margin-top: 20px;
+
+    .config-card{
+        float: left;
+        margin: 0 20px 20px 0;
+        width: 150px;
+        cursor: pointer;
+        text-align:center;
+        font-weight:bold;
+    }
+}
+
+.config-project-info{
+    .config-project-item{
+        margin-bottom: 10px;
+
+        span{
+            display: inline-block;
+            
+            &.name{
+                width: 100px;
+            }
+        }
+
+        .config-project-input{
+            width: 300px;
+        }
+
+        a{
+            padding-left: 10px;
+        }
+    }
+
+    .tab-content{
+        margin-top: 30px;
+
+        .tab-item{
+            .name{
+                width: 120px;
+            }
+
+            .config-project-item{
+                width: 80%;
+            }
+        }
+
+        .button-delete{
+            float: right;
+        }
+    }
+
+    .scene-container{
+        padding: 20px 0;
+    }
+
+    .fixed-height{
+        height: 150px;
+        border: 1px solid #e8e8e8;
+        overflow-y: scroll;
+    }
+
+    .scene-list{
+        margin-bottom: 0;
+        padding: 10px;
+
+        li{
+            padding-bottom: 5px;
+
+            span{
+                display: inline-block;
+                text-align: center;
+                margin-right: 10px;
+                padding: 5px 0;
+                border: 1px solid #e8e8e8;
+
+                &.name{
+                    width: 150px;
+                }
+
+                &.param{
+                    width: 200px;
+                }
+            }
+
+            .ant-btn-primary{
+                margin-right: 10px;
+            }
+        }
+    }
+}
