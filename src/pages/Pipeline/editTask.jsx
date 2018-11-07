@@ -282,7 +282,6 @@ class taskEdit extends Component {
                     })
                 }
                 console.log(...values)
-                console.log()
                 reqPost('/pipeline/updatestep',{
                     stepID: this.props.location.state.stepID,
                     taskID: this.props.location.state.taskID,
@@ -409,7 +408,7 @@ class taskEdit extends Component {
         //判断是否是编辑
         if(this.props.location.state && this.props.location.state.editable){
             let stepsList = JSON.parse(localStorage.getItem('steps'))
-            let stepListByCategory = stepsList.find((item) => item[0] === stepCategory)
+            let stepListByCategory = stepsList && stepsList.find((item) => item[0] === stepCategory)
 
             for (let i = 0; i < stepListByCategory[1].length; i++) {
                 const stepListByCategoryElement = stepListByCategory[1][i]

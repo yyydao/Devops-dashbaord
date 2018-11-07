@@ -45,14 +45,23 @@ const pipelineID = [
         id: 0,
         name: '代码拉取',
         description: 'Gitlab 代码同步',
-        params: [{key: '1', json_jsonParams: 'code_branch'}, {key: '2', json_jsonParams: 'code_gitServer'}]
+        params: [
+            {key: '0', json_jsonParams: 'stageID', json_jsonValue: '0'},
+            {key: '1', json_jsonParams: 'code_branch'},
+            {key: '2', json_jsonParams: 'code_gitServer'}]
     },
-    {id: 1, name: '单元测试', description: '单元测试', params: []},
+    {
+        id: 1, name: '单元测试', description: '单元测试', params: [
+            {key: '0', json_jsonParams: 'stageID', json_jsonValue: '1'}
+        ]
+    },
     {
         id: 2,
         name: '静态扫描',
         description: 'SonarQube 代码静态扫描',
-        params: [{key: '1', json_jsonParams:'sonnar_sonarProjectKey',json_jsonValue:'TuandaiAS2d'},
+        params: [
+            {key:'0',json_jsonParams: 'stageID',json_jsonValue:'2'},
+            {key: '1', json_jsonParams:'sonnar_sonarProjectKey',json_jsonValue:'TuandaiAS2d'},
             {key: '2', json_jsonParams:'sonnar_code_analysis_moduleName',json_jsonValue: ''},
             {key: '3',  json_jsonParams:'sonnar_code_analysis_all',json_jsonValue:  false}]
     },
@@ -60,11 +69,12 @@ const pipelineID = [
         id: 3,
         name: '编译打包',
         description: '项目编译打包',
-        params: [{key: '1', json_jsonParams:'build_compileType',json_jsonValue:'other'},
+        params: [
+            {key:'0',json_jsonParams: 'stageID',json_jsonValue:'3'},
+            {key: '1', json_jsonParams:'build_compileType',json_jsonValue:'other'},
             {key: '2',json_jsonParams:'build_environment',json_jsonValue: 'develop'},
-            {key: '3',json_jsonParams:'build_username',json_jsonValue: 'tuandaideveloper'}, {
-                key: '4',json_jsonParams:'build_ijiami_server',json_jsonValue: 'http://10.100.12.24:10099/api'
-            },
+            {key: '3',json_jsonParams:'build_username',json_jsonValue: 'tuandaideveloper'},
+            {key: '4',json_jsonParams:'build_ijiami_server',json_jsonValue: 'http://10.100.12.24:10099/api'},
             {key: '5',json_jsonParams:'build_ijiami_account',json_jsonValue: 'CI'},
             {key: '6',json_jsonParams:'build_ijiamitinker_variant',json_jsonValue: 'normal-release'},
             {key: '7',json_jsonParams:'build_tinker_type',json_jsonValue: 'base'}]
@@ -72,7 +82,8 @@ const pipelineID = [
     {
         id: 4, name: '安全扫描',
         description: 'MobSF 安全检测',
-        params: [{key:'1', json_jsonParams:'safe_server',json_jsonValue: 'http://10.100.12.52:8000/'},
+        params: [{key:'0',json_jsonParams: 'stageID',json_jsonValue:'4'}
+        ,{key:'1', json_jsonParams:'safe_server',json_jsonValue: 'http://10.100.12.52:8000/'},
             {key:'2', json_jsonParams:'safe_token',json_jsonValue: '2dc06726e9562f1713b81f07d53e7b926825cddc2aa37ee529a1f2b8f09ec252'},
             {key:'3', json_jsonParams:'safe_gitserver',json_jsonValue: 'http://git.tuandai888.com/MPD-DevOps/SecurityAnalysis.git'}]
     },
@@ -80,7 +91,9 @@ const pipelineID = [
         id: 5,
         name: 'UI测试',
         description: '自动化UI测试',
-        params: [{key:'1', json_jsonParams:'autotest_uiTestGitServer',json_jsonValue: 'http://git.tuandai888.com/MPD-DevOps/UITestScript.git'},
+        params: [
+            {key:'0',json_jsonParams: 'stageID',json_jsonValue:'5'},
+            {key:'1', json_jsonParams:'autotest_uiTestGitServer',json_jsonValue: 'http://git.tuandai888.com/MPD-DevOps/UITestScript.git'},
             {key:'2', json_jsonParams:'autotest_noreset',json_jsonValue: 'false'}, {key:'3', json_jsonParams:'autotest_tags',json_jsonValue: '~'},
             {key:'4', json_jsonParams:'autotest_appiumserver',json_jsonValue: '10.100.12.52:4723'},
             {key:'5', json_jsonParams:'autotest_testusername',json_jsonValue: '13070901314'},
@@ -90,20 +103,30 @@ const pipelineID = [
         id: 6,
         name: '性能测试',
         description: '自动化性能测试',
-        params: [{key:'1', json_jsonParams:'performance_testGitServer',json_jsonValue:'http://git.tuandai888.com/MPD-DevOps/PrismReport.git'}]
+        params: [
+            {key:'0',json_jsonParams: 'stageID',json_jsonValue:'6'},
+            {key:'1', json_jsonParams:'performance_testGitServer',json_jsonValue:'http://git.tuandai888.com/MPD-DevOps/PrismReport.git'}]
     },
     {
         id: 7,
         name: '加固',
         description: '爱加密加固',
-        params: [{key:'1', json_jsonParams:'tinker_ijiami_plan_id',json_jsonValue:  '51'},
+        params: [
+            {key:'0',json_jsonParams: 'stageID',json_jsonValue:'7'},
+            {key:'1', json_jsonParams:'tinker_ijiami_plan_id',json_jsonValue:  '51'},
             {key:'2', json_jsonParams:'tinker_ijiami_sign_alias',json_jsonValue:  '团贷网'},
             {key:'3', json_jsonParams:'tinker_ijiami_so',json_jsonValue:  `"\\"lib/armeabi-v7a/libjuntejni.so;lib/x86/libjuntejni.so\\""`
         }]
     },
-    {id: 8, name: '补丁', description: '生成 Tinker 补丁包', params: [{key:'1', json_jsonParams:'patch_baseapkurl',json_jsonValue: ''}]},
-    {id: 9, name: '包管理', description: 'DevOps平台安装包管理', params: [{key:'1', json_jsonParams:'deploy_ipAddress',json_jsonValue: ''}]},
-    {id: -1, name: '自定义', description: ''},
+    {id: 8, name: '补丁', description: '生成 Tinker 补丁包', params: [
+        {key:'0',json_jsonParams: 'stageID',json_jsonValue:'8'},
+        {key:'1', json_jsonParams:'patch_baseapkurl',json_jsonValue: ''}]},
+    {id: 9, name: '包管理', description: 'DevOps平台安装包管理', params: [
+        {key:'0',json_jsonParams: 'stageID',json_jsonValue:'9'},
+        {key:'1', json_jsonParams:'deploy_ipAddress',json_jsonValue: ''}]},
+    {id: -1, name: '自定义', description: '',params: [
+        {key:'0',json_jsonParams: 'stageID',json_jsonValue:'-1'}]
+    },
 ]
 
 class EditableCell extends React.Component {
@@ -259,94 +282,61 @@ class taskAdd extends Component {
         let {setStep,setSteps} = this.props
         e.preventDefault()
         this.props.form.validateFieldsAndScroll((err, values) => {
-            let oldSteps = [],stepsList = []
+            let oldSteps = [],stepsList = [],noError = true
             if (!err) {
-                if (this.props.location.state.editable) {
-                    console.log('from edit task')
-                    let oldSteps = JSON.parse(localStorage.getItem('steps'))
-                    for (let i = 0; i < oldSteps.length; i++) {
-                        if (oldSteps[i][0] === this.state.stepCategory) {
-                            for (let j = 0; j < oldSteps[i][1].length; j++) {
-                                if (oldSteps[i][1][j].stepCode === this.state.stepCode) {
-                                    oldSteps[i][1][j].stepParams = this.state.paramsDatasource
+                if (this.props.location.state.existPipeline) {
+                    console.log('edit exist pipeline')
+                    console.log(`this.props.location ${JSON.stringify(this.props.location.state.fullSteps)}`)
+                    oldSteps = this.props.location.state.fullSteps
+                    stepsList = this.props.location.state.stepsList
+                    reqPost('pipeline/addstep',{
+                        stepCategory: this.state.stepCategory,
+                        stepCode: this.state.stepCode,
+                        stepParams: this.state.paramsDatasource,
+                        taskID: this.props.location.state.taskID,
+                        ...values
+                    }).then(res=>{
+                        if(res.code === 0){
+                            for (let i = 0; i < oldSteps.length; i++) {
+                                if (oldSteps[i][0] === this.state.stepCategory) {
+                                    oldSteps[i][1].push({
+                                        stepID:res.data.stepID,
+                                        stepCategory: this.state.stepCategory,
+                                        stepCode: this.state.stepCode,
+                                        stepParams: this.state.paramsDatasource,
+                                        ...values
+                                    })
                                 }
                             }
-                        }
-                    }
-                    setSteps(oldSteps)
-                } else {
-                    if (this.props.location.state.existPipeline) {
-                        console.log('edit exist pipeline')
-                        console.log(`this.props.location ${JSON.stringify(this.props.location.state.fullSteps)}`)
-                        oldSteps = this.props.location.state.fullSteps
-                        stepsList = this.props.location.state.stepsList
-                        // console.log(oldSteps)
-                        // console.log({...values})
-                        // console.log(this.state.stepCode)
-                        // console.log(this.state.paramsDatasource)
-                        // console.log(this.state.stepCategory)
-                        reqPost('pipeline/addstep',{
-                            stepCategory: this.state.stepCategory,
-                            stepCode: this.state.stepCode,
-                            stepParams: this.state.paramsDatasource,
-                            taskID: this.props.location.state.taskID,
-                            ...values
-                        }).then(res=>{
-                           if(res.code === 0){
-                               for (let i = 0; i < oldSteps.length; i++) {
-                                   if (oldSteps[i][0] === this.state.stepCategory) {
-                                       oldSteps[i][1].push({
-                                           stepID:res.data.stepID,
-                                           stepCategory: this.state.stepCategory,
-                                           stepCode: this.state.stepCode,
-                                           stepParams: this.state.paramsDatasource,
-                                           ...values
-                                       })
-                                   }
-                               }
-                               stepsList.push({
-                                   stepID:res.data.stepID,
-                                   stepCategory: this.state.stepCategory,
-                                   stepCode: this.state.stepCode,
-                                   stepParams: this.state.paramsDatasource,
-                                   ...values
-                               })
-                               // console.log(oldSteps)
-                               setSteps(oldSteps)
-                           }
-                        })
-
-                    }else{
-                        console.log('add new pipeline')
-                        console.log({
-                            stepCategory: this.state.stepCategory,
-                            stepCode: this.state.stepCode,
-                            stepParams: this.state.paramsDatasource,
-                            ...values
-                        })
-                        setStep({
-                            stepCategory: this.state.stepCategory,
-                            stepCode: this.state.stepCode,
-                            stepParams: this.state.paramsDatasource,
-                            ...values
-                        })
-                    }
-
-                }
-                if(this.props.location.state.existPipeline){
-
-                    this.props.history.push({
-                        pathname:`/pipeline/edit/${this.props.location.state.taskID}`,
-                        state: {
-                            fullSteps: oldSteps,
-                            stepsList: stepsList,
+                            stepsList.push({
+                                stepID:res.data.stepID,
+                                stepCategory: this.state.stepCategory,
+                                stepCode: this.state.stepCode,
+                                stepParams: this.state.paramsDatasource,
+                                ...values
+                            })
+                            setSteps(oldSteps)
+                            this.props.history.push({
+                                pathname:`/pipeline/edit/${this.props.location.state.taskID}`,
+                                state: {
+                                    fullSteps: oldSteps,
+                                    stepsList: stepsList,
+                                }
+                            })
+                        }else{
+                            message.error(res.msg)
+                            noError = false
                         }
                     })
+
                 }else{
                     console.log(`add new pipeline`)
-                    console.log({taskName:this.props.location.state.taskName,
-                        branchID:this.props.location.state.branchID,
-                        jenkinsJob:this.props.location.state.jenkinsJob,})
+                    setStep({
+                        stepCategory: this.state.stepCategory,
+                        stepCode: this.state.stepCode,
+                        stepParams: this.state.paramsDatasource,
+                        ...values
+                    })
                     this.props.history.push({
                         pathname:'/pipeline/add',
                         state:{
@@ -356,8 +346,6 @@ class taskAdd extends Component {
                         }
                     })
                 }
-
-
             }
         })
     }
@@ -474,7 +462,7 @@ class taskAdd extends Component {
         //判断是否是编辑
         if(this.props.location.state && this.props.location.state.editable){
             let stepsList = JSON.parse(localStorage.getItem('steps'))
-            let stepListByCategory = stepsList.find((item) => item[0] === stepCategory)
+            let stepListByCategory = stepsList && stepsList.find((item) => item[0] === stepCategory)
 
             for (let i = 0; i < stepListByCategory[1].length; i++) {
                 const stepListByCategoryElement = stepListByCategory[1][i]

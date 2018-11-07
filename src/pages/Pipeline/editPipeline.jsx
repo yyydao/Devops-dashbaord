@@ -90,14 +90,27 @@ class Edit extends Component {
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 let notFormattedSteps = this.state.fullSteps, formattedSteps = [];
-                console.log(notFormattedSteps)
+                // console.log(notFormattedSteps)
                 for (let i = 0; i < notFormattedSteps.length; i++) {
                     const notFormattedStep = notFormattedSteps[i]
                     if(notFormattedStep[1] && notFormattedStep[1].length>0){
+                        let stepData = notFormattedStep[1]
+                        // console.log(stepData)
+                        for (let j = 0; j < stepData.length; j++) {
+                            const stepDatumString = stepData[j].stepParams
+                            // console.log(stepDatumString)
+                            const stepDatum = JSON.parse(stepDatumString)
+                            let obj={ };
+                            stepDatum.map((item,index)=>{
+                                obj[item.json_jsonParams] = item.json_jsonValue;
+                            })
+                            notFormattedStep[1][j].stepParams = obj
+                        }
                         formattedSteps.push(...notFormattedStep[1])
                     }
 
                 }
+                console.log({steps: formattedSteps})
                 reqPost('/pipeline/updatetask', {
                     projectID: this.props.projectId,
                     ...values,
