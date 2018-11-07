@@ -65,6 +65,7 @@ const taskList = {
     'taskCode': 'td1539673436803',
     'taskName': '测试',
     'jenkinsJob': 'TuandaiAS2-develop-v4',
+    'branchName': 'origin/v5',
     'taskStatus': 1,
     'exexTime': 0,
     'lastExecTime': 0,
@@ -140,44 +141,6 @@ class pipelineDetail extends Component {
         console.log('focus')
     }
 
-
-    handleDeleteTask = (item) =>{
-        let { setSteps } = this.props;
-        let stepsList = this.state.stepsList
-        for (let i = 0; i < stepsList.length; i++) {
-            const stepElement = stepsList[i]
-            if(stepElement[0] === item.stepCategory){
-                for (let j = 0; j < stepElement[1].length; j++) {
-                    const stepElementElement = stepElement[1][j]
-                    console.log(stepElementElement)
-                    if(stepElementElement.stepCode === item.stepCode){
-                        stepElement[1].splice(j,1)
-                    }
-                }
-            }
-        }
-        this.setState({stepsList: stepsList})
-        setSteps(this.state.stepsList)
-    }
-
-    handleEditTask = (item) =>{
-
-        this.props.history.push({
-            pathname:'/pipeline/task/edit',
-            state: {
-                stepCode: item.stepCode,
-                stepCategory: item.stepCategory,
-                taskID: this.props.match.params.taskID,
-                stepName: item.stepName,
-                stepDesc: item.stepDesc,
-                webHook: item.webHook,
-                stepID: item.stepID,
-                editable:true
-            }
-        })
-
-    }
-
     gotoEditPipeline = () =>{
         localStorage.setItem('currentEditedPipeline',JSON.stringify({
             fullSteps: this.state.fullSteps,
@@ -187,7 +150,8 @@ class pipelineDetail extends Component {
             pathname: `/pipeline/edit/${this.props.match.params.taskID}`,
             state: {
                 fullSteps: this.state.fullSteps,
-                stepsList : this.state.stepsList
+                stepsList : this.state.stepsList,
+                branchName:this.state.branchName
             },
         })
     }
@@ -220,6 +184,7 @@ class pipelineDetail extends Component {
             taskCode,
             taskName,
             jenkinsJob,
+            branchName,
             taskStatus,
             exexTime,
             lastExecTime,
@@ -232,6 +197,7 @@ class pipelineDetail extends Component {
             taskCode,
             taskName,
             jenkinsJob,
+            branchName,
             taskStatus,
             exexTime,
             lastExecTime,
@@ -319,6 +285,7 @@ class pipelineDetail extends Component {
             taskCode,
             taskName,
             jenkinsJob,
+            branchName,
             taskStatus,
             exexTime,
             lastExecTime,
@@ -398,7 +365,7 @@ class pipelineDetail extends Component {
                                     </Col>
                                     <Col span={12}>
                                         <div className="pipeline-item-user">
-                                            gitlab push by liaoshengjian
+                                            {/*gitlab push by liaoshengjian*/}
                                         </div>
                                     </Col>
                                 </Row>
@@ -409,7 +376,7 @@ class pipelineDetail extends Component {
                                         <div className="pipeline-item-main">
                                             <p className="pipeline-item-timemeta">
                                                 <span><i>最近执行时间：</i>{lastExecTime}</span>
-                                                <span><i>执行分支：</i>{jenkinsJob}</span>
+                                                <span><i>执行分支：</i>{branchName}</span>
                                                 <span><i>执行时长：</i>{exexTime}</span>
                                             </p>
 
@@ -479,7 +446,7 @@ class pipelineDetail extends Component {
                 <section className="pipeline-box">
                     <Card title="基本信息">
                     {
-                        packageresult.map((item, index) => {
+                        packageresult && packageresult.map((item, index) => {
                         return <div  key={index} >
                             <Row gutter={16} type="flex" justify="space-around" align="middle">
                                 <Col><h2>packageID</h2></Col><Col>{item.packageID}</Col>

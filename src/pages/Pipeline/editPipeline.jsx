@@ -98,9 +98,16 @@ class Edit extends Component {
                     }
 
                 }
-                reqPost('/pipeline/updatestep', {projectID: this.props.projectId, ...values,steps:formattedSteps}).then(res => {
+                reqPost('/pipeline/updatetask', {
+                    projectID: this.props.projectId,
+                    ...values,
+                    branchID:11613,
+                    ddStatus:0,
+                    steps: formattedSteps,
+                    taskID:this.props.match.params.taskID
+                }).then(res => {
                     if (parseInt(res.code, 0) === 0) {
-                        message.success('项目新增成功！')
+                        message.success('项目修改成功！')
                     } else {
                         message.error(res.msg)
                     }
@@ -179,7 +186,8 @@ class Edit extends Component {
                 console.log(res)
                 this.props.form.setFieldsValue({
                     taskName: res.task.taskName,
-                    branchID:  res.task.jenkinsJob,
+                    // branchID:  res.task.branchID,
+                    branchID: res.task.branchName ,
                     jenkinsJob: res.task.jenkinsJob,
                 });
             }
@@ -198,8 +206,8 @@ class Edit extends Component {
         // }
         // this.setState({stepsList: JSON.parse(stepsList)})
         let currentEditedPipeline =JSON.parse(localStorage.getItem('currentEditedPipeline'))
-        let fullSteps = currentEditedPipeline.fullSteps
-        let stepsList = currentEditedPipeline.stepsList
+        let fullSteps = currentEditedPipeline ? currentEditedPipeline.fullSteps: []
+        let stepsList =  currentEditedPipeline ? currentEditedPipeline.stepsList: []
         if(!this.props.location.state){
             console.log('1')
 
@@ -324,14 +332,14 @@ class Edit extends Component {
                             label="执行分支"
                         >
                             {getFieldDecorator('branchID', {
-                                rules: [{required: true, message: '请选择开发分支'}]
+                                rules: [{required: true, message: '请选择开发分支'}],
+                                initialValue:this.props.location.state && this.props.location.state.branchName
                             })(
                                 <Select placeholder="请选择开发分支"
                                         showSearch
                                         onSearch={this.getBranchList}
                                         onChange={this.changeBranch}
                                         style={{width: 300}}
-                                        disabled
                                 >
                                     {
                                         this.state.branchList.map((item) => {
