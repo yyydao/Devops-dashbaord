@@ -28,6 +28,7 @@ const Panel = Collapse.Panel
 const Option = Select.Option
 const FormItem = Form.Item
 const RadioGroup = Radio.Group
+const confirm = Modal.confirm;
 
 const EditableContext = React.createContext();
 
@@ -428,16 +429,25 @@ class taskAdd extends Component {
     }
 
     importAutomation = () =>{
-        reqGet('pipeline/autoimport').then(res => {
-            if (res.code == 0) {
-                let paramsArray = []
-                res.list.map((item,index)=>{
-                    paramsArray.push({key:index,json_jsonParams:item})
-                })
-                this.setState({ paramsDatasource: paramsArray });
-                console.log(paramsArray)
-            }
-        })
+        if(this.props.location.state && this.props.location.state.jenkinsJob){
+            reqGet('pipeline/autoimport',{code:this.props.location.state.stepCode,jenkinsJob:this.props.location.state.stepCode}).then(res => {
+                if (res.code == 0) {
+                    let paramsArray = []
+                    res.list.map((item,index)=>{
+                        paramsArray.push({key:index,json_jsonParams:item})
+                    })
+                    this.setState({ paramsDatasource: paramsArray });
+                    console.log(paramsArray)
+                }
+            })
+        }else{
+            confirm({
+                title: '提示信息',
+                content: '您还未输入流水线关联的Job名称，或者未完善Jenkins配置，暂时无法进行【自动导入】操作。',
+                onCancel(){}
+            })
+        }
+
     }
 
     paramsTableChange =(pagination, filters, sorter, extra: { currentDataSource: [] }) => {

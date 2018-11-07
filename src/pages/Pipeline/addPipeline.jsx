@@ -156,6 +156,7 @@ class AddPipeline extends Component {
                     stepCode: item.id,
                     stepCategory: this.state.stepCategory,
                     addNewPipeline: true,
+                    jenkinsJob: this.props.form.getFieldValue('jenkinsJob'),
                     ...data
                 }
             }

@@ -314,6 +314,7 @@ class Edit extends Component {
                                               taskID: this.props.match.params.taskID,
                                               fullSteps: this.state.fullSteps,
                                               stepsList: this.state.stepsList,
+                                              jenkinsJob: this.props.form.getFieldValue('jenkinsJob'),
                                           }
                                       }}>
                                     <Card.Grid style={gridStyle}>{item.name}</Card.Grid>
