@@ -2,14 +2,14 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import './index.scss'
-import { reqPost, reqGet } from '@/api/api'
+import { reqPost, reqGet,reqDelete } from '@/api/api'
 import toPairs from 'lodash.topairs'
 import uniq from 'lodash.uniq'
 import { setStep,removeSteps,setSteps } from '@/store/action'
 
 import { Chart, Geom, Axis, Tooltip, Legend, Coord, track } from 'bizcharts';
 
-import { Steps, Breadcrumb, Card, Button, Icon, Collapse, Row, Col, Select, Menu, Dropdown, Radio } from 'antd'
+import { Steps, Breadcrumb, Card, Button, Icon, Collapse, Row, Col, Select, Menu,message,  Dropdown, Radio } from 'antd'
 
 const BreadcrumbItem = Breadcrumb.Item
 const Step = Steps.Step
@@ -178,6 +178,15 @@ class pipelineDetail extends Component {
         })
     }
 
+    handleDeletePipeline = () =>{
+        reqDelete(`/pipeline/deletetask/${this.props.match.params.taskID}`).then((res) => {
+            if (res.code === 0) {
+                this.props.history.push(`/pipeline`)
+            }else{
+                message.error(res.msg)
+            }
+        })
+    }
     checkTaskList = (taskList) => {
         const {
             projectID,
@@ -326,7 +335,7 @@ class pipelineDetail extends Component {
                                     <Col>
                                         <h2>流水线详情</h2>
                                     </Col>
-                                    <Col><Button ghost type="danger" shape="circle" icon="delete"/>
+                                    <Col><Button onClick={()=>{this.handleDeletePipeline()}} ghost type="danger" shape="circle" icon="delete"/>
                                     </Col>
                                 </Row>
                             </Col>
