@@ -284,24 +284,37 @@ class taskAdd extends Component {
                         // console.log(this.state.stepCode)
                         // console.log(this.state.paramsDatasource)
                         // console.log(this.state.stepCategory)
-                        for (let i = 0; i < oldSteps.length; i++) {
-                            if (oldSteps[i][0] === this.state.stepCategory) {
-                                oldSteps[i][1].push({
-                                    stepCategory: this.state.stepCategory,
-                                    stepCode: this.state.stepCode,
-                                    stepParams: this.state.paramsDatasource,
-                                    ...values
-                                })
-                            }
-                        }
-                        stepsList.push({
+                        reqPost('pipeline/addstep',{
                             stepCategory: this.state.stepCategory,
                             stepCode: this.state.stepCode,
                             stepParams: this.state.paramsDatasource,
+                            taskID: this.props.location.state.taskID,
                             ...values
+                        }).then(res=>{
+                           if(res.code === 0){
+                               for (let i = 0; i < oldSteps.length; i++) {
+                                   if (oldSteps[i][0] === this.state.stepCategory) {
+                                       oldSteps[i][1].push({
+                                           stepID:res.data.stepID,
+                                           stepCategory: this.state.stepCategory,
+                                           stepCode: this.state.stepCode,
+                                           stepParams: this.state.paramsDatasource,
+                                           ...values
+                                       })
+                                   }
+                               }
+                               stepsList.push({
+                                   stepID:res.data.stepID,
+                                   stepCategory: this.state.stepCategory,
+                                   stepCode: this.state.stepCode,
+                                   stepParams: this.state.paramsDatasource,
+                                   ...values
+                               })
+                               // console.log(oldSteps)
+                               setSteps(oldSteps)
+                           }
                         })
-                        // console.log(oldSteps)
-                        setSteps(oldSteps)
+
                     }else{
                         setStep({
                             stepCategory: this.state.stepCategory,
