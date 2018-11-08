@@ -90,7 +90,7 @@ class Edit extends Component {
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 let notFormattedSteps = this.state.fullSteps, formattedSteps = [];
-                // console.log(notFormattedSteps)
+                console.log(notFormattedSteps)
                 for (let i = 0; i < notFormattedSteps.length; i++) {
                     const notFormattedStep = notFormattedSteps[i]
                     if(notFormattedStep[1] && notFormattedStep[1].length>0){

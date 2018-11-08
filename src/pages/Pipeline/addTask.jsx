@@ -309,7 +309,7 @@ class taskAdd extends Component {
                                         stepID:res.data.stepID,
                                         stepCategory: this.state.stepCategory,
                                         stepCode: this.state.stepCode,
-                                        stepParams: this.state.paramsDatasource,
+                                        stepParams: JSON.stringify(obj),
                                         ...values
                                     })
                                 }
@@ -318,10 +318,14 @@ class taskAdd extends Component {
                                 stepID:res.data.stepID,
                                 stepCategory: this.state.stepCategory,
                                 stepCode: this.state.stepCode,
-                                stepParams: this.state.paramsDatasource,
+                                stepParams: JSON.stringify(obj),
                                 ...values
                             })
                             setSteps(oldSteps)
+                            localStorage.setItem('currentEditedPipeline',JSON.stringify({
+                                fullSteps: oldSteps,
+                                stepsList : stepsList
+                            }))
                             this.props.history.push({
                                 pathname:`/pipeline/edit/${this.props.location.state.taskID}`,
                                 state: {
@@ -405,7 +409,9 @@ class taskAdd extends Component {
         let jsonText = this.state.importJSON
         if(this.isJsonString(jsonText)){
 
-            let paramsArray = [],source = JSON.parse(jsonText),keyIndex = 1
+            let paramsArray = [{key:0,json_jsonParams:'stageID',json_jsonValue:this.state.stepCode}],
+                source = JSON.parse(jsonText),
+                keyIndex = 1;
 
 
             for (let prop in source) {
@@ -424,14 +430,16 @@ class taskAdd extends Component {
 
     importAutomation = () =>{
         if(this.props.location.state && this.props.location.state.jenkinsJob){
-            reqGet('pipeline/autoimport',{code:this.props.location.state.stepCode,jenkinsJob:this.props.location.state.stepCode}).then(res => {
+            reqGet('pipeline/autoimport',{code:this.props.location.state.stepCode,job:this.props.location.state.jenkinsJob}).then(res => {
                 if (res.code == 0) {
-                    let paramsArray = []
+                    let paramsArray = [{key:0,json_jsonParams:'stageID',json_jsonValue:this.state.stepCode}]
                     res.list.map((item,index)=>{
-                        paramsArray.push({key:index,json_jsonParams:item})
+                        paramsArray.push({key:index+1,json_jsonParams:item})
                     })
                     this.setState({ paramsDatasource: paramsArray });
                     console.log(paramsArray)
+                }else{
+                    message.error(res.msg)
                 }
             })
         }else{
