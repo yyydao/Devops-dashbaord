@@ -254,6 +254,15 @@ class taskEdit extends Component {
         })
     }
 
+    parseStepParams = (notFormattedSteps) =>{
+        console.log(notFormattedSteps)
+        let obj={ };
+        notFormattedSteps.map((item,index)=>{
+            obj[item.json_jsonParams] = item.json_jsonValue;
+        })
+        return obj
+    }
+
     handleSubmit = (e) => {
         let {setStep,setSteps} = this.props
         e.preventDefault()
@@ -266,10 +275,7 @@ class taskEdit extends Component {
                     console.log(...values)
                     let notFormattedSteps = this.state.paramsDatasource;
                     console.log(notFormattedSteps)
-                    let obj={ };
-                    notFormattedSteps.map((item,index)=>{
-                        obj[item.json_jsonParams] = item.json_jsonValue;
-                    })
+                    let obj=this.parseStepParams(notFormattedSteps)
                     reqPost('/pipeline/updatestep',{
                         stepID: this.props.location.state.stepID,
                         taskID: this.props.location.state.taskID,
@@ -295,16 +301,20 @@ class taskEdit extends Component {
 
                 } else {
                     let oldSteps = JSON.parse(localStorage.getItem('steps'))
+                    console.log(`before ${oldSteps}`)
                     for (let i = 0; i < oldSteps.length; i++) {
                         if (oldSteps[i][0] === this.state.stepCategory) {
                             for (let j = 0; j < oldSteps[i][1].length; j++) {
                                 if (oldSteps[i][1][j].stepCode === this.state.stepCode) {
-                                    oldSteps[i][1][j].stepParams = this.state.paramsDatasource
+                                    let obj=this.parseStepParams(this.state.paramsDatasource)
+                                    oldSteps[i][1][j].stepParams = obj
                                 }
                             }
                         }
                     }
+                    console.log(`after ${oldSteps}`)
                     setSteps(oldSteps)
+                    this.props.history.push(`/pipeline/add`)
                 }
             }
         })
@@ -411,9 +421,8 @@ class taskEdit extends Component {
         if (stepCode !== -1) {
             disabled = true
         }
-        //判断是否是编辑
+        //判断是否是编辑已存在流水线
         if(this.props.location.state && this.props.location.state.existPipeline){
-
             reqGet(`/pipeline/stepdetail/`,{stepID:this.props.location.state.stepID}).then(res=>{
                 if(res.code === 0){
                     console.log(res)
@@ -444,10 +453,9 @@ class taskEdit extends Component {
                     // }
                 }
             })
-
-
         }else{
             let stepsList  = JSON.parse(localStorage.getItem('steps'))
+            console.log(stepsList)
             let stepListByCategory = stepsList && stepsList.find((item) => item[0] === stepCategory)
             for (let i = 0; i < pipelineID.length; i++) {
                 const pipelineIDElement = pipelineID[i]

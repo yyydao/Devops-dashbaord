@@ -65,8 +65,14 @@ export default function (state, action) {
             console.log(`types.SET_STEP ${JSON.stringify(action.data)}`)
             if (action.data) {
                 let tempList = JSON.parse(localStorage.getItem('steps'))
+                console.log(`${JSON.stringify(tempList)}`)
+                console.log(initialState.stepsList)
                 if (!tempList) {
-                    tempList = initialState.stepsList
+                    tempList = [
+                        [1, []],
+                        [2, []],
+                        [3, []]
+                    ]
                 }
                 console.log(`before edit ${JSON.stringify(tempList)}`)
                 for (let i = 0; i < tempList.length; i++) {
