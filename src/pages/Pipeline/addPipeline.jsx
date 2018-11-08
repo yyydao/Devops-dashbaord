@@ -45,17 +45,17 @@ const enumStepsText = [{
 }]
 
 const pipelineID = [
-    {id: 0, name: '代码拉取'},
-    {id: 1, name: '单元测试'},
-    {id: 2, name: '静态扫描'},
-    {id: 3, name: '编译打包'},
-    {id: 4, name: '安全扫描'},
-    {id: 5, name: 'UI测试'},
-    {id: 6, name: '性能测试'},
-    {id: 7, name: '加固'},
-    {id: 8, name: '补丁'},
-    {id: 9, name: '包管理'},
-    {id: -1, name: '自定义'},
+    {id: 0, name: '代码拉取',stepCode: 0},
+    {id: 1, name: '单元测试',stepCode: 1},
+    {id: 2, name: '静态扫描',stepCode: 2},
+    {id: 3, name: '编译打包',stepCode: 3},
+    {id: 4, name: '安全扫描',stepCode: 4},
+    {id: 5, name: 'UI测试',stepCode: 5},
+    {id: 6, name: '性能测试',stepCode: 6},
+    {id: 7, name: '加固',stepCode: 7},
+    {id: 8, name: '补丁',stepCode: 8},
+    {id: 9, name: '包管理',stepCode: 9},
+    {id: -1, name: '自定义',stepCode: -1},
 ]
 
 class AddPipeline extends Component {
@@ -75,9 +75,13 @@ class AddPipeline extends Component {
     //显示新建窗口
     showModal = (stepCategory) => {
         console.log(`stepCategory ${stepCategory}`)
-        this.setState({
-            addVisible: true,
-            stepCategory: stepCategory
+        this.props.form.validateFieldsAndScroll(['jenkinsJob'],(err, values)=>{
+            if(!err){
+                this.setState({
+                    addVisible: true,
+                    stepCategory: stepCategory
+                })
+            }
         })
     }
     hideModal = () => {
@@ -156,8 +160,7 @@ class AddPipeline extends Component {
 
     }
 
-    handleAddNewTask = (item) => {
-        console.log(`handleAddNewTask ${JSON.stringify(item)}`)
+    handleJumpToTask = (item)=>{
         let data = this.props.form.getFieldsValue();
         this.props.history.push({
                 pathname: `/pipeline/task/add`,
@@ -170,6 +173,30 @@ class AddPipeline extends Component {
                 }
             }
         )
+    }
+
+    handleAddNewTask = (item) => {
+            let stepsList = this.state.stepsList
+            for (let i = 0; i < this.state.stepsList.length; i++) {
+                const stepElement = stepsList[i]
+                if(stepElement[0] === this.state.stepCategory){
+                    if(stepElement[1].length>0){
+                        for (let j = 0; j < stepElement[1].length; j++) {
+                            const stepElementElement = stepElement[1][j]
+                            if(stepElementElement.stepCode === item.stepCode){
+                                message.error('请勿重复创建同类型任务')
+                            }else{
+                                this.handleJumpToTask(item)
+                            }
+                        }
+
+                    }else{
+                        this.handleJumpToTask(item)
+                    }
+
+                }
+            }
+
     }
 
     //获取分支列表
@@ -269,7 +296,6 @@ class AddPipeline extends Component {
             <div id="pipeline-add">
                 <Modal title="创建任务"
                        visible={addVisible}
-                       onOk={this.addItem}
                        confirmLoading={addConfirmLoading}
                        onCancel={this.hideModal}
                        maskClosable={false}
@@ -329,7 +355,7 @@ class AddPipeline extends Component {
                             label="Jenkins Job"
                         >
                             {getFieldDecorator('jenkinsJob', {
-                                rules: [{required: true, message: '请输入'}]
+                                rules: [{required: true, message: '请输入Jenkins Job'}]
                             })(
                                 <Input/>
                             )}
