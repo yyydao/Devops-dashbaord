@@ -419,7 +419,7 @@ class pipelineDetail extends Component {
                                             item[1].map((item, index) => {
                                                 // console.log(item)
                                                 return <Card
-                                                        style={{width: 180, marginLeft: '-40%'}}
+                                                        style={{width: 150, marginLeft: '-25%'}}
                                                         title={item.stepName}
                                                         // extra={<Dropdown overlay={ <Menu>
                                                         //     <Menu.Item>
