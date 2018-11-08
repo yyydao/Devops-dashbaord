@@ -16,61 +16,16 @@ class ConfigManager extends Component{
         super();
         this.state = {
           envList: [],
-          envData: [],
-          testEnv: {
-            "id": 88,
-            "projectId": 62,
-            "category": 0,
-            "name": "111",
-            "jenckinJob": "pTest0919",
-            "passwdBuild": 0,
-            "openTesting": 0,
-            "routineTaskName": "pTest0919",
-            "timedTaskName": "pTest0919",
-            "submitTestTaskName": "pTest0919",
-            "scenes": [
-              {
-                "sceneId": 69,
-                "envId": 88,
-                "projectId": 62,
-                "name": "退出登录",
-                "parentId": 1,
-                "childrens": [
-                  {
-                    "sceneId": 115,
-                    "envId": 88,
-                    "projectId": 62,
-                    "name": "zcq测试场景02",
-                    "parentId": 69,
-                    "childrens": []
-                  },
-                  {
-                    "sceneId": 105,
-                    "envId": 88,
-                    "projectId": 62,
-                    "name": "zcq测试场景03",
-                    "parentId": 69,
-                    "childrens": [{
-                      "sceneId": 205,
-                      "envId": 88,
-                      "projectId": 62,
-                      "name": "zcq测试场景04",
-                      "parentId": 105,
-                      "childrens": []
-                    }]
-                  }
-                ]
-              }
-            ],
-            "checkedScenes":[69, 115, 205, 105]
-          }
+          envData: []
         }
     }
 
     componentWillMount(){
         this.getEnvList();
     }
-
+  /**
+   * @desc 获取环境列表
+   */
     getEnvList = () => {
       const { projectId } = this.props;
       console.log(this.props)
@@ -85,6 +40,11 @@ class ConfigManager extends Component{
             }
         })
     }
+
+  /**
+   * @desc 获取环境详情
+   * @param envId 环境ID
+   */
     getEnvDetail = (envId) => {
       reqGet('/env/envDetails',{
         envId:envId
@@ -99,41 +59,73 @@ class ConfigManager extends Component{
         }
       })
     }
-  onCheck = (checkedScenes,index) => {
-    let envData=this.state.envData
-    envData[index].checkedScenes=checkedScenes
-    this.setState({envData})
-  }
-  onSelect = (selectedKeys, info, index) => {
-    console.log('onSelect',selectedKeys, info, index);
-  }
-  changeEdit = (value,index,key) =>{
-    let envData=this.state.envData
-    envData[index][key]=value
-    this.setState({envData})
-  }
-  changeSwitch = (value,index,type) =>{
-    let envData=this.state.envData
-    envData[index][type]=value?1:0
-    this.setState({envData})
-  }
-  onButtonClick = (index) => {
-    let envData = JSON.parse(JSON.stringify(this.state.envData[index]))
-    let scenes = envData.checkedScenes.map(item=>{
-      let obj = {}
-      obj.envId = envData.envId
-      obj.sceneId = item
-      return obj
-    })
-    envData.scenes = scenes
-    reqPost('/env/updateEnv',envData).then(res => {
-      if(parseInt(res.code, 0) === 0){
-        message.success(res.msg);
-      }else{
-        message.error(res.msg);
-      }
-    })
-  }
+
+  /**
+   * @desc 场景选中事件
+   * @param checkedScenes array 选中的场景id集合
+   */
+    onCheck = (checkedScenes, index) => {
+      let envData=this.state.envData
+      envData[index].checkedScenes=checkedScenes
+      this.setState({envData})
+    }
+
+  /**
+   * @desc 场景点击事件
+   * @param selectedKeys array 点中的场景id集合
+   * @param info obj 点中的场景信息
+   * @param index num 环境下标
+   */
+    onSelect = (selectedKeys, info, index) => {
+      console.log('onSelect',selectedKeys, info, index);
+    }
+
+  /**
+   * @desc 文本编辑事件
+   * @param value string 文本编辑内容
+   * @param key string 文本编辑字段
+   * @param index num 环境下标
+   */
+    changeEdit = (value, key, index) =>{
+      let envData=this.state.envData
+      envData[index][key]=value
+      this.setState({envData})
+    }
+
+  /**
+   * @desc switch事件
+   * @param value boolean switch事件的值
+   * @param type string switch事件字段
+   * @param index num 环境下标
+   */
+    changeSwitch = (value, type, index) =>{
+      let envData=this.state.envData
+      envData[index][type]=value?1:0
+      this.setState({envData})
+    }
+
+  /**
+   * @desc 保存按钮事件
+   * @param index num 环境下标
+   */
+    onButtonClick = (index) => {
+      let envData = JSON.parse(JSON.stringify(this.state.envData[index]))
+      let scenes = envData.checkedScenes.map(item=>{
+        let obj = {}
+        obj.envId = envData.envId
+        obj.sceneId = item
+        return obj
+      })
+      envData.scenes = scenes
+      reqPost('/env/updateEnv',envData).then(res => {
+        if(parseInt(res.code, 0) === 0){
+          message.success(res.msg);
+        }else{
+          message.error(res.msg);
+        }
+      })
+    }
+
     render(){
         const { envData} = this.state;
         return(
