@@ -244,6 +244,20 @@ class pipelineDetail extends Component {
         this.setState({fullSteps: this.composeEditFinalStep(finalStep)})
     }
 
+    runTask = () => {
+        reqPost('/pipeline/taskbuild', {
+            taskID: this.props.match.params.taskID
+
+        }).then((res) => {
+            console.log(res)
+            if (res.code === 0) {
+                this.getPipelineDetail()
+            }else{
+                message.error(res.msg)
+            }
+        })
+    }
+
     composeEditFinalStep= (oldFinalStep) => {
         if(oldFinalStep.length === 0){
             oldFinalStep = [["1", []],
@@ -294,6 +308,7 @@ class pipelineDetail extends Component {
     render () {
         const {
             taskCode,
+            taskID,
             taskName,
             jenkinsJob,
             branchName,
@@ -345,7 +360,8 @@ class pipelineDetail extends Component {
                                         <span>Tips: 有{currentJob}个任务正在等待</span>
                                     </Col>
                                     <Col>
-                                        <Button type="primary" onClick={()=>{
+                                        <Button disabled={taskStatus===1}
+                                            type="primary" onClick={()=>{
                                             this.gotoEditPipeline()
                                         }}>编辑</Button>
                                     </Col>
@@ -402,7 +418,7 @@ class pipelineDetail extends Component {
                                                     <span>最近执行状态：</span>{enumStatusText[taskStatus]}
                                                 </Col>
                                                 <Col>
-                                                    <Button type="primary">{enumButtonText[taskStatus]}</Button>
+                                                    <Button disabled={taskStatus===1} type="primary" onClick={()=>this.runTask()}>{enumButtonText[taskStatus]}</Button>
                                                 </Col>
                                             </Row>
                                         </div>
