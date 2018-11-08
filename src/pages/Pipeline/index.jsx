@@ -285,7 +285,7 @@ class Pipeline extends Component {
                                                         <span><i>执行时长：</i>{item.exexTime}</span>
                                                     </p>
                                                     <Steps size="small" status={enumStatus[item.taskStatus]}
-                                                           current={item.taskStatus}>
+                                                           current={item.taskStatus === 2? 5:item.taskStatus}>
                                                         {steps.map((item, index) => <Step key={index}
                                                                                           title={item.title}/>)}
                                                     </Steps>

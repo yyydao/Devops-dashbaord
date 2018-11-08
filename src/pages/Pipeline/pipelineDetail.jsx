@@ -427,7 +427,7 @@ class pipelineDetail extends Component {
                                 <Steps size="small"
                                        status={enumStatus[taskStatus]}
                                        labelPlacement="vertical"
-                                       current={taskStatus}>
+                                       current={taskStatus === 2? 5:taskStatus}>
                                     <Step title="开始"></Step>
 
                                     {finalStep.map((item, index) => {
