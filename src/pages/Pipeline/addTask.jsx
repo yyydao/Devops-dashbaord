@@ -289,10 +289,16 @@ class taskAdd extends Component {
                     console.log(`this.props.location ${JSON.stringify(this.props.location.state.fullSteps)}`)
                     oldSteps = this.props.location.state.fullSteps
                     stepsList = this.props.location.state.stepsList
+                    let notFormattedSteps = this.state.paramsDatasource;
+                    console.log(notFormattedSteps)
+                    let obj={ };
+                    notFormattedSteps.map((item,index)=>{
+                        obj[item.json_jsonParams] = item.json_jsonValue;
+                    })
                     reqPost('pipeline/addstep',{
                         stepCategory: this.state.stepCategory,
                         stepCode: this.state.stepCode,
-                        stepParams: this.state.paramsDatasource,
+                        stepParams: obj,
                         taskID: this.props.location.state.taskID,
                         ...values
                     }).then(res=>{

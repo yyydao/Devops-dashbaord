@@ -101,14 +101,17 @@ class Edit extends Component {
                             // console.log(stepDatumString)
                             const stepDatum = JSON.parse(stepDatumString)
                             let obj={ };
-                            stepDatum.map((item,index)=>{
-                                obj[item.json_jsonParams] = item.json_jsonValue;
-                            })
-                            notFormattedStep[1][j].stepParams = obj
+                            if(typeof stepDatum == 'object'){
+                                formattedSteps.push(stepDatum)
+                            }else{
+                                stepDatum.map((item,index)=>{
+                                    obj[item.json_jsonParams] = item.json_jsonValue;
+                                })
+                                notFormattedStep[1][j].stepParams = obj
+                                formattedSteps.push(...notFormattedStep[1])
+                            }
                         }
-                        formattedSteps.push(...notFormattedStep[1])
                     }
-
                 }
                 console.log({steps: formattedSteps})
                 reqPost('/pipeline/updatetask', {
@@ -121,6 +124,7 @@ class Edit extends Component {
                 }).then(res => {
                     if (parseInt(res.code, 0) === 0) {
                         message.success('项目修改成功！')
+                        this.props.history.push(`/pipeline`)
                     } else {
                         message.error(res.msg)
                     }
@@ -413,7 +417,7 @@ class Edit extends Component {
                                             {item[1].map((item, index) => {
                                                 // console.log(item)
                                                 return <Card
-                                                    style={{width: 150, marginLeft: '-25%'}}
+                                                    style={{width: 150, marginLeft: '-18%'}}
                                                     title={item.stepName}
                                                     extra={<Dropdown overlay={ <Menu>
                                                         <Menu.Item>

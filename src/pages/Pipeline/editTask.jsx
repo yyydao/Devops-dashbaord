@@ -261,7 +261,39 @@ class taskEdit extends Component {
         console.log(this.state.stepCategory)
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-                if (this.props.location.state.editable) {
+                if (this.props.location.state.existPipeline) {
+                    console.log(this.state.paramsDatasource)
+                    console.log(...values)
+                    let notFormattedSteps = this.state.paramsDatasource;
+                    console.log(notFormattedSteps)
+                    let obj={ };
+                    notFormattedSteps.map((item,index)=>{
+                        obj[item.json_jsonParams] = item.json_jsonValue;
+                    })
+                    reqPost('/pipeline/updatestep',{
+                        stepID: this.props.location.state.stepID,
+                        taskID: this.props.location.state.taskID,
+                        stepCategory: this.props.location.state.stepCategory,
+                        stepCode: this.props.location.state.stepCode,
+                        stepName: this.props.location.state.stepName,
+                        stepDesc: this.props.location.state.stepDesc,
+                        webHook: this.props.location.state.webHook,
+                        stepParams: obj,
+                        paramSource: 1
+                    }).then((res) => {
+                        if(res.code === 0){
+                            setStep({
+                                stepCategory: this.state.stepCategory,
+                                stepCode: this.state.stepCode,
+                                stepParams: this.state.paramsDatasource,
+                                ...values
+                            })
+                            message.info('修改成功');
+                            this.props.history.push(`/pipeline/detail/${this.props.location.state.taskID}`)
+                        }
+                    })
+
+                } else {
                     let oldSteps = JSON.parse(localStorage.getItem('steps'))
                     for (let i = 0; i < oldSteps.length; i++) {
                         if (oldSteps[i][0] === this.state.stepCategory) {
@@ -273,33 +305,7 @@ class taskEdit extends Component {
                         }
                     }
                     setSteps(oldSteps)
-                } else {
-                    setStep({
-                        stepCategory: this.state.stepCategory,
-                        stepCode: this.state.stepCode,
-                        stepParams: this.state.paramsDatasource,
-                        ...values
-                    })
                 }
-                console.log(...values)
-                reqPost('/pipeline/updatestep',{
-                    stepID: this.props.location.state.stepID,
-                    taskID: this.props.location.state.taskID,
-                    stepCategory: this.props.location.state.stepCategory,
-                    stepCode: this.props.location.state.stepCode,
-                    stepName: this.props.location.state.stepName,
-                    stepDesc: this.props.location.state.stepDesc,
-                    webHook: this.props.location.state.webHook,
-                    stepParams: this.state.paramsDatasource,
-                    paramSource: 1
-                }).then((res) => {
-                  if(res.code === 0){
-                      message.info('修改成功');
-                      this.props.history.push(`/pipeline/detail/${this.props.location.state.taskID}`)
-                  }
-                })
-
-
             }
         })
     }

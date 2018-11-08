@@ -112,9 +112,7 @@ class AddPipeline extends Component {
                 reqPost('/pipeline/addtask', {projectID: this.props.projectId, ...values,steps:formattedSteps}).then(res => {
                     if (parseInt(res.code, 0) === 0) {
                         message.success('项目新增成功！')
-                        // this.setState({ proModalVisible: false });
-                        // this.props.form.resetFields();
-                        // this.getTableData();
+                        this.props.history.push(`/pipeline`)
                     } else {
                         message.error(res.msg)
                     }
@@ -361,7 +359,7 @@ class AddPipeline extends Component {
                                             {item[1].map((item, index) => {
                                                 // console.log(item)
                                                 return <Card
-                                                    style={{width: 150, marginLeft: '-25%'}}
+                                                    style={{width: 150, marginLeft: '-18%'}}
                                                     title={item.stepName}
                                                     extra={<Dropdown overlay={ <Menu>
                                                         <Menu.Item>
