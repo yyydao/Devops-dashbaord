@@ -439,7 +439,7 @@ class taskAdd extends Component {
                     this.setState({ paramsDatasource: paramsArray });
                     console.log(paramsArray)
                 }else{
-                    message.error(res.msg)
+                    message.error(`${res.msg} 请手动导入`)
                 }
             })
         }else{
@@ -473,13 +473,13 @@ class taskAdd extends Component {
         if (stepCode !== -1) {
             disabled = true
         }
-
+        this.importAutomation()
         for (let i = 0; i < pipelineID.length; i++) {
             const pipelineIDElement = pipelineID[i]
             if (pipelineIDElement.id === stepCode && stepCode !== -1) {
                 taskName = pipelineIDElement.name
                 taskDescription = pipelineIDElement.description
-                paramsDatasource = pipelineIDElement.params
+                // paramsDatasource = pipelineIDElement.params
             }
         }
         // if(this.props.location.state && this.props.location.state.editable){
