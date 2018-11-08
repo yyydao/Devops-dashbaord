@@ -7,8 +7,6 @@ import MemberManager from '@/pages/Setting/MemberManager';
 import ProjectInfo from '@/pages/Setting/ProjectInfo';
 import Branch from '@/pages/Setting/Branch';
 import ConfigManager from '@/pages/Setting/ConfigManager';
-import PackageConfigManager from '@/pages/Setting/ConfigManager/PackageConfig';
-import PerformanceConfigManager from '@/pages/Setting/ConfigManager/PerformanceConfig';
 import Pipeline from '@/pages/Pipeline'
 import PipelineDetail from '@/pages/Pipeline/pipelineDetail'
 import PipelineAdd from '@/pages/Pipeline/addPipeline'
@@ -66,16 +64,6 @@ export default [
         path: '/configManager',
         name: 'configManager',
         component: ConfigManager
-    },
-    {
-        path: '/configManager/packageConfig/:id',
-        name: 'packageConfigManager',
-        component: PackageConfigManager
-    },
-    {
-        path: '/configManager/performanceConfig/:id',
-        name: 'performanceConfigManager',
-        component: PerformanceConfigManager
     },
     {
         path: '/performanceConfig',
