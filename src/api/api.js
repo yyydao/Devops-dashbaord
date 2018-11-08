@@ -43,7 +43,7 @@ axios.interceptors.response.use(
         if(err.response.status === 494){
             window.location.href = err.response.data;
         }
-        
+
         if(err.response){
             console.info(err.response);
             if(err.response.data.message){
@@ -71,6 +71,17 @@ export function reqGet(url, params){
 export function reqPost(url, params){
     return new Promise((resolve, reject) => {
         axios.post(url, params).then(res => {
+            resolve(res.data);
+        }, err => {
+            reject(err);
+        }).catch(error => {
+            console.error(error);
+        })
+    })
+}
+export function reqDelete(url, params){
+    return new Promise((resolve, reject) => {
+        axios.delete(url,  {data: params}).then(res => {
             resolve(res.data);
         }, err => {
             reject(err);

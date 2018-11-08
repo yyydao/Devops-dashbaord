@@ -2,14 +2,14 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import './index.scss'
-import { reqPost, reqGet } from '@/api/api'
+import { reqPost, reqGet,reqDelete } from '@/api/api'
 import toPairs from 'lodash.topairs'
 import uniq from 'lodash.uniq'
 import { setStep,removeSteps,setSteps } from '@/store/action'
 
 import { Chart, Geom, Axis, Tooltip, Legend, Coord, track } from 'bizcharts';
 
-import { Steps, Breadcrumb, Card, Button, Icon, Collapse, Row, Col, Select, Menu, Dropdown, Radio } from 'antd'
+import { Steps, Breadcrumb, Card, Button, Icon, Collapse, Row, Col, Select, Menu,message,  Dropdown, Radio } from 'antd'
 
 const BreadcrumbItem = Breadcrumb.Item
 const Step = Steps.Step
@@ -169,15 +169,24 @@ class pipelineDetail extends Component {
         })
     }
     getPackageresult = () => {
-        reqGet('/pipeline/packageresult', {
-            taskID: this.props.match.params.taskID
-        }).then((res) => {
+        // reqGet('/pipeline/packageresult', {
+        //     taskID: this.props.match.params.taskID
+        // }).then((res) => {
+        //     if (res.code === 0) {
+        //         this.setState({packageresult: res.list})
+        //     }
+        // })
+    }
+
+    handleDeletePipeline = () =>{
+        reqDelete(`/pipeline/deletetask/${this.props.match.params.taskID}`).then((res) => {
             if (res.code === 0) {
-                this.setState({packageresult: res.list})
+                this.props.history.push(`/pipeline`)
+            }else{
+                message.error(res.msg)
             }
         })
     }
-
     checkTaskList = (taskList) => {
         const {
             projectID,
@@ -185,6 +194,7 @@ class pipelineDetail extends Component {
             taskName,
             jenkinsJob,
             branchName,
+            branchID,
             taskStatus,
             exexTime,
             lastExecTime,
@@ -198,6 +208,7 @@ class pipelineDetail extends Component {
             taskName,
             jenkinsJob,
             branchName,
+            branchID,
             taskStatus,
             exexTime,
             lastExecTime,
@@ -231,6 +242,20 @@ class pipelineDetail extends Component {
         this.setState({stepsList: stepsList})
         this.setState({finalStep: finalStep})
         this.setState({fullSteps: this.composeEditFinalStep(finalStep)})
+    }
+
+    runTask = () => {
+        reqPost('/pipeline/taskbuild', {
+            taskID: this.props.match.params.taskID
+
+        }).then((res) => {
+            console.log(res)
+            if (res.code === 0) {
+                this.getPipelineDetail()
+            }else{
+                message.error(res.msg)
+            }
+        })
     }
 
     composeEditFinalStep= (oldFinalStep) => {
@@ -283,6 +308,7 @@ class pipelineDetail extends Component {
     render () {
         const {
             taskCode,
+            taskID,
             taskName,
             jenkinsJob,
             branchName,
@@ -324,7 +350,7 @@ class pipelineDetail extends Component {
                                     <Col>
                                         <h2>流水线详情</h2>
                                     </Col>
-                                    <Col><Button ghost type="danger" shape="circle" icon="delete"/>
+                                    <Col><Button onClick={()=>{this.handleDeletePipeline()}} ghost type="danger" shape="circle" icon="delete"/>
                                     </Col>
                                 </Row>
                             </Col>
@@ -334,7 +360,8 @@ class pipelineDetail extends Component {
                                         <span>Tips: 有{currentJob}个任务正在等待</span>
                                     </Col>
                                     <Col>
-                                        <Button type="primary" onClick={()=>{
+                                        <Button disabled={taskStatus===1}
+                                            type="primary" onClick={()=>{
                                             this.gotoEditPipeline()
                                         }}>编辑</Button>
                                     </Col>
@@ -391,7 +418,7 @@ class pipelineDetail extends Component {
                                                     <span>最近执行状态：</span>{enumStatusText[taskStatus]}
                                                 </Col>
                                                 <Col>
-                                                    <Button type="primary">{enumButtonText[taskStatus]}</Button>
+                                                    <Button disabled={taskStatus===1} type="primary" onClick={()=>this.runTask()}>{enumButtonText[taskStatus]}</Button>
                                                 </Col>
                                             </Row>
                                         </div>
@@ -400,7 +427,7 @@ class pipelineDetail extends Component {
                                 <Steps size="small"
                                        status={enumStatus[taskStatus]}
                                        labelPlacement="vertical"
-                                       current={taskStatus}>
+                                       current={taskStatus === 2? 5:taskStatus}>
                                     <Step title="开始"></Step>
 
                                     {finalStep.map((item, index) => {
@@ -408,7 +435,7 @@ class pipelineDetail extends Component {
                                             item[1].map((item, index) => {
                                                 // console.log(item)
                                                 return <Card
-                                                        style={{width: 180, marginLeft: '-40%'}}
+                                                        style={{width: 150, marginLeft: '-18%'}}
                                                         title={item.stepName}
                                                         // extra={<Dropdown overlay={ <Menu>
                                                         //     <Menu.Item>

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link,withRouter } from 'react-router-dom'
 import './index.scss'
-import { reqPost, reqGet } from '@/api/api'
+import { reqPost, reqGet, reqDelete } from '@/api/api'
 
 import { setStep,removeSteps,setSteps } from '@/store/action'
 
@@ -90,24 +90,41 @@ class Edit extends Component {
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 let notFormattedSteps = this.state.fullSteps, formattedSteps = [];
-                console.log(notFormattedSteps)
+                // console.log(notFormattedSteps)
                 for (let i = 0; i < notFormattedSteps.length; i++) {
                     const notFormattedStep = notFormattedSteps[i]
                     if(notFormattedStep[1] && notFormattedStep[1].length>0){
-                        formattedSteps.push(...notFormattedStep[1])
+                        let stepData = notFormattedStep[1]
+                        // console.log(stepData)
+                        for (let j = 0; j < stepData.length; j++) {
+                            const stepDatumString = stepData[j].stepParams
+                            // console.log(stepDatumString)
+                            const stepDatum = JSON.parse(stepDatumString)
+                            let obj={ };
+                            if(typeof stepDatum == 'object'){
+                                formattedSteps.push(stepDatum)
+                            }else{
+                                stepDatum.map((item,index)=>{
+                                    obj[item.json_jsonParams] = item.json_jsonValue;
+                                })
+                                notFormattedStep[1][j].stepParams = obj
+                                formattedSteps.push(...notFormattedStep[1])
+                            }
+                        }
                     }
-
                 }
+                console.log({steps: formattedSteps})
                 reqPost('/pipeline/updatetask', {
                     projectID: this.props.projectId,
                     ...values,
-                    branchID:11613,
+                    branchID:this.props.form.getFieldValue('branchID'),
                     ddStatus:0,
                     steps: formattedSteps,
                     taskID:this.props.match.params.taskID
                 }).then(res => {
                     if (parseInt(res.code, 0) === 0) {
                         message.success('项目修改成功！')
+                        this.props.history.push(`/pipeline`)
                     } else {
                         message.error(res.msg)
                     }
@@ -118,23 +135,47 @@ class Edit extends Component {
     }
 
     handleDeleteTask = (item) =>{
+        console.log(`item ${JSON.stringify(item)}`)
         let { setSteps } = this.props;
         let stepsList = this.state.stepsList
-        console.log(this.stepsList)
-        for (let i = 0; i < stepsList.length; i++) {
-            const stepElement = stepsList[i]
-            if(stepElement[0] === item.stepCategory){
-                for (let j = 0; j < stepElement[1].length; j++) {
-                    const stepElementElement = stepElement[1][j]
-                    console.log(stepElementElement)
-                    if(stepElementElement.stepCode === item.stepCode){
-                        stepElement[1].splice(j,1)
+        let oldSteps = this.state.fullSteps
+        if(!!item.stepID){
+            reqDelete(`/pipeline/deltaskstep/${item.stepID}`,{}).then(res=>{
+                if(res.code === 0){
+
+                    for (let i = 0; i < stepsList.length; i++) {
+                        const stepElement = stepsList[i]
+                        if(stepElement.stepID+'' === item.stepID+''){
+                            stepsList.splice(i,1)
+                        }
                     }
+                    for (let i = 0; i < oldSteps.length; i++) {
+                        if (oldSteps[i][0] === item.stepCategory+'') {
+                            let steps = oldSteps[i][1]
+                            console.log(steps)
+                            for (let j = 0; j < steps.length; j++) {
+                                console.log(steps[j].stepID+'' === item.stepID+'')
+                                if(steps[j].stepID+'' === item.stepID+''){
+                                    oldSteps[i][1].splice(j,1)
+                                }
+                            }
+
+                        }
+                    }
+                    setSteps(oldSteps)
+                    this.setState({stepsList: stepsList})
+                    this.setState({fullSteps: oldSteps})
+                    this.setState({stepsList: stepsList})
+                    // setSteps(this.state.stepsList)
                 }
-            }
+            })
+        }else{
+            this.setState({stepsList: stepsList})
+            setSteps(this.state.stepsList)
         }
-        this.setState({stepsList: stepsList})
-        setSteps(this.state.stepsList)
+
+
+
     }
 
     handleEditTask = (item) =>{
@@ -142,9 +183,9 @@ class Edit extends Component {
         this.props.history.push({
             pathname:'/pipeline/task/edit',
             state: {
+                stepID:item.stepID,
                 stepCode: item.stepCode,
                 stepCategory: item.stepCategory,
-                editable:true,
                 existPipeline: true,
                 taskID: this.props.match.params.taskID
             }
@@ -171,11 +212,9 @@ class Edit extends Component {
     }
 
     //修改选中分支
-    changeBranch = (formDataBranch) => {
-        console.log(formDataBranch)
-        this.setState({
-            formDataBranch
-        })
+    changeBranch = (changedBrancID) => {
+        console.log(`changedBrancID ${changedBrancID}`)
+        this.setState({branchID:changedBrancID})
     }
 
     setPipelineInfo(){
@@ -187,7 +226,7 @@ class Edit extends Component {
                 this.props.form.setFieldsValue({
                     taskName: res.task.taskName,
                     // branchID:  res.task.branchID,
-                    branchID: res.task.branchName ,
+                    branchID: res.task.branchID ,
                     jenkinsJob: res.task.jenkinsJob,
                 });
             }
@@ -198,13 +237,6 @@ class Edit extends Component {
 
     componentWillMount () {
 
-        // let stepsList = localStorage.getItem('steps')
-        // if (!stepsList) {
-        //     stepsList = [[1, []],
-        //         [2, []],
-        //         [3, []]]
-        // }
-        // this.setState({stepsList: JSON.parse(stepsList)})
         let currentEditedPipeline =JSON.parse(localStorage.getItem('currentEditedPipeline'))
         let fullSteps = currentEditedPipeline ? currentEditedPipeline.fullSteps: []
         let stepsList =  currentEditedPipeline ? currentEditedPipeline.stepsList: []
@@ -299,6 +331,7 @@ class Edit extends Component {
                                               taskID: this.props.match.params.taskID,
                                               fullSteps: this.state.fullSteps,
                                               stepsList: this.state.stepsList,
+                                              jenkinsJob: this.props.form.getFieldValue('jenkinsJob'),
                                           }
                                       }}>
                                     <Card.Grid style={gridStyle}>{item.name}</Card.Grid>
@@ -333,7 +366,6 @@ class Edit extends Component {
                         >
                             {getFieldDecorator('branchID', {
                                 rules: [{required: true, message: '请选择开发分支'}],
-                                initialValue:this.props.location.state && this.props.location.state.branchName
                             })(
                                 <Select placeholder="请选择开发分支"
                                         showSearch
@@ -385,7 +417,7 @@ class Edit extends Component {
                                             {item[1].map((item, index) => {
                                                 // console.log(item)
                                                 return <Card
-                                                    style={{width: 180, marginLeft: '-40%'}}
+                                                    style={{width: 150, marginLeft: '-18%'}}
                                                     title={item.stepName}
                                                     extra={<Dropdown overlay={ <Menu>
                                                         <Menu.Item>

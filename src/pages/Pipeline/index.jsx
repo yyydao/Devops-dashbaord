@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import './index.scss'
 import { reqPost, reqGet } from '@/api/api'
 
-import { Steps, Breadcrumb, Card, Button, Icon, Collapse, Row, Col } from 'antd'
+import { Steps, Breadcrumb, Card, Button, Icon, Collapse, Row, Col, message } from 'antd'
 import { Radio } from 'antd/lib/radio'
 
 const BreadcrumbItem = Breadcrumb.Item
@@ -228,6 +228,8 @@ class Pipeline extends Component {
             console.log(res)
             if (res.code === 0) {
                 this. getPipelineList()
+            }else{
+                message.error(res.msg)
             }
         })
     }
@@ -283,7 +285,7 @@ class Pipeline extends Component {
                                                         <span><i>执行时长：</i>{item.exexTime}</span>
                                                     </p>
                                                     <Steps size="small" status={enumStatus[item.taskStatus]}
-                                                           current={item.taskStatus}>
+                                                           current={item.taskStatus === 2? 5:item.taskStatus}>
                                                         {steps.map((item, index) => <Step key={index}
                                                                                           title={item.title}/>)}
                                                     </Steps>
@@ -293,7 +295,7 @@ class Pipeline extends Component {
                                                 <div className="pipeline-item-ctrl">
                                                     <div className="status">
                                                         <span>最近执行状态：</span>{enumStatusText[item.taskStatus]}</div>
-                                                    <Button type="primary" onClick={()=>this.runTask(item)}>{enumButtonText[item.taskStatus]}</Button>
+                                                    <Button type="primary" disabled={item.taskStatus === 1} onClick={()=>this.runTask(item)}>{enumButtonText[item.taskStatus]}</Button>
                                                 </div>
                                             </Col>
                                         </Row>

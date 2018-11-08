@@ -254,6 +254,15 @@ class taskEdit extends Component {
         })
     }
 
+    parseStepParams = (notFormattedSteps) =>{
+        console.log(notFormattedSteps)
+        let obj={ };
+        notFormattedSteps.map((item,index)=>{
+            obj[item.json_jsonParams] = item.json_jsonValue;
+        })
+        return obj
+    }
+
     handleSubmit = (e) => {
         let {setStep,setSteps} = this.props
         e.preventDefault()
@@ -261,46 +270,52 @@ class taskEdit extends Component {
         console.log(this.state.stepCategory)
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-                if (this.props.location.state.editable) {
+                if (this.props.location.state.existPipeline) {
+                    console.log(this.state.paramsDatasource)
+                    console.log(...values)
+                    let notFormattedSteps = this.state.paramsDatasource;
+                    console.log(notFormattedSteps)
+                    let obj=this.parseStepParams(notFormattedSteps)
+                    reqPost('/pipeline/updatestep',{
+                        stepID: this.props.location.state.stepID,
+                        taskID: this.props.location.state.taskID,
+                        stepCategory: this.props.location.state.stepCategory,
+                        stepCode: this.props.location.state.stepCode,
+                        stepName: this.props.location.state.stepName,
+                        stepDesc: this.props.location.state.stepDesc,
+                        webHook: this.props.location.state.webHook,
+                        stepParams: obj,
+                        paramSource: 1
+                    }).then((res) => {
+                        if(res.code === 0){
+                            setStep({
+                                stepCategory: this.state.stepCategory,
+                                stepCode: this.state.stepCode,
+                                stepParams: this.state.paramsDatasource,
+                                ...values
+                            })
+                            message.info('修改成功');
+                            this.props.history.push(`/pipeline/detail/${this.props.location.state.taskID}`)
+                        }
+                    })
+
+                } else {
                     let oldSteps = JSON.parse(localStorage.getItem('steps'))
+                    console.log(`before ${oldSteps}`)
                     for (let i = 0; i < oldSteps.length; i++) {
                         if (oldSteps[i][0] === this.state.stepCategory) {
                             for (let j = 0; j < oldSteps[i][1].length; j++) {
                                 if (oldSteps[i][1][j].stepCode === this.state.stepCode) {
-                                    oldSteps[i][1][j].stepParams = this.state.paramsDatasource
+                                    let obj=this.parseStepParams(this.state.paramsDatasource)
+                                    oldSteps[i][1][j].stepParams = obj
                                 }
                             }
                         }
                     }
+                    console.log(`after ${oldSteps}`)
                     setSteps(oldSteps)
-                } else {
-                    setStep({
-                        stepCategory: this.state.stepCategory,
-                        stepCode: this.state.stepCode,
-                        stepParams: this.state.paramsDatasource,
-                        ...values
-                    })
+                    this.props.history.push(`/pipeline/add`)
                 }
-                console.log(...values)
-                console.log()
-                reqPost('/pipeline/updatestep',{
-                    stepID: this.props.location.state.stepID,
-                    taskID: this.props.location.state.taskID,
-                    stepCategory: this.props.location.state.stepCategory,
-                    stepCode: this.props.location.state.stepCode,
-                    stepName: this.props.location.state.stepName,
-                    stepDesc: this.props.location.state.stepDesc,
-                    webHook: this.props.location.state.webHook,
-                    stepParams: this.state.paramsDatasource,
-                    paramSource: 1
-                }).then((res) => {
-                  if(res.code === 0){
-                      message.info('修改成功');
-                      this.props.history.push(`/pipeline/detail/${this.props.location.state.taskID}`)
-                  }
-                })
-
-
             }
         })
     }
@@ -406,21 +421,42 @@ class taskEdit extends Component {
         if (stepCode !== -1) {
             disabled = true
         }
-        //判断是否是编辑
-        if(this.props.location.state && this.props.location.state.editable){
-            let stepsList = JSON.parse(localStorage.getItem('steps'))
-            let stepListByCategory = stepsList.find((item) => item[0] === stepCategory)
+        //判断是否是编辑已存在流水线
+        if(this.props.location.state && this.props.location.state.existPipeline){
+            reqGet(`/pipeline/stepdetail/`,{stepID:this.props.location.state.stepID}).then(res=>{
+                if(res.code === 0){
+                    console.log(res)
+                    let d = res.step.stepParams
+                    console.log(d)
+                    let paramsArray = [],source = JSON.parse(d),keyIndex = 1
 
-            for (let i = 0; i < stepListByCategory[1].length; i++) {
-                const stepListByCategoryElement = stepListByCategory[1][i]
-                if(stepListByCategoryElement.stepCode === stepCode){
-                    taskName = stepListByCategoryElement.stepName
-                    taskDescription = stepListByCategoryElement.stepDesc
-                    paramsDatasource = stepListByCategoryElement.stepParams
+
+                    for (let prop in source) {
+                        console.log(source[prop])
+                        paramsArray.push({key:keyIndex,json_jsonParams:prop,json_jsonValue:source[prop]})
+                        keyIndex++
+                    }
+
+                    this.setState({ paramsDatasource: paramsArray });
+
+                    this.props.form.setFieldsValue({
+                        stepName: res.step.stepName,
+                        stepDesc: res.step.stepDesc
+                    })
+                    // for (let i = 0; i < stepListByCategory[1].length; i++) {
+                    //     const stepListByCategoryElement = stepListByCategory[1][i]
+                    //     if(stepListByCategoryElement.stepCode === stepCode){
+                    //         taskName = stepListByCategoryElement.stepName
+                    //         taskDescription = stepListByCategoryElement.stepDesc
+                    //         paramsDatasource = stepListByCategoryElement.stepParams
+                    //     }
+                    // }
                 }
-            }
-
+            })
         }else{
+            let stepsList  = JSON.parse(localStorage.getItem('steps'))
+            console.log(stepsList)
+            let stepListByCategory = stepsList && stepsList.find((item) => item[0] === stepCategory)
             for (let i = 0; i < pipelineID.length; i++) {
                 const pipelineIDElement = pipelineID[i]
                 if (pipelineIDElement.id === stepCode && stepCode !== -1) {
@@ -429,12 +465,13 @@ class taskEdit extends Component {
                     paramsDatasource = pipelineIDElement.params
                 }
             }
+            this.props.form.setFieldsValue({
+                stepName: taskName,
+                stepDesc:taskDescription
+            })
         }
 
-        this.props.form.setFieldsValue({
-            stepName: taskName,
-            stepDesc:taskDescription
-        })
+
         if (this.props.editable) {
             document.addEventListener('click', this.handleClickOutside, true);
         }
