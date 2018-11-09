@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import './index.scss'
-import { reqPost, reqGet } from '@/api/api'
+import { reqPost, reqGet,reqPostURLEncode } from '@/api/api'
 
 import { Steps, Breadcrumb, Card, Button, Icon, Collapse, Row, Col, message } from 'antd'
 import { Radio } from 'antd/lib/radio'
@@ -221,7 +221,8 @@ class Pipeline extends Component {
 
     runTask = (item) => {
         console.log(item)
-        reqPost('/pipeline/taskbuild', {
+
+        reqPostURLEncode('/pipeline/taskbuild', {
             taskID: item.taskID
 
         }).then((res) => {

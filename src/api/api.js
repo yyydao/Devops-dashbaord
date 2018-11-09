@@ -1,6 +1,6 @@
 
 import axios from 'axios';
-// import qs from 'qs';
+import qs from 'qs';
 import { message, Modal } from 'antd';
 import utilConfig from './config';
 
@@ -77,6 +77,26 @@ export function reqPost(url, params){
         }).catch(error => {
             console.error(error);
         })
+    })
+}
+export function reqPostURLEncode(url, params){
+    return new Promise((resolve, reject) => {
+
+        const data = params;
+        console.log(qs.stringify(data))
+        const options = {
+            method: 'POST',
+            headers: { 'content-type': 'application/x-www-form-urlencoded' },
+            data:qs.stringify(data),
+            url,
+        };
+        axios(options).then(res => {
+            resolve(res.data);
+        }, err => {
+            reject(err);
+        }).catch(error => {
+            console.error(error);
+        });
     })
 }
 export function reqDelete(url, params){
