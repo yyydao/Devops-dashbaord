@@ -114,11 +114,12 @@ class Edit extends Component {
                     }
                 }
                 console.log({steps: formattedSteps})
+                let ddStatusBoolean = this.props.form.getFieldValue('ddStatusSwitch')
                 reqPost('/pipeline/updatetask', {
                     projectID: this.props.projectId,
                     ...values,
                     branchID:this.props.form.getFieldValue('branchID'),
-                    ddStatus:0,
+                    ddStatus: ddStatusBoolean ? 1:0,
                     steps: formattedSteps,
                     taskID:this.props.match.params.taskID
                 }).then(res => {
@@ -226,6 +227,7 @@ class Edit extends Component {
                 this.props.form.setFieldsValue({
                     taskName: res.task.taskName,
                     // branchID:  res.task.branchID,
+                    ddStatusSwitch:res.task.ddStatus === 1,
                     branchID: res.task.branchID ,
                     jenkinsJob: res.task.jenkinsJob,
                 });
@@ -396,7 +398,7 @@ class Edit extends Component {
                             {...formItemLayout}
                             label="钉钉消息："
                         >
-                            {getFieldDecorator('ddStatus', {valuePropName: 'checked'})(
+                            {getFieldDecorator('ddStatusSwitch', {valuePropName: 'checked'})(
                                 <Switch/>
                             )}
                         </FormItem>

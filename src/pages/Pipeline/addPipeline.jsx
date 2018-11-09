@@ -68,6 +68,7 @@ class AddPipeline extends Component {
             branchList: [],
             formDataBranch: null,
             stepCategory: 1,
+            ddStatusSwitch:false,
             stepsList: [[1, []], [2, []], [3, []]]
         }
     }
@@ -113,7 +114,8 @@ class AddPipeline extends Component {
                     }
 
                 }
-                reqPost('/pipeline/addtask', {projectID: this.props.projectId, ...values,steps:formattedSteps}).then(res => {
+                let ddStatus = values.ddStatusSwitch ? 1:0
+                reqPost('/pipeline/addtask', {projectID: this.props.projectId, ...values,steps:formattedSteps,ddStatus:ddStatus}).then(res => {
                     if (parseInt(res.code, 0) === 0) {
                         message.success('项目新增成功！')
                         this.props.history.push(`/pipeline`)
@@ -248,6 +250,7 @@ class AddPipeline extends Component {
             // branchID:  res.task.branchID,
             branchID: branchID,
             jenkinsJob: jenkinsJob,
+            ddStatusSwitch: this.state.ddStatusSwitch,
         })
         let stepsList = tempStep ? tempStep : this.state.stepsList
 
@@ -364,7 +367,7 @@ class AddPipeline extends Component {
                             {...formItemLayout}
                             label="钉钉消息："
                         >
-                            {getFieldDecorator('ddStatus', {valuePropName: 'checked'})(
+                            {getFieldDecorator('ddStatusSwitch', {valuePropName: 'checked'})(
                                 <Switch/>
                             )}
                         </FormItem>
