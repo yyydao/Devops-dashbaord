@@ -5,6 +5,7 @@ import './index.scss'
 import { reqPost, reqGet, reqDelete } from '@/api/api'
 
 import { setStep,removeSteps,setSteps } from '@/store/action'
+import {stepParamstoArray, stepParamstoObject } from '@/utils/utils.js'
 
 import {
     Steps,
@@ -45,17 +46,17 @@ const enumStepsText = [{
 }]
 
 const pipelineID = [
-    {id: 0, name: '代码拉取'},
-    {id: 1, name: '单元测试'},
-    {id: 2, name: '静态扫描'},
-    {id: 3, name: '编译打包'},
-    {id: 4, name: '安全扫描'},
-    {id: 5, name: 'UI测试'},
-    {id: 6, name: '性能测试'},
-    {id: 7, name: '加固'},
-    {id: 8, name: '补丁'},
-    {id: 9, name: '包管理'},
-    {id: -1, name: '自定义'},
+    {id: 0, name: '代码拉取',stepCode: 0},
+    {id: 1, name: '单元测试',stepCode: 1},
+    {id: 2, name: '静态扫描',stepCode: 2},
+    {id: 3, name: '编译打包',stepCode: 3},
+    {id: 4, name: '安全扫描',stepCode: 4},
+    {id: 5, name: 'UI测试',stepCode: 5},
+    {id: 6, name: '性能测试',stepCode: 6},
+    {id: 7, name: '加固',stepCode: 7},
+    {id: 8, name: '补丁',stepCode: 8},
+    {id: 9, name: '包管理',stepCode: 9},
+    {id: -1, name: '自定义',stepCode: -1},
 ]
 
 class Edit extends Component {

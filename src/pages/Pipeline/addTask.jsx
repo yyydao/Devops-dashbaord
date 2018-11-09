@@ -17,8 +17,10 @@ import {
     Select,
     Table,
     Popconfirm,
-    Modal, Card, message
+    Modal, message
 } from 'antd'
+
+import {stepParamstoArray, stepParamstoObject } from '@/utils/utils.js'
 
 const {TextArea} = Input;
 const AutoCompleteOption = AutoComplete.Option
@@ -291,10 +293,7 @@ class taskAdd extends Component {
                     stepsList = this.props.location.state.stepsList
                     let notFormattedSteps = this.state.paramsDatasource;
                     console.log(notFormattedSteps)
-                    let obj={ };
-                    notFormattedSteps.map((item,index)=>{
-                        obj[item.json_jsonParams] = item.json_jsonValue;
-                    })
+                    let obj= stepParamstoObject(notFormattedSteps)
                     reqPost('pipeline/addstep',{
                         stepCategory: this.state.stepCategory,
                         stepCode: this.state.stepCode,
@@ -340,11 +339,12 @@ class taskAdd extends Component {
                     })
 
                 }else{
+                    let obj= stepParamstoObject(this.state.paramsDatasource)
                     console.log(`add new pipeline`)
                     setStep({
                         stepCategory: this.state.stepCategory,
                         stepCode: this.state.stepCode,
-                        stepParams: this.state.paramsDatasource,
+                        stepParams: JSON.stringify(obj),
                         ...values
                     })
                     this.props.history.push({
@@ -409,16 +409,7 @@ class taskAdd extends Component {
         let jsonText = this.state.importJSON
         if(this.isJsonString(jsonText)){
 
-            let paramsArray = [{key:0,json_jsonParams:'stageID',json_jsonValue:this.state.stepCode}],
-                source = JSON.parse(jsonText),
-                keyIndex = 1;
-
-
-            for (let prop in source) {
-                console.log(source[prop])
-                paramsArray.push({key:keyIndex,json_jsonParams:prop,json_jsonValue:source[prop]})
-                keyIndex++
-            }
+            let paramsArray = stepParamstoArray(jsonText)
 
             this.setState({ paramsDatasource: paramsArray });
 
@@ -433,7 +424,7 @@ class taskAdd extends Component {
             reqGet('pipeline/autoimport',{code:this.props.location.state.stepCode,job:this.props.location.state.jenkinsJob}).then(res => {
                 if (res.code == 0) {
                     let paramsArray = [{key:0,json_jsonParams:'stageID',json_jsonValue:this.state.stepCode}]
-                    res.list.map((item,index)=>{
+                    res.list && res.list.map((item,index)=>{
                         paramsArray.push({key:index+1,json_jsonParams:item})
                     })
                     this.setState({ paramsDatasource: paramsArray });
@@ -479,25 +470,8 @@ class taskAdd extends Component {
             if (pipelineIDElement.id === stepCode && stepCode !== -1) {
                 taskName = pipelineIDElement.name
                 taskDescription = pipelineIDElement.description
-                // paramsDatasource = pipelineIDElement.params
             }
         }
-        // if(this.props.location.state && this.props.location.state.editable){
-        //     let stepsList = JSON.parse(localStorage.getItem('steps'))
-        //     let stepListByCategory = stepsList && stepsList.find((item) => item[0] === stepCategory)
-        //
-        //     for (let i = 0; i < stepListByCategory[1].length; i++) {
-        //         const stepListByCategoryElement = stepListByCategory[1][i]
-        //         if(stepListByCategoryElement.stepCode === stepCode){
-        //             taskName = stepListByCategoryElement.stepName
-        //             taskDescription = stepListByCategoryElement.stepDesc
-        //             paramsDatasource = stepListByCategoryElement.stepParams
-        //         }
-        //     }
-        //
-        // }else{
-        //
-        // }
 
         this.props.form.setFieldsValue({
             stepName: taskName,

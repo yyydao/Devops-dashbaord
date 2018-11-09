@@ -156,6 +156,9 @@ class AddPipeline extends Component {
                 stepCode: item.stepCode,
                 stepCategory: item.stepCategory,
                 existPipeline: false,
+                jenkinsJob: this.props.form.getFieldValue('jenkinsJob'),
+                fullSteps: this.state.fullSteps,
+                stepsList: this.state.stepsList,
                 ...data
             }
         })
@@ -173,6 +176,7 @@ class AddPipeline extends Component {
                     jenkinsJob: this.props.form.getFieldValue('jenkinsJob'),
                     ...data
                 }
+
             }
         )
     }
@@ -255,6 +259,7 @@ class AddPipeline extends Component {
         let stepsList = tempStep ? tempStep : this.state.stepsList
 
         this.setState({stepsList: stepsList})
+        this.setState({fullSteps: tempStep})
     }
 
     render () {
