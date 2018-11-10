@@ -114,7 +114,6 @@ class Edit extends Component {
                         }
                     }
                 }
-                console.log({steps: formattedSteps})
                 let ddStatusBoolean = this.props.form.getFieldValue('ddStatusSwitch')
                 reqPost('/pipeline/updatetask', {
                     projectID: this.props.projectId,

@@ -96,23 +96,11 @@ class AddPipeline extends Component {
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 let notFormattedSteps = this.state.stepsList, formattedSteps = [];
-                console.log(notFormattedSteps)
                 for (let i = 0; i < notFormattedSteps.length; i++) {
                     const notFormattedStep = notFormattedSteps[i]
                     if(notFormattedStep[1] && notFormattedStep[1].length>0){
-                        let stepData = notFormattedStep[1]
-                        console.log(stepData)
-                        for (let j = 0; j < stepData.length; j++) {
-                            const stepDatum = stepData[j].stepParams
-                            let obj={ };
-                            stepDatum.map((item,index)=>{
-                                obj[item.json_jsonParams] = item.json_jsonValue;
-                            })
-                            notFormattedStep[1][j].stepParams = obj
-                        }
                         formattedSteps.push(...notFormattedStep[1])
                     }
-
                 }
                 let ddStatus = values.ddStatusSwitch ? 1:0
                 reqPost('/pipeline/addtask', {projectID: this.props.projectId, ...values,steps:formattedSteps,ddStatus:ddStatus}).then(res => {
