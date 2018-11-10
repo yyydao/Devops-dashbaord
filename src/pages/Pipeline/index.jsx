@@ -78,7 +78,7 @@ class Pipeline extends Component {
 
     runTask = (item) => {
 
-        this.setStatus({taskStatus: 1})
+        this.setState({taskStatus: 1})
         reqPostURLEncode('/pipeline/taskbuild', {
             taskID: item.taskID
 
