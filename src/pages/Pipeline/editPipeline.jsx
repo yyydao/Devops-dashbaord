@@ -189,9 +189,48 @@ class Edit extends Component {
                 stepCategory: item.stepCategory,
                 existPipeline: true,
                 taskID: this.props.match.params.taskID
+
             }
         })
 
+    }
+
+    handleAddNewTask = (item) => {
+        console.log(this.state.stepsList)
+        console.log(this.state.stepCategory)
+
+        let stepsList = this.state.stepsList
+        for (let i = 0; i < stepsList.length; i++) {
+            const stepElement = stepsList[i]
+            // console.log(stepElement)
+            if(stepElement.stepCategory+'' === this.state.stepCategory+''){
+                if(stepElement.stepCode+'' === item.stepCode+''){
+                    message.error('请勿重复创建同类型任务')
+                }else{
+                    this.handleJumpToTask(item)
+                }
+            }
+        }
+
+    }
+
+    handleJumpToTask = (item)=>{
+        let data = this.props.form.getFieldsValue();
+        console.log(item)
+        console.log()
+        this.props.history.push({
+                state:  {
+                    stepCode: item.id,
+                    existPipeline: true,
+                    taskID: this.props.match.params.taskID,
+                    fullSteps: this.state.fullSteps,
+                    stepsList: this.state.stepsList,
+                    stepCategory: this.state.stepCategory,
+                    jenkinsJob: this.props.form.getFieldValue('jenkinsJob'),
+                    ...data
+                },
+                pathname: `/pipeline/task/add`,
+            })
     }
 
     //获取分支列表
@@ -323,21 +362,7 @@ class Edit extends Component {
                     <Card>
                         {pipelineID.map((item, index) => {
                             return (
-                                <Link key={index}
-                                      to={{
-                                          pathname: `/pipeline/task/add`,
-                                          state: {
-                                              stepCode: item.id,
-                                              stepCategory: stepCategory,
-                                              existPipeline: true,
-                                              taskID: this.props.match.params.taskID,
-                                              fullSteps: this.state.fullSteps,
-                                              stepsList: this.state.stepsList,
-                                              jenkinsJob: this.props.form.getFieldValue('jenkinsJob'),
-                                          }
-                                      }}>
-                                    <Card.Grid style={gridStyle}>{item.name}</Card.Grid>
-                                </Link>
+                                <Card.Grid key={index} style={gridStyle} onClick={()=>this.handleAddNewTask(item)}>{item.name}</Card.Grid>
                             )
                         })}
 
