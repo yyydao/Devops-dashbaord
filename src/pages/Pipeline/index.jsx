@@ -50,149 +50,6 @@ const enumButtonText = {
     3: '开始执行'
 }
 
-// const pipelineList = [
-//     {
-//         'taskID': 'e510246fb7a54947aceb78d016109bee817t0O',
-//         'taskCode': 'td1539673436803',
-//         'taskName': '测试',
-//         'jenkinsJob': 'TuandaiAS2-develop-v4',
-//         'taskStatus': 1,
-//         'exexTime': 0,
-//         'lastExecTime': 0,
-//         'createTime': '2018-10-16 15:03:56.0',
-//         'updateTime': '2018-10-16 15:03:56.0',
-//         'buildStage': 4,
-//         'step': [{
-//             title: '开始',
-//             content: 'First-content',
-//         }, {
-//             title: '构建阶段',
-//             content: 'Second-content',
-//         }, {
-//             title: '测试阶段',
-//             content: 'Last-content',
-//         }, {
-//             title: '部署阶段',
-//             content: 'Second-content',
-//         }, {
-//             title: '完成',
-//             content: 'Last-content',
-//         }]
-//     },
-//     {
-//         'taskID': 'e510246fb7a54947aceb78d016109bee817t0O',
-//         'taskCode': 'td1539673436803',
-//         'taskName': '测试',
-//         'jenkinsJob': 'TuandaiAS2-develop-v4',
-//         'taskStatus': 2,
-//         'exexTime': 0,
-//         'lastExecTime': 0,
-//         'createTime': '2018-10-16 15:03:56.0',
-//         'updateTime': '2018-10-16 15:03:56.0',
-//         'buildStage': 3,
-//         'step': [{
-//             title: '开始',
-//             content: 'First-content',
-//         }, {
-//             title: '构建阶段',
-//             content: 'Second-content',
-//         }, {
-//             title: '测试阶段',
-//             content: 'Last-content',
-//         }, {
-//             title: '部署阶段',
-//             content: 'Second-content',
-//         }, {
-//             title: '完成',
-//             content: 'Last-content',
-//         }]
-//     },
-//     {
-//         'taskID': 'e510246fb7a54947aceb78d016109bee817t0O',
-//         'taskCode': 'td1539673436803',
-//         'taskName': '测试',
-//         'jenkinsJob': 'TuandaiAS2-develop-v4',
-//         'taskStatus': 3,
-//         'exexTime': 0,
-//         'lastExecTime': 0,
-//         'createTime': '2018-10-16 15:03:56.0',
-//         'updateTime': '2018-10-16 15:03:56.0',
-//         'buildStage': 1,
-//         'step': [{
-//             title: '开始',
-//             content: 'First-content',
-//         }, {
-//             title: '构建阶段',
-//             content: 'Second-content',
-//         }, {
-//             title: '测试阶段',
-//             content: 'Last-content',
-//         }, {
-//             title: '部署阶段',
-//             content: 'Second-content',
-//         }, {
-//             title: '完成',
-//             content: 'Last-content',
-//         }]
-//     },
-//     {
-//         'taskID': 'e510246fb7a54947aceb78d016109bee817t0O',
-//         'taskCode': 'td1539673436803',
-//         'taskName': '测试',
-//         'jenkinsJob': 'TuandaiAS2-develop-v4',
-//         'taskStatus': 4,
-//         'exexTime': 0,
-//         'lastExecTime': 0,
-//         'createTime': '2018-10-16 15:03:56.0',
-//         'updateTime': '2018-10-16 15:03:56.0',
-//         'buildStage': 2,
-//         'step': [{
-//             title: '开始',
-//             content: 'First-content',
-//         }, {
-//             title: '构建阶段',
-//             content: 'Second-content',
-//         }, {
-//             title: '测试阶段',
-//             content: 'Last-content',
-//         }, {
-//             title: '部署阶段',
-//             content: 'Second-content',
-//         }, {
-//             title: '完成',
-//             content: 'Last-content',
-//         }]
-//     },
-//     {
-//         'taskID': 'e510246fb7a54947aceb78d016109bee817t0O',
-//         'taskCode': 'td1539673436803',
-//         'taskName': '测试',
-//         'jenkinsJob': 'TuandaiAS2-develop-v4',
-//         'taskStatus': 1,
-//         'exexTime': 0,
-//         'lastExecTime': 0,
-//         'createTime': '2018-10-16 15:03:56.0',
-//         'updateTime': '2018-10-16 15:03:56.0',
-//         'buildStage': 0,
-//         'step': [{
-//             title: '开始',
-//             content: 'First-content',
-//         }, {
-//             title: '构建阶段',
-//             content: 'Second-content',
-//         }, {
-//             title: '测试阶段',
-//             content: 'Last-content',
-//         }, {
-//             title: '部署阶段',
-//             content: 'Second-content',
-//         }, {
-//             title: '完成',
-//             content: 'Last-content',
-//         }]
-//     },
-// ]
-
 class Pipeline extends Component {
     constructor (props) {
         super(props)
@@ -220,14 +77,23 @@ class Pipeline extends Component {
     }
 
     runTask = (item) => {
-        console.log(item)
 
+        this.setStatus({taskStatus: 1})
         reqPostURLEncode('/pipeline/taskbuild', {
             taskID: item.taskID
 
         }).then((res) => {
             console.log(res)
             if (res.code === 0) {
+                message.success('开始执行')
+                let pipelineList = this.state.pipelineList
+                for (let i = 0; i < pipelineList.length; i++) {
+                    const pipelineItem = pipelineList[i]
+                    if(pipelineItem.taskID === item.taskID){
+                        pipelineList[i].taskStatus = 1
+                    }
+                }
+                this.setState({pipelineList:pipelineList})
                 this. getPipelineList()
             }else{
                 message.error(res.msg)
