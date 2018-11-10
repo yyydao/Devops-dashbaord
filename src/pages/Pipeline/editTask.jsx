@@ -384,7 +384,7 @@ class taskEdit extends Component {
         if(this.props.location.state && this.props.location.state.jenkinsJob){
             reqGet('pipeline/autoimport',{code:this.props.location.state.stepCode,job:this.props.location.state.jenkinsJob}).then(res => {
                 if (res.code == 0) {
-                    let paramsArray = [{key:0,json_jsonParams:'stageID',json_jsonValue:this.state.stepCode}]
+                    let paramsArray = [{key:0,json_jsonParams:'stageId',json_jsonValue:this.state.stepCode}]
                     res.list && res.list.map((item,index)=>{
                         paramsArray.push({key:index+1,json_jsonParams:item})
                     })

@@ -24,7 +24,7 @@ export function stepParamstoArray (jsonText,stepCode) {
         keyIndex = 0
     }else{
         keyIndex = 1;
-        paramsArray.push([{key:0,json_jsonParams:'stageID',json_jsonValue:stepCode}])
+        paramsArray.push([{key:0,json_jsonParams:'stageId',json_jsonValue:stepCode}])
     }
 
     for (let prop in source) {
