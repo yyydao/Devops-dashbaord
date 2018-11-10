@@ -4,6 +4,7 @@ import { Link,withRouter } from 'react-router-dom'
 import './index.scss'
 import { reqPost, reqGet } from '@/api/api'
 import { setStep,setSteps } from '@/store/action';
+import {transLocalStorage, isJsonString,stepParamstoArray, stepParamstoObject} from '@/utils/utils'
 
 import {
     Steps,
@@ -20,7 +21,6 @@ import {
     Modal, message
 } from 'antd'
 
-import {stepParamstoArray, stepParamstoObject } from '@/utils/utils.js'
 
 const {TextArea} = Input;
 const AutoCompleteOption = AutoComplete.Option
@@ -288,12 +288,13 @@ class taskAdd extends Component {
             if (!err) {
                 if (this.props.location.state.existPipeline) {
                     console.log('edit exist pipeline')
-                    console.log(`this.props.location ${JSON.stringify(this.props.location.state.fullSteps)}`)
+                    // console.log(`this.props.location ${JSON.stringify(this.props.location.state.fullSteps)}`)
                     oldSteps = this.props.location.state.fullSteps
                     stepsList = this.props.location.state.stepsList
                     let notFormattedSteps = this.state.paramsDatasource;
-                    console.log(notFormattedSteps)
-                    let obj= stepParamstoObject(notFormattedSteps)
+                    let obj= isJsonString(stepParamstoObject(notFormattedSteps)) ? JSON.parse(stepParamstoObject(notFormattedSteps)): stepParamstoObject(notFormattedSteps)
+                    console.log(obj)
+                    // let obj= transLocalStorage(stepParamstoObject(notFormattedSteps))
                     reqPost('pipeline/addstep',{
                         stepCategory: this.state.stepCategory,
                         stepCode: this.state.stepCode,
@@ -308,7 +309,7 @@ class taskAdd extends Component {
                                         stepID:res.data.stepID,
                                         stepCategory: this.state.stepCategory,
                                         stepCode: this.state.stepCode,
-                                        stepParams: JSON.stringify(obj),
+                                        stepParams: obj,
                                         ...values
                                     })
                                 }
@@ -344,7 +345,7 @@ class taskAdd extends Component {
                     setStep({
                         stepCategory: this.state.stepCategory,
                         stepCode: this.state.stepCode,
-                        stepParams: JSON.stringify(obj),
+                        stepParams: obj,
                         ...values
                     })
                     this.props.history.push({
@@ -395,19 +396,10 @@ class taskAdd extends Component {
         });
         this.setState({ paramsDatasource: newData });
     }
-    isJsonString =(str) =>{
-        try {
-            if (typeof JSON.parse(str) == "object") {
-                return true;
-            }
-        } catch(e) {
-        }
-        return false;
-    }
 
     importByJSON = () =>{
         let jsonText = this.state.importJSON
-        if(this.isJsonString(jsonText)){
+        if(isJsonString(jsonText)){
 
             let paramsArray = stepParamstoArray(jsonText)
 

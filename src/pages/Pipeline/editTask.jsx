@@ -4,7 +4,7 @@ import { Link,withRouter } from 'react-router-dom'
 import './index.scss'
 import { reqPost, reqGet } from '@/api/api'
 import { setStep,setSteps } from '@/store/action';
-import {stepParamstoArray, stepParamstoObject } from '@/utils/utils.js'
+import {stepParamstoArray, stepParamstoObject,transLocalStorage, isJsonString } from '@/utils/utils'
 
 import {
     Steps,
@@ -269,7 +269,9 @@ class taskEdit extends Component {
                     console.log(...values)
                     let notFormattedSteps = this.state.paramsDatasource;
                     console.log(notFormattedSteps)
-                    let obj= stepParamstoObject(notFormattedSteps)
+                    let obj= isJsonString(stepParamstoObject(notFormattedSteps)) ? JSON.parse(stepParamstoObject(notFormattedSteps)): stepParamstoObject(notFormattedSteps)
+                    console.log(obj)
+                    // let obj= transLocalStorage(notFormattedSteps)
                     reqPost('/pipeline/updatestep',{
                         stepID: this.props.location.state.stepID,
                         taskID: this.props.location.state.taskID,
@@ -301,7 +303,7 @@ class taskEdit extends Component {
                             for (let j = 0; j < oldSteps[i][1].length; j++) {
                                 if (oldSteps[i][1][j].stepCode === this.state.stepCode) {
                                     let obj= stepParamstoObject(this.state.paramsDatasource)
-                                    oldSteps[i][1][j].stepParams = JSON.stringify(obj)
+                                    oldSteps[i][1][j].stepParams = JSON.parse(JSON.stringify(obj))
                                 }
                             }
                         }
@@ -357,19 +359,10 @@ class taskEdit extends Component {
         this.setState({ paramsDatasource: newData });
     }
 
-    isJsonString =(str) =>{
-        try {
-            if (typeof JSON.parse(str) == "object") {
-                return true;
-            }
-        } catch(e) {
-        }
-        return false;
-    }
 
     importByJSON = () =>{
         let jsonText = this.state.importJSON
-        if(this.isJsonString(jsonText)){
+        if(isJsonString(jsonText)){
             let paramsArray = stepParamstoArray(jsonText,this.state.stepCode)
 
             this.setState({ paramsDatasource: paramsArray });

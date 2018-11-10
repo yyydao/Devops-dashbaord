@@ -86,6 +86,36 @@ class Edit extends Component {
         })
     }
 
+    isJsonString =(str) =>{
+        try {
+            if (typeof JSON.parse(str) == "object") {
+                return true;
+            }
+        } catch(e) {
+        }
+        return false;
+    }
+    transLocalStorage =(notParsed) => {
+        let paredStepList = notParsed
+        if(Array.isArray(notParsed) ){
+            for (let i = 0; i < notParsed.length; i++) {
+
+                const stepElement = notParsed[i][1]
+                if(stepElement){
+                    for (let j = 0; j < stepElement.length; j++) {
+                        const stepElementElement = stepElement[j]
+                        if(this.isJsonString(stepElementElement.stepParams)){
+                            paredStepList[i][1][j].stepParams = JSON.parse(stepElementElement.stepParams)
+                        }
+                    }
+                }
+
+            }
+        }
+        return paredStepList
+    }
+
+
     handleSubmit = (e) => {
         e.preventDefault()
         this.props.form.validateFieldsAndScroll((err, values) => {
@@ -95,25 +125,13 @@ class Edit extends Component {
                 for (let i = 0; i < notFormattedSteps.length; i++) {
                     const notFormattedStep = notFormattedSteps[i]
                     if(notFormattedStep[1] && notFormattedStep[1].length>0){
-                        let stepData = notFormattedStep[1]
-                        // console.log(stepData)
-                        for (let j = 0; j < stepData.length; j++) {
-                            const stepDatumString = stepData[j].stepParams
-                            // console.log(stepDatumString)
-                            const stepDatum = JSON.parse(stepDatumString)
-                            let obj={ };
-                            if(typeof stepDatum == 'object'){
-                                formattedSteps.push(stepDatum)
-                            }else{
-                                stepDatum.map((item,index)=>{
-                                    obj[item.json_jsonParams] = item.json_jsonValue;
-                                })
-                                notFormattedStep[1][j].stepParams = obj
-                                formattedSteps.push(...notFormattedStep[1])
-                            }
+                        const notFormattedStep = notFormattedSteps[i]
+                        if(notFormattedStep[1] && notFormattedStep[1].length>0){
+                            formattedSteps.push(...notFormattedStep[1])
                         }
                     }
                 }
+
                 let ddStatusBoolean = this.props.form.getFieldValue('ddStatusSwitch')
                 reqPost('/pipeline/updatetask', {
                     projectID: this.props.projectId,
@@ -281,22 +299,24 @@ class Edit extends Component {
         let currentEditedPipeline =JSON.parse(localStorage.getItem('currentEditedPipeline'))
         let fullSteps = currentEditedPipeline ? currentEditedPipeline.fullSteps: []
         let stepsList =  currentEditedPipeline ? currentEditedPipeline.stepsList: []
+        let parsedFullSteps = this.transLocalStorage(fullSteps)
+        let parsedStepsList = this.transLocalStorage(stepsList)
         if(!this.props.location.state){
             console.log('1')
 
-            this.setState({stepsList:stepsList})
-            this.setState({fullSteps:fullSteps})
+            this.setState({stepsList:parsedStepsList})
+            this.setState({fullSteps:parsedFullSteps})
         }else{
             console.log('2')
             if(!!this.props.location.state.fullSteps){
-                this.setState({fullSteps:this.props.location.state.fullSteps})
+                this.setState({fullSteps:this.transLocalStorage(this.props.location.state.fullSteps)})
             }else{
-                this.setState({fullSteps:fullSteps})
+                this.setState({fullSteps:this.transLocalStorage(fullSteps)})
             }
             if(!!this.props.location.state.stepsList){
-                this.setState({stepsList:this.props.location.state.stepsList})
+                this.setState({stepsList:this.transLocalStorage(this.props.location.state.stepsList)})
             }else{
-                this.setState({stepsList:stepsList})
+                this.setState({stepsList:this.transLocalStorage(stepsList)})
             }
 
 

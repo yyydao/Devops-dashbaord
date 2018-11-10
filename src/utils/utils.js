@@ -12,6 +12,7 @@ export function stepParamstoObject(notFormattedSteps){
     notFormattedSteps.map((item,index)=>{
         obj[item.json_jsonParams] = item.json_jsonValue;
     })
+
     return obj
 }
 
@@ -35,4 +36,34 @@ export function stepParamstoArray (jsonText,stepCode) {
 
     return paramsArray
 
+}
+
+export function isJsonString (str) {
+    try {
+        if (typeof JSON.parse(str) == "object") {
+            return true;
+        }
+    } catch(e) {
+    }
+    return false;
+}
+
+export function transLocalStorage (notParsed){
+    let paredStepList = notParsed
+    if(Array.isArray(notParsed) ){
+        for (let i = 0; i < notParsed.length; i++) {
+
+            const stepElement = notParsed[i][1]
+            if(stepElement){
+                for (let j = 0; j < stepElement.length; j++) {
+                    const stepElementElement = stepElement[j]
+                    if(isJsonString(stepElementElement.stepParams)){
+                        paredStepList[i][1][j].stepParams = JSON.parse(stepElementElement.stepParams)
+                    }
+                }
+            }
+
+        }
+    }
+    return paredStepList
 }

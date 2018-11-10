@@ -65,8 +65,11 @@ export default function (state, action) {
             console.log(`types.SET_STEP ${JSON.stringify(action.data)}`)
             if (action.data) {
                 let tempList = JSON.parse(localStorage.getItem('steps'))
-                console.log(`${JSON.stringify(tempList)}`)
-                console.log(initialState.stepsList)
+                // let tempList = localStorage.getItem('steps')
+                console.log(`SET_STEP action.data ${JSON.stringify(tempList)}`)
+                // console.log(`${tempList}`)
+                // console.log(initialState.stepsList)
+
                 if (!tempList) {
                     tempList = [
                         [1, []],
@@ -83,6 +86,7 @@ export default function (state, action) {
                 }
                 console.log(`after edit ${JSON.stringify(tempList)}`)
                 localStorage.setItem('steps', JSON.stringify(tempList))
+                // localStorage.setItem('steps', tempList)
                 nextState.stepsList = tempList
             } else {
                 localStorage.setItem('steps', initialState.stepsList)
@@ -93,6 +97,7 @@ export default function (state, action) {
             console.log(action.data)
             if (action.data) {
                 localStorage.setItem('steps', JSON.stringify(action.data))
+                // localStorage.setItem('steps', action.data)
                 nextState.stepsList = action.data
             } else {
                 localStorage.setItem('steps', initialState.stepsList)
@@ -103,6 +108,7 @@ export default function (state, action) {
             console.log(action.data)
             if (action.data) {
                 let tempList = JSON.parse(localStorage.getItem('steps'))
+                // let tempList = localStorage.getItem('steps')
                 if (!tempList) {
                     tempList = initialState.stepsList
                 }
@@ -114,6 +120,7 @@ export default function (state, action) {
                     }
                 }
                 localStorage.setItem('steps', JSON.stringify(tempList))
+                // localStorage.setItem('steps', tempList)
                 nextState.stepsList = tempList
             } else {
                 localStorage.setItem('steps', initialState.stepsList)

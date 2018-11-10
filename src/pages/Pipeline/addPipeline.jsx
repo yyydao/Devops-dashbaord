@@ -207,10 +207,6 @@ class AddPipeline extends Component {
                 this.setState({
                     branchList: res.data
                 })
-                //
-                // this.setState({
-                //
-                // });
             }
         })
     }
@@ -223,12 +219,41 @@ class AddPipeline extends Component {
         })
     }
 
+    isJsonString =(str) =>{
+        try {
+            if (typeof JSON.parse(str) == "object") {
+                return true;
+            }
+        } catch(e) {
+        }
+        return false;
+    }
+    transLocalStorage =(notParsed) => {
+        let paredStepList = notParsed
+        if(Array.isArray(notParsed) ){
+            for (let i = 0; i < notParsed.length; i++) {
+                const stepElement = notParsed[i][1]
+                if(stepElement){
+                    for (let j = 0; j < stepElement.length; j++) {
+                        const stepElementElement = stepElement[j]
+                        if(this.isJsonString(stepElementElement.stepParams)){
+                            paredStepList[i][1][j].stepParams = JSON.parse(stepElementElement.stepParams)
+                        }
+                    }
+                }
+
+
+            }
+        }
+        return paredStepList
+    }
+
     componentWillMount () {
 
     }
 
     componentDidMount () {
-        let tempStep = JSON.parse(localStorage.getItem('steps'))
+        let tempStep = JSON.parse(localStorage.getItem('steps')),formatedStep =[]
         this.getBranchList()
         let taskName, branchID, jenkinsJob
         if (this.props.location.state) {
@@ -239,15 +264,16 @@ class AddPipeline extends Component {
 
         this.props.form.setFieldsValue({
             taskName: taskName,
-            // branchID:  res.task.branchID,
             branchID: branchID,
             jenkinsJob: jenkinsJob,
             ddStatusSwitch: this.state.ddStatusSwitch,
         })
-        let stepsList = tempStep ? tempStep : this.state.stepsList
+        console.log(tempStep)
+        formatedStep = this.transLocalStorage(tempStep)
+        let stepsList = tempStep ? formatedStep : this.state.stepsList
 
         this.setState({stepsList: stepsList})
-        this.setState({fullSteps: tempStep})
+        this.setState({fullSteps: formatedStep})
     }
 
     render () {
