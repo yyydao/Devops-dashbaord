@@ -94,7 +94,7 @@ class Pipeline extends Component {
                     }
                 }
                 this.setState({pipelineList:pipelineList})
-                this. getPipelineList()
+                // this. getPipelineList()
             }else{
                 message.error(res.msg)
             }

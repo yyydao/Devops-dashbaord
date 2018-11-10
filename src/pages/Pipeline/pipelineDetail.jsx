@@ -46,6 +46,14 @@ const enumStatusText = {
     3: '失败'
 }
 
+const enumPipelineResult={
+    1:`成功`,
+    2:`失败`,
+    3:`取消`,
+    4:`不稳定`,
+
+}
+
 const enumButtonType = {
     0: 'wait',
     1: 'process',
@@ -165,6 +173,19 @@ class pipelineDetail extends Component {
                 const stepsList = res.steps
                 this.checkTaskList(taskList)
                 this.checkStepList(stepsList)
+                this.getPipelineRunStatus()
+            }
+        })
+    }
+    getPipelineRunStatus = ()=>{
+        reqGet('/pipeline/taskstatus',{
+            taskID: this.props.match.params.taskID
+        }).then((res) => {
+            if (res.code === 0) {
+                // const taskList = res.task
+                // const stepsList = res.steps
+                // this.checkTaskList(taskList)
+                // this.checkStepList(stepsList)
             }
         })
     }
@@ -253,7 +274,7 @@ class pipelineDetail extends Component {
             console.log(res)
             if (res.code === 0) {
                 this.setState({taskStatus: 1})
-                this.getPipelineDetail()
+                // this.getPipelineDetail()
                 message.success('开始执行')
             }else{
                 message.error(res.msg)
