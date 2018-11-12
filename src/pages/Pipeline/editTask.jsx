@@ -4,6 +4,7 @@ import { Link,withRouter } from 'react-router-dom'
 import './index.scss'
 import { reqPost, reqGet } from '@/api/api'
 import { setStep,setSteps } from '@/store/action';
+import {stepParamstoArray, stepParamstoObject,transLocalStorage, isJsonString } from '@/utils/utils'
 
 import {
     Steps,
@@ -29,6 +30,7 @@ const Option = Select.Option
 const FormItem = Form.Item
 const RadioGroup = Radio.Group
 const EditableContext = React.createContext();
+const confirm = Modal.confirm;
 
 const EditableRow = ({ form, index, ...props }) => (
     <EditableContext.Provider value={form}>
@@ -254,28 +256,16 @@ class taskEdit extends Component {
         })
     }
 
-    parseStepParams = (notFormattedSteps) =>{
-        console.log(notFormattedSteps)
-        let obj={ };
-        notFormattedSteps.map((item,index)=>{
-            obj[item.json_jsonParams] = item.json_jsonValue;
-        })
-        return obj
-    }
 
     handleSubmit = (e) => {
         let {setStep,setSteps} = this.props
         e.preventDefault()
-        console.log(this.state.paramsDatasource)
-        console.log(this.state.stepCategory)
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 if (this.props.location.state.existPipeline) {
-                    console.log(this.state.paramsDatasource)
-                    console.log(...values)
                     let notFormattedSteps = this.state.paramsDatasource;
-                    console.log(notFormattedSteps)
-                    let obj=this.parseStepParams(notFormattedSteps)
+                    let obj= isJsonString(stepParamstoObject(notFormattedSteps)) ? JSON.parse(stepParamstoObject(notFormattedSteps)): stepParamstoObject(notFormattedSteps)
+                    // let obj= transLocalStorage(notFormattedSteps)
                     reqPost('/pipeline/updatestep',{
                         stepID: this.props.location.state.stepID,
                         taskID: this.props.location.state.taskID,
@@ -291,7 +281,7 @@ class taskEdit extends Component {
                             setStep({
                                 stepCategory: this.state.stepCategory,
                                 stepCode: this.state.stepCode,
-                                stepParams: this.state.paramsDatasource,
+                                stepParams: JSON.stringify(obj),
                                 ...values
                             })
                             message.info('修改成功');
@@ -301,20 +291,26 @@ class taskEdit extends Component {
 
                 } else {
                     let oldSteps = JSON.parse(localStorage.getItem('steps'))
-                    console.log(`before ${oldSteps}`)
                     for (let i = 0; i < oldSteps.length; i++) {
                         if (oldSteps[i][0] === this.state.stepCategory) {
                             for (let j = 0; j < oldSteps[i][1].length; j++) {
                                 if (oldSteps[i][1][j].stepCode === this.state.stepCode) {
-                                    let obj=this.parseStepParams(this.state.paramsDatasource)
-                                    oldSteps[i][1][j].stepParams = obj
+                                    let obj= stepParamstoObject(this.state.paramsDatasource)
+                                    oldSteps[i][1][j].stepParams = JSON.parse(JSON.stringify(obj))
                                 }
                             }
                         }
                     }
-                    console.log(`after ${oldSteps}`)
                     setSteps(oldSteps)
-                    this.props.history.push(`/pipeline/add`)
+                    this.props.history.push({
+                        pathname:'/pipeline/add',
+                        state:{
+                            taskName:this.props.location.state.taskName,
+                            branchID:this.props.location.state.branchID,
+                            branchName:this.props.location.state.branchName,
+                            jenkinsJob:this.props.location.state.jenkinsJob,
+                        }
+                    })
                 }
             }
         })
@@ -356,28 +352,11 @@ class taskEdit extends Component {
         this.setState({ paramsDatasource: newData });
     }
 
-    isJsonString =(str) =>{
-        try {
-            if (typeof JSON.parse(str) == "object") {
-                return true;
-            }
-        } catch(e) {
-        }
-        return false;
-    }
 
     importByJSON = () =>{
         let jsonText = this.state.importJSON
-        if(this.isJsonString(jsonText)){
-
-            let paramsArray = [],source = JSON.parse(jsonText),keyIndex = 1
-
-
-            for (let prop in source) {
-                console.log(source[prop])
-                paramsArray.push({key:keyIndex,json_jsonParams:prop,json_jsonValue:source[prop]})
-                keyIndex++
-            }
+        if(isJsonString(jsonText)){
+            let paramsArray = stepParamstoArray(jsonText,this.state.stepCode)
 
             this.setState({ paramsDatasource: paramsArray });
 
@@ -388,16 +367,26 @@ class taskEdit extends Component {
     }
 
     importAutomation = () =>{
-        reqGet('pipeline/autoimport').then(res => {
-            if (res.code == 0) {
-                let paramsArray = []
-                res.list.map((item,index)=>{
-                    paramsArray.push({key:index,json_jsonParams:item})
-                })
-                this.setState({ paramsDatasource: paramsArray });
-                console.log(paramsArray)
-            }
-        })
+        if(this.props.location.state && this.props.location.state.jenkinsJob){
+            reqGet('pipeline/autoimport',{code:this.props.location.state.stepCode,job:this.props.location.state.jenkinsJob}).then(res => {
+                if (res.code == 0) {
+                    let paramsArray = [{key:0,json_jsonParams:'stageId',json_jsonValue:this.state.stepCode}]
+                    res.list && res.list.map((item,index)=>{
+                        paramsArray.push({key:index+1,json_jsonParams:item})
+                    })
+                    this.setState({ paramsDatasource: paramsArray });
+                }else{
+                    message.error(`${res.msg} 请手动导入`)
+                }
+            })
+        }else{
+            confirm({
+                title: '提示信息',
+                content: '您还未输入流水线关联的Job名称，或者未完善Jenkins配置，暂时无法进行【自动导入】操作。',
+                onCancel(){}
+            })
+        }
+
     }
 
     paramsTableChange =(pagination, filters, sorter, extra: { currentDataSource: [] }) => {
@@ -412,7 +401,7 @@ class taskEdit extends Component {
     }
 
     componentDidMount () {
-        let stepCode,stepCategory, disabled = false,taskName = '',taskDescription = '',paramsDatasource = []
+        let stepCode,stepCategory, disabled = false,stepName = '',stepDesc = '',paramsDatasource = []
         if (this.props.location.state) {
             stepCode = this.props.location.state.stepCode
             stepCategory = this.props.location.state.stepCategory
@@ -425,49 +414,38 @@ class taskEdit extends Component {
         if(this.props.location.state && this.props.location.state.existPipeline){
             reqGet(`/pipeline/stepdetail/`,{stepID:this.props.location.state.stepID}).then(res=>{
                 if(res.code === 0){
-                    console.log(res)
                     let d = res.step.stepParams
-                    console.log(d)
                     let paramsArray = [],source = JSON.parse(d),keyIndex = 1
 
 
-                    for (let prop in source) {
-                        console.log(source[prop])
-                        paramsArray.push({key:keyIndex,json_jsonParams:prop,json_jsonValue:source[prop]})
-                        keyIndex++
-                    }
-
-                    this.setState({ paramsDatasource: paramsArray });
+                    // for (let prop in source) {
+                    //     paramsArray.push({key:keyIndex,json_jsonParams:prop,json_jsonValue:source[prop]})
+                    //     keyIndex++
+                    // }
+                                             console.log(paramsArray)
+                                             console.log(d)
+                    this.setState({ paramsDatasource: stepParamstoArray(d) });
 
                     this.props.form.setFieldsValue({
                         stepName: res.step.stepName,
                         stepDesc: res.step.stepDesc
                     })
-                    // for (let i = 0; i < stepListByCategory[1].length; i++) {
-                    //     const stepListByCategoryElement = stepListByCategory[1][i]
-                    //     if(stepListByCategoryElement.stepCode === stepCode){
-                    //         taskName = stepListByCategoryElement.stepName
-                    //         taskDescription = stepListByCategoryElement.stepDesc
-                    //         paramsDatasource = stepListByCategoryElement.stepParams
-                    //     }
-                    // }
                 }
             })
         }else{
-            let stepsList  = JSON.parse(localStorage.getItem('steps'))
-            console.log(stepsList)
-            let stepListByCategory = stepsList && stepsList.find((item) => item[0] === stepCategory)
-            for (let i = 0; i < pipelineID.length; i++) {
-                const pipelineIDElement = pipelineID[i]
-                if (pipelineIDElement.id === stepCode && stepCode !== -1) {
-                    taskName = pipelineIDElement.name
-                    taskDescription = pipelineIDElement.description
-                    paramsDatasource = pipelineIDElement.params
+            let existStep  = JSON.parse(localStorage.getItem('steps'))
+            let stepListByCategory = existStep && existStep.find((item) => item[0] === stepCategory)
+            for (let i = 0; i < stepListByCategory[1].length; i++) {
+                const stepFilterByCode = stepListByCategory[1][i]
+                if(stepFilterByCode.stepCode === stepCode && stepCode !== -1){
+                    stepName = stepFilterByCode.stepName
+                    stepDesc = stepFilterByCode.stepDesc
+                    paramsDatasource = stepParamstoArray(stepFilterByCode.stepParams)
                 }
             }
             this.props.form.setFieldsValue({
-                stepName: taskName,
-                stepDesc:taskDescription
+                stepName: stepName,
+                stepDesc:stepDesc
             })
         }
 
@@ -553,9 +531,7 @@ class taskEdit extends Component {
                        destroyOnClose={true}
                 >
                     <TextArea rows={4} value={importJSON} onChange={(e) => {
-                        console.log(e.target.value)
                         this.setState({importJSON:e.target.value});
-                        console.log(this.state.importJSON)
                     }}/>
 
                 </Modal>

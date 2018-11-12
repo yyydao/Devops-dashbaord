@@ -4,6 +4,7 @@ import { Link,withRouter } from 'react-router-dom'
 import './index.scss'
 import { reqPost, reqGet } from '@/api/api'
 import { setStep,setSteps } from '@/store/action';
+import {transLocalStorage, isJsonString,stepParamstoArray, stepParamstoObject} from '@/utils/utils'
 
 import {
     Steps,
@@ -17,8 +18,9 @@ import {
     Select,
     Table,
     Popconfirm,
-    Modal, Card, message
+    Modal, message
 } from 'antd'
+
 
 const {TextArea} = Input;
 const AutoCompleteOption = AutoComplete.Option
@@ -46,13 +48,13 @@ const pipelineID = [
         name: '代码拉取',
         description: 'Gitlab 代码同步',
         params: [
-            {key: '0', json_jsonParams: 'stageID', json_jsonValue: '0'},
+            {key: '0', json_jsonParams: 'stageId', json_jsonValue: '0'},
             {key: '1', json_jsonParams: 'code_branch'},
             {key: '2', json_jsonParams: 'code_gitServer'}]
     },
     {
         id: 1, name: '单元测试', description: '单元测试', params: [
-            {key: '0', json_jsonParams: 'stageID', json_jsonValue: '1'}
+            {key: '0', json_jsonParams: 'stageId', json_jsonValue: '1'}
         ]
     },
     {
@@ -60,7 +62,7 @@ const pipelineID = [
         name: '静态扫描',
         description: 'SonarQube 代码静态扫描',
         params: [
-            {key:'0',json_jsonParams: 'stageID',json_jsonValue:'2'},
+            {key:'0',json_jsonParams: 'stageId',json_jsonValue:'2'},
             {key: '1', json_jsonParams:'sonnar_sonarProjectKey',json_jsonValue:'TuandaiAS2d'},
             {key: '2', json_jsonParams:'sonnar_code_analysis_moduleName',json_jsonValue: ''},
             {key: '3',  json_jsonParams:'sonnar_code_analysis_all',json_jsonValue:  false}]
@@ -70,7 +72,7 @@ const pipelineID = [
         name: '编译打包',
         description: '项目编译打包',
         params: [
-            {key:'0',json_jsonParams: 'stageID',json_jsonValue:'3'},
+            {key:'0',json_jsonParams: 'stageId',json_jsonValue:'3'},
             {key: '1', json_jsonParams:'build_compileType',json_jsonValue:'other'},
             {key: '2',json_jsonParams:'build_environment',json_jsonValue: 'develop'},
             {key: '3',json_jsonParams:'build_username',json_jsonValue: 'tuandaideveloper'},
@@ -82,7 +84,7 @@ const pipelineID = [
     {
         id: 4, name: '安全扫描',
         description: 'MobSF 安全检测',
-        params: [{key:'0',json_jsonParams: 'stageID',json_jsonValue:'4'}
+        params: [{key:'0',json_jsonParams: 'stageId',json_jsonValue:'4'}
         ,{key:'1', json_jsonParams:'safe_server',json_jsonValue: 'http://10.100.12.52:8000/'},
             {key:'2', json_jsonParams:'safe_token',json_jsonValue: '2dc06726e9562f1713b81f07d53e7b926825cddc2aa37ee529a1f2b8f09ec252'},
             {key:'3', json_jsonParams:'safe_gitserver',json_jsonValue: 'http://git.tuandai888.com/MPD-DevOps/SecurityAnalysis.git'}]
@@ -92,7 +94,7 @@ const pipelineID = [
         name: 'UI测试',
         description: '自动化UI测试',
         params: [
-            {key:'0',json_jsonParams: 'stageID',json_jsonValue:'5'},
+            {key:'0',json_jsonParams: 'stageId',json_jsonValue:'5'},
             {key:'1', json_jsonParams:'autotest_uiTestGitServer',json_jsonValue: 'http://git.tuandai888.com/MPD-DevOps/UITestScript.git'},
             {key:'2', json_jsonParams:'autotest_noreset',json_jsonValue: 'false'}, {key:'3', json_jsonParams:'autotest_tags',json_jsonValue: '~'},
             {key:'4', json_jsonParams:'autotest_appiumserver',json_jsonValue: '10.100.12.52:4723'},
@@ -104,7 +106,7 @@ const pipelineID = [
         name: '性能测试',
         description: '自动化性能测试',
         params: [
-            {key:'0',json_jsonParams: 'stageID',json_jsonValue:'6'},
+            {key:'0',json_jsonParams: 'stageId',json_jsonValue:'6'},
             {key:'1', json_jsonParams:'performance_testGitServer',json_jsonValue:'http://git.tuandai888.com/MPD-DevOps/PrismReport.git'}]
     },
     {
@@ -112,20 +114,20 @@ const pipelineID = [
         name: '加固',
         description: '爱加密加固',
         params: [
-            {key:'0',json_jsonParams: 'stageID',json_jsonValue:'7'},
+            {key:'0',json_jsonParams: 'stageId',json_jsonValue:'7'},
             {key:'1', json_jsonParams:'tinker_ijiami_plan_id',json_jsonValue:  '51'},
             {key:'2', json_jsonParams:'tinker_ijiami_sign_alias',json_jsonValue:  '团贷网'},
             {key:'3', json_jsonParams:'tinker_ijiami_so',json_jsonValue:  `"\\"lib/armeabi-v7a/libjuntejni.so;lib/x86/libjuntejni.so\\""`
         }]
     },
     {id: 8, name: '补丁', description: '生成 Tinker 补丁包', params: [
-        {key:'0',json_jsonParams: 'stageID',json_jsonValue:'8'},
+        {key:'0',json_jsonParams: 'stageId',json_jsonValue:'8'},
         {key:'1', json_jsonParams:'patch_baseapkurl',json_jsonValue: ''}]},
     {id: 9, name: '包管理', description: 'DevOps平台安装包管理', params: [
-        {key:'0',json_jsonParams: 'stageID',json_jsonValue:'9'},
+        {key:'0',json_jsonParams: 'stageId',json_jsonValue:'9'},
         {key:'1', json_jsonParams:'deploy_ipAddress',json_jsonValue: ''}]},
     {id: -1, name: '自定义', description: '',params: [
-        {key:'0',json_jsonParams: 'stageID',json_jsonValue:'-1'}]
+        {key:'0',json_jsonParams: 'stageId',json_jsonValue:'-1'}]
     },
 ]
 
@@ -286,15 +288,13 @@ class taskAdd extends Component {
             if (!err) {
                 if (this.props.location.state.existPipeline) {
                     console.log('edit exist pipeline')
-                    console.log(`this.props.location ${JSON.stringify(this.props.location.state.fullSteps)}`)
+                    // console.log(`this.props.location ${JSON.stringify(this.props.location.state.fullSteps)}`)
                     oldSteps = this.props.location.state.fullSteps
                     stepsList = this.props.location.state.stepsList
                     let notFormattedSteps = this.state.paramsDatasource;
-                    console.log(notFormattedSteps)
-                    let obj={ };
-                    notFormattedSteps.map((item,index)=>{
-                        obj[item.json_jsonParams] = item.json_jsonValue;
-                    })
+                    let obj= isJsonString(stepParamstoObject(notFormattedSteps)) ? JSON.parse(stepParamstoObject(notFormattedSteps)): stepParamstoObject(notFormattedSteps)
+                    console.log(obj)
+                    // let obj= transLocalStorage(stepParamstoObject(notFormattedSteps))
                     reqPost('pipeline/addstep',{
                         stepCategory: this.state.stepCategory,
                         stepCode: this.state.stepCode,
@@ -309,7 +309,7 @@ class taskAdd extends Component {
                                         stepID:res.data.stepID,
                                         stepCategory: this.state.stepCategory,
                                         stepCode: this.state.stepCode,
-                                        stepParams: this.state.paramsDatasource,
+                                        stepParams: obj,
                                         ...values
                                     })
                                 }
@@ -318,10 +318,14 @@ class taskAdd extends Component {
                                 stepID:res.data.stepID,
                                 stepCategory: this.state.stepCategory,
                                 stepCode: this.state.stepCode,
-                                stepParams: this.state.paramsDatasource,
+                                stepParams: JSON.stringify(obj),
                                 ...values
                             })
                             setSteps(oldSteps)
+                            localStorage.setItem('currentEditedPipeline',JSON.stringify({
+                                fullSteps: oldSteps,
+                                stepsList : stepsList
+                            }))
                             this.props.history.push({
                                 pathname:`/pipeline/edit/${this.props.location.state.taskID}`,
                                 state: {
@@ -336,11 +340,12 @@ class taskAdd extends Component {
                     })
 
                 }else{
+                    let obj= stepParamstoObject(this.state.paramsDatasource)
                     console.log(`add new pipeline`)
                     setStep({
                         stepCategory: this.state.stepCategory,
                         stepCode: this.state.stepCode,
-                        stepParams: this.state.paramsDatasource,
+                        stepParams: obj,
                         ...values
                     })
                     this.props.history.push({
@@ -348,6 +353,7 @@ class taskAdd extends Component {
                         state:{
                             taskName:this.props.location.state.taskName,
                             branchID:this.props.location.state.branchID,
+                            branchName:this.props.location.state.branchName,
                             jenkinsJob:this.props.location.state.jenkinsJob,
                         }
                     })
@@ -391,28 +397,12 @@ class taskAdd extends Component {
         });
         this.setState({ paramsDatasource: newData });
     }
-    isJsonString =(str) =>{
-        try {
-            if (typeof JSON.parse(str) == "object") {
-                return true;
-            }
-        } catch(e) {
-        }
-        return false;
-    }
 
     importByJSON = () =>{
         let jsonText = this.state.importJSON
-        if(this.isJsonString(jsonText)){
+        if(isJsonString(jsonText)){
 
-            let paramsArray = [],source = JSON.parse(jsonText),keyIndex = 1
-
-
-            for (let prop in source) {
-                console.log(source[prop])
-                paramsArray.push({key:keyIndex,json_jsonParams:prop,json_jsonValue:source[prop]})
-                keyIndex++
-            }
+            let paramsArray = stepParamstoArray(jsonText)
 
             this.setState({ paramsDatasource: paramsArray });
 
@@ -424,14 +414,16 @@ class taskAdd extends Component {
 
     importAutomation = () =>{
         if(this.props.location.state && this.props.location.state.jenkinsJob){
-            reqGet('pipeline/autoimport',{code:this.props.location.state.stepCode,jenkinsJob:this.props.location.state.stepCode}).then(res => {
+            reqGet('pipeline/autoimport',{code:this.props.location.state.stepCode,job:this.props.location.state.jenkinsJob}).then(res => {
                 if (res.code == 0) {
-                    let paramsArray = []
-                    res.list.map((item,index)=>{
-                        paramsArray.push({key:index,json_jsonParams:item})
+                    let paramsArray = [{key:0,json_jsonParams:'stageId',json_jsonValue:this.state.stepCode}]
+                    res.list && res.list.map((item,index)=>{
+                        paramsArray.push({key:index+1,json_jsonParams:item})
                     })
                     this.setState({ paramsDatasource: paramsArray });
                     console.log(paramsArray)
+                }else{
+                    message.error(`${res.msg} 请手动导入`)
                 }
             })
         }else{
@@ -465,31 +457,14 @@ class taskAdd extends Component {
         if (stepCode !== -1) {
             disabled = true
         }
-
+        this.importAutomation()
         for (let i = 0; i < pipelineID.length; i++) {
             const pipelineIDElement = pipelineID[i]
             if (pipelineIDElement.id === stepCode && stepCode !== -1) {
                 taskName = pipelineIDElement.name
                 taskDescription = pipelineIDElement.description
-                paramsDatasource = pipelineIDElement.params
             }
         }
-        // if(this.props.location.state && this.props.location.state.editable){
-        //     let stepsList = JSON.parse(localStorage.getItem('steps'))
-        //     let stepListByCategory = stepsList && stepsList.find((item) => item[0] === stepCategory)
-        //
-        //     for (let i = 0; i < stepListByCategory[1].length; i++) {
-        //         const stepListByCategoryElement = stepListByCategory[1][i]
-        //         if(stepListByCategoryElement.stepCode === stepCode){
-        //             taskName = stepListByCategoryElement.stepName
-        //             taskDescription = stepListByCategoryElement.stepDesc
-        //             paramsDatasource = stepListByCategoryElement.stepParams
-        //         }
-        //     }
-        //
-        // }else{
-        //
-        // }
 
         this.props.form.setFieldsValue({
             stepName: taskName,

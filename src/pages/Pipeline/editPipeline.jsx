@@ -5,6 +5,7 @@ import './index.scss'
 import { reqPost, reqGet, reqDelete } from '@/api/api'
 
 import { setStep,removeSteps,setSteps } from '@/store/action'
+import {stepParamstoArray, stepParamstoObject } from '@/utils/utils.js'
 
 import {
     Steps,
@@ -45,17 +46,17 @@ const enumStepsText = [{
 }]
 
 const pipelineID = [
-    {id: 0, name: '代码拉取'},
-    {id: 1, name: '单元测试'},
-    {id: 2, name: '静态扫描'},
-    {id: 3, name: '编译打包'},
-    {id: 4, name: '安全扫描'},
-    {id: 5, name: 'UI测试'},
-    {id: 6, name: '性能测试'},
-    {id: 7, name: '加固'},
-    {id: 8, name: '补丁'},
-    {id: 9, name: '包管理'},
-    {id: -1, name: '自定义'},
+    {id: 0, name: '代码拉取',stepCode: 0},
+    {id: 1, name: '单元测试',stepCode: 1},
+    {id: 2, name: '静态扫描',stepCode: 2},
+    {id: 3, name: '编译打包',stepCode: 3},
+    {id: 4, name: '安全扫描',stepCode: 4},
+    {id: 5, name: 'UI测试',stepCode: 5},
+    {id: 6, name: '性能测试',stepCode: 6},
+    {id: 7, name: '加固',stepCode: 7},
+    {id: 8, name: '补丁',stepCode: 8},
+    {id: 9, name: '包管理',stepCode: 9},
+    {id: -1, name: '自定义',stepCode: -1},
 ]
 
 class Edit extends Component {
@@ -85,40 +86,59 @@ class Edit extends Component {
         })
     }
 
+    isJsonString =(str) =>{
+        try {
+            if (typeof JSON.parse(str) == "object") {
+                return true;
+            }
+        } catch(e) {
+        }
+        return false;
+    }
+    transLocalStorage =(notParsed) => {
+        let paredStepList = notParsed
+        if(Array.isArray(notParsed) ){
+            for (let i = 0; i < notParsed.length; i++) {
+
+                const stepElement = notParsed[i][1]
+                if(stepElement){
+                    for (let j = 0; j < stepElement.length; j++) {
+                        const stepElementElement = stepElement[j]
+                        if(this.isJsonString(stepElementElement.stepParams)){
+                            paredStepList[i][1][j].stepParams = JSON.parse(stepElementElement.stepParams)
+                        }
+                    }
+                }
+
+            }
+        }
+        return paredStepList
+    }
+
+
     handleSubmit = (e) => {
         e.preventDefault()
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 let notFormattedSteps = this.state.fullSteps, formattedSteps = [];
-                // console.log(notFormattedSteps)
+                console.log(notFormattedSteps)
                 for (let i = 0; i < notFormattedSteps.length; i++) {
                     const notFormattedStep = notFormattedSteps[i]
                     if(notFormattedStep[1] && notFormattedStep[1].length>0){
-                        let stepData = notFormattedStep[1]
-                        // console.log(stepData)
-                        for (let j = 0; j < stepData.length; j++) {
-                            const stepDatumString = stepData[j].stepParams
-                            // console.log(stepDatumString)
-                            const stepDatum = JSON.parse(stepDatumString)
-                            let obj={ };
-                            if(typeof stepDatum == 'object'){
-                                formattedSteps.push(stepDatum)
-                            }else{
-                                stepDatum.map((item,index)=>{
-                                    obj[item.json_jsonParams] = item.json_jsonValue;
-                                })
-                                notFormattedStep[1][j].stepParams = obj
-                                formattedSteps.push(...notFormattedStep[1])
-                            }
+                        const notFormattedStep = notFormattedSteps[i]
+                        if(notFormattedStep[1] && notFormattedStep[1].length>0){
+                            formattedSteps.push(...notFormattedStep[1])
                         }
                     }
                 }
-                console.log({steps: formattedSteps})
+
+                let ddStatusBoolean = this.props.form.getFieldValue('ddStatusSwitch')
                 reqPost('/pipeline/updatetask', {
                     projectID: this.props.projectId,
                     ...values,
-                    branchID:this.props.form.getFieldValue('branchID'),
-                    ddStatus:0,
+                    branchName:this.state.branchName,
+                    branchID:this.state.branchID,
+                    ddStatus: ddStatusBoolean ? 1:0,
                     steps: formattedSteps,
                     taskID:this.props.match.params.taskID
                 }).then(res => {
@@ -187,10 +207,53 @@ class Edit extends Component {
                 stepCode: item.stepCode,
                 stepCategory: item.stepCategory,
                 existPipeline: true,
-                taskID: this.props.match.params.taskID
+                taskID: this.props.match.params.taskID,
+                branchID:this.state.branchID,
+                branchName:this.state.branchName,
+
             }
         })
 
+    }
+
+    handleAddNewTask = (item) => {
+        console.log(this.state.stepsList)
+        console.log(this.state.stepCategory)
+
+        let stepsList = this.state.stepsList
+        for (let i = 0; i < stepsList.length; i++) {
+            const stepElement = stepsList[i]
+            // console.log(stepElement)
+            if(stepElement.stepCategory+'' === this.state.stepCategory+''){
+                if(stepElement.stepCode+'' === item.stepCode+''){
+                    message.error('请勿重复创建同类型任务')
+                }else{
+                    this.handleJumpToTask(item)
+                }
+            }
+        }
+
+    }
+
+    handleJumpToTask = (item)=>{
+        let data = this.props.form.getFieldsValue();
+        console.log(item)
+        console.log()
+        this.props.history.push({
+                state:  {
+                    branchID:this.state.branchID,
+                    branchName:this.state.branchName,
+                    stepCode: item.id,
+                    existPipeline: true,
+                    taskID: this.props.match.params.taskID,
+                    fullSteps: this.state.fullSteps,
+                    stepsList: this.state.stepsList,
+                    stepCategory: this.state.stepCategory,
+                    jenkinsJob: this.props.form.getFieldValue('jenkinsJob'),
+                    ...data
+                },
+                pathname: `/pipeline/task/add`,
+            })
     }
 
     //获取分支列表
@@ -212,9 +275,10 @@ class Edit extends Component {
     }
 
     //修改选中分支
-    changeBranch = (changedBrancID) => {
-        console.log(`changedBrancID ${changedBrancID}`)
-        this.setState({branchID:changedBrancID})
+    changeBranch = (branchObject) => {
+        console.log(branchObject)
+        this.setState({branchID:branchObject.key})
+        this.setState({branchName:branchObject.label})
     }
 
     setPipelineInfo(){
@@ -223,12 +287,17 @@ class Edit extends Component {
         }).then((res) => {
             if (res.code === 0) {
                 console.log(res)
+                let branchID = res.task.branchID
+                console.log(branchID)
                 this.props.form.setFieldsValue({
                     taskName: res.task.taskName,
-                    // branchID:  res.task.branchID,
-                    branchID: res.task.branchID ,
+                    ddStatusSwitch:res.task.ddStatus === 1,
+                    branchObject:{key:branchID},
                     jenkinsJob: res.task.jenkinsJob,
                 });
+
+                this.setState({branchID: res.task.branchID })
+                this.setState({branchName: res.task.branchName })
             }
         })
 
@@ -240,33 +309,35 @@ class Edit extends Component {
         let currentEditedPipeline =JSON.parse(localStorage.getItem('currentEditedPipeline'))
         let fullSteps = currentEditedPipeline ? currentEditedPipeline.fullSteps: []
         let stepsList =  currentEditedPipeline ? currentEditedPipeline.stepsList: []
+        let parsedFullSteps = this.transLocalStorage(fullSteps)
+        let parsedStepsList = this.transLocalStorage(stepsList)
         if(!this.props.location.state){
             console.log('1')
 
-            this.setState({stepsList:stepsList})
-            this.setState({fullSteps:fullSteps})
+            this.setState({stepsList:parsedStepsList})
+            this.setState({fullSteps:parsedFullSteps})
         }else{
             console.log('2')
             if(!!this.props.location.state.fullSteps){
-                this.setState({fullSteps:this.props.location.state.fullSteps})
+                this.setState({fullSteps:this.transLocalStorage(this.props.location.state.fullSteps)})
             }else{
-                this.setState({fullSteps:fullSteps})
+                this.setState({fullSteps:this.transLocalStorage(fullSteps)})
             }
             if(!!this.props.location.state.stepsList){
-                this.setState({stepsList:this.props.location.state.stepsList})
+                this.setState({stepsList:this.transLocalStorage(this.props.location.state.stepsList)})
             }else{
-                this.setState({stepsList:stepsList})
+                this.setState({stepsList:this.transLocalStorage(stepsList)})
             }
 
 
         }
+        this.getBranchList()
 
-        this.setPipelineInfo();
     }
 
     componentDidMount () {
+        this.setPipelineInfo();
 
-        this.getBranchList()
     }
 
     render () {
@@ -321,21 +392,7 @@ class Edit extends Component {
                     <Card>
                         {pipelineID.map((item, index) => {
                             return (
-                                <Link key={index}
-                                      to={{
-                                          pathname: `/pipeline/task/add`,
-                                          state: {
-                                              stepCode: item.id,
-                                              stepCategory: stepCategory,
-                                              existPipeline: true,
-                                              taskID: this.props.match.params.taskID,
-                                              fullSteps: this.state.fullSteps,
-                                              stepsList: this.state.stepsList,
-                                              jenkinsJob: this.props.form.getFieldValue('jenkinsJob'),
-                                          }
-                                      }}>
-                                    <Card.Grid style={gridStyle}>{item.name}</Card.Grid>
-                                </Link>
+                                <Card.Grid key={index} style={gridStyle} onClick={()=>this.handleAddNewTask(item)}>{item.name}</Card.Grid>
                             )
                         })}
 
@@ -364,11 +421,12 @@ class Edit extends Component {
                             {...formItemLayout}
                             label="执行分支"
                         >
-                            {getFieldDecorator('branchID', {
+                            {getFieldDecorator('branchObject', {
                                 rules: [{required: true, message: '请选择开发分支'}],
                             })(
                                 <Select placeholder="请选择开发分支"
                                         showSearch
+                                        labelInValue
                                         onSearch={this.getBranchList}
                                         onChange={this.changeBranch}
                                         style={{width: 300}}
@@ -396,7 +454,7 @@ class Edit extends Component {
                             {...formItemLayout}
                             label="钉钉消息："
                         >
-                            {getFieldDecorator('ddStatus', {valuePropName: 'checked'})(
+                            {getFieldDecorator('ddStatusSwitch', {valuePropName: 'checked'})(
                                 <Switch/>
                             )}
                         </FormItem>

@@ -45,17 +45,17 @@ const enumStepsText = [{
 }]
 
 const pipelineID = [
-    {id: 0, name: '代码拉取'},
-    {id: 1, name: '单元测试'},
-    {id: 2, name: '静态扫描'},
-    {id: 3, name: '编译打包'},
-    {id: 4, name: '安全扫描'},
-    {id: 5, name: 'UI测试'},
-    {id: 6, name: '性能测试'},
-    {id: 7, name: '加固'},
-    {id: 8, name: '补丁'},
-    {id: 9, name: '包管理'},
-    {id: -1, name: '自定义'},
+    {id: 0, name: '代码拉取',stepCode: 0},
+    {id: 1, name: '单元测试',stepCode: 1},
+    {id: 2, name: '静态扫描',stepCode: 2},
+    {id: 3, name: '编译打包',stepCode: 3},
+    {id: 4, name: '安全扫描',stepCode: 4},
+    {id: 5, name: 'UI测试',stepCode: 5},
+    {id: 6, name: '性能测试',stepCode: 6},
+    {id: 7, name: '加固',stepCode: 7},
+    {id: 8, name: '补丁',stepCode: 8},
+    {id: 9, name: '包管理',stepCode: 9},
+    {id: -1, name: '自定义',stepCode: -1},
 ]
 
 class AddPipeline extends Component {
@@ -68,16 +68,20 @@ class AddPipeline extends Component {
             branchList: [],
             formDataBranch: null,
             stepCategory: 1,
+            ddStatusSwitch:false,
             stepsList: [[1, []], [2, []], [3, []]]
         }
     }
 
     //显示新建窗口
     showModal = (stepCategory) => {
-        console.log(`stepCategory ${stepCategory}`)
-        this.setState({
-            addVisible: true,
-            stepCategory: stepCategory
+        this.props.form.validateFieldsAndScroll(['jenkinsJob'],(err, values)=>{
+            if(!err){
+                this.setState({
+                    addVisible: true,
+                    stepCategory: stepCategory
+                })
+            }
         })
     }
     hideModal = () => {
@@ -91,25 +95,21 @@ class AddPipeline extends Component {
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 let notFormattedSteps = this.state.stepsList, formattedSteps = [];
-                console.log(notFormattedSteps)
                 for (let i = 0; i < notFormattedSteps.length; i++) {
                     const notFormattedStep = notFormattedSteps[i]
                     if(notFormattedStep[1] && notFormattedStep[1].length>0){
-                        let stepData = notFormattedStep[1]
-                        console.log(stepData)
-                        for (let j = 0; j < stepData.length; j++) {
-                            const stepDatum = stepData[j].stepParams
-                            let obj={ };
-                            stepDatum.map((item,index)=>{
-                                obj[item.json_jsonParams] = item.json_jsonValue;
-                            })
-                            notFormattedStep[1][j].stepParams = obj
-                        }
                         formattedSteps.push(...notFormattedStep[1])
                     }
-
                 }
-                reqPost('/pipeline/addtask', {projectID: this.props.projectId, ...values,steps:formattedSteps}).then(res => {
+                let ddStatus = values.ddStatusSwitch ? 1:0
+                reqPost('/pipeline/addtask', {
+                    projectID: this.props.projectId,
+                    ...values,
+                    steps:formattedSteps,
+                    ddStatus:ddStatus,
+                    branchName:this.state.branchName,
+                    branchID:this.state.branchID
+                }).then(res => {
                     if (parseInt(res.code, 0) === 0) {
                         message.success('项目新增成功！')
                         this.props.history.push(`/pipeline`)
@@ -150,26 +150,58 @@ class AddPipeline extends Component {
                 stepCode: item.stepCode,
                 stepCategory: item.stepCategory,
                 existPipeline: false,
+                jenkinsJob: this.props.form.getFieldValue('jenkinsJob'),
+                fullSteps: this.state.fullSteps,
+                stepsList: this.state.stepsList,
+                branchID:this.state.branchID,
+                branchName:this.state.branchName,
                 ...data
             }
         })
 
     }
 
-    handleAddNewTask = (item) => {
-        console.log(`handleAddNewTask ${JSON.stringify(item)}`)
+    handleJumpToTask = (item)=>{
         let data = this.props.form.getFieldsValue();
+        console.log(data)
         this.props.history.push({
                 pathname: `/pipeline/task/add`,
                 state: {
+                    branchID:this.state.branchID,
+                    branchName:this.state.branchName,
                     stepCode: item.id,
                     stepCategory: this.state.stepCategory,
                     addNewPipeline: true,
                     jenkinsJob: this.props.form.getFieldValue('jenkinsJob'),
                     ...data
                 }
+
             }
         )
+    }
+
+    handleAddNewTask = (item) => {
+            let stepsList = this.state.stepsList
+            for (let i = 0; i < this.state.stepsList.length; i++) {
+                const stepElement = stepsList[i]
+                if(stepElement[0] === this.state.stepCategory){
+                    if(stepElement[1].length>0){
+                        for (let j = 0; j < stepElement[1].length; j++) {
+                            const stepElementElement = stepElement[1][j]
+                            if(stepElementElement.stepCode === item.stepCode){
+                                message.error('请勿重复创建同类型任务')
+                            }else{
+                                this.handleJumpToTask(item)
+                            }
+                        }
+
+                    }else{
+                        this.handleJumpToTask(item)
+                    }
+
+                }
+            }
+
     }
 
     //获取分支列表
@@ -186,20 +218,44 @@ class AddPipeline extends Component {
                 this.setState({
                     branchList: res.data
                 })
-                //
-                // this.setState({
-                //
-                // });
             }
         })
     }
 
     //修改选中分支
-    changeBranch = (formDataBranch) => {
-        console.log(formDataBranch)
-        this.setState({
-            formDataBranch
-        })
+    changeBranch = (branchObject) => {
+        console.log(branchObject)
+        this.setState({branchID:branchObject.key})
+        this.setState({branchName:branchObject.label})
+    }
+
+    isJsonString =(str) =>{
+        try {
+            if (typeof JSON.parse(str) == "object") {
+                return true;
+            }
+        } catch(e) {
+        }
+        return false;
+    }
+    transLocalStorage =(notParsed) => {
+        let paredStepList = notParsed
+        if(Array.isArray(notParsed) ){
+            for (let i = 0; i < notParsed.length; i++) {
+                const stepElement = notParsed[i][1]
+                if(stepElement){
+                    for (let j = 0; j < stepElement.length; j++) {
+                        const stepElementElement = stepElement[j]
+                        if(this.isJsonString(stepElementElement.stepParams)){
+                            paredStepList[i][1][j].stepParams = JSON.parse(stepElementElement.stepParams)
+                        }
+                    }
+                }
+
+
+            }
+        }
+        return paredStepList
     }
 
     componentWillMount () {
@@ -207,24 +263,32 @@ class AddPipeline extends Component {
     }
 
     componentDidMount () {
-        let tempStep = JSON.parse(localStorage.getItem('steps'))
+        let tempStep = JSON.parse(localStorage.getItem('steps')),formatedStep =[]
         this.getBranchList()
-        let taskName, branchID, jenkinsJob
+        let taskName, jenkinsJob,branchID='', branchName = ''
         if (this.props.location.state) {
             taskName = this.props.location.state.taskName
-            branchID = this.props.location.state.branchID
+            branchID = this.props.location.state.branchID ?  this.props.location.state.branchID:''
             jenkinsJob = this.props.location.state.jenkinsJob
+            branchName = this.props.location.state.branchName
         }
+        console.log(`fxxk ${branchID}`)
 
         this.props.form.setFieldsValue({
             taskName: taskName,
-            // branchID:  res.task.branchID,
-            branchID: branchID,
+            // branchID: branchID,
+            branchObject:  {key: branchID},
             jenkinsJob: jenkinsJob,
+            ddStatusSwitch: this.state.ddStatusSwitch,
         })
-        let stepsList = tempStep ? tempStep : this.state.stepsList
+        console.log(tempStep)
+        formatedStep = this.transLocalStorage(tempStep)
+        let stepsList = tempStep ? formatedStep : this.state.stepsList
 
         this.setState({stepsList: stepsList})
+        this.setState({fullSteps: formatedStep})
+        this.setState({branchID: branchID})
+        this.setState({branchName: branchName})
     }
 
     render () {
@@ -269,7 +333,6 @@ class AddPipeline extends Component {
             <div id="pipeline-add">
                 <Modal title="创建任务"
                        visible={addVisible}
-                       onOk={this.addItem}
                        confirmLoading={addConfirmLoading}
                        onCancel={this.hideModal}
                        maskClosable={false}
@@ -307,11 +370,12 @@ class AddPipeline extends Component {
                             {...formItemLayout}
                             label="执行分支"
                         >
-                            {getFieldDecorator('branchID', {
+                            {getFieldDecorator('branchObject', {
                                 rules: [{required: true, message: '请选择开发分支'}]
                             })(
                                 <Select placeholder="请选择开发分支"
                                         showSearch
+                                        labelInValue
                                         onSearch={this.getBranchList}
                                         onChange={this.changeBranch}
                                         style={{width: 300}}>
@@ -329,7 +393,7 @@ class AddPipeline extends Component {
                             label="Jenkins Job"
                         >
                             {getFieldDecorator('jenkinsJob', {
-                                rules: [{required: true, message: '请输入'}]
+                                rules: [{required: true, message: '请输入Jenkins Job'}]
                             })(
                                 <Input/>
                             )}
@@ -338,7 +402,7 @@ class AddPipeline extends Component {
                             {...formItemLayout}
                             label="钉钉消息："
                         >
-                            {getFieldDecorator('ddStatus', {valuePropName: 'checked'})(
+                            {getFieldDecorator('ddStatusSwitch', {valuePropName: 'checked'})(
                                 <Switch/>
                             )}
                         </FormItem>

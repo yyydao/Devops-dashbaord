@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import './index.scss'
-import { reqPost, reqGet,reqDelete } from '@/api/api'
+import { reqPost, reqGet,reqDelete,reqPostURLEncode } from '@/api/api'
 import toPairs from 'lodash.topairs'
 import uniq from 'lodash.uniq'
 import { setStep,removeSteps,setSteps } from '@/store/action'
@@ -44,6 +44,14 @@ const enumStatusText = {
     1: '执行中',
     2: '成功',
     3: '失败'
+}
+
+const enumPipelineResult={
+    1:`成功`,
+    2:`失败`,
+    3:`取消`,
+    4:`不稳定`,
+
 }
 
 const enumButtonType = {
@@ -165,6 +173,19 @@ class pipelineDetail extends Component {
                 const stepsList = res.steps
                 this.checkTaskList(taskList)
                 this.checkStepList(stepsList)
+                this.getPipelineRunStatus()
+            }
+        })
+    }
+    getPipelineRunStatus = ()=>{
+        reqGet('/pipeline/taskstatus',{
+            taskID: this.props.match.params.taskID
+        }).then((res) => {
+            if (res.code === 0) {
+                // const taskList = res.task
+                // const stepsList = res.steps
+                // this.checkTaskList(taskList)
+                // this.checkStepList(stepsList)
             }
         })
     }
@@ -245,13 +266,16 @@ class pipelineDetail extends Component {
     }
 
     runTask = () => {
-        reqPost('/pipeline/taskbuild', {
+
+        reqPostURLEncode('/pipeline/taskbuild', {
             taskID: this.props.match.params.taskID
 
         }).then((res) => {
             console.log(res)
             if (res.code === 0) {
-                this.getPipelineDetail()
+                this.setState({taskStatus: 1})
+                // this.getPipelineDetail()
+                message.success('开始执行')
             }else{
                 message.error(res.msg)
             }
@@ -412,7 +436,6 @@ class pipelineDetail extends Component {
                                     <Col span={4}>
                                         <div className="pipeline-item-ctrl">
 
-                                            {/*<div className="status">*/}
                                             <Row gutter={16} type="flex" justify="space-between" align="middle">
                                                 <Col>
                                                     <span>最近执行状态：</span>{enumStatusText[taskStatus]}
@@ -437,26 +460,10 @@ class pipelineDetail extends Component {
                                                 return <Card
                                                         style={{width: 150, marginLeft: '-18%'}}
                                                         title={item.stepName}
-                                                        // extra={<Dropdown overlay={ <Menu>
-                                                        //     <Menu.Item>
-                                                        //         <a target="_blank" rel="noopener noreferrer"  onClick={()=>{
-                                                        //             this.handleEditTask(item)}
-                                                        //         }>编辑任务</a>
-                                                        //     </Menu.Item>
-                                                        //     <Menu.Item>
-                                                        //         <a target="_blank" rel="noopener noreferrer" onClick={()=>{
-                                                        //             this.handleDeleteTask(item)}
-                                                        //         }>删除任务</a>
-                                                        //     </Menu.Item>
-                                                        // </Menu>} placement="bottomCenter">
-                                                        //     <Icon type="setting" theme="outlined" />
-                                                        // </Dropdown>}
                                                         key={item.stepID}
                                                     >
                                                         <p>{item.stepDesc}</p>
                                                     </Card>
-
-
                                             })
 
                                         }>

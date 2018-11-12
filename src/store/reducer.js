@@ -62,11 +62,14 @@ export default function (state, action) {
             break
 
         case types.SET_STEP:
-            console.log(`types.SET_STEP ${JSON.stringify(action.data)}`)
+            // console.log(`types.SET_STEP ${JSON.stringify(action.data)}`)
             if (action.data) {
                 let tempList = JSON.parse(localStorage.getItem('steps'))
-                console.log(`${JSON.stringify(tempList)}`)
-                console.log(initialState.stepsList)
+                // let tempList = localStorage.getItem('steps')
+                // console.log(`SET_STEP action.data ${JSON.stringify(tempList)}`)
+                // console.log(`${tempList}`)
+                // console.log(initialState.stepsList)
+
                 if (!tempList) {
                     tempList = [
                         [1, []],
@@ -74,15 +77,16 @@ export default function (state, action) {
                         [3, []]
                     ]
                 }
-                console.log(`before edit ${JSON.stringify(tempList)}`)
+                // console.log(`before edit ${JSON.stringify(tempList)}`)
                 for (let i = 0; i < tempList.length; i++) {
                     const tempListElement = tempList[i]
                     if (tempListElement[0] === action.data.stepCategory) {
                         tempListElement[1].push(action.data)
                     }
                 }
-                console.log(`after edit ${JSON.stringify(tempList)}`)
+                // console.log(`after edit ${JSON.stringify(tempList)}`)
                 localStorage.setItem('steps', JSON.stringify(tempList))
+                // localStorage.setItem('steps', tempList)
                 nextState.stepsList = tempList
             } else {
                 localStorage.setItem('steps', initialState.stepsList)
@@ -90,9 +94,10 @@ export default function (state, action) {
 
             break
         case types.SET_STEPS:
-            console.log(action.data)
+            // console.log(action.data)
             if (action.data) {
                 localStorage.setItem('steps', JSON.stringify(action.data))
+                // localStorage.setItem('steps', action.data)
                 nextState.stepsList = action.data
             } else {
                 localStorage.setItem('steps', initialState.stepsList)
@@ -100,13 +105,14 @@ export default function (state, action) {
 
             break
         case types.REMOVE_STEPS:
-            console.log(action.data)
+            // console.log(action.data)
             if (action.data) {
                 let tempList = JSON.parse(localStorage.getItem('steps'))
+                // let tempList = localStorage.getItem('steps')
                 if (!tempList) {
                     tempList = initialState.stepsList
                 }
-                console.log(`reducer ${tempList}`)
+                // console.log(`reducer ${tempList}`)
                 for (let i = 0; i < tempList.length; i++) {
                     const tempListElement = tempList[i]
                     if (tempListElement[0] === action.data.stepCategory) {
@@ -114,6 +120,7 @@ export default function (state, action) {
                     }
                 }
                 localStorage.setItem('steps', JSON.stringify(tempList))
+                // localStorage.setItem('steps', tempList)
                 nextState.stepsList = tempList
             } else {
                 localStorage.setItem('steps', initialState.stepsList)
