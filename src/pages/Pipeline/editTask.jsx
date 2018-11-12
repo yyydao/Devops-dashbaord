@@ -260,17 +260,11 @@ class taskEdit extends Component {
     handleSubmit = (e) => {
         let {setStep,setSteps} = this.props
         e.preventDefault()
-        console.log(this.state.paramsDatasource)
-        console.log(this.state.stepCategory)
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 if (this.props.location.state.existPipeline) {
-                    console.log(this.state.paramsDatasource)
-                    console.log(...values)
                     let notFormattedSteps = this.state.paramsDatasource;
-                    console.log(notFormattedSteps)
                     let obj= isJsonString(stepParamstoObject(notFormattedSteps)) ? JSON.parse(stepParamstoObject(notFormattedSteps)): stepParamstoObject(notFormattedSteps)
-                    console.log(obj)
                     // let obj= transLocalStorage(notFormattedSteps)
                     reqPost('/pipeline/updatestep',{
                         stepID: this.props.location.state.stepID,
@@ -297,7 +291,6 @@ class taskEdit extends Component {
 
                 } else {
                     let oldSteps = JSON.parse(localStorage.getItem('steps'))
-                    console.log(`before ${oldSteps}`)
                     for (let i = 0; i < oldSteps.length; i++) {
                         if (oldSteps[i][0] === this.state.stepCategory) {
                             for (let j = 0; j < oldSteps[i][1].length; j++) {
@@ -308,7 +301,6 @@ class taskEdit extends Component {
                             }
                         }
                     }
-                    console.log(`after ${oldSteps}`)
                     setSteps(oldSteps)
                     this.props.history.push({
                         pathname:'/pipeline/add',
@@ -382,7 +374,6 @@ class taskEdit extends Component {
                         paramsArray.push({key:index+1,json_jsonParams:item})
                     })
                     this.setState({ paramsDatasource: paramsArray });
-                    console.log(paramsArray)
                 }else{
                     message.error(`${res.msg} 请手动导入`)
                 }
@@ -422,14 +413,11 @@ class taskEdit extends Component {
         if(this.props.location.state && this.props.location.state.existPipeline){
             reqGet(`/pipeline/stepdetail/`,{stepID:this.props.location.state.stepID}).then(res=>{
                 if(res.code === 0){
-                    console.log(res)
                     let d = res.step.stepParams
-                    console.log(d)
                     let paramsArray = [],source = JSON.parse(d),keyIndex = 1
 
 
                     for (let prop in source) {
-                        console.log(source[prop])
                         paramsArray.push({key:keyIndex,json_jsonParams:prop,json_jsonValue:source[prop]})
                         keyIndex++
                     }
@@ -444,7 +432,6 @@ class taskEdit extends Component {
             })
         }else{
             let existStep  = JSON.parse(localStorage.getItem('steps'))
-            console.log(existStep)
             let stepListByCategory = existStep && existStep.find((item) => item[0] === stepCategory)
             for (let i = 0; i < stepListByCategory[1].length; i++) {
                 const stepFilterByCode = stepListByCategory[1][i]
@@ -542,9 +529,7 @@ class taskEdit extends Component {
                        destroyOnClose={true}
                 >
                     <TextArea rows={4} value={importJSON} onChange={(e) => {
-                        console.log(e.target.value)
                         this.setState({importJSON:e.target.value});
-                        console.log(this.state.importJSON)
                     }}/>
 
                 </Modal>

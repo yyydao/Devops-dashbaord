@@ -18,7 +18,12 @@ export function stepParamstoObject(notFormattedSteps){
 
 export function stepParamstoArray (jsonText,stepCode) {
 
-    let paramsArray = [],keyIndex,source = JSON.parse(jsonText);
+    let paramsArray = [],keyIndex,source
+    if (isJsonString(jsonText)) {
+        source = JSON.parse(jsonText)
+    } else {
+        source = jsonText
+    }
 
 
     if(!stepCode){
