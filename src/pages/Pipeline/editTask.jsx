@@ -307,6 +307,7 @@ class taskEdit extends Component {
                         state:{
                             taskName:this.props.location.state.taskName,
                             branchID:this.props.location.state.branchID,
+                            branchName:this.props.location.state.branchName,
                             jenkinsJob:this.props.location.state.jenkinsJob,
                         }
                     })
