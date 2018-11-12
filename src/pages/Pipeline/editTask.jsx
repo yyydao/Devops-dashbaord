@@ -417,12 +417,13 @@ class taskEdit extends Component {
                     let paramsArray = [],source = JSON.parse(d),keyIndex = 1
 
 
-                    for (let prop in source) {
-                        paramsArray.push({key:keyIndex,json_jsonParams:prop,json_jsonValue:source[prop]})
-                        keyIndex++
-                    }
-
-                    this.setState({ paramsDatasource: paramsArray });
+                    // for (let prop in source) {
+                    //     paramsArray.push({key:keyIndex,json_jsonParams:prop,json_jsonValue:source[prop]})
+                    //     keyIndex++
+                    // }
+                                             console.log(paramsArray)
+                                             console.log(d)
+                    this.setState({ paramsDatasource: stepParamstoArray(d) });
 
                     this.props.form.setFieldsValue({
                         stepName: res.step.stepName,
