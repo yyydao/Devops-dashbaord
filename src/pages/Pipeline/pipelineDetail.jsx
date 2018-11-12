@@ -47,10 +47,20 @@ const enumStatusText = {
 }
 
 const enumPipelineResult={
+    0:`default`,
     1:`成功`,
     2:`失败`,
     3:`取消`,
     4:`不稳定`,
+
+}
+
+const enumPipelineResultColor={
+    0:`#fff`,
+    1:`#52c41a`,
+    2:`#f5222d`,
+    3:`#faad14`,
+    4:`#1890ff`,
 
 }
 
@@ -173,19 +183,57 @@ class pipelineDetail extends Component {
                 const stepsList = res.steps
                 this.checkTaskList(taskList)
                 this.checkStepList(stepsList)
-                this.getPipelineRunStatus()
+
             }
         })
     }
-    getPipelineRunStatus = ()=>{
+    getPipelineRunStatus = (stepsList)=>{
+       console.log(stepsList)
         reqGet('/pipeline/taskstatus',{
             taskID: this.props.match.params.taskID
         }).then((res) => {
             if (res.code === 0) {
-                // const taskList = res.task
-                // const stepsList = res.steps
-                // this.checkTaskList(taskList)
-                // this.checkStepList(stepsList)
+
+                let statusList = res.list
+                console.log(statusList)
+                let temparray = []
+                statusList.map((statusItem)=>{
+                    // console.log(statusItem)
+                    let tempFinal = stepsList.find((stepsItem)=>stepsItem.stepCode===statusItem.stepCode)
+                    // console.log(tempFinal)
+                    temparray.push(Object.assign({}, statusItem, stepsList.find((finalStepItem)=>finalStepItem.stepCode===statusItem.stepCode)||{}));
+                })
+
+
+                const category = uniq(temparray.map(item => item.stepCategory))
+                // console.log(category)
+                let tempStepObject = {}
+                let finalStep = []
+                category.forEach((value, index) => {
+                    tempStepObject[value] = []
+                })
+                for (let i = 0; i < temparray.length; i++) {
+                    const stepListElement = temparray[i]
+                    // console.log(stepListElement.stepCategory)
+                    for (const tempStepObjectKey in tempStepObject) {
+                        if (stepListElement.stepCategory + '' === tempStepObjectKey + '') {
+                            tempStepObject[tempStepObjectKey].push(stepListElement)
+                        }
+                    }
+
+                }
+                finalStep = toPairs(tempStepObject)
+                // console.log(tempStepObject)
+                // console.log(temparray)
+                // console.log(finalStep)
+                this.setState({stepsList: temparray})
+                this.setState({finalStep: finalStep})
+                this.setState({fullSteps: this.composeEditFinalStep(finalStep)})
+
+
+                // this.setState({stepsList: stepsList})
+                // this.setState({finalStep: temparray})
+                // this.setState({fullSteps: this.composeEditFinalStep(temparray)})
             }
         })
     }
@@ -206,6 +254,16 @@ class pipelineDetail extends Component {
             }else{
                 message.error(res.msg)
             }
+        })
+    }
+
+    getHistoryDetail = ()=>{
+        reqGet('/pipeline/taskhistory',{
+            taskID:this.props.match.params.taskID
+        }).then((res)=>{
+                if (res.code === 0) {
+                    console.log(res)
+                }
         })
     }
     checkTaskList = (taskList) => {
@@ -239,30 +297,8 @@ class pipelineDetail extends Component {
     }
 
     checkStepList = (stepsList) => {
-        const category = uniq(stepsList.map(item => item.stepCategory))
-        // console.log(category)
-        let tempStepObject = {}
-        let finalStep = []
-        category.forEach((value, index) => {
-            tempStepObject[value] = []
-        })
-        for (let i = 0; i < stepsList.length; i++) {
-            const stepListElement = stepsList[i]
-            // console.log(stepListElement.stepCategory)
-            for (const tempStepObjectKey in tempStepObject) {
-                if (stepListElement.stepCategory + '' === tempStepObjectKey + '') {
-                    tempStepObject[tempStepObjectKey].push(stepListElement)
-                }
-            }
+        this.getPipelineRunStatus(stepsList)
 
-        }
-        finalStep = toPairs(tempStepObject)
-        // console.log(tempStepObject)
-        // console.log(stepsList)
-        // console.log(finalStep)
-        this.setState({stepsList: stepsList})
-        this.setState({finalStep: finalStep})
-        this.setState({fullSteps: this.composeEditFinalStep(finalStep)})
     }
 
     runTask = () => {
@@ -327,6 +363,7 @@ class pipelineDetail extends Component {
         // this.checkStepList(stepsList)
         this.getPipelineDetail()
         this.getPackageresult()
+        this.getHistoryDetail()
     }
 
     render () {
@@ -458,7 +495,7 @@ class pipelineDetail extends Component {
                                             item[1].map((item, index) => {
                                                 // console.log(item)
                                                 return <Card
-                                                        style={{width: 150, marginLeft: '-18%'}}
+                                                        style={{width: 150, marginLeft: '-18%',background:enumPipelineResultColor[item.stepStatus]}}
                                                         title={item.stepName}
                                                         key={item.stepID}
                                                     >
