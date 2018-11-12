@@ -136,7 +136,8 @@ class Edit extends Component {
                 reqPost('/pipeline/updatetask', {
                     projectID: this.props.projectId,
                     ...values,
-                    branchID:this.props.form.getFieldValue('branchID'),
+                    branchName:this.state.branchName,
+                    branchID:this.state.branchID,
                     ddStatus: ddStatusBoolean ? 1:0,
                     steps: formattedSteps,
                     taskID:this.props.match.params.taskID
@@ -206,7 +207,9 @@ class Edit extends Component {
                 stepCode: item.stepCode,
                 stepCategory: item.stepCategory,
                 existPipeline: true,
-                taskID: this.props.match.params.taskID
+                taskID: this.props.match.params.taskID,
+                branchID:this.state.branchID,
+                branchName:this.state.branchName,
 
             }
         })
@@ -238,6 +241,8 @@ class Edit extends Component {
         console.log()
         this.props.history.push({
                 state:  {
+                    branchID:this.state.branchID,
+                    branchName:this.state.branchName,
                     stepCode: item.id,
                     existPipeline: true,
                     taskID: this.props.match.params.taskID,
@@ -270,9 +275,10 @@ class Edit extends Component {
     }
 
     //修改选中分支
-    changeBranch = (changedBrancID) => {
-        console.log(`changedBrancID ${changedBrancID}`)
-        this.setState({branchID:changedBrancID})
+    changeBranch = (branchObject) => {
+        console.log(branchObject)
+        this.setState({branchID:branchObject.key})
+        this.setState({branchName:branchObject.label})
     }
 
     setPipelineInfo(){
@@ -281,13 +287,17 @@ class Edit extends Component {
         }).then((res) => {
             if (res.code === 0) {
                 console.log(res)
+                let branchID = res.task.branchID
+                console.log(branchID)
                 this.props.form.setFieldsValue({
                     taskName: res.task.taskName,
-                    // branchID:  res.task.branchID,
                     ddStatusSwitch:res.task.ddStatus === 1,
-                    branchID: res.task.branchID ,
+                    branchObject:{key:branchID},
                     jenkinsJob: res.task.jenkinsJob,
                 });
+
+                this.setState({branchID: res.task.branchID })
+                this.setState({branchName: res.task.branchName })
             }
         })
 
@@ -321,13 +331,13 @@ class Edit extends Component {
 
 
         }
+        this.getBranchList()
 
-        this.setPipelineInfo();
     }
 
     componentDidMount () {
+        this.setPipelineInfo();
 
-        this.getBranchList()
     }
 
     render () {
@@ -411,11 +421,12 @@ class Edit extends Component {
                             {...formItemLayout}
                             label="执行分支"
                         >
-                            {getFieldDecorator('branchID', {
+                            {getFieldDecorator('branchObject', {
                                 rules: [{required: true, message: '请选择开发分支'}],
                             })(
                                 <Select placeholder="请选择开发分支"
                                         showSearch
+                                        labelInValue
                                         onSearch={this.getBranchList}
                                         onChange={this.changeBranch}
                                         style={{width: 300}}

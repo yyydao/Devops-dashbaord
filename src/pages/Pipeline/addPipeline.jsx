@@ -75,7 +75,6 @@ class AddPipeline extends Component {
 
     //显示新建窗口
     showModal = (stepCategory) => {
-        console.log(`stepCategory ${stepCategory}`)
         this.props.form.validateFieldsAndScroll(['jenkinsJob'],(err, values)=>{
             if(!err){
                 this.setState({
@@ -103,7 +102,14 @@ class AddPipeline extends Component {
                     }
                 }
                 let ddStatus = values.ddStatusSwitch ? 1:0
-                reqPost('/pipeline/addtask', {projectID: this.props.projectId, ...values,steps:formattedSteps,ddStatus:ddStatus}).then(res => {
+                reqPost('/pipeline/addtask', {
+                    projectID: this.props.projectId,
+                    ...values,
+                    steps:formattedSteps,
+                    ddStatus:ddStatus,
+                    branchName:this.state.branchName,
+                    branchID:this.state.branchID
+                }).then(res => {
                     if (parseInt(res.code, 0) === 0) {
                         message.success('项目新增成功！')
                         this.props.history.push(`/pipeline`)
@@ -147,6 +153,8 @@ class AddPipeline extends Component {
                 jenkinsJob: this.props.form.getFieldValue('jenkinsJob'),
                 fullSteps: this.state.fullSteps,
                 stepsList: this.state.stepsList,
+                branchID:this.state.branchID,
+                branchName:this.state.branchName,
                 ...data
             }
         })
@@ -155,9 +163,12 @@ class AddPipeline extends Component {
 
     handleJumpToTask = (item)=>{
         let data = this.props.form.getFieldsValue();
+        console.log(data)
         this.props.history.push({
                 pathname: `/pipeline/task/add`,
                 state: {
+                    branchID:this.state.branchID,
+                    branchName:this.state.branchName,
                     stepCode: item.id,
                     stepCategory: this.state.stepCategory,
                     addNewPipeline: true,
@@ -212,11 +223,10 @@ class AddPipeline extends Component {
     }
 
     //修改选中分支
-    changeBranch = (formDataBranch) => {
-        console.log(formDataBranch)
-        this.setState({
-            formDataBranch
-        })
+    changeBranch = (branchObject) => {
+        console.log(branchObject)
+        this.setState({branchID:branchObject.key})
+        this.setState({branchName:branchObject.label})
     }
 
     isJsonString =(str) =>{
@@ -255,16 +265,19 @@ class AddPipeline extends Component {
     componentDidMount () {
         let tempStep = JSON.parse(localStorage.getItem('steps')),formatedStep =[]
         this.getBranchList()
-        let taskName, branchID, jenkinsJob
+        let taskName, jenkinsJob,branchID='', branchName = ''
         if (this.props.location.state) {
             taskName = this.props.location.state.taskName
-            branchID = this.props.location.state.branchID
+            branchID = this.props.location.state.branchID ?  this.props.location.state.branchID:''
             jenkinsJob = this.props.location.state.jenkinsJob
+            branchName = this.props.location.state.branchName
         }
+        console.log(`fxxk ${branchID}`)
 
         this.props.form.setFieldsValue({
             taskName: taskName,
-            branchID: branchID,
+            // branchID: branchID,
+            branchObject:  {key: branchID},
             jenkinsJob: jenkinsJob,
             ddStatusSwitch: this.state.ddStatusSwitch,
         })
@@ -274,6 +287,8 @@ class AddPipeline extends Component {
 
         this.setState({stepsList: stepsList})
         this.setState({fullSteps: formatedStep})
+        this.setState({branchID: branchID})
+        this.setState({branchName: branchName})
     }
 
     render () {
@@ -355,11 +370,12 @@ class AddPipeline extends Component {
                             {...formItemLayout}
                             label="执行分支"
                         >
-                            {getFieldDecorator('branchID', {
+                            {getFieldDecorator('branchObject', {
                                 rules: [{required: true, message: '请选择开发分支'}]
                             })(
                                 <Select placeholder="请选择开发分支"
                                         showSearch
+                                        labelInValue
                                         onSearch={this.getBranchList}
                                         onChange={this.changeBranch}
                                         style={{width: 300}}>
