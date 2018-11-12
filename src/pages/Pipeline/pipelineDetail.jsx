@@ -137,13 +137,16 @@ class pipelineDetail extends Component {
 
         this.state = {
             breadcrumbPath: [],
+            historyBranch:[],
             envList: [],
             current: 0,
             currentJob: 0,
             finalStep: [],
             stepsList:[],
             fullSteps:[],
-            packageresult: packageresult
+            buildNumber: '',
+            packageresult: packageresult,
+            exexTime:''
         }
     }
 
@@ -187,8 +190,31 @@ class pipelineDetail extends Component {
             }
         })
     }
+    makeStepCard = (stepsList) => {
+
+        const category = uniq(stepsList.map(item => item.stepCategory))
+        // console.log(category)
+        let tempStepObject = {}
+        let finalStep = []
+        category.forEach((value, index) => {
+            tempStepObject[value] = []
+        })
+        for (let i = 0; i < stepsList.length; i++) {
+            const stepListElement = stepsList[i]
+            // console.log(stepListElement.stepCategory)
+            for (const tempStepObjectKey in tempStepObject) {
+                if (stepListElement.stepCategory + '' === tempStepObjectKey + '') {
+                    tempStepObject[tempStepObjectKey].push(stepListElement)
+                }
+            }
+
+        }
+        finalStep = toPairs(tempStepObject)
+        this.setState({stepsList: stepsList})
+        this.setState({finalStep: finalStep})
+        this.setState({fullSteps: this.composeEditFinalStep(finalStep)})
+    }
     getPipelineRunStatus = (stepsList)=>{
-       console.log(stepsList)
         reqGet('/pipeline/taskstatus',{
             taskID: this.props.match.params.taskID
         }).then((res) => {
@@ -198,42 +224,11 @@ class pipelineDetail extends Component {
                 console.log(statusList)
                 let temparray = []
                 statusList.map((statusItem)=>{
-                    // console.log(statusItem)
-                    let tempFinal = stepsList.find((stepsItem)=>stepsItem.stepCode===statusItem.stepCode)
-                    // console.log(tempFinal)
                     temparray.push(Object.assign({}, statusItem, stepsList.find((finalStepItem)=>finalStepItem.stepCode===statusItem.stepCode)||{}));
                 })
+                this.makeStepCard(temparray)
 
 
-                const category = uniq(temparray.map(item => item.stepCategory))
-                // console.log(category)
-                let tempStepObject = {}
-                let finalStep = []
-                category.forEach((value, index) => {
-                    tempStepObject[value] = []
-                })
-                for (let i = 0; i < temparray.length; i++) {
-                    const stepListElement = temparray[i]
-                    // console.log(stepListElement.stepCategory)
-                    for (const tempStepObjectKey in tempStepObject) {
-                        if (stepListElement.stepCategory + '' === tempStepObjectKey + '') {
-                            tempStepObject[tempStepObjectKey].push(stepListElement)
-                        }
-                    }
-
-                }
-                finalStep = toPairs(tempStepObject)
-                // console.log(tempStepObject)
-                // console.log(temparray)
-                // console.log(finalStep)
-                this.setState({stepsList: temparray})
-                this.setState({finalStep: finalStep})
-                this.setState({fullSteps: this.composeEditFinalStep(finalStep)})
-
-
-                // this.setState({stepsList: stepsList})
-                // this.setState({finalStep: temparray})
-                // this.setState({fullSteps: this.composeEditFinalStep(temparray)})
             }
         })
     }
@@ -257,15 +252,36 @@ class pipelineDetail extends Component {
         })
     }
 
-    getHistoryDetail = ()=>{
+    getHistoryList = ()=>{
         reqGet('/pipeline/taskhistory',{
             taskID:this.props.match.params.taskID
         }).then((res)=>{
                 if (res.code === 0) {
-                    console.log(res)
+                    this.setState({historyBranch:res.list})
                 }
         })
     }
+    changeHistory = (e,option)=>{
+        console.log(e)
+        console.log(option)
+        console.log()
+        this.getHistoryDetail(option.props.title)
+    }
+
+    getHistoryDetail = (buildNum) =>{
+        reqGet('/pipeline/taskhistorydetail',{
+            taskID:this.props.match.params.taskID,
+            buildNum: buildNum
+        }).then((res)=>{
+            if (res.code === 0) {
+                let data = res.data
+                let list = res.list
+                 console.log(data.execTime)
+                this.setState({exexTime:data.execTime})
+            }
+        })
+    }
+
     checkTaskList = (taskList) => {
         const {
             projectID,
@@ -310,7 +326,6 @@ class pipelineDetail extends Component {
             console.log(res)
             if (res.code === 0) {
                 this.setState({taskStatus: 1})
-                // this.getPipelineDetail()
                 message.success('开始执行')
             }else{
                 message.error(res.msg)
@@ -358,12 +373,9 @@ class pipelineDetail extends Component {
     }
 
     componentDidMount () {
-        // this.setState({packageresult: packageresult})
-        // this.checkTaskList(taskList)
-        // this.checkStepList(stepsList)
         this.getPipelineDetail()
         this.getPackageresult()
-        this.getHistoryDetail()
+        this.getHistoryList()
     }
 
     render () {
@@ -374,7 +386,6 @@ class pipelineDetail extends Component {
             jenkinsJob,
             branchName,
             taskStatus,
-            exexTime,
             lastExecTime,
             finalStep,
             stepsList,
@@ -427,15 +438,19 @@ class pipelineDetail extends Component {
                                         }}>编辑</Button>
                                     </Col>
                                     <Col>
-                                        <Select
-                                            defaultValue={pipelineHistoryList[0]}
-                                            style={{width: 200}}
-                                            placeholder=""
-                                            onChange={this.handleChange}
-                                            onFocus={this.handleFocus}
-                                            onBlur={this.handleBlur}
-                                        >
-                                            {HistoryOption}
+
+                                        <Select placeholder="请选择构建历史"
+                                                onChange={(e,option)=>this.changeHistory(e,option)}
+                                                style={{width: 300}}>
+                                            {
+                                                this.state.historyBranch.map((item) => {
+                                                    return <Option
+                                                        title={item.buildNum+''}
+                                                        value={item.historyID}
+                                                        key={item.historyID}
+                                                    >{item.updateTime}</Option>
+                                                })
+                                            }
                                         </Select>
                                     </Col>
                                 </Row>
@@ -465,7 +480,7 @@ class pipelineDetail extends Component {
                                             <p className="pipeline-item-timemeta">
                                                 <span><i>最近执行时间：</i>{lastExecTime}</span>
                                                 <span><i>执行分支：</i>{branchName}</span>
-                                                <span><i>执行时长：</i>{exexTime}</span>
+                                                <span><i>执行时长：</i>{this.state.exexTime}</span>
                                             </p>
 
                                         </div>
