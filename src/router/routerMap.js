@@ -20,6 +20,8 @@ import PackageList from '@/pages/Package/list';
 import PackageDetail from '@/pages/Package/detail';
 import Dashboard from '@/pages/Dashboard'
 import ThirdParty from '@/pages/Setting/ThirdPartyManager'
+import NoticeManager from '@/pages/Setting/NoticeManager'
+
 
 export default [
     {
@@ -64,6 +66,11 @@ export default [
         path: '/configManager',
         name: 'configManager',
         component: ConfigManager
+    },
+    {
+        path: '/noticeManager',
+        name: 'noticeManager',
+        component: NoticeManager
     },
     {
         path: '/performanceConfig',

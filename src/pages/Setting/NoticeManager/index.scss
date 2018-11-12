@@ -1,0 +1,83 @@
+.nm-container{
+  border: 1px solid #eeeeee;
+  background: #E6F5FF;
+  margin-bottom: 40px;
+}
+.nm-title{
+  height:50px;
+  background: #405B7F;
+  line-height: 50px;
+  color: #ffffff;
+  padding-left: 24px;
+}
+.nm-item-left{
+  margin-right: 48px;
+  .nm-list{
+    display: flex;
+    .nm-list-lf{
+      width: 140px;
+    }
+    .nm-list-rt{
+      width: 500px;
+      padding: 16px;
+      background: #ffffff;
+      border-radius: 4px;
+      display: flex;
+      flex-direction: row;/*决定主轴的方向*/
+      flex-wrap:wrap;
+    }
+  }
+}
+.nm-item-right{
+  flex-grow: 1;
+}
+.nm-item{
+  display: flex;
+  padding: 12px 24px;
+  .nm-key{
+    display: inline-block;
+    width: 140px;
+    vertical-align: middle;
+    height: 32px;
+    line-height: 32px;
+  }
+  .nm-input{
+    outline: none;
+    border: 1px solid #eeeeee;
+    border-radius: 2px;
+    display: inline-block;
+    width: 800px;
+    height: 32px;
+    line-height: 32px;
+    vertical-align: middle;
+    padding-left: 16px;
+  }
+  .nm-checkbox{
+    width: 32px;
+    height: 32px;
+  }
+  .nm-list{
+    margin-bottom: 24px;
+  }
+  .nm-list-item{
+    padding:4px 16px 4px 0px
+  }
+}
+.nm-preview{
+  min-height: 200px;
+  width: 300px;
+  background: #ffffff;
+  padding: 16px;
+  p{
+    margin-bottom: 4px;
+  }
+}
+.btn-group{
+  text-align: left;
+  button{
+    padding: 0px 20px;
+  }
+}
+.btn-group-item{
+  margin: 15px 24px 15px 140px;
+}

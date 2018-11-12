@@ -1,74 +1,90 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { Breadcrumb, Row, Col, Switch, message, Tabs, Form,} from 'antd';
+import React, {Component} from 'react';
+import {Link} from 'react-router-dom';
+import {connect} from 'react-redux';
+import {Breadcrumb, Modal, message, Tabs, Form, Input} from 'antd';
 
-import { reqPost, reqGet } from '@/api/api';
+import {reqPost, reqGet} from '@/api/api';
 import './index.scss';
 import ConfigPanel from '@/pages/Setting/ConfigManager/ConfigPanel';
 
 const BreadcrumbItem = Breadcrumb.Item;
 const TabPane = Tabs.TabPane;
 const FormItem = Form.Item;
+const TextArea = Input.TextArea
 
-class ConfigManager extends Component{
-    constructor(){
-        super();
-        this.state = {
-          envList: [],
-          envData: []
-        }
+class ConfigManager extends Component {
+  constructor() {
+    super();
+    this.state = {
+      envList: [],
+      envData: [],
+      visible: false,
+      importJson: '',
+      importIndex: 0
     }
+  }
 
-    componentWillMount(){
-        this.getEnvList();
-    }
+  componentWillMount() {
+    this.getEnvList();
+  }
+
   /**
    * @desc 获取环境列表
    */
-    getEnvList = () => {
-      const { projectId } = this.props;
-      console.log(this.props)
-      reqGet('/env/list',{projectId}).then(res => {
-            if(parseInt(res.code, 0) === 0){
-                this.setState({ envList: res.data });
-                res.data.map(item=>{
-                  this.getEnvDetail(item.id)
-                })
-            }else{
-                message.error(res.msg);
-            }
+  getEnvList = () => {
+    const {projectId} = this.props;
+    reqGet('/env/list', {projectId}).then(res => {
+      if (parseInt(res.code, 0) === 0) {
+        this.setState({envList: res.data});
+        res.data.map((item, index) => {
+          this.getEnvDetail(item.id, index)
         })
-    }
+      } else {
+        message.error(res.msg);
+      }
+    })
+  }
 
   /**
    * @desc 获取环境详情
    * @param envId 环境ID
    */
-    getEnvDetail = (envId) => {
-      reqGet('/env/envDetails',{
-        envId:envId
-      }).then(res => {
-        if(parseInt(res.code, 0) === 0){
-           let envData =this.state.envData
-          res.data.envId = envId
-          envData.push(res.data)
-          this.setState({envData});
-        }else{
-          message.error(res.msg);
+  getEnvDetail = (envId, index) => {
+    reqGet('/env/envDetails', {
+      envId: envId
+    }).then(res => {
+      if (parseInt(res.code, 0) === 0) {
+        let envData = this.state.envData
+        res.data.envId = envId
+
+        /**由于后台不给加全选字段，只能自己添加一个全选**/
+        if(res.data.scenes.length<1){
+          let obj = {}, arr = [];
+          obj.name = "全选";
+          obj.scenario = "all"
+          obj.childrens = res.data.scenes
+          arr.push(obj)
+          res.data.scenes = arr
+          /**数据处理结束**/
         }
-      })
-    }
+        envData.push(res.data)
+        this.setState({envData})
+      } else {
+        message.error(res.msg);
+      }
+    })
+  }
 
   /**
    * @desc 场景选中事件
    * @param checkedScenes array 选中的场景id集合
    */
-    onCheck = (checkedScenes, index) => {
-      let envData=this.state.envData
-      envData[index].checkedScenes=checkedScenes
-      this.setState({envData})
-    }
+  onCheck = (checkedScenes, index) => {
+    let envData=this.state.envData
+    this.state.envData[index].checkedScenes=checkedScenes
+    this.setCheckedSenses(this.state.envData[index].scenes, checkedScenes)
+    this.setState({envData})
+  }
 
   /**
    * @desc 场景点击事件
@@ -76,9 +92,9 @@ class ConfigManager extends Component{
    * @param info obj 点中的场景信息
    * @param index num 环境下标
    */
-    onSelect = (selectedKeys, info, index) => {
-      console.log('onSelect',selectedKeys, info, index);
-    }
+  onSelect = (selectedKeys, info, index) => {
+    console.log('onSelect', selectedKeys, info, index);
+  }
 
   /**
    * @desc 文本编辑事件
@@ -86,11 +102,11 @@ class ConfigManager extends Component{
    * @param key string 文本编辑字段
    * @param index num 环境下标
    */
-    changeEdit = (value, key, index) =>{
-      let envData=this.state.envData
-      envData[index][key]=value
-      this.setState({envData})
-    }
+  changeEdit = (value, key, index) => {
+    let envData = this.state.envData
+    envData[index][key] = value
+    this.setState({envData})
+  }
 
   /**
    * @desc switch事件
@@ -98,64 +114,145 @@ class ConfigManager extends Component{
    * @param type string switch事件字段
    * @param index num 环境下标
    */
-    changeSwitch = (value, type, index) =>{
-      let envData=this.state.envData
-      envData[index][type]=value?1:0
-      this.setState({envData})
-    }
+  changeSwitch = (value, type, index) => {
+    let envData = this.state.envData
+    envData[index][type] = value ? 1 : 0
+    this.setState({envData})
+  }
 
   /**
    * @desc 保存按钮事件
    * @param index num 环境下标
    */
-    onButtonClick = (index) => {
-      let envData = JSON.parse(JSON.stringify(this.state.envData[index]))
-      let scenes = envData.checkedScenes.map(item=>{
-        let obj = {}
-        obj.envId = envData.envId
-        obj.sceneId = item
-        return obj
-      })
-      envData.scenes = scenes
-      reqPost('/env/updateEnv',envData).then(res => {
-        if(parseInt(res.code, 0) === 0){
-          message.success(res.msg);
-        }else{
-          message.error(res.msg);
-        }
-      })
-    }
+  onButtonClick = (index) => {
+    let envData = JSON.parse(JSON.stringify(this.state.envData[index]))
+    envData.scenes=envData.scenes[0].childrens
+    delete envData.checkedScenes
+    reqPost('/env/updateEnv', envData).then(res => {
+      if (parseInt(res.code, 0) === 0) {
+        message.success(res.msg);
+      } else {
+        message.error(res.msg);
+      }
+    })
+  }
 
-    render(){
-        const { envData} = this.state;
-        return(
-            <div>
-                <Breadcrumb className="devops-breadcrumb">
-                    <BreadcrumbItem><Link to="/home">首页</Link></BreadcrumbItem>
-                    <BreadcrumbItem>配置管理</BreadcrumbItem>
-                </Breadcrumb>
-              <Tabs type="card">
-                {envData&&
-                    envData.map((item,index) =>
-                      <TabPane tab={item.name} key={index} style={{padding:16}}>
-                        <ConfigPanel
-                            envData={item}
-                            panelIndex={index}
-                            treeCheck={this.onCheck}
-                            treeSelect={this.onSelect}
-                            changeEdit={this.changeEdit}
-                            changeSwitch={this.changeSwitch}
-                            onButtonClick={this.onButtonClick}
-                        >
-                        </ConfigPanel>
-                      </TabPane>
-                    )
-                }
-              </Tabs>
-            </div>
-        )
+  /**
+   * @desc 导入JSON
+   */
+  onImportJson = (importIndex) => {
+    this.setState({
+      visible: true,
+      importIndex: importIndex
+    })
+  }
+
+  /**
+   * @desc 导入JSON确定按钮
+   */
+  handleOk = () => {
+    if (this.isJSON(this.state.importJson)) {
+      let obj = JSON.parse(this.state.importJson)
+
+      /**由于后台不给加全选字段，只能自己添加一个全选**/
+      let object = {}, arr = [];
+      object.name = "全选";
+      object.scenario = "all"
+      object.childrens = obj
+      arr.push(object)
+      obj = arr
+      /**数据处理结束**/
+
+      let envData = JSON.parse(JSON.stringify(this.state.envData))
+      envData[this.state.importIndex].scenes = obj
+      envData[this.state.importIndex].checkedScenes= []
+      this.setState({
+        envData: envData,
+        visible: false
+      })
+    } else {
+      message.error("您输入的不是JSON格式，请检查")
     }
+  }
+  /**
+   * @desc 判断字符串是不是JSON格式
+   * @param str 被判断的字符串
+   */
+  isJSON = (str) => {
+    if (typeof str === 'string') {
+      try {
+        let obj = JSON.parse(str)
+        if (typeof obj === 'object' && obj) {
+          return true
+        } else {
+          return false
+        }
+      } catch (e) {
+        return false
+      }
+    }
+  }
+
+  /**
+   * @desc 给被check的场景的checked属性赋值
+   */
+  setCheckedSenses = (data, checkedKey) => {
+    data.map(item => {
+      if (checkedKey.indexOf(item.scenario) > -1) {
+        item.checked = true
+      } else {
+        item.checked = false
+      }
+      if (item.childrens) {
+        this.setCheckedSenses(item.childrens, checkedKey)
+      }
+    })
+  }
+
+  render() {
+    const {envData, visible, importJson, checkedScenes} = this.state;
+    return (
+        <div>
+          <Breadcrumb className="devops-breadcrumb">
+            <BreadcrumbItem><Link to="/home">首页</Link></BreadcrumbItem>
+            <BreadcrumbItem>配置管理</BreadcrumbItem>
+          </Breadcrumb>
+          <Tabs type="card">
+            {envData &&
+            envData.map((item, index) =>
+                <TabPane tab={item.name} key={index} style={{padding: 16}}>
+                  <ConfigPanel
+                      isCheckAll={''}
+                      envData={item}
+                      panelIndex={index}
+                      treeCheck={this.onCheck}
+                      treeSelect={this.onSelect}
+                      changeEdit={this.changeEdit}
+                      changeSwitch={this.changeSwitch}
+                      onButtonClick={this.onButtonClick}
+                      onImportJson={this.onImportJson}
+                  >
+                  </ConfigPanel>
+                </TabPane>
+            )
+            }
+          </Tabs>
+          <Modal
+              title="请输入JSON"
+              visible={visible}
+              onOk={this.handleOk}
+              onCancel={() => {
+                this.setState({importJson: '', visible: false})
+              }}>
+            <TextArea autosize value={importJson} onChange={(e) => {
+              this.setState({importJson: e.target.value})
+            }}></TextArea>
+          </Modal>
+        </div>
+    )
+  }
 }
+
 export default connect(state => {
   return {
     projectId: state.projectId
