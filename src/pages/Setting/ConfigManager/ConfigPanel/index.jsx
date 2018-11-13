@@ -34,11 +34,11 @@ export default class ConfigPanel extends Component{
             </div>
             <div className="config-project-item">
               <span className="name">性能测试：</span>
-              <Switch defaultChecked={envData.openTesting === 0 ? false : true} onChange={(e)=>{changeSwitch(e,panelIndex,'openTesting')}}/>
+              <Switch checked={envData.openTesting === 0 ? false : true} onChange={(e)=>{changeSwitch(e,panelIndex,'openTesting')}}/>
             </div>
             <div className="config-project-item">
               <span className="name">是否需要密码：</span>
-              <Switch defaultChecked={envData.passwdBuild === 0 ? false : true} onChange={(e)=>{changeSwitch(e,panelIndex,'passwdBuild')}}/>
+              <Switch checked={envData.passwdBuild === 0 ? false : true} onChange={(e)=>{changeSwitch(e,panelIndex,'passwdBuild')}}/>
             </div>
           </Card>
           <Card title="性能测试配置" style={{marginTop:16}}>

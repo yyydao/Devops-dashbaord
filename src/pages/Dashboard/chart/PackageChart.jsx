@@ -61,10 +61,10 @@ class packageChart extends React.Component {
                 position="createTime*appFileSize"
                 size={2}
                 color={'name'}
-                tooltip={['packageType*appFileSize*createTime', (packageType, appFileSize,createTime) => {
+                tooltip={['name*appFileSize*createTime', (name, appFileSize,createTime) => {
                   return {
                     //自定义 tooltip 上显示的 title 显示内容等。
-                    name: `占用(${type[packageType]})`,
+                    name: name,
                     value: appFileSize+'MB'
                   };
                 }]}
@@ -79,10 +79,10 @@ class packageChart extends React.Component {
                   stroke: "#fff",
                   lineWidth: 1
                 }}
-                tooltip={['packageType*appFileSize*createTime', (packageType, appFileSize,createTime) => {
+                tooltip={['name*appFileSize*createTime', (name, appFileSize,createTime) => {
                   return {
                     //自定义 tooltip 上显示的 title 显示内容等。
-                    name: `占用(${type[packageType]})`,
+                    name: name,
                     value: appFileSize+'MB'
                   };
                 }]}

@@ -58,7 +58,7 @@ class ConfigManager extends Component {
         res.data.envId = envId
 
         /**由于后台不给加全选字段，只能自己添加一个全选**/
-        if(res.data.scenes.length<1){
+        if(res.data.scenes.length>0){
           let obj = {}, arr = [];
           obj.name = "全选";
           obj.scenario = "all"
@@ -102,7 +102,7 @@ class ConfigManager extends Component {
    * @param key string 文本编辑字段
    * @param index num 环境下标
    */
-  changeEdit = (value, key, index) => {
+  changeEdit = (value, index, key) => {
     let envData = this.state.envData
     envData[index][key] = value
     this.setState({envData})
@@ -114,7 +114,7 @@ class ConfigManager extends Component {
    * @param type string switch事件字段
    * @param index num 环境下标
    */
-  changeSwitch = (value, type, index) => {
+  changeSwitch = (value, index, type) => {
     let envData = this.state.envData
     envData[index][type] = value ? 1 : 0
     this.setState({envData})
@@ -128,9 +128,11 @@ class ConfigManager extends Component {
     let envData = JSON.parse(JSON.stringify(this.state.envData[index]))
     envData.scenes=envData.scenes[0].childrens
     delete envData.checkedScenes
-    reqPost('/env/updateEnv', envData).then(res => {
+    let arr=[]
+    arr.push(envData)
+    reqPost('/env/updateEnv', arr).then(res => {
       if (parseInt(res.code, 0) === 0) {
-        message.success(res.msg);
+        message.success("保存成功");
       } else {
         message.error(res.msg);
       }

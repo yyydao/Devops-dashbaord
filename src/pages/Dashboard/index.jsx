@@ -98,7 +98,8 @@ class Dashboard extends Component{
       }).then((res) => {
         if (res.code === 0) {
           res.data.unitTestMonitors.map(item=>item.sqaleValue=parseFloat(item.sqaleValue))
-          res.data.packageBodyMonitors.map(item=>{item.appFileSize=parseFloat(item.appFileSize);item.name='包'})
+          const type=[,'源码','加固','补丁']
+          res.data.packageBodyMonitors.map(item=>{item.appFileSize=parseFloat(item.appFileSize);item.name=type[item.packageType]})
           this.setState({monitorData:res.data})
           this.dealUiData(res.data.uiTestMonitors)
           this.dealCpuData(res.data.cpuMemoryAnalysis||[])

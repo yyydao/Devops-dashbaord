@@ -20,6 +20,7 @@ class NoticeManager extends Component {
       taskPreviewData: {},
       envValue: {
         notice_env_project: "团贷网-Android",
+        notice_env_task:"【提测】",
         notice_env_environment: "测试环境",
         notice_env_buildId: "338",
         notice_env_version: "V5.3.8",
@@ -29,6 +30,7 @@ class NoticeManager extends Component {
       },
       taskValue: {
         notice_task_version: "V5.3.8",
+        notice_task_task:"【流水线】",
         notice_task_time: "2018-09-30 06:38PM",
         notice_task_score: "89",
         notice_task_project: "团贷网-Android",
@@ -317,7 +319,6 @@ class NoticeManager extends Component {
               <div className="nm-item-right">
                 <p>预览：<span>({envPreviewData.templateName && envPreviewData.templateName})</span></p>
                 <div className="nm-preview">
-                  <p>任务：【提测】</p>
                   {envPreviewData.contentItems.map((item, index) => {
                     if (item.checked) {
                       return <p key={index}>{item.name}：{envValue[item.code]}</p>
