@@ -311,7 +311,7 @@ class NoticeManager extends Component {
                     this.saveData('envTemplate')
                   }}>保存</Button>
                   <Button type="primary" onClick={() => {
-                    this.setState({envTemplate: oldEnvTemplate})
+                    this.setState({envTemplate: JSON.parse(JSON.stringify(oldEnvTemplate))})
                   }}>重置</Button>
                 </div>
               </div>
@@ -388,7 +388,7 @@ class NoticeManager extends Component {
                     this.saveData('taskTemplate')
                   }}>保存</Button>
                   <Button type="primary" onClick={() => {
-                    this.setState({taskTemplate: oldTaskTemplate})
+                    this.setState({taskTemplate: JSON.parse(JSON.stringify(oldTaskTemplate))})
                   }}>重置</Button>
                 </div>
               </div>
