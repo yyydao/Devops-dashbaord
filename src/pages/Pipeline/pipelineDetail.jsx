@@ -298,17 +298,17 @@ class pipelineDetail extends Component {
     }
 
     getHistoryList = ()=>{
-        reqGet('/pipeline/taskhistory',{
+        reqGet('/pipeline/taskrecordselect',{
             taskID:this.props.match.params.taskID
         }).then((res)=>{
                 if (res.code === 0) {
-                    this.setState({historyBranch:res.list})
+                    this.setState({historyBranch:res.data})
                 }
         })
     }
-    changeHistory = (e,option)=>{
+    changeHistory = (buildNum)=>{
         clearTimeout(this.state.timer);
-        this.getHistoryDetail(option.props.title)
+        this.getHistoryDetail(buildNum)
     }
 
     getHistoryDetail = (buildNum) =>{
@@ -319,7 +319,6 @@ class pipelineDetail extends Component {
             if (res.code === 0) {
                 let data = res.data
                 let list = res.list
-                 // console.log(data.execTime)
 
                 data && this.setState({exexTime:data.execTime})
             }
@@ -507,14 +506,14 @@ class pipelineDetail extends Component {
                                     <Col>
 
                                         <Select placeholder="请选择构建历史"
-                                                onChange={(e,option)=>this.changeHistory(e,option)}
+                                                onChange={this.changeHistory}
                                                 style={{width: 300}}>
                                             {
                                                 this.state.historyBranch.map((item) => {
                                                     return <Option
                                                         title={item.buildNum+''}
-                                                        value={item.historyID}
-                                                        key={item.historyID}
+                                                        value={item.buildNum}
+                                                        key={item.buildNum}
                                                     >{item.updateTime}</Option>
                                                 })
                                             }
