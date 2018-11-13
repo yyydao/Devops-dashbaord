@@ -396,7 +396,6 @@ class NoticeManager extends Component {
               <div className="nm-item-right">
                 <p>预览：<span>({taskPreviewData.templateName && taskPreviewData.templateName})</span></p>
                 <div className="nm-preview">
-                  <p>任务：【流水线】-流水线01</p>
                   {taskPreviewData.contentItems.map((item, index) => {
                     if (item.checked) {
                       return <p key={index}>{item.name}：{taskValue[item.code]}</p>
