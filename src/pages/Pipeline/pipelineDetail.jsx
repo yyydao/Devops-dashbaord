@@ -9,7 +9,22 @@ import { setStep,removeSteps,setSteps } from '@/store/action'
 
 import { Chart, Geom, Axis, Tooltip, Legend, Coord, track } from 'bizcharts';
 
-import { Steps, Breadcrumb, Card, Button, Icon, Collapse, Row, Col, Select, Menu,message,  Dropdown, Radio } from 'antd'
+import {
+    Steps,
+    Breadcrumb,
+    Card,
+    Button,
+    Icon,
+    Collapse,
+    Row,
+    Col,
+    Select,
+    Menu,
+    message,
+    Dropdown,
+    Radio,
+    Modal
+} from 'antd'
 
 const BreadcrumbItem = Breadcrumb.Item
 const Step = Steps.Step
@@ -135,6 +150,7 @@ class pipelineDetail extends Component {
         super(props)
 
         this.state = {
+            delModalVisible:false,
             breadcrumbPath: [],
             historyBranch:[],
             envList: [],
@@ -175,6 +191,18 @@ class pipelineDetail extends Component {
         console.log('focus')
     }
 
+    showModal = () => {
+        this.setState({
+            delModalVisible: true,
+        })
+    }
+
+    hideModal = () => {
+        this.setState({
+            delModalVisible: false
+        })
+    }
+
     gotoEditPipeline = () =>{
         localStorage.setItem('currentEditedPipeline',JSON.stringify({
             fullSteps: this.state.fullSteps,
@@ -210,7 +238,7 @@ class pipelineDetail extends Component {
                 this.checkStepList(stepsList)
 
                 this.setState({
-                    timer: taskList &&  taskList.taskStatus === 1 && (new Date().getTime() - this.state.timerStart < 3600000) ? setTimeout(this.getPipelineDetail, 10e3) : null
+                    timer: taskList &&  taskList.taskStatus !== 2 && (new Date().getTime() - this.state.timerStart < 3600000) ? setTimeout(this.getPipelineDetail, 10e3) : null
                 })
 
             }
@@ -409,6 +437,7 @@ class pipelineDetail extends Component {
 
     render () {
         const {
+            delModalVisible,
             taskCode,
             taskID,
             taskName,
@@ -443,6 +472,15 @@ class pipelineDetail extends Component {
                     <BreadcrumbItem><Link to="/pipeline">流水线</Link></BreadcrumbItem>
                     <BreadcrumbItem>详情</BreadcrumbItem>
                 </Breadcrumb>
+                <Modal title="删除流水线"
+                       visible={delModalVisible}
+                       onOk={this.handleDeletePipeline}
+                       onCancel={this.hideModal}
+                       maskClosable={false}
+                       destroyOnClose={true}
+                >
+                    <p>是否删除该流水线 ？</p>
+                </Modal>
                 <section className="pipeline-box">
                     <div className="pipeline-header">
                         <Row gutter={16} type="flex" justify="space-between" align="middle">
@@ -451,7 +489,7 @@ class pipelineDetail extends Component {
                                     <Col>
                                         <h2>流水线详情</h2>
                                     </Col>
-                                    <Col><Button onClick={()=>{this.handleDeletePipeline()}} ghost type="danger" shape="circle" icon="delete"/>
+                                    <Col><Button onClick={()=>{this.showModal()}} ghost type="danger" shape="circle" icon="delete"/>
                                     </Col>
                                 </Row>
                             </Col>
