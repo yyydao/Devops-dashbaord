@@ -26,7 +26,8 @@ class NoticeManager extends Component {
         notice_env_version: "V5.3.8",
         notice_env_submit: "liaoshengjian",
         notice_env_time: "2018-09-30 06:38PM",
-        notice_env_detail: "【点击链接】"
+        notice_env_detail: "【点击链接】",
+        notice_env_atall:"@all"
       },
       taskValue: {
         notice_task_version: "V5.3.8",
@@ -36,7 +37,8 @@ class NoticeManager extends Component {
         notice_task_project: "团贷网-Android",
         notice_task_status: "成功/失败",
         notice_task_trigger_type: "liaoshengjian 手动触发/gitlab push by lixijian",
-        notice_task_detail: "【点击链接】"
+        notice_task_detail: "【点击链接】",
+        notice_task_atall:"@all"
       },
       envToken: '',
       taskToken: ''
