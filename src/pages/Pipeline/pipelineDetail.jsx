@@ -42,15 +42,25 @@ const enumStatus = {
 const enumStatusText = {
     0: '未开始',
     1: '执行中',
-    2: '成功',
-    3: '失败'
+    2: '结束'
 }
 
+
 const enumPipelineResult={
+    0:`default`,
     1:`成功`,
     2:`失败`,
     3:`取消`,
     4:`不稳定`,
+
+}
+
+const enumPipelineResultColor={
+    0:`#fff`,
+    1:`#52c41a`,
+    2:`#f5222d`,
+    3:`#faad14`,
+    4:`#1890ff`,
 
 }
 
@@ -68,45 +78,44 @@ const enumButtonText = {
     3: '开始执行'
 }
 
-const taskList = {
-    'projectID': 63,
-    'taskCode': 'td1539673436803',
-    'taskName': '测试',
-    'jenkinsJob': 'TuandaiAS2-develop-v4',
-    'branchName': 'origin/v5',
-    'taskStatus': 1,
-    'exexTime': 0,
-    'lastExecTime': 0,
-    'createTime': '2018-10-16 15:03:56.0',
-    'updateTime': '2018-10-16 15:03:56.0'
-}
-
-const pipelineHistoryList = [
-    '2018-09-14 11:02:50(等待)',
-    '2018-09-14 11:02:30(等待)',
-    '2018-09-14 11:00:30',
-    '2018-09-14 09:53:38',
-    '2018-09-13 15:45:15',
-]
-
-const packageresult = [
-    {
-        'packageID': 1,
-        'packageName': 'com.junte',
-        'targetSdk': '23',
-        'minSdk': '',
-        'versionCode': '141',
-        'versionName': '5.3.6',
-        'appFileSize': '28.86MB',
-        'filePath': './package/e510246fb7a54947aceb78d016109bee817t0O/1/1/20181016171839/app-performance-develop.apk'
-    }
-]
-
-let HistoryOption = []
-
-for (let i = 0; i < pipelineHistoryList.length; i++) {
-    HistoryOption.push(<Option key={pipelineHistoryList[i]}>{pipelineHistoryList[i]}</Option>)
-}
+// const taskList = {
+//     'projectID': 63,
+//     'taskCode': 'td1539673436803',
+//     'taskName': '测试',
+//     'jenkinsJob': 'TuandaiAS2-develop-v4',
+//     'branchName': 'origin/v5',
+//     'taskStatus': 1,
+//     'exexTime': 0,
+//     'lastExecTime': 0,
+//     'createTime': '2018-10-16 15:03:56.0',
+//     'updateTime': '2018-10-16 15:03:56.0'
+// }
+//
+// const pipelineHistoryList = [
+//     '2018-09-14 11:02:50(等待)',
+//     '2018-09-14 11:02:30(等待)',
+//     '2018-09-14 11:00:30',
+//     '2018-09-14 09:53:38',
+//     '2018-09-13 15:45:15',
+// ]
+//
+// const packageresult = [
+//     {
+//         'packageID': 1,
+//         'packageName': 'com.junte',
+//         'targetSdk': '23',
+//         'minSdk': '',
+//         'versionCode': '141',
+//         'versionName': '5.3.6',
+//         'appFileSize': '28.86MB',
+//         'filePath': './package/e510246fb7a54947aceb78d016109bee817t0O/1/1/20181016171839/app-performance-develop.apk'
+//     }
+// ]
+// let HistoryOption = []
+//
+// for (let i = 0; i < pipelineHistoryList.length; i++) {
+//     HistoryOption.push(<Option key={pipelineHistoryList[i]}>{pipelineHistoryList[i]}</Option>)
+// }
 
 const menu = (
     <Menu>
@@ -127,14 +136,31 @@ class pipelineDetail extends Component {
 
         this.state = {
             breadcrumbPath: [],
+            historyBranch:[],
             envList: [],
             current: 0,
             currentJob: 0,
             finalStep: [],
             stepsList:[],
             fullSteps:[],
-            packageresult: packageresult
+            buildNumber: '',
+            exexTime:'',
+            timer: null,
+            timerStart: null,
         }
+    }
+
+
+    pipelineRunStatusText = (taskStatus,taskResult) =>{
+        return (taskStatus === 2 || taskStatus=== '2') ? enumPipelineResult[taskResult]:enumStatusText[taskStatus]
+    }
+
+    pipelineStepCurrent = (taskStatus,taskResult) =>{
+
+    }
+
+    pipelineStepStatus = (taskStatus,taskResult) =>{
+        return (taskStatus === 2 || taskStatus=== '2') ? enumPipelineResult[taskResult]:enumStatusText[taskStatus]
     }
 
     handleChange = (value) => {
@@ -165,6 +191,15 @@ class pipelineDetail extends Component {
     }
 
     getPipelineDetail = () => {
+        const {timer } = this.state;
+        if (timer) {
+            clearTimeout(timer);
+            this.setState({
+                timer: null
+            });
+        }
+
+
         reqGet('/pipeline/taskdetail', {
             taskID: this.props.match.params.taskID
         }).then((res) => {
@@ -173,30 +208,55 @@ class pipelineDetail extends Component {
                 const stepsList = res.steps
                 this.checkTaskList(taskList)
                 this.checkStepList(stepsList)
-                this.getPipelineRunStatus()
+
+                this.setState({
+                    timer: taskList &&  taskList.taskStatus === 1 && (new Date().getTime() - this.state.timerStart < 3600000) ? setTimeout(this.getPipelineDetail, 10e3) : null
+                })
+
             }
         })
     }
-    getPipelineRunStatus = ()=>{
+    makeStepCard = (stepsList) => {
+
+        const category = uniq(stepsList.map(item => item.stepCategory))
+        // console.log(category)
+        let tempStepObject = {}
+        let finalStep = []
+        category.forEach((value, index) => {
+            tempStepObject[value] = []
+        })
+        for (let i = 0; i < stepsList.length; i++) {
+            const stepListElement = stepsList[i]
+            for (const tempStepObjectKey in tempStepObject) {
+                if (stepListElement.stepCategory + '' === tempStepObjectKey + '') {
+                    tempStepObject[tempStepObjectKey].push(stepListElement)
+                }
+            }
+
+        }
+        finalStep = toPairs(tempStepObject)
+        console.log(finalStep)
+        this.setState({stepsList: stepsList})
+        this.setState({finalStep: finalStep})
+        this.setState({fullSteps: this.composeEditFinalStep(finalStep)})
+    }
+    getPipelineRunStatus = (stepsList)=>{
         reqGet('/pipeline/taskstatus',{
             taskID: this.props.match.params.taskID
         }).then((res) => {
             if (res.code === 0) {
-                // const taskList = res.task
-                // const stepsList = res.steps
-                // this.checkTaskList(taskList)
-                // this.checkStepList(stepsList)
+
+                let statusList = res.list
+                console.log(statusList)
+                let temparray = []
+                statusList.map((statusItem)=>{
+                    temparray.push(Object.assign({},stepsList.find((finalStepItem)=>finalStepItem.stepCode===statusItem.stepCode),statusItem))
+                })
+                this.makeStepCard(temparray)
             }
         })
     }
     getPackageresult = () => {
-        // reqGet('/pipeline/packageresult', {
-        //     taskID: this.props.match.params.taskID
-        // }).then((res) => {
-        //     if (res.code === 0) {
-        //         this.setState({packageresult: res.list})
-        //     }
-        // })
     }
 
     handleDeletePipeline = () =>{
@@ -208,6 +268,36 @@ class pipelineDetail extends Component {
             }
         })
     }
+
+    getHistoryList = ()=>{
+        reqGet('/pipeline/taskhistory',{
+            taskID:this.props.match.params.taskID
+        }).then((res)=>{
+                if (res.code === 0) {
+                    this.setState({historyBranch:res.list})
+                }
+        })
+    }
+    changeHistory = (e,option)=>{
+        clearTimeout(this.state.timer);
+        this.getHistoryDetail(option.props.title)
+    }
+
+    getHistoryDetail = (buildNum) =>{
+        reqGet('/pipeline/taskhistorydetail',{
+            taskID:this.props.match.params.taskID,
+            buildNum: buildNum
+        }).then((res)=>{
+            if (res.code === 0) {
+                let data = res.data
+                let list = res.list
+                 // console.log(data.execTime)
+
+                data && this.setState({exexTime:data.execTime})
+            }
+        })
+    }
+
     checkTaskList = (taskList) => {
         const {
             projectID,
@@ -217,6 +307,7 @@ class pipelineDetail extends Component {
             branchName,
             branchID,
             taskStatus,
+            taskResult,
             exexTime,
             lastExecTime,
             createTime,
@@ -231,6 +322,7 @@ class pipelineDetail extends Component {
             branchName,
             branchID,
             taskStatus,
+            taskResult,
             exexTime,
             lastExecTime,
             createTime,
@@ -239,30 +331,7 @@ class pipelineDetail extends Component {
     }
 
     checkStepList = (stepsList) => {
-        const category = uniq(stepsList.map(item => item.stepCategory))
-        // console.log(category)
-        let tempStepObject = {}
-        let finalStep = []
-        category.forEach((value, index) => {
-            tempStepObject[value] = []
-        })
-        for (let i = 0; i < stepsList.length; i++) {
-            const stepListElement = stepsList[i]
-            // console.log(stepListElement.stepCategory)
-            for (const tempStepObjectKey in tempStepObject) {
-                if (stepListElement.stepCategory + '' === tempStepObjectKey + '') {
-                    tempStepObject[tempStepObjectKey].push(stepListElement)
-                }
-            }
-
-        }
-        finalStep = toPairs(tempStepObject)
-        // console.log(tempStepObject)
-        // console.log(stepsList)
-        // console.log(finalStep)
-        this.setState({stepsList: stepsList})
-        this.setState({finalStep: finalStep})
-        this.setState({fullSteps: this.composeEditFinalStep(finalStep)})
+        this.getPipelineRunStatus(stepsList)
     }
 
     runTask = () => {
@@ -274,7 +343,6 @@ class pipelineDetail extends Component {
             console.log(res)
             if (res.code === 0) {
                 this.setState({taskStatus: 1})
-                // this.getPipelineDetail()
                 message.success('开始执行')
             }else{
                 message.error(res.msg)
@@ -322,11 +390,20 @@ class pipelineDetail extends Component {
     }
 
     componentDidMount () {
-        // this.setState({packageresult: packageresult})
-        // this.checkTaskList(taskList)
-        // this.checkStepList(stepsList)
         this.getPipelineDetail()
         this.getPackageresult()
+        this.getHistoryList()
+        this.setState({
+            timerStart: new Date().getTime()
+        })
+    }
+
+    componentWillUnmount() {
+        clearTimeout(this.state.timer);
+
+        this.setState = (state,callback)=>{
+            return;
+        }
     }
 
     render () {
@@ -337,11 +414,10 @@ class pipelineDetail extends Component {
             jenkinsJob,
             branchName,
             taskStatus,
-            exexTime,
+            taskResult,
             lastExecTime,
             finalStep,
             stepsList,
-            packageresult,
             currentJob
         } = this.state
         // 数据源
@@ -390,15 +466,19 @@ class pipelineDetail extends Component {
                                         }}>编辑</Button>
                                     </Col>
                                     <Col>
-                                        <Select
-                                            defaultValue={pipelineHistoryList[0]}
-                                            style={{width: 200}}
-                                            placeholder=""
-                                            onChange={this.handleChange}
-                                            onFocus={this.handleFocus}
-                                            onBlur={this.handleBlur}
-                                        >
-                                            {HistoryOption}
+
+                                        <Select placeholder="请选择构建历史"
+                                                onChange={(e,option)=>this.changeHistory(e,option)}
+                                                style={{width: 300}}>
+                                            {
+                                                this.state.historyBranch.map((item) => {
+                                                    return <Option
+                                                        title={item.buildNum+''}
+                                                        value={item.historyID}
+                                                        key={item.historyID}
+                                                    >{item.updateTime}</Option>
+                                                })
+                                            }
                                         </Select>
                                     </Col>
                                 </Row>
@@ -428,7 +508,7 @@ class pipelineDetail extends Component {
                                             <p className="pipeline-item-timemeta">
                                                 <span><i>最近执行时间：</i>{lastExecTime}</span>
                                                 <span><i>执行分支：</i>{branchName}</span>
-                                                <span><i>执行时长：</i>{exexTime}</span>
+                                                <span><i>执行时长：</i>{this.state.exexTime}</span>
                                             </p>
 
                                         </div>
@@ -438,7 +518,7 @@ class pipelineDetail extends Component {
 
                                             <Row gutter={16} type="flex" justify="space-between" align="middle">
                                                 <Col>
-                                                    <span>最近执行状态：</span>{enumStatusText[taskStatus]}
+                                                    <span>最近执行状态：</span>{this.pipelineRunStatusText(taskStatus,taskResult)}
                                                 </Col>
                                                 <Col>
                                                     <Button disabled={taskStatus===1} type="primary" onClick={()=>this.runTask()}>{enumButtonText[taskStatus]}</Button>
@@ -458,7 +538,7 @@ class pipelineDetail extends Component {
                                             item[1].map((item, index) => {
                                                 // console.log(item)
                                                 return <Card
-                                                        style={{width: 150, marginLeft: '-18%'}}
+                                                        style={{width: 150, marginLeft: '-18%',background:enumPipelineResultColor[item.stepResult]}}
                                                         title={item.stepName}
                                                         key={item.stepID}
                                                     >
@@ -479,35 +559,6 @@ class pipelineDetail extends Component {
                 </section>
                 <section className="pipeline-box">
                     <Card title="基本信息">
-                    {
-                        packageresult && packageresult.map((item, index) => {
-                        return <div  key={index} >
-                            <Row gutter={16} type="flex" justify="space-around" align="middle">
-                                <Col><h2>packageID</h2></Col><Col>{item.packageID}</Col>
-                            </Row>
-                            <Row gutter={16} type="flex" justify="space-around" align="middle">
-                                <Col><h2>packageName</h2></Col><Col>{item.packageName}</Col>
-                            </Row>
-                            <Row gutter={16} type="flex" justify="space-around" align="middle">
-                                <Col><h2>targetSdk</h2></Col><Col>{item.targetSdk}</Col>
-                            </Row>
-                            <Row gutter={16} type="flex" justify="space-around" align="middle">
-                                <Col><h2>minSdk</h2></Col><Col>{item.minSdk}</Col>
-                            </Row>
-                            <Row gutter={16} type="flex" justify="space-around" align="middle">
-                                <Col><h2>versionCode</h2></Col><Col>{item.versionCode}</Col>
-                            </Row>
-                            <Row gutter={16} type="flex" justify="space-around" align="middle">
-                                <Col><h2>versionName</h2></Col><Col>{item.versionName}</Col>
-                            </Row>
-                            <Row gutter={16} type="flex" justify="space-around" align="middle">
-                                <Col><h2>appFileSize</h2></Col><Col>{item.appFileSize}</Col>
-                            </Row>
-                            <Row gutter={16} type="flex" justify="space-around" align="middle">
-                                <Col><h2>filePath</h2></Col><Col>{item.filePath}</Col>
-                            </Row>
-                        </div>
-                    })}
                     </Card>
                 </section>
                 <section className="pipeline-box" id="scan-result">

@@ -29,18 +29,18 @@ const enumStatus = {
     2: 'finish',
     3: 'error'
 }
-const enumStatusText = {
-    0: '未开始',
-    1: '执行中',
-    2: '成功',
-    3: '失败'
-}
+// const enumStatusText = {
+//     0: '未开始',
+//     1: '执行中',
+//     2: '成功',
+//     3: '失败'
+// }
 
 const enumButtonType = {
     0: 'wait',
     1: 'process',
-    2: 'finish',
-    3: 'error'
+    2: 'error',
+    3: 'finish'
 }
 
 const enumButtonText = {
@@ -50,6 +50,23 @@ const enumButtonText = {
     3: '开始执行'
 }
 
+const enumStatusText = {
+    0: '未开始',
+    1: '执行中',
+    2: '结束'
+}
+
+
+const enumPipelineResult={
+    0:`未开始`,
+    1:`成功`,
+    2:`失败`,
+    3:`取消`,
+    4:`不稳定`,
+
+}
+
+
 class Pipeline extends Component {
     constructor (props) {
         super(props)
@@ -58,6 +75,10 @@ class Pipeline extends Component {
             pipelineList: [],
             current: 0
         }
+    }
+
+    pipelineRunStatusText = (taskStatus,taskResult) =>{
+        return (taskStatus === 2 || taskStatus=== '2') ? enumPipelineResult[taskResult]:enumStatusText[taskStatus]
     }
 
     getPipelineList = () => {
@@ -161,7 +182,7 @@ class Pipeline extends Component {
                                             <Col span={4}>
                                                 <div className="pipeline-item-ctrl">
                                                     <div className="status">
-                                                        <span>最近执行状态：</span>{enumStatusText[item.taskStatus]}</div>
+                                                        <span>最近执行状态：</span>{this.pipelineRunStatusText(item.taskStatus,item.taskResult)}</div>
                                                     <Button type="primary" disabled={item.taskStatus === 1} onClick={()=>this.runTask(item)}>{enumButtonText[item.taskStatus]}</Button>
                                                 </div>
                                             </Col>

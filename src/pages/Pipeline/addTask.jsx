@@ -551,9 +551,7 @@ class taskAdd extends Component {
                        destroyOnClose={true}
                 >
                     <TextArea rows={4} value={importJSON} onChange={(e) => {
-                        console.log(e.target.value)
                         this.setState({importJSON:e.target.value});
-                        console.log(this.state.importJSON)
                     }}/>
 
                 </Modal>
