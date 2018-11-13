@@ -344,6 +344,7 @@ class pipelineDetail extends Component {
             if (res.code === 0) {
                 this.setState({taskStatus: 1})
                 message.success('开始执行')
+                setTimeout(this.getPipelineDetail,10e3)
             }else{
                 message.error(res.msg)
             }
