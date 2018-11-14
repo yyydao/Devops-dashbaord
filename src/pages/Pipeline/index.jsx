@@ -170,7 +170,7 @@ class Pipeline extends Component {
                                                     <p className="pipeline-item-timemeta">
                                                         <span><i>最近执行时间：</i>{item.lastExecTime}</span>
                                                         <span><i>执行分支：</i>{item.branchName}</span>
-                                                        <span><i>执行时长：</i>{item.exexTime}</span>
+                                                        <span><i>最近执行时长：</i>{item.exexTime}</span>
                                                     </p>
                                                     <Steps size="small" status={enumStatus[item.taskStatus]}
                                                            current={item.taskStatus === 2? 5:item.taskStatus}>

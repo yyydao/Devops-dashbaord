@@ -47,7 +47,11 @@ class SideBar extends Component{
 
     selectChange = (value) => {
         this.props.setProjectId(value);
-        this.props.projectIdChange();
+        this.props.projectIdChange(value);
+        this.setState({
+            currentMenu: '',
+            menuOpenKeys: []
+        })
     }
 
     menuClick = (e) => {
@@ -185,7 +189,7 @@ class SideBar extends Component{
                         </Select>
                     }
                 </div>
-                <Menu mode="inline" theme="dark" onClick={this.menuClick} onOpenChange={this.menuOpenChange} defaultSelectedKeys={[currentMenu]} defaultOpenKeys={menuOpenKeys}>                 
+                <Menu mode="inline" theme="dark" onClick={this.menuClick} onOpenChange={this.menuOpenChange} defaultSelectedKeys={[currentMenu]} defaultOpenKeys={menuOpenKeys}>
                     { menuList }
                 </Menu>
             </div>

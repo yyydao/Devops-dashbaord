@@ -33,10 +33,11 @@ class Layout extends Component{
         this.getUserInfo();
     }
 
-    projectIdChange = () => {
+    projectIdChange = (value) => {
         this.setState({ isRender: false }, () => {
             this.setState({ isRender: true })
-        })   
+            this.props.history.replace(`/welcome/${value}`)
+        })
     }
 
     getExcludeSideBarPath = () => {
@@ -61,7 +62,7 @@ class Layout extends Component{
 
     getUserInfo = () => {
         let { setUserInfo } = this.props;
-        
+
         reqPost('/user/getUserInfo').then(res => {
             if(parseInt(res.code, 0) === 0){
                 this.setState({ userInfo: res.data });
@@ -78,7 +79,7 @@ class Layout extends Component{
         }
 
         const sideBarShow = !this.state.excludeSideBar.includes(this.props.location.pathname);
-        
+
         return(
             <div className="layout">
                 <Header userInfo={this.state.userInfo} />

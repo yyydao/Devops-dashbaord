@@ -93,45 +93,6 @@ const enumButtonText = {
     3: '开始执行'
 }
 
-// const taskList = {
-//     'projectID': 63,
-//     'taskCode': 'td1539673436803',
-//     'taskName': '测试',
-//     'jenkinsJob': 'TuandaiAS2-develop-v4',
-//     'branchName': 'origin/v5',
-//     'taskStatus': 1,
-//     'exexTime': 0,
-//     'lastExecTime': 0,
-//     'createTime': '2018-10-16 15:03:56.0',
-//     'updateTime': '2018-10-16 15:03:56.0'
-// }
-//
-// const pipelineHistoryList = [
-//     '2018-09-14 11:02:50(等待)',
-//     '2018-09-14 11:02:30(等待)',
-//     '2018-09-14 11:00:30',
-//     '2018-09-14 09:53:38',
-//     '2018-09-13 15:45:15',
-// ]
-//
-// const packageresult = [
-//     {
-//         'packageID': 1,
-//         'packageName': 'com.junte',
-//         'targetSdk': '23',
-//         'minSdk': '',
-//         'versionCode': '141',
-//         'versionName': '5.3.6',
-//         'appFileSize': '28.86MB',
-//         'filePath': './package/e510246fb7a54947aceb78d016109bee817t0O/1/1/20181016171839/app-performance-develop.apk'
-//     }
-// ]
-// let HistoryOption = []
-//
-// for (let i = 0; i < pipelineHistoryList.length; i++) {
-//     HistoryOption.push(<Option key={pipelineHistoryList[i]}>{pipelineHistoryList[i]}</Option>)
-// }
-
 const menu = (
     <Menu>
         <Menu.Item>
@@ -150,12 +111,12 @@ class pipelineDetail extends Component {
         super(props)
 
         this.state = {
+            waitCount:0,
             delModalVisible:false,
             breadcrumbPath: [],
             historyBranch:[],
             envList: [],
             current: 0,
-            currentJob: 0,
             finalStep: [],
             stepsList:[],
             fullSteps:[],
@@ -302,6 +263,7 @@ class pipelineDetail extends Component {
             taskID:this.props.match.params.taskID
         }).then((res)=>{
                 if (res.code === 0) {
+                    this.setState({waitCount:res.count})
                     this.setState({historyBranch:res.data})
                 }
         })
@@ -312,17 +274,22 @@ class pipelineDetail extends Component {
     }
 
     getHistoryDetail = (buildNum) =>{
-        reqGet('/pipeline/taskhistorydetail',{
-            taskID:this.props.match.params.taskID,
-            buildNum: buildNum
-        }).then((res)=>{
-            if (res.code === 0) {
-                let data = res.data
-                let list = res.list
+        if(buildNum === 0){
+           message.info(`等待中任务无数据`)
+        }else{
+            reqGet('/pipeline/taskhistorydetail',{
+                taskID:this.props.match.params.taskID,
+                buildNum: buildNum
+            }).then((res)=>{
+                if (res.code === 0) {
+                    let data = res.data
+                    let list = res.list
 
-                data && this.setState({exexTime:data.execTime})
-            }
-        })
+                    data && this.setState({exexTime:data.execTime})
+                }
+            })
+        }
+
     }
 
     checkTaskList = (taskList) => {
@@ -447,7 +414,7 @@ class pipelineDetail extends Component {
             lastExecTime,
             finalStep,
             stepsList,
-            currentJob
+            waitCount
         } = this.state
         // 数据源
         const data = [
@@ -495,7 +462,7 @@ class pipelineDetail extends Component {
                             <Col>
                                 <Row gutter={16} type="flex" justify="space-between" align="middle">
                                     <Col>
-                                        <span>Tips: 有{currentJob}个任务正在等待</span>
+                                        <span>Tips: 有{waitCount}个任务正在等待</span>
                                     </Col>
                                     <Col>
                                         <Button disabled={taskStatus===1}
@@ -530,7 +497,7 @@ class pipelineDetail extends Component {
                             <div className="pipeline-item-header">
                                 <Row type="flex" justify="space-between">
                                     <Col span={12}>
-                                        <h2>{taskName} <span>（ID：{taskCode}）</span></h2>
+                                        <h2>{taskName} <span>（ID：{taskCode}）{ taskStatus === 1 && <Icon type="loading" />}</span></h2>
                                     </Col>
                                     <Col span={12}>
                                         <div className="pipeline-item-user">
@@ -546,7 +513,7 @@ class pipelineDetail extends Component {
                                             <p className="pipeline-item-timemeta">
                                                 <span><i>最近执行时间：</i>{lastExecTime}</span>
                                                 <span><i>执行分支：</i>{branchName}</span>
-                                                <span><i>执行时长：</i>{this.state.exexTime}</span>
+                                                <span><i>最近执行时长：</i>{this.state.exexTime}</span>
                                             </p>
 
                                         </div>

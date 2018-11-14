@@ -348,7 +348,7 @@ class taskAdd extends Component {
                         stepParams: obj,
                         ...values
                     })
-                    this.props.history.push({
+                    this.props.history.replace({
                         pathname:'/pipeline/add',
                         state:{
                             taskName:this.props.location.state.taskName,
@@ -405,6 +405,7 @@ class taskAdd extends Component {
             let paramsArray = stepParamstoArray(jsonText)
 
             this.setState({ paramsDatasource: paramsArray });
+            this.hideModal()
 
         }else{
             message.error('请输入正确JSON');
