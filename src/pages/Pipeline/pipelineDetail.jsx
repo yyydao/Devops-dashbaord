@@ -135,8 +135,19 @@ class pipelineDetail extends Component {
         return (taskStatus === 2 || taskStatus=== '2') ? enumPipelineResult[taskResult]:enumStatusText[taskStatus]
     }
 
-    pipelineStepCurrent = (taskStatus,taskResult) =>{
+    pipelineStepCurrent = () =>{
+       if(this.state.showHistory){
+           return 5
+       }else{
+           let currentSteps = this.state.stepsList
+           for (let i = 0; i < currentSteps.length; i++) {
+               const currentStep = currentSteps[i]
+               if(currentStep.stepStatus === 1){
+                   return currentStep.stepCategory
+               }
+           }
 
+       }
     }
 
     pipelineStepStatus = (taskStatus,taskResult) =>{
@@ -209,7 +220,7 @@ class pipelineDetail extends Component {
         })
     }
     makeStepCard = (stepsList) => {
-        console.log(`stepsList ${JSON.stringify(stepsList)}`)
+        // console.log(`stepsList ${JSON.stringify(stepsList)}`)
         const category = uniq(stepsList.map(item => item.stepCategory))
         // console.log(category)
         let tempStepObject = {}
@@ -227,7 +238,6 @@ class pipelineDetail extends Component {
 
         }
         finalStep = toPairs(tempStepObject)
-        console.log(finalStep)
         this.setState({stepsList: stepsList})
         this.setState({finalStep: finalStep})
         this.setState({fullSteps: this.composeEditFinalStep(finalStep)})
@@ -285,6 +295,21 @@ class pipelineDetail extends Component {
                 break;
 
         }
+    }
+
+    setStepStatusIcon =(item) =>{
+        if(item &&item[1]){
+            let steps = item[1]
+            let stepsRunStatus = []
+            for (let i = 0; i < steps.length; i++) {
+                const currentStep = steps[i]
+                stepsRunStatus.push(currentStep.stepStatus)
+            }
+            if(stepsRunStatus.includes(1)){
+                return <Icon type="loading" />
+            }
+        }
+
     }
 
     handleDeletePipeline = () =>{
@@ -586,11 +611,14 @@ class pipelineDetail extends Component {
                                 <Steps size="small"
                                        status={enumStatus[taskStatus]}
                                        labelPlacement="vertical"
-                                       current={taskStatus === 2? 5:taskStatus}>
+                                       current={this.pipelineStepCurrent()}
+                                >
                                     <Step title="开始"></Step>
 
                                     {!showHistory && finalStep && finalStep.map((item, index) => {
-                                        return <Step title={enumStepsText[item[0]].title} key={index} description={
+                                        return <Step title={enumStepsText[item[0]].title} key={index}
+                                                     icon={this.setStepStatusIcon(item)}
+                                                     description={
                                             item[1].map((item, index) => {
 
                                                 return <Card
