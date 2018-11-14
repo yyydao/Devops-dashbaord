@@ -100,68 +100,6 @@ class Dashboard extends Component{
           res.data.unitTestMonitors.map(item=>item.sqaleValue=parseFloat(item.sqaleValue))
           const type=[,'源码','加固','补丁']
           res.data.packageBodyMonitors.map(item=>{item.appFileSize=parseFloat(item.appFileSize);item.name=type[item.packageType]})
-          res.data.pipelines.push(
-            {
-              "stepName": "包管理",
-              "createTime": "2018-11-14 19:11:04",
-              "execTime": 100,
-              "stepCategory": 3
-            },
-            {
-              "stepName": "单元测试",
-              "createTime": "2018-11-14 19:11:04",
-              "execTime": 10,
-              "stepCategory": 2
-            },
-            {
-              "stepName": "打补丁",
-              "createTime": "2018-11-14 19:11:04",
-              "execTime": 50,
-              "stepCategory": 3
-            },
-            {
-              "stepName": "静态扫描",
-              "createTime": "2018-11-14 19:11:04",
-              "execTime": 20,
-              "stepCategory": 1
-            },
-            {
-              "stepName": "UI测试",
-              "createTime": "2018-11-14 19:11:04",
-              "execTime": 105,
-              "stepCategory": 1
-            },
-            {
-              "stepName": "安全扫描",
-              "createTime": "2018-11-14 19:11:04",
-              "execTime": 207,
-              "stepCategory": 2
-            },
-            {
-              "stepName": "性能测试",
-              "createTime": "2018-11-14 19:11:04",
-              "execTime": 8,
-              "stepCategory": 2
-            },
-            {
-              "stepName": "编译打包",
-              "createTime": "2018-11-14 19:11:04",
-              "execTime": 100,
-              "stepCategory": 1
-            },
-            {
-              "stepName": "加固",
-              "createTime": "2018-11-14 19:11:04",
-              "execTime": 26,
-              "stepCategory": 3
-            },
-            {
-              "stepName": "代码拉取",
-              "createTime": "2018-11-14 19:11:04",
-              "execTime": 90,
-              "stepCategory": 1
-            }
-          )
           this.setState({monitorData:res.data})
           this.dealUiData(res.data.uiTestMonitors)
           this.dealCpuData(res.data.cpuMemoryAnalysis||[])
