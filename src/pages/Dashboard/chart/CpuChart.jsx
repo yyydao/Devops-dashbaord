@@ -100,7 +100,6 @@ class CpuChart extends React.Component {
                 position="createTime*cpuValue"
                 size={2}
                 color={"cpu"}
-                shape={"smooth"}
             />
             <Geom
                 type="point"
@@ -118,7 +117,6 @@ class CpuChart extends React.Component {
                 position="createTime*memoryValue"
                 size={2}
                 color={["memory", ['#ff0000', '#FFA500']]}
-                shape={"smooth"}
             />
             <Geom
                 type="point"

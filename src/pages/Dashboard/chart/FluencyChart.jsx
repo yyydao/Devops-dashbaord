@@ -98,7 +98,6 @@ class FluencyChart extends React.Component {
                 position="createTime*smValue"
                 size={2}
                 color={"sm"}
-                shape={"smooth"}
             />
             <Geom
                 type="point"
@@ -116,7 +115,6 @@ class FluencyChart extends React.Component {
                 position="createTime*coldStartTimeValue"
                 size={2}
                 color={["coldStartTime", ['#ff0000', '#FFA500']]}
-                shape={"smooth"}
             />
             <Geom
                 type="point"
