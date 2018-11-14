@@ -497,7 +497,7 @@ class pipelineDetail extends Component {
                             <div className="pipeline-item-header">
                                 <Row type="flex" justify="space-between">
                                     <Col span={12}>
-                                        <h2>{taskName} <span>（ID：{taskCode}）</span></h2>
+                                        <h2>{taskName} <span>（ID：{taskCode}）{ taskStatus === 1 && <Icon type="loading" />}</span></h2>
                                     </Col>
                                     <Col span={12}>
                                         <div className="pipeline-item-user">
