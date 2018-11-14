@@ -66,20 +66,42 @@ class pipelineChart extends React.Component {
                   type: "line"
                 }}
             />
-            <Geom
-                type="area"
-                adjustType="stack"
-                position="createTime*execTime"
-                size={2}
-                color={"stepName"}
-                tooltip={['stepName*stepCategory*execTime', (stepName, stepCategory,execTime) => {
-                  return {
-                    //自定义 tooltip 上显示的 title 显示内容等。
-                    name: `${stepName}(${type[stepCategory]})`,
-                    value: execTime+'s'
-                  };
-                }]}
-            />
+            {/*<Geom*/}
+                {/*type="area"*/}
+                {/*adjustType="stack"*/}
+                {/*position="createTime*execTime"*/}
+                {/*size={2}*/}
+                {/*color={"stepName"}*/}
+                {/*tooltip={['stepName*stepCategory*execTime', (stepName, stepCategory,execTime) => {*/}
+                  {/*return {*/}
+                    {/*//自定义 tooltip 上显示的 title 显示内容等。*/}
+                    {/*name: `${stepName}(${type[stepCategory]})`,*/}
+                    {/*value: execTime+'s'*/}
+                  {/*};*/}
+                {/*}]}*/}
+            {/*/>*/}
+            <Geom type="areaStack"
+                  position="createTime*execTime"
+                  size={2}
+                  color={"stepName"}
+                  tooltip={['stepName*stepCategory*execTime', (stepName, stepCategory,execTime) => {
+                    return {
+                      //自定义 tooltip 上显示的 title 显示内容等。
+                      name: `${stepName}(${type[stepCategory]})`,
+                      value: execTime+'s'
+                    };
+                  }]}/>
+            <Geom type="lineStack"
+                  position="createTime*execTime"
+                  size={2}
+                  color={"stepName"}
+                  tooltip={['stepName*stepCategory*execTime', (stepName, stepCategory,execTime) => {
+                    return {
+                      //自定义 tooltip 上显示的 title 显示内容等。
+                      name: `${stepName}(${type[stepCategory]})`,
+                      value: execTime+'s'
+                    };
+                  }]}/>
           </Chart>
         </div>
     );
