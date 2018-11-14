@@ -390,7 +390,7 @@ class taskEdit extends Component {
             let paramsArray = stepParamstoArray(jsonText,this.state.stepCode)
 
             this.setState({ paramsDatasource: paramsArray });
-
+            this.hideModal()
         }else{
             message.error('请输入正确JSON');
             return;

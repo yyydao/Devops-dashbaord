@@ -405,6 +405,7 @@ class taskAdd extends Component {
             let paramsArray = stepParamstoArray(jsonText)
 
             this.setState({ paramsDatasource: paramsArray });
+            this.hideModal()
 
         }else{
             message.error('请输入正确JSON');
