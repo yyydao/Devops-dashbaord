@@ -223,13 +223,15 @@ class Edit extends Component {
         let stepsList = this.state.stepsList
         for (let i = 0; i < stepsList.length; i++) {
             const stepElement = stepsList[i]
-            // console.log(stepElement)
+            console.log(stepElement)
             if(stepElement.stepCategory+'' === this.state.stepCategory+''){
                 if(stepElement.stepCode+'' === item.stepCode+''){
                     message.error('请勿重复创建同类型任务')
                 }else{
                     this.handleJumpToTask(item)
                 }
+            }else{
+                this.handleJumpToTask(item)
             }
         }
 
