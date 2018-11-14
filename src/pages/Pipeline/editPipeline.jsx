@@ -200,19 +200,36 @@ class Edit extends Component {
 
     handleEditTask = (item) =>{
         console.log(item)
-        this.props.history.push({
-            pathname:'/pipeline/task/edit',
-            state: {
-                stepID:item.stepID,
-                stepCode: item.stepCode,
-                stepCategory: item.stepCategory,
-                existPipeline: true,
-                taskID: this.props.match.params.taskID,
-                branchID:this.state.branchID,
-                branchName:this.state.branchName,
+        if(item.stepID){
+            this.props.history.push({
+                pathname:`/pipeline/task/edit/${item.stepID}`,
+                state: {
+                    stepID:item.stepID,
+                    stepCode: item.stepCode,
+                    stepCategory: item.stepCategory,
+                    existPipeline: true,
+                    taskID: this.props.match.params.taskID,
+                    branchID:this.state.branchID,
+                    branchName:this.state.branchName,
+                    jenkinsJob: this.props.form.getFieldValue('jenkinsJob'),
+                }
+            })
 
-            }
-        })
+        }else{
+            this.props.history.push({
+                pathname:'/pipeline/task/edit',
+                state: {
+                    stepCode: item.stepCode,
+                    stepCategory: item.stepCategory,
+                    existPipeline: true,
+                    taskID: this.props.match.params.taskID,
+                    branchID:this.state.branchID,
+                    branchName:this.state.branchName,
+                    jenkinsJob: this.props.form.getFieldValue('jenkinsJob'),
+                }
+            })
+
+        }
 
     }
 

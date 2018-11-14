@@ -285,7 +285,7 @@ class taskEdit extends Component {
                                 ...values
                             })
                             message.info('修改成功');
-                            this.props.history.push(`/pipeline/detail/${this.props.location.state.taskID}`)
+                            this.props.history.push(`/pipeline/edit/${this.props.location.state.taskID}`)
                         }
                     })
 
@@ -411,21 +411,11 @@ class taskEdit extends Component {
             disabled = true
         }
         //判断是否是编辑已存在流水线
-        if(this.props.location.state && this.props.location.state.existPipeline){
-            reqGet(`/pipeline/stepdetail/`,{stepID:this.props.location.state.stepID}).then(res=>{
+        if(this.props.match.params.stepID){
+            reqGet(`/pipeline/stepdetail/`,{stepID:this.props.match.params.stepID}).then(res=>{
                 if(res.code === 0){
                     let d = res.step.stepParams
-                    let paramsArray = [],source = JSON.parse(d),keyIndex = 1
-
-
-                    // for (let prop in source) {
-                    //     paramsArray.push({key:keyIndex,json_jsonParams:prop,json_jsonValue:source[prop]})
-                    //     keyIndex++
-                    // }
-                                             console.log(paramsArray)
-                                             console.log(d)
                     this.setState({ paramsDatasource: stepParamstoArray(d) });
-
                     this.props.form.setFieldsValue({
                         stepName: res.step.stepName,
                         stepDesc: res.step.stepDesc
@@ -435,19 +425,63 @@ class taskEdit extends Component {
         }else{
             let existStep  = JSON.parse(localStorage.getItem('steps'))
             let stepListByCategory = existStep && existStep.find((item) => item[0] === stepCategory)
-            for (let i = 0; i < stepListByCategory[1].length; i++) {
-                const stepFilterByCode = stepListByCategory[1][i]
-                if(stepFilterByCode.stepCode === stepCode && stepCode !== -1){
-                    stepName = stepFilterByCode.stepName
-                    stepDesc = stepFilterByCode.stepDesc
-                    paramsDatasource = stepParamstoArray(stepFilterByCode.stepParams)
+            if(stepListByCategory){
+                for (let i = 0; i < stepListByCategory[1].length; i++) {
+                    const stepFilterByCode = stepListByCategory[1][i]
+                    if(stepFilterByCode.stepCode === stepCode && stepCode !== -1){
+                        stepName = stepFilterByCode.stepName
+                        stepDesc = stepFilterByCode.stepDesc
+                        paramsDatasource = stepParamstoArray(stepFilterByCode.stepParams)
+                    }
                 }
             }
+
             this.props.form.setFieldsValue({
                 stepName: stepName,
                 stepDesc:stepDesc
             })
         }
+
+        // if(this.props.location.state && this.props.location.state.existPipeline){
+        //     reqGet(`/pipeline/stepdetail/`,{stepID:this.props.location.state.stepID}).then(res=>{
+        //         if(res.code === 0){
+        //             let d = res.step.stepParams
+        //             let paramsArray = [],source = JSON.parse(d),keyIndex = 1
+        //
+        //
+        //             // for (let prop in source) {
+        //             //     paramsArray.push({key:keyIndex,json_jsonParams:prop,json_jsonValue:source[prop]})
+        //             //     keyIndex++
+        //             // }
+        //                                      console.log(paramsArray)
+        //                                      console.log(d)
+        //             this.setState({ paramsDatasource: stepParamstoArray(d) });
+        //
+        //             this.props.form.setFieldsValue({
+        //                 stepName: res.step.stepName,
+        //                 stepDesc: res.step.stepDesc
+        //             })
+        //         }
+        //     })
+        // }else{
+        //     let existStep  = JSON.parse(localStorage.getItem('steps'))
+        //     let stepListByCategory = existStep && existStep.find((item) => item[0] === stepCategory)
+        //     if(stepListByCategory){
+        //         for (let i = 0; i < stepListByCategory[1].length; i++) {
+        //             const stepFilterByCode = stepListByCategory[1][i]
+        //             if(stepFilterByCode.stepCode === stepCode && stepCode !== -1){
+        //                 stepName = stepFilterByCode.stepName
+        //                 stepDesc = stepFilterByCode.stepDesc
+        //                 paramsDatasource = stepParamstoArray(stepFilterByCode.stepParams)
+        //             }
+        //         }
+        //     }
+        //
+        //     this.props.form.setFieldsValue({
+        //         stepName: stepName,
+        //         stepDesc:stepDesc
+        //     })
+        // }
 
 
         if (this.props.editable) {

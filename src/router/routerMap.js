@@ -118,6 +118,11 @@ export default [
         component: pipelineTaskEdit
     },
     {
+        path: '/pipeline/task/edit/:stepID',
+        name: 'pipelineTaskEdit',
+        component: pipelineTaskEdit
+    },
+    {
         path: '/pipeline/edit/:taskID',
         name: 'PipelineEdit',
         component: PipelineEdit
