@@ -126,9 +126,11 @@ class ConfigManager extends Component {
    */
   onButtonClick = (index) => {
     let envData = JSON.parse(JSON.stringify(this.state.envData[index]))
-    envData.scenes=envData.scenes[0].childrens
-    delete envData.checkedScenes
     let arr=[]
+    if(envData.scenes.length>0){
+      envData.scenes=envData.scenes[0].childrens
+      delete envData.checkedScenes
+    }
     arr.push(envData)
     reqPost('/env/updateEnv', arr).then(res => {
       if (parseInt(res.code, 0) === 0) {
