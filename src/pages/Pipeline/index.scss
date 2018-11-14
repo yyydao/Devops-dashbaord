@@ -1,7 +1,7 @@
 .pipeline {
-  &-header{
+  &-header {
     padding: 42px 24px 10px;
-    h2{
+    h2 {
       margin-bottom: 0;
     }
   }
@@ -145,7 +145,7 @@
     margin: 0 0 16px;
     -webkit-transition: all .2s;
     transition: all .2s;
-    .ant-form:not(.ant-form-inline):not(.ant-form-vertical){
+    .ant-form:not(.ant-form-inline):not(.ant-form-vertical) {
       max-width: 800px;
     }
   }
@@ -245,36 +245,83 @@
     }
   }
 
-}
+  .editable-cell {
+    position: relative;
+  }
 
-.editable-cell {
-  position: relative;
-}
+  .editable-cell-value-wrap {
+    padding: 5px 12px;
+    cursor: pointer;
+  }
 
-.editable-cell-value-wrap {
-  padding: 5px 12px;
-  cursor: pointer;
-}
+  .editable-row:hover .editable-cell-value-wrap {
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    padding: 4px 11px;
+  }
 
-.editable-row:hover .editable-cell-value-wrap {
-  border: 1px solid #d9d9d9;
-  border-radius: 4px;
-  padding: 4px 11px;
-}
+  .ant-card-head {
+    border-bottom: 0;
+    min-height: 40px;
+  }
 
-.ant-card-head{
-  border-bottom:0;
-  min-height:40px;
-}
+  .ant-card-head-title {
+    padding: 8px 0;
+  }
 
-.ant-card-head-title{
-  padding: 8px 0;
-}
+  .ant-card-body {
+    padding: 10px 24px;
+    p {
+      white-space: normal;
+      margin-bottom: 0.6em;
+    }
+  }
 
-.ant-card-body{
-  padding: 10px 24px;
-  p {
-    white-space: normal;
-    margin-bottom: 0.6em;
+  .step-status {
+    &-running {
+      transition: all .4s cubic-bezier(.08, .82, .17, 1) 0s;
+    }
+    &-running:before {
+      content: "";
+      opacity: 0;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #fff;
+      //border-radius: 10px;
+      -webkit-animation: ant-progress-active 2.4s cubic-bezier(.23, 1, .32, 1) infinite;
+      animation: ant-progress-active 2.4s cubic-bezier(.23, 1, .32, 1) infinite
+    }
+    @-webkit-keyframes ant-progress-active {
+      0% {
+        opacity: 0.1;
+        width: 0;
+      }
+      20% {
+        opacity: 0.5;
+        width: 0;
+      }
+      100% {
+        opacity: 0;
+        width: 100%;
+      }
+    }
+    @keyframes ant-progress-active {
+      0% {
+        opacity: 0.1;
+        width: 0;
+      }
+      20% {
+        opacity: 0.5;
+        width: 0;
+      }
+      100% {
+        opacity: 0;
+        width: 100%;
+      }
+    }
   }
 }
+

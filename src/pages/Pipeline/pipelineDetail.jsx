@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import './index.scss'
+import {formatTime} from '@/utils/utils'
 import { reqPost, reqGet,reqDelete,reqPostURLEncode } from '@/api/api'
 import toPairs from 'lodash.topairs'
 import uniq from 'lodash.uniq'
@@ -124,6 +125,7 @@ class pipelineDetail extends Component {
             exexTime:'',
             timer: null,
             timerStart: null,
+            historyDetail:false,
         }
     }
 
@@ -248,6 +250,21 @@ class pipelineDetail extends Component {
     getPackageresult = () => {
     }
 
+    setStepStatus =(item) =>{
+        let stepStatus = item.stepStatus
+        switch (stepStatus) {
+            case 0:
+                break;
+            case 1:
+                return `#1890ff`
+                break;
+            case 2:
+                return enumPipelineResultColor[item.stepResult]
+                break;
+
+        }
+    }
+
     handleDeletePipeline = () =>{
         reqDelete(`/pipeline/deletetask/${this.props.match.params.taskID}`).then((res) => {
             if (res.code === 0) {
@@ -271,6 +288,7 @@ class pipelineDetail extends Component {
     changeHistory = (buildNum)=>{
         clearTimeout(this.state.timer);
         this.getHistoryDetail(buildNum)
+        this.setState({historyDetail:true})
     }
 
     getHistoryDetail = (buildNum) =>{
@@ -304,6 +322,7 @@ class pipelineDetail extends Component {
             taskResult,
             exexTime,
             lastExecTime,
+            execTimeStr,
             createTime,
             updateTime
 
@@ -319,6 +338,7 @@ class pipelineDetail extends Component {
             taskResult,
             exexTime,
             lastExecTime,
+            execTimeStr,
             createTime,
             updateTime
         })
@@ -412,9 +432,11 @@ class pipelineDetail extends Component {
             taskStatus,
             taskResult,
             lastExecTime,
+            execTimeStr,
             finalStep,
             stepsList,
-            waitCount
+            waitCount,
+            historyDetail
         } = this.state
         // 数据源
         const data = [
@@ -432,7 +454,7 @@ class pipelineDetail extends Component {
         };
 
         return (
-            <div>
+            <div className="pipeline">
                 <Breadcrumb className="devops-breadcrumb">
                     <BreadcrumbItem><Link to="/home">首页</Link></BreadcrumbItem>
                     <BreadcrumbItem><Link to="/pipeline">流水线</Link></BreadcrumbItem>
@@ -476,11 +498,11 @@ class pipelineDetail extends Component {
                                                 onChange={this.changeHistory}
                                                 style={{width: 300}}>
                                             {
-                                                this.state.historyBranch.map((item) => {
+                                                this.state.historyBranch.map((item,key) => {
                                                     return <Option
                                                         title={item.buildNum+''}
                                                         value={item.buildNum}
-                                                        key={item.buildNum}
+                                                        key={key}
                                                     >{item.updateTime}</Option>
                                                 })
                                             }
@@ -510,12 +532,18 @@ class pipelineDetail extends Component {
                                 <Row>
                                     <Col span={20}>
                                         <div className="pipeline-item-main">
-                                            <p className="pipeline-item-timemeta">
+                                            {
+                                                !historyDetail && <p className="pipeline-item-timemeta">
                                                 <span><i>最近执行时间：</i>{lastExecTime}</span>
                                                 <span><i>执行分支：</i>{branchName}</span>
-                                                <span><i>最近执行时长：</i>{this.state.exexTime}</span>
-                                            </p>
-
+                                                <span><i>最近执行时长：</i>{execTimeStr}</span>
+                                                </p>
+                                            }
+                                            {historyDetail && <p className="pipeline-item-timemeta">
+                                                <span><i>执行时间：</i>{lastExecTime}</span>
+                                                <span><i>执行分支：</i>{branchName}</span>
+                                                <span><i>执行时长：</i>{this.state.exexTime}</span>
+                                            </p>}
                                         </div>
                                     </Col>
                                     <Col span={4}>
@@ -541,13 +569,15 @@ class pipelineDetail extends Component {
                                     {finalStep.map((item, index) => {
                                         return <Step title={enumStepsText[item[0]].title} key={index} description={
                                             item[1].map((item, index) => {
-                                                // console.log(item)
+
                                                 return <Card
-                                                        style={{width: 150, marginLeft: '-18%',background:enumPipelineResultColor[item.stepResult]}}
+                                                        style={{width: 150, marginLeft: '-18%',background:this.setStepStatus(item)}}
                                                         title={item.stepName}
+                                                        className={item.stepStatus === 1? 'step-status-running':''}
                                                         key={item.stepID}
                                                     >
                                                         <p>{item.stepDesc}</p>
+
                                                     </Card>
                                             })
 
