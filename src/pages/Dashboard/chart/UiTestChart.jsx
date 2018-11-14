@@ -20,11 +20,14 @@ class UiTestChart extends React.Component {
     const scale = {
       createTime: {
         type: "timeCat",
-        mask: "MM-DD hh:mm",
+        mask: "MM-DD HH:mm",
         alias:'日期'
       },
       successRateValue:{
-        alias:'百分比(%)'
+        alias:'百分比(%)',
+        min:0,
+        max:100,
+        tickInterval:20
       }
     };
     const label = {
@@ -63,6 +66,13 @@ class UiTestChart extends React.Component {
                 position="createTime*successRateValue"
                 size={2}
                 color={"successRate"}
+                tooltip={['successRate*successRateValue*createTime', (successRate, successRateValue,createTime) => {
+                  return {
+                    //自定义 tooltip 上显示的 title 显示内容等。
+                    name: successRate,
+                    value: successRateValue+'%'
+                  };
+                }]}
             />
             <Geom
                 type="point"
@@ -74,6 +84,13 @@ class UiTestChart extends React.Component {
                   stroke: "#fff",
                   lineWidth: 1
                 }}
+                tooltip={['successRate*successRateValue*createTime', (successRate, successRateValue,createTime) => {
+                  return {
+                    //自定义 tooltip 上显示的 title 显示内容等。
+                    name: successRate,
+                    value: successRateValue+'%'
+                  };
+                }]}
             />
           </Chart>
         </div>

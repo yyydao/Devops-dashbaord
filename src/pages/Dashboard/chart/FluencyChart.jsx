@@ -20,14 +20,16 @@ class FluencyChart extends React.Component {
     const scale = {
       createTime: {
         type: "timeCat",
-        mask: "MM-DD hh:mm",
+        mask: "MM-DD HH:mm",
         alias:'日期'
       },
       smValue:{
-        alias:'流畅度(帧/s)'
+        alias:'流畅度(帧/s)',
+        min:0
       },
       coldStartTimeValue:{
-        alias:'冷启动时间(ms)'
+        alias:'冷启动时间(s)',
+        min:0
       }
     }
     const label = {
@@ -39,7 +41,23 @@ class FluencyChart extends React.Component {
     }
     return (
         <div>
-          <Chart height={400} data={this.props.fluencyData} scale={scale} padding="auto" forceFit>
+          <Chart height={400}
+                 data={this.props.fluencyData}
+                 scale={scale}
+                 padding="auto"
+                 forceFit
+                 onTooltipChange={(ev)=>{
+                   if(ev.items.length===2){
+                     ev.items.splice(1)
+                   }
+                   ev.items.map(item=>{
+                     if(item.name.indexOf('FPS')>-1){
+                       item.value=item.value+"帧/s"
+                     }else{
+                       item.value=item.value+"s"
+                     }
+                   })
+                 }}>
             <Legend />
             <Axis name="smValue"
                   label={{
@@ -74,7 +92,6 @@ class FluencyChart extends React.Component {
                 crosshairs={{
                   type: "y"
                 }}
-                itemTpl='<li data-index={index}><span style="background-color:{color};width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:8px;"></span>{name}: {value}</li>'
             />
             <Geom
                 type="line"

@@ -17,12 +17,13 @@ class packageChart extends React.Component {
     const scale = {
       createTime: {
         type: "timeCat",
-        mask: "MM-DD hh:mm",
+        mask: "MM-DD HH:mm",
         alias:'日期'
         // formatter: () => {}, // 格式化文本内容
       },
       appFileSize:{
-        alias:'占用(MB)'
+        alias:'占用(MB)',
+        min:0
       }
     };
     const titles={

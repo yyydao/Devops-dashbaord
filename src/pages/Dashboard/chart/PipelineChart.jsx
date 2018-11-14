@@ -26,12 +26,13 @@ class pipelineChart extends React.Component {
     const scale = {
       createTime: {
         type: "timeCat",
-        mask: "MM-DD hh:mm",
+        mask: "MM-DD HH:mm",
         alias:'日期'
         // formatter: () => {}, // 格式化文本内容
       },
       execTime:{
-        alias:'执行耗时(s)'
+        alias:'执行耗时(s)',
+        min:0
       }
     };
     const titles={
@@ -62,11 +63,12 @@ class pipelineChart extends React.Component {
             />
             <Tooltip
                 crosshairs={{
-                  type: "y"
+                  type: "line"
                 }}
             />
             <Geom
-                type="line"
+                type="area"
+                adjustType="stack"
                 position="createTime*execTime"
                 size={2}
                 color={"stepName"}
@@ -74,25 +76,7 @@ class pipelineChart extends React.Component {
                   return {
                     //自定义 tooltip 上显示的 title 显示内容等。
                     name: `${stepName}(${type[stepCategory]})`,
-                    value: execTime
-                  };
-                }]}
-            />
-            <Geom
-                type="point"
-                position="createTime*execTime"
-                size={4}
-                shape={"circle"}
-                color={"stepName"}
-                style={{
-                  stroke: "#fff",
-                  lineWidth: 1
-                }}
-                tooltip={['stepName*stepCategory*execTime', (stepName, stepCategory,execTime) => {
-                  return {
-                    //自定义 tooltip 上显示的 title 显示内容等。
-                    name: `${stepName}(${type[stepCategory]})`,
-                    value: execTime
+                    value: execTime+'s'
                   };
                 }]}
             />

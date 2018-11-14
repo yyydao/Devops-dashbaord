@@ -22,11 +22,14 @@ class UnitTestChart extends React.Component {
     const cols = {
       createTime: {
         type: "timeCat",
-        mask: "MM-DD hh:mm",
+        mask: "MM-DD HH:mm",
         alias:'日期'
       },
       sqaleValue:{
-        alias:'百分比(%)'
+        alias:'百分比(%)',
+        min:0,
+        max:100,
+        tickInterval:20
       }
     };
     const titles={
@@ -59,13 +62,19 @@ class UnitTestChart extends React.Component {
                 crosshairs={{
                   type: "y"
                 }}
-                itemTpl= '<li data-index={index}><span style="background-color:{color};width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:8px;"></span>{name}: {value}</li>'
             />
             <Geom
                 type="line"
                 position="createTime*sqaleValue"
                 size={2}
                 color={"metric"}
+                tooltip={['metric*sqaleValue*createTime', (metric, sqaleValue,createTime) => {
+                  return {
+                    //自定义 tooltip 上显示的 title 显示内容等。
+                    name: metric,
+                    value: sqaleValue+'%'
+                  };
+                }]}
             />
             <Geom
                 type="point"
@@ -77,6 +86,13 @@ class UnitTestChart extends React.Component {
                   stroke: "#fff",
                   lineWidth: 1
                 }}
+                tooltip={['metric*sqaleValue*createTime', (metric, sqaleValue,createTime) => {
+                  return {
+                    //自定义 tooltip 上显示的 title 显示内容等。
+                    name: metric,
+                    value: sqaleValue+'%'
+                  };
+                }]}
             />
           </Chart>
         </div>

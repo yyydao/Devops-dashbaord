@@ -154,6 +154,7 @@ class Dashboard extends Component{
           cData.push({
             cpu:'平均CPU',
             cpuValue:parseFloat(item[i]),
+            text:item[i],
             createTime:item['createTime']
           })
         }
@@ -161,6 +162,7 @@ class Dashboard extends Component{
           cData.push({
             cpu:'最高CPU',
             cpuValue:parseFloat(item[i]),
+            text:item[i],
             createTime:item['createTime']
           })
         }
@@ -168,12 +170,14 @@ class Dashboard extends Component{
           cData.push({
             memory:'平均内存',
             memoryValue:parseFloat(item[i]),
+            text:item[i],
             createTime:item['createTime']
           })
         }
         if(i.indexOf('memoryMax')!==-1){
           cData.push({
             memory:'最高内存',
+            text:item[i],
             memoryValue:parseFloat(item[i]),
             createTime:item['createTime']
           })
@@ -302,7 +306,9 @@ class Dashboard extends Component{
                   <p>
                     <Button type="primary" onClick={(e)=>{this.openUrl(basicInformation.reinforceAppPath,0)}}>原包下载</Button>
                   </p>
-                  <Button type="primary" onClick={(e)=>{this.openUrl(basicInformation.reinforceAppPath,1)}}>加固包下载</Button>
+                  {
+                    basicInformation.reinforceAppPath && <Button type="primary" onClick={(e)=>{this.openUrl(basicInformation.reinforceAppPath,1)}}>加固包下载</Button>
+                  }
                 </Col>
               </Row>
             </Card>

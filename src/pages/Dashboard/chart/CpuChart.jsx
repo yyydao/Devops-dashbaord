@@ -20,14 +20,18 @@ class CpuChart extends React.Component {
     const scale = {
       createTime: {
         type: "timeCat",
-        mask: "MM-DD hh:mm",
+        mask: "MM-DD HH:mm",
         alias:'日期'
       },
       cpuValue:{
-        alias:'CPU(%)'
+        alias:'CPU(%)',
+        min:0,
+        max:100,
+        tickInterval:20
       },
       memoryValue:{
-        alias:'内存(MB)'
+        alias:'内存(MB)',
+        min:0
       }
     }
     const label = {
@@ -39,7 +43,23 @@ class CpuChart extends React.Component {
     }
     return (
         <div>
-          <Chart height={400} data={this.props.cpuData} scale={scale} padding="auto" forceFit>
+          <Chart height={400}
+                 data={this.props.cpuData}
+                 scale={scale} padding="auto"
+                 forceFit
+                 onTooltipChange={(ev)=>{
+                   if(ev.items.length===3){
+                     ev.items.splice(1)
+                   }
+                  ev.items.map(item=>{
+                    if(item.name.indexOf('CPU')>-1){
+                      item.value=item.value+"%"
+                    }
+                    if(item.name.indexOf('内存')>-1){
+                      item.value=item.value+"MB"
+                    }
+                  })
+                }}>
             <Legend />
             <Axis name="cpuValue"
                   label={{
@@ -74,7 +94,6 @@ class CpuChart extends React.Component {
                 crosshairs={{
                   type: "y"
                 }}
-                itemTpl='<li data-index={index}><span style="background-color:{color};width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:8px;"></span>{name}: {value}</li>'
             />
             <Geom
                 type="line"
