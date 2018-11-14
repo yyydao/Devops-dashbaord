@@ -280,7 +280,7 @@ class Edit extends Component {
         reqPost('/branch/selectBranch', {
             projectId: this.props.projectId,
             branchName: value,
-            pageSize: 100,
+            pageSize: 1000,
             pageNum: 1,
             type: 1,
             search: value ? 1 : ''
@@ -305,9 +305,7 @@ class Edit extends Component {
             taskID: this.props.match.params.taskID
         }).then((res) => {
             if (res.code === 0) {
-                console.log(res)
                 let branchID = res.task.branchID
-                console.log(branchID)
                 this.props.form.setFieldsValue({
                     taskName: res.task.taskName,
                     ddStatusSwitch:res.task.ddStatus === 1,

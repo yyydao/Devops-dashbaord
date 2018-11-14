@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import './index.scss'
 import { reqPost, reqGet,reqPostURLEncode } from '@/api/api'
-
+import {formatTime} from '@/utils/utils'
 import { Steps, Breadcrumb, Card, Button, Icon, Collapse, Row, Col, message } from 'antd'
 import { Radio } from 'antd/lib/radio'
 
@@ -155,7 +155,7 @@ class Pipeline extends Component {
                                         <Row type="flex" justify="space-between">
                                             <Col span={12}>
                                                 <Link to={`/pipeline/detail/${item.taskID}`}><h2>{item.taskName}
-                                                    <span>（ID：{item.taskID}）</span></h2></Link>
+                                                    <span>（ID：{item.taskCode}）</span></h2></Link>
                                             </Col>
                                             <Col span={12}>
                                                 <div className="pipeline-item-user">
@@ -170,7 +170,7 @@ class Pipeline extends Component {
                                                     <p className="pipeline-item-timemeta">
                                                         <span><i>最近执行时间：</i>{item.lastExecTime}</span>
                                                         <span><i>执行分支：</i>{item.branchName}</span>
-                                                        <span><i>最近执行时长：</i>{item.exexTime}</span>
+                                                        <span><i>最近执行时长：</i>{item.execTimeStr}</span>
                                                     </p>
                                                     <Steps size="small" status={enumStatus[item.taskStatus]}
                                                            current={item.taskStatus === 2? 5:item.taskStatus}>

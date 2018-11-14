@@ -209,7 +209,7 @@ class AddPipeline extends Component {
         reqPost('/branch/selectBranch', {
             projectId: this.props.projectId,
             branchName: value,
-            pageSize: 100,
+            pageSize: 1000,
             pageNum: 1,
             type: 1,
             search: value ? 1 : ''
@@ -272,7 +272,6 @@ class AddPipeline extends Component {
             jenkinsJob = this.props.location.state.jenkinsJob
             branchName = this.props.location.state.branchName
         }
-        console.log(`fxxk ${branchID}`)
 
         this.props.form.setFieldsValue({
             taskName: taskName,
