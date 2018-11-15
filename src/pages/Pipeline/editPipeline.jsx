@@ -234,30 +234,38 @@ class Edit extends Component {
     }
 
     handleAddNewTask = (item) => {
-        console.log(this.state.stepsList)
-        console.log(this.state.stepCategory)
-
         let stepsList = this.state.stepsList
+        let stepCodeList = []
         for (let i = 0; i < stepsList.length; i++) {
-            const stepElement = stepsList[i]
-            console.log(stepElement)
-            if(stepElement.stepCategory+'' === this.state.stepCategory+''){
-                if(stepElement.stepCode+'' === item.stepCode+''){
-                    message.error('请勿重复创建同类型任务')
-                }else{
-                    this.handleJumpToTask(item)
-                }
-            }else{
-                this.handleJumpToTask(item)
-            }
+            const stepsListElement = stepsList[i]
+            stepCodeList.push(stepsListElement.stepCode)
         }
+        if(stepCodeList.includes(item.stepCode)){
+            message.error('请勿重复创建同类型任务')
+            return
+        }else{
+            this.handleJumpToTask(item)
+        }
+
+        // for (let i = 0; i < stepsList.length; i++) {
+        //     const stepElement = stepsList[i]
+        //     console.log(stepElement)
+        //     if(stepElement.stepCategory+'' === this.state.stepCategory+''){
+        //         if(stepElement.stepCode+'' === item.stepCode+''){
+        //             message.error('请勿重复创建同类型任务')
+        //             return
+        //         }else{
+        //             this.handleJumpToTask(item)
+        //         }
+        //     }else{
+        //         this.handleJumpToTask(item)
+        //     }
+        // }
 
     }
 
     handleJumpToTask = (item)=>{
         let data = this.props.form.getFieldsValue();
-        console.log(item)
-        console.log()
         this.props.history.push({
                 state:  {
                     branchID:this.state.branchID,

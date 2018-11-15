@@ -181,26 +181,42 @@ class AddPipeline extends Component {
     }
 
     handleAddNewTask = (item) => {
-            let stepsList = this.state.stepsList
-            for (let i = 0; i < this.state.stepsList.length; i++) {
-                const stepElement = stepsList[i]
-                if(stepElement[0] === this.state.stepCategory){
-                    if(stepElement[1].length>0){
-                        for (let j = 0; j < stepElement[1].length; j++) {
-                            const stepElementElement = stepElement[1][j]
-                            if(stepElementElement.stepCode === item.stepCode){
-                                message.error('请勿重复创建同类型任务')
-                            }else{
-                                this.handleJumpToTask(item)
-                            }
-                        }
-
-                    }else{
-                        this.handleJumpToTask(item)
-                    }
-
-                }
+        let stepsList = this.state.stepsList
+        let stepCodeList = []
+        for (let i = 0; i < stepsList.length; i++) {
+            const categoryItem = stepsList[i][1]
+            for (let j = 0; j < categoryItem.length; j++) {
+                const categoryItemElement = categoryItem[j]
+                stepCodeList.push(categoryItemElement.stepCode)
             }
+
+        }
+        if(stepCodeList.includes(item.stepCode)){
+            message.error('请勿重复创建同类型任务')
+            return
+        }else{
+            this.handleJumpToTask(item)
+        }
+
+        // for (let i = 0; i < this.state.stepsList.length; i++) {
+        //         const stepElement = stepsList[i]
+        //         if(stepElement[0] === this.state.stepCategory){
+        //             if(stepElement[1].length>0){
+        //                 for (let j = 0; j < stepElement[1].length; j++) {
+        //                     const stepElementElement = stepElement[1][j]
+        //                     if(stepElementElement.stepCode === item.stepCode){
+        //                         message.error('请勿重复创建同类型任务')
+        //                     }else{
+        //                         this.handleJumpToTask(item)
+        //                     }
+        //                 }
+        //
+        //             }else{
+        //                 this.handleJumpToTask(item)
+        //             }
+        //
+        //         }
+        //     }
 
     }
 
