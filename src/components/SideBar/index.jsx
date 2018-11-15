@@ -67,24 +67,9 @@ class SideBar extends Component{
 
         reqPost('/permission/list').then(res => {
             if(parseInt(res.code, 0) === 0){
-                //@todo:add menu
-                let fakepermissionList = res.data.permissionList
-                fakepermissionList.push('/pipeline')
-                fakepermissionList.push('/pipeline/detail')
-                let fakemenuList  = res.data.menuList
-                fakemenuList.push({appId: 103,
-                    createTime: "2018-10-18T18:10:16",
-                    id: 4409,
-                    link: false,
-                    menu: true,
-                    modifyTime: "2018-10-18T18:10:16",
-                    name: "流水线",
-                    parentId: 4428,
-                    urls: "/pipeline"})
-                setPermissionList(fakepermissionList)
-                const menuList = this.getMenuList(fakemenuList);
-                // setPermissionList(res.data.permissionList);
-                // const menuList = this.getMenuList(res.data.menuList);
+               
+                setPermissionList(res.data.permissionList);
+                const menuList = this.getMenuList(res.data.menuList);
                 this.setState({ menuList });
             }else{
                 message.error(res.msg);
