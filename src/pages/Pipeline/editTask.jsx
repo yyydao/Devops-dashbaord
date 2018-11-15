@@ -286,7 +286,7 @@ class taskEdit extends Component {
                                 ...values
                             })
                             message.info('修改成功');
-                            this.props.history.push(`/pipeline/edit/${this.props.location.state.taskID}`)
+                            this.props.history.replace(`/pipeline/edit/${this.props.location.state.taskID}`)
                         }
                     })
 
@@ -315,7 +315,7 @@ class taskEdit extends Component {
                                     ...values
                                 })
                                 message.info('修改成功');
-                                this.props.history.push(`/pipeline/edit/${this.state.step.taskID}`)
+                                this.props.history.replace(`/pipeline/edit/${this.state.step.taskID}`)
                             }
                         })
                     }else{
