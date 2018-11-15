@@ -665,17 +665,6 @@ class pipelineDetail extends Component {
                     <Card title="基本信息">
                     </Card>
                 </section>
-                <section className="pipeline-box" id="scan-result">
-                    <Card title="基本信息">
-                        <Chart width={600} height={400} data={data} scale={cols}>
-                            <Axis name="genre" />
-                            <Axis name="sold" />
-                            <Legend position="top" dy={-20} />
-                            <Tooltip />
-                            <Geom type="interval" position="genre*sold" color="genre" />
-                        </Chart>
-                    </Card>
-                </section>
             </div>
         )
     }
