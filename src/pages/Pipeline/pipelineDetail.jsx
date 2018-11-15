@@ -140,12 +140,35 @@ class pipelineDetail extends Component {
            return 5
        }else{
            let currentSteps = this.state.stepsList
-           for (let i = 0; i < currentSteps.length; i++) {
-               const currentStep = currentSteps[i]
-               if(currentStep.stepStatus === 1){
-                   return currentStep.stepCategory
+           if(this.state.taskStatus ===2){
+                if(this.state.taskResult === 2){
+                    for (let i = 0; i < currentSteps.length; i++) {
+                        const currentStep = currentSteps[i]
+                        // console.log(currentStep.stepStatus)
+                        if(currentStep.stepStatus === 2 && currentStep.stepResult === 2){
+                            return currentStep.stepCategory -1
+                        }
+                    }
+                }
+                if(this.state.taskResult === 3){
+                    for (let i = 0; i < currentSteps.length; i++) {
+                        const currentStep = currentSteps[i]
+                        // console.log(currentStep.stepStatus)
+                        if(currentStep.stepStatus === 2 && currentStep.stepResult === 3){
+                            return currentStep.stepCategory
+                        }
+                    }
+                }
+           }else{
+               for (let i = 0; i < currentSteps.length; i++) {
+                   const currentStep = currentSteps[i]
+                   // console.log(currentStep.stepStatus)
+                   if(currentStep.stepStatus === 1){
+                       return currentStep.stepCategory
+                   }
                }
            }
+
 
        }
     }
@@ -244,9 +267,9 @@ class pipelineDetail extends Component {
     }
 
     makeHistoryStepCard = (stepsList) => {
-        console.log(`stepsList ${JSON.stringify(stepsList)}`)
+        // console.log(`stepsList ${JSON.stringify(stepsList)}`)
         const category = uniq(stepsList.map(item => item.stepCategory))
-        console.log(category)
+        // console.log(category)
         let tempStepObject = {}
         let historyStep = []
         category.forEach((value, index) => {
@@ -262,7 +285,7 @@ class pipelineDetail extends Component {
 
         }
         historyStep = toPairs(tempStepObject)
-        console.log(historyStep)
+        // console.log(historyStep)
         this.setState({historyStep: historyStep})
     }
     getPipelineRunStatus = (stepsList)=>{
@@ -272,7 +295,7 @@ class pipelineDetail extends Component {
             if (res.code === 0) {
 
                 let statusList = res.list
-                console.log(statusList)
+                // console.log(statusList)
                 let temparray = []
                 statusList.map((statusItem)=>{
                     temparray.push(Object.assign({},stepsList.find((finalStepItem)=>finalStepItem.stepCode===statusItem.stepCode),statusItem))
@@ -305,8 +328,23 @@ class pipelineDetail extends Component {
                 const currentStep = steps[i]
                 stepsRunStatus.push(currentStep.stepStatus)
             }
+            // console.log(stepsRunStatus)
             if(stepsRunStatus.includes(1)){
-                return <Icon type="loading" />
+                switch (this.state.taskStatus) {
+                    case 0:
+                        return ''
+                    break;
+                    case 1:
+                        return <Icon type="loading" />
+                    break;
+                    case 2:
+                        return ''
+                    break;
+                    case 3:
+                        return ''
+
+                }
+
             }
         }
 
@@ -402,7 +440,6 @@ class pipelineDetail extends Component {
             taskID: this.props.match.params.taskID
 
         }).then((res) => {
-            console.log(res)
             if (res.code === 0) {
                 this.setState({taskStatus: 1})
                 message.success('开始执行')
@@ -450,6 +487,17 @@ class pipelineDetail extends Component {
     }
 
     componentWillMount () {
+        // console.log(this.props.location.state.taskRunningStatus)
+        // if(this.props.location.state && this.props.location.state.taskRunningStatus === 1){
+        //     this.setState({taskStatus:1})
+        //
+        //     const value = this.props.location.state.someValue;
+        //     // clear state.someValue from history
+        //     browserHistory.replace({
+        //         pathname: '/mycomponent',
+        //         state: {}
+        //     });
+        // }
     }
 
     componentDidMount () {
@@ -624,7 +672,7 @@ class pipelineDetail extends Component {
                                                 return <Card
                                                         style={{width: 150, marginLeft: '-18%',background:this.setStepStatus(item)}}
                                                         title={item.stepName}
-                                                        className={item.stepStatus === 1? 'step-status-running':''}
+                                                        className={taskStatus===1?(item.stepStatus === 1? 'step-status-running':''): '' }
                                                         key={item.stepID}
                                                     >
                                                         <p>{item.stepDesc}</p>
