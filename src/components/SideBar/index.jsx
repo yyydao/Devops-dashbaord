@@ -81,42 +81,6 @@ class SideBar extends Component{
                     name: "流水线",
                     parentId: 4428,
                     urls: "/pipeline"})
-                fakemenuList.push({appId: 104,
-                    createTime: "2018-10-18T18:10:16",
-                    id: 4410,
-                    link: false,
-                    menu: true,
-                    modifyTime: "2018-10-18T18:10:16",
-                    name: "仪表盘",
-                    parentId: 4428,
-                    urls: "/dashboard"})
-                fakemenuList.push({appId: 105,
-                    createTime: "2018-10-18T18:10:16",
-                    id: 4411,
-                    link: false,
-                    menu: true,
-                    modifyTime: "2018-10-18T18:10:16",
-                    name: "第三方配置",
-                    parentId: 4428,
-                    urls: "/thirdparty"})
-                fakemenuList.push({appId: 106,
-                    createTime: "2018-10-18T18:10:16",
-                    id: 4412,
-                    link: false,
-                    menu: true,
-                    modifyTime: "2018-10-18T18:10:16",
-                    name: "通知管理",
-                    parentId: 4428,
-                    urls: "/noticeManager"})
-                fakemenuList.push({appId: 107,
-                    createTime: "2018-10-18T18:10:16",
-                    id: 4413,
-                    link: false,
-                    menu: true,
-                    modifyTime: "2018-10-18T18:10:16",
-                    name: "执行报告",
-                    parentId: 4428,
-                    urls: "/exeReport"})
                 setPermissionList(fakepermissionList)
                 const menuList = this.getMenuList(fakemenuList);
                 // setPermissionList(res.data.permissionList);
