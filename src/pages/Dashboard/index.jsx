@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Breadcrumb, Row, Col, Tag, Button, message, Divider, Select, Card, Modal } from 'antd';
 
 import PipelineChart from './chart/PipelineChart';
+import PipelineChart1 from './chart/PipelineChart1';
 import UnitTestChart from './chart/UnitTestChart';
 import UiTestChart from './chart/UiTestChart';
 import PackageChart from './chart/PackageChart';
@@ -12,6 +13,7 @@ import CpuChart from './chart/CpuChart';
 import { reqPost, reqGet} from '@/api/api';
 import './index.scss';
 import DataSet from "@antv/data-set";
+import { setProjectId } from '@/store/action';
 
 const BreadcrumbItem = Breadcrumb.Item;
 const Option = Select.Option;
@@ -22,6 +24,7 @@ class Dashboard extends Component{
   constructor(){
     super();
     this.state = {
+      projectId:'',
       currentTaskId: "",
       taskList: [],
       basicInformation: {},
@@ -37,16 +40,24 @@ class Dashboard extends Component{
   }
 
   componentWillMount(){
-    window.localStorage.setItem('oldProjectId', this.props.projectId);
-    this.getTaskList()
+    let id = this.props.match.params.id;
+    if(id){
+      let { setProjectId } = this.props;
+      setProjectId(id);
+    }else {
+      id=window.localStorage.getItem('oldProjectId')
+    }
+    this.setState({projectId:id})
+    window.localStorage.setItem('oldProjectId', id);
+    this.getTaskList(id)
   }
 
   /**
    * @desc 获取流水线列表
    */
-  getTaskList(){
+  getTaskList = (projectId) =>{
     reqGet('/pipeline/tasklist', {
-      projectID: this.props.projectId,
+      projectID: projectId,
       page: 1,
       limit: 100
     }).then((res) => {
@@ -95,6 +106,7 @@ class Dashboard extends Component{
     let that=this;
       reqGet('/dashboard/report', {
         taskId:this.state.currentTaskId,
+        dataType:2
       }).then((res) => {
         if (res.code === 0) {
           res.data.unitTestMonitors.map(item=>item.sqaleValue=parseFloat(item.sqaleValue))
@@ -313,7 +325,8 @@ class Dashboard extends Component{
               </Row>
             </Card>
             <Card  title="流水线监控分析" style={{marginTop: 30}}>
-              <PipelineChart pipeLineData={monitorData.pipelines}></PipelineChart>
+              {/*<PipelineChart pipeLineData={monitorData.pipelines}></PipelineChart>*/}
+              <PipelineChart1 id={'kaka'} name={'kaka'} pipeLineData={monitorData.pipelines}></PipelineChart1>
             </Card>
             <Card  title="单元测试监控分析" style={{marginTop: 30}}>
               <UnitTestChart unitData={monitorData.unitTestMonitors}></UnitTestChart>
@@ -342,6 +355,6 @@ class Dashboard extends Component{
 // const DashboardForm = Form.create()(Dashboard);
 export default connect(state => {
   return{
-    projectId: state.projectId
+    // projectId: state.projectId
   }
-}, {})(Dashboard);
+}, { setProjectId })(Dashboard);

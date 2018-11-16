@@ -49,7 +49,7 @@ class pipelineChart extends React.Component {
     }
     return (
         <div>
-          <Chart height={400} data={pipeLineData} scale={scale} padding="auto" forceFit>
+          <Chart height={400} data={pipeLineData} scale={scale} padding="auto" forceFit animate>
             <Legend />
             <Axis name="createTime" title={titles} label={label}/>
             <Axis
@@ -90,7 +90,8 @@ class pipelineChart extends React.Component {
                       name: `${stepName}(${type[stepCategory]})`,
                       value: execTime+'s'
                     };
-                  }]}/>
+                  }]}
+            />
             <Geom type="lineStack"
                   position="createTime*execTime"
                   size={2}
