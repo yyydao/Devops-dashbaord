@@ -243,6 +243,11 @@ class pipelineDetail extends Component {
             }else{
                 message.error(res.msg)
             }
+        }).catch((e)=>{
+            message.error(e)
+            this.setState({
+                timer: null
+            });
         })
     }
     makeStepCard = (stepsList) => {
