@@ -239,6 +239,8 @@ class pipelineDetail extends Component {
                     timer: taskList &&  taskList.taskStatus !== 2 && (new Date().getTime() - this.state.timerStart < 3600000) ? setTimeout(this.getPipelineDetail, 10e3) : null
                 })
 
+            }else{
+                message.error(res.msg)
             }
         })
     }
@@ -301,6 +303,8 @@ class pipelineDetail extends Component {
                     temparray.push(Object.assign({},stepsList.find((finalStepItem)=>finalStepItem.stepCode===statusItem.stepCode),statusItem))
                 })
                 this.makeStepCard(temparray)
+            }else{
+                message.error(res.msg)
             }
         })
     }
@@ -367,6 +371,8 @@ class pipelineDetail extends Component {
                 if (res.code === 0) {
                     this.setState({waitCount:res.count})
                     this.setState({historyBranch:res.data})
+                }else{
+                    message.error(res.msg)
                 }
         })
     }
@@ -390,6 +396,8 @@ class pipelineDetail extends Component {
 
                     data && this.setState({exexTime:data.execTime})
                     this.makeHistoryStepCard(list)
+                }else{
+                    message.error(res.msg)
                 }
             })
         }

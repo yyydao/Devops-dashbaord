@@ -287,6 +287,8 @@ class taskEdit extends Component {
                             })
                             message.info('修改成功');
                             this.props.history.replace(`/pipeline/edit/${this.props.location.state.taskID}`)
+                        }else{
+                            message.error(res.msg)
                         }
                     })
 
@@ -316,6 +318,8 @@ class taskEdit extends Component {
                                 })
                                 message.info('修改成功');
                                 this.props.history.replace(`/pipeline/edit/${this.state.step.taskID}`)
+                            }else{
+                                message.error(res.msg)
                             }
                         })
                     }else{
@@ -453,6 +457,8 @@ class taskEdit extends Component {
                         stepName: res.step.stepName,
                         stepDesc: res.step.stepDesc
                     })
+                }else{
+                    message.error(res.msg)
                 }
             })
         }else{

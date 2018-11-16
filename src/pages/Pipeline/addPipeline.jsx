@@ -234,6 +234,8 @@ class AddPipeline extends Component {
                 this.setState({
                     branchList: res.data
                 })
+            }else{
+                message.error(res.msg)
             }
         })
     }
