@@ -95,7 +95,7 @@ class PipelineChart1 extends Component {
   }
 //这是一个最简单的饼图~
   setOption=(data)=> {
-    const type=['开始','构建','测试','部署','完成']
+    const type=['开始','构建','测试','部署','完成','无']
     let legend=[]
     let series=[]
     if(data){
@@ -122,7 +122,7 @@ class PipelineChart1 extends Component {
         formatter: function (params) {
           let res=`<div><p>${params[0].data[0]}</p></div>`
           for(var i=0;i<params.length;i++){
-            res+=`<p style="width: 150px">${params[i].marker}${params[i].seriesName}(${type[params[i].data[2]]}):<span style="float:right;padding-right: 8px">${params[i].data[1]}s</span></p>`
+            res+=`<p style="width: 180px">${params[i].marker}${params[i].seriesName}(${type[params[i].data[2]]}):<span style="float:right;padding-right: 8px">${params[i].data[1]}s</span></p>`
           }
           return res;
         }
@@ -138,8 +138,8 @@ class PipelineChart1 extends Component {
       },
       xAxis : [
         {
-          type : 'time',
-          boundaryGap : false
+          type : 'category'
+          // boundaryGap : false
         }
       ],
       yAxis : [
