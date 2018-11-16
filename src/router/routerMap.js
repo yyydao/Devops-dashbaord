@@ -21,119 +21,130 @@ import PackageDetail from '@/pages/Package/detail';
 import Dashboard from '@/pages/Dashboard'
 import ThirdParty from '@/pages/Setting/ThirdPartyManager'
 import NoticeManager from '@/pages/Setting/NoticeManager'
+import ExecutionReport from '@/pages/Setting/ExecutionReport'
 
 
 export default [
-    {
-        path: '/',
-        name: 'home',
-        component: Home,
-        hideSideBar: true
-    },
-    {
-        path: '/home',
-        name: 'home',
-        component: Home,
-        hideSideBar: true
-    },
-    {
-        path: '/personal',
-        name: 'personal',
-        component: Personal,
-        hideSideBar: true
-    },
-    {
-        path: '/welcome/:id',
-        name: 'welcome',
-        component: Welcome
-    },
-    {
-        path: '/projectInfo',
-        name: 'projectInfo',
-        component: ProjectInfo
-    },
-    {
-        path: '/memberManager',
-        name: 'memberManager',
-        component: MemberManager
-    },
-    {
-        path: '/branch',
-        name: 'branch',
-        component: Branch
-    },
-    {
-        path: '/configManager',
-        name: 'configManager',
-        component: ConfigManager
-    },
-    {
-        path: '/noticeManager',
-        name: 'noticeManager',
-        component: NoticeManager
-    },
-    {
-        path: '/performanceConfig',
-        name: 'performance',
-        component: Performance
-    },
-    {
-        path: '/package',
-        name: 'package',
-        component: Package
-    },
-    {
-        path: '/package/:envId',
-        name: 'packageList',
-        component: PackageList
-    },
-    {
-        path: '/package/detail/:buildId',
-        name: 'packageDetail',
-        component: PackageDetail
-    },
-    {
-        path: '/pipeline',
-        name: 'pipeline',
-        component: Pipeline
-    },
-    {
-        path: '/pipeline/detail/:taskID',
-        name: 'pipelineDetail',
-        component: PipelineDetail
-    },
-    {
-        path: '/pipeline/add',
-        name: 'PipelineAdd',
-        component: PipelineAdd
-    },
-    {
-        path: '/pipeline/task/add',
-        name: 'pipelineTask',
-        component: pipelineTask
-    },
-    {
-        path: '/pipeline/task/edit',
-        name: 'pipelineTaskEdit',
-        component: pipelineTaskEdit
-    },
-    {
-        path: '/pipeline/task/edit/:stepID',
-        name: 'pipelineTaskEdit',
-        component: pipelineTaskEdit
-    },
-    {
-        path: '/pipeline/edit/:taskID',
-        name: 'PipelineEdit',
-        component: PipelineEdit
-    },{
-      path: '/dashboard',
-      name: 'dashboard',
-      component: Dashboard
-    },
-    {
-      path: '/thirdparty',
-      name: 'thirdparty',
-      component: ThirdParty
-    }
+  {
+    path: '/',
+    name: 'home',
+    component: Home,
+    hideSideBar: true
+  },
+  {
+    path: '/home',
+    name: 'home',
+    component: Home,
+    hideSideBar: true
+  },
+  {
+    path: '/personal',
+    name: 'personal',
+    component: Personal,
+    hideSideBar: true
+  },
+  {
+    path: '/welcome/:id',
+    name: 'welcome',
+    component: Welcome
+  },
+  {
+    path: '/projectInfo',
+    name: 'projectInfo',
+    component: ProjectInfo
+  },
+  {
+    path: '/memberManager',
+    name: 'memberManager',
+    component: MemberManager
+  },
+  {
+    path: '/branch',
+    name: 'branch',
+    component: Branch
+  },
+  {
+    path: '/configManager',
+    name: 'configManager',
+    component: ConfigManager
+  },
+  {
+    path: '/noticeManager',
+    name: 'noticeManager',
+    component: NoticeManager
+  },
+  {
+    path: '/performanceConfig',
+    name: 'performance',
+    component: Performance
+  },
+  {
+    path: '/package',
+    name: 'package',
+    component: Package
+  },
+  {
+    path: '/package/:envId',
+    name: 'packageList',
+    component: PackageList
+  },
+  {
+    path: '/package/detail/:buildId',
+    name: 'packageDetail',
+    component: PackageDetail
+  },
+  {
+    path: '/pipeline',
+    name: 'pipeline',
+    component: Pipeline
+  },
+  {
+    path: '/pipeline/detail/:taskID',
+    name: 'pipelineDetail',
+    component: PipelineDetail
+  },
+  {
+    path: '/pipeline/add',
+    name: 'PipelineAdd',
+    component: PipelineAdd
+  },
+  {
+    path: '/pipeline/task/add',
+    name: 'pipelineTask',
+    component: pipelineTask
+  },
+  {
+    path: '/pipeline/task/edit',
+    name: 'pipelineTaskEdit',
+    component: pipelineTaskEdit
+  },
+  {
+    path: '/pipeline/task/edit/:stepID',
+    name: 'pipelineTaskEdit',
+    component: pipelineTaskEdit
+  },
+  {
+    path: '/pipeline/edit/:taskID',
+    name: 'PipelineEdit',
+    component: PipelineEdit
+  },{
+    path: '/dashboard/:id',
+    name: 'dashboard',
+    component: Dashboard
+  },
+  {
+    path: '/dashboard',
+    name: 'dashboard',
+    component: Dashboard
+  },
+  {
+    path: '/thirdparty',
+    name: 'thirdparty',
+    component: ThirdParty
+  },
+  {
+    path: '/exeReport',
+    name: 'exeReport',
+    component: ExecutionReport
+  }
 ]

@@ -36,7 +36,7 @@ class Layout extends Component{
     projectIdChange = (value) => {
         this.setState({ isRender: false }, () => {
             this.setState({ isRender: true })
-            this.props.history.replace(`/welcome/${value}`)
+            this.props.history.replace(`/dashboard/${value}`)
         })
     }
 

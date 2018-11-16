@@ -26,7 +26,7 @@ class Home extends Component{
                     title: '项目名称',
                     dataIndex: 'name',
                     key: 'name',
-                    render: (text, record) => <Link to={`/welcome/${record.id}`}>{ text }</Link>
+                    render: (text, record) => <Link to={`/dashboard/${record.id}`}>{ text }</Link>
                 },
                 {
                     title: '创建者',
