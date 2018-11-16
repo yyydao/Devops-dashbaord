@@ -40,12 +40,15 @@ axios.interceptors.response.use(
         return response;
     },
     err => {
-        if(err.response.status === 494){
+        if(!err.response){
+            message.error('内部错误')
+            return Promise.reject(err);
+        }
+        if(err.response && err.response.status === 494){
             window.location.href = err.response.data;
         }
 
         if(err.response){
-            console.info(err.response);
             if(err.response.data.message){
                 message.error(err.response.data.message);
             }else{
