@@ -55,7 +55,7 @@ class NoticeManager extends Component {
     }).then(res => {
       if (res.code === 0) {
         //判断每个任务模板是否全选
-        res.data.taskTemplate.map(item => {
+        res.data.taskTemplate.noticeTemplates.map(item => {
           if (!item.remind) {
             return
           }
@@ -68,7 +68,7 @@ class NoticeManager extends Component {
           item.selectAll = selectAll
         })
         //判断每个环境模板是否全选
-        res.data.envTemplate.map(item => {
+        res.data.envTemplate.noticeTemplates.map(item => {
           if (!item.remind) {
             return
           }
@@ -81,12 +81,12 @@ class NoticeManager extends Component {
           item.selectAll = selectAll1
         })
         this.setState({
-          taskTemplate: res.data.taskTemplate,
+          taskTemplate: res.data.taskTemplate.noticeTemplates,
           oldTaskTemplate: JSON.parse(JSON.stringify(res.data.taskTemplate)),
           oldEnvTemplate: JSON.parse(JSON.stringify(res.data.envTemplate)),
-          envTemplate: res.data.envTemplate,
-          envToken: res.data.envTemplate[0].accessToken,
-          taskToken: res.data.taskTemplate[0].accessToken
+          envTemplate: res.data.envTemplate.noticeTemplates,
+          envToken: res.data.envTemplate.accessToken,
+          taskToken: res.data.taskTemplate.accessToken
         })
       } else {
         message.error(res.msg);
@@ -239,7 +239,11 @@ class NoticeManager extends Component {
       delete item.contentItems
     })
 
-    reqPost('messageNotice/save', uploadData).then(res => {
+    let uploadObj={}
+    uploadObj.accessToken= type==='envTemplate'?this.state.envToken:this.state.taskToken
+    uploadObj.messageNoticeManages=uploadData
+
+    reqPost('messageNotice/save', uploadObj).then(res => {
       if (res.code === 0) {
         message.success('保存成功');
       } else {
@@ -262,7 +266,7 @@ class NoticeManager extends Component {
             <p className="nm-title">【提测】-- 钉钉消息</p>
             <div className="nm-item">
               <span className="nm-key">access_token：</span>
-              <input className="nm-input" defaultValue={envToken} disabled/>
+              <input className="nm-input" value={envToken} onChange={(e)=>{this.setState({envToken:e.target.value})}}/>
             </div>
             <div className="nm-item">
               <div className="nm-item-left">
@@ -313,7 +317,10 @@ class NoticeManager extends Component {
                     this.saveData('envTemplate')
                   }}>保存</Button>
                   <Button type="primary" onClick={() => {
-                    this.setState({envTemplate: JSON.parse(JSON.stringify(oldEnvTemplate))})
+                    this.setState({
+                      envTemplate: JSON.parse(JSON.stringify(oldEnvTemplate.noticeTemplates)),
+                      envToken:oldEnvTemplate.accessToken
+                    })
                   }}>重置</Button>
                 </div>
               </div>
@@ -340,7 +347,7 @@ class NoticeManager extends Component {
             <p className="nm-title">【流水线】-- 钉钉消息</p>
             <div className="nm-item">
               <span className="nm-key">access_token：</span>
-              <input className="nm-input" defaultValue={taskToken} disabled/>
+              <input className="nm-input" value={taskToken}  onChange={(e)=>{this.setState({taskToken:e.target.value})}}/>
             </div>
             <div className="nm-item">
               <div className="nm-item-left">
@@ -389,8 +396,9 @@ class NoticeManager extends Component {
                   <Button type="primary" className="btn-group-item" onClick={() => {
                     this.saveData('taskTemplate')
                   }}>保存</Button>
-                  <Button type="primary" onClick={() => {
-                    this.setState({taskTemplate: JSON.parse(JSON.stringify(oldTaskTemplate))})
+                  <Button type="primary" onClick={() => {this.setState({
+                    taskTemplate: JSON.parse(JSON.stringify(oldTaskTemplate)),
+                    taskToken:oldTaskTemplate.accessToken})
                   }}>重置</Button>
                 </div>
               </div>
