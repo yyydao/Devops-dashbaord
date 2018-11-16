@@ -120,7 +120,6 @@ class PipelineChart1 extends Component {
           }
         },
         formatter: function (params) {
-          console.log(params)
           let res=`<div><p>${params[0].data[0]}</p></div>`
           for(var i=0;i<params.length;i++){
             res+=`<p style="width: 150px">${params[i].seriesName}(${type[params[i].data[2]]}):<span style="float:right;padding-right: 8px">${params[i].data[1]}s</span></p>`
