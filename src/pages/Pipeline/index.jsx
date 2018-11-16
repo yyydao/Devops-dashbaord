@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import './index.scss'
 import { reqPost, reqGet,reqPostURLEncode } from '@/api/api'
-import {formatTime} from '@/utils/utils'
+import {formatTime ,compatibleTime } from '@/utils/utils'
 import { Steps, Breadcrumb, Card, Button, Icon, Collapse, Row, Col, message } from 'antd'
 import { Radio } from 'antd/lib/radio'
 
@@ -73,7 +73,7 @@ class Pipeline extends Component {
 
         this.state = {
             pipelineList: [],
-            current: 0
+            current: 0,
         }
     }
 
@@ -89,15 +89,25 @@ class Pipeline extends Component {
         }).then((res) => {
             console.log(res)
             if (res.code === 0) {
-                this.setState({
-                    pipelineList: res.data.list
-                    // pipelineList: res.tasks
-                })
+                if(res.data.list){
+                    let list = res.data.list
+                    for (let i = 0; i < list.length; i++) {
+                        const listElement = list[i]
+                        list[i].distanceTime = formatTime(listElement.lastExecTime,'minute')
+                    }
+                    this.setState({
+                        pipelineList: list
+                        // pipelineList: res.tasks
+                    })
+                }
+
             }else{
                 message.error(res.msg)
             }
         })
     }
+
+
 
     runTask = (item) => {
 
@@ -170,7 +180,7 @@ class Pipeline extends Component {
                                             <Col span={20}>
                                                 <div className="pipeline-item-main">
                                                     <p className="pipeline-item-timemeta">
-                                                        <span><i>最近执行时间：</i>{item.lastExecTime}</span>
+                                                        <span><i>最近执行时间：</i>{item.distanceTime}</span>
                                                         <span><i>执行分支：</i>{item.branchName}</span>
                                                         <span><i>最近执行时长：</i>{item.execTimeStr}</span>
                                                     </p>
