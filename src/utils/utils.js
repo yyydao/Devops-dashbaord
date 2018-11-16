@@ -106,27 +106,52 @@ export function parseTime(time, cFormat) {
     return timeStr;
 }
 
-export function formatTime(time, option) {
+export function formatTime(time,precision, option) {
     if (!time) {
         return '-';
     }
-    const d = new Date(time);
+    let a = time.split(/[^0-9]/);
+    const d = new Date (a[0],a[1]-1,a[2],a[3],a[4],a[5] );
     const now = Date.now();
 
     const diff = (now - d) / 1000;
+    switch (precision) {
+        case 'minute':
 
-    if (diff < 30) {
-        return '刚刚';
-    } else if (diff < 3600) { // less 1 hour
-        return `${Math.ceil(diff / 60)}分钟前`;
-    } else if (diff < 3600 * 24) {
-        return `${Math.ceil(diff / 3600)}小时前`;
-    } else if (diff < 3600 * 24 * 2) {
-        return '1天前';
+            if (diff < 30) {
+                return '刚刚';
+            } else if (diff < 3600) { // less 1 hour
+                return `${Math.ceil(diff / 60)}分钟前`;
+            }
+            break;
+        case 'hour':
+
+            if (diff < 30) {
+                return '刚刚';
+            } else if (diff < 3600) { // less 1 hour
+                return `${Math.ceil(diff / 60)}分钟前`;
+            } else if (diff < 3600 * 24) {
+                return `${Math.ceil(diff / 3600)}小时前`;
+            }
+            break;
+        case 'day':
+
+            if (diff < 30) {
+                return '刚刚';
+            } else if (diff < 3600) { // less 1 hour
+                return `${Math.ceil(diff / 60)}分钟前`;
+            } else if (diff < 3600 * 24) {
+                return `${Math.ceil(diff / 3600)}小时前`;
+            } else if (diff < 3600 * 24 * 2) {
+                return '1天前';
+            }
+            break;
     }
+
     if (option) {
-        return parseTime(time, option);
+        return parseTime(time,precision, option);
     } else {
         return `${d.getMonth() + 1}月${d.getDate()}日${d.getHours()}时${d.getMinutes()}分`;
     }
 }
+

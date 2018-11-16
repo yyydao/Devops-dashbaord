@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import './index.scss'
-import {formatTime} from '@/utils/utils'
+import {formatTime ,compatibleTime } from '@/utils/utils'
 import { reqPost, reqGet,reqDelete,reqPostURLEncode } from '@/api/api'
 import toPairs from 'lodash.topairs'
 import uniq from 'lodash.uniq'
@@ -127,6 +127,7 @@ class pipelineDetail extends Component {
             timer: null,
             timerStart: null,
             showHistory:false,
+            distanceTime: ''
         }
     }
 
@@ -436,6 +437,7 @@ class pipelineDetail extends Component {
             createTime,
             updateTime
         })
+        this.showDistanceTime()
     }
 
     checkStepList = (stepsList) => {
@@ -494,18 +496,13 @@ class pipelineDetail extends Component {
         return oldFinalStep
     }
 
+    showDistanceTime=() =>{
+        let d = formatTime(this.state.lastExecTime,'minute')
+        console.log(d)
+        this.setState({distanceTime: d})
+    }
+
     componentWillMount () {
-        // console.log(this.props.location.state.taskRunningStatus)
-        // if(this.props.location.state && this.props.location.state.taskRunningStatus === 1){
-        //     this.setState({taskStatus:1})
-        //
-        //     const value = this.props.location.state.someValue;
-        //     // clear state.someValue from history
-        //     browserHistory.replace({
-        //         pathname: '/mycomponent',
-        //         state: {}
-        //     });
-        // }
     }
 
     componentDidMount () {
@@ -535,6 +532,7 @@ class pipelineDetail extends Component {
             taskStatus,
             taskResult,
             lastExecTime,
+            distanceTime,
             execTimeStr,
             finalStep,
             stepsList,
@@ -638,13 +636,13 @@ class pipelineDetail extends Component {
                                         <div className="pipeline-item-main">
                                             {
                                                 !showHistory && <p className="pipeline-item-timemeta">
-                                                <span><i>最近执行时间：</i>{lastExecTime}</span>
+                                                <span><i>最近执行时间：</i>{distanceTime}</span>
                                                 <span><i>执行分支：</i>{branchName}</span>
                                                 <span><i>最近执行时长：</i>{execTimeStr}</span>
                                                 </p>
                                             }
                                             {showHistory && <p className="pipeline-item-timemeta">
-                                                <span><i>执行时间：</i>{lastExecTime}</span>
+                                                <span><i>执行时间：</i>{distanceTime}</span>
                                                 <span><i>执行分支：</i>{branchName}</span>
                                                 <span><i>执行时长：</i>{this.state.exexTime}</span>
                                             </p>}
