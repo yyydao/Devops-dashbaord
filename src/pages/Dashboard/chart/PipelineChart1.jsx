@@ -116,7 +116,7 @@ class PipelineChart1 extends Component {
         axisPointer: {
           type: 'cross',
           label: {
-            backgroundColor: '#6a7985'
+            backgroundColor: '#fff'
           }
         },
         formatter: function (params) {
