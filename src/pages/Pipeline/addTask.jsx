@@ -326,7 +326,7 @@ class taskAdd extends Component {
                                 fullSteps: oldSteps,
                                 stepsList : stepsList
                             }))
-                            this.props.history.push({
+                            this.props.history.replace({
                                 pathname:`/pipeline/edit/${this.props.location.state.taskID}`,
                                 state: {
                                     fullSteps: oldSteps,
