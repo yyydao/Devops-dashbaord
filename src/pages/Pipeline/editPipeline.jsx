@@ -187,6 +187,8 @@ class Edit extends Component {
                     this.setState({fullSteps: oldSteps})
                     this.setState({stepsList: stepsList})
                     // setSteps(this.state.stepsList)
+                }else{
+                    message.error(res.msg)
                 }
             })
         }else{
@@ -297,6 +299,8 @@ class Edit extends Component {
                 this.setState({
                     branchList: res.data
                 })
+            }else{
+                message.error(res.msg)
             }
         })
     }
@@ -323,6 +327,8 @@ class Edit extends Component {
 
                 this.setState({branchID: res.task.branchID })
                 this.setState({branchName: res.task.branchName })
+            }else{
+                message.error(res.msg)
             }
         })
 

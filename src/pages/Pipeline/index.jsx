@@ -93,6 +93,8 @@ class Pipeline extends Component {
                     pipelineList: res.data.list
                     // pipelineList: res.tasks
                 })
+            }else{
+                message.error(res.msg)
             }
         })
     }
