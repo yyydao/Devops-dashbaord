@@ -166,7 +166,10 @@ class Pipeline extends Component {
                                     <div className="pipeline-item-header">
                                         <Row type="flex" justify="space-between">
                                             <Col span={12}>
-                                                <Link to={`/pipeline/detail/${item.taskID}`}><h2>{item.taskName}
+                                                <Link to={{
+                                                    pathname:`/pipeline/detail/${item.taskID}`,
+                                                    search: `?buildNumber=${item.buildNum}`
+                                                }}><h2>{item.taskName}
                                                     <span>（ID：{item.taskCode}）</span></h2></Link>
                                             </Col>
                                             <Col span={12}>

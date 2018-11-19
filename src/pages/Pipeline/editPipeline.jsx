@@ -22,6 +22,7 @@ import {
     Dropdown,
     Menu
 } from 'antd'
+import queryString from 'query-string'
 
 const BreadcrumbItem = Breadcrumb.Item
 const Step = Steps.Step
@@ -205,6 +206,7 @@ class Edit extends Component {
         if(item.stepID){
             this.props.history.push({
                 pathname:`/pipeline/task/edit/${item.stepID}`,
+                search:  this.props.location.search,
                 state: {
                     stepID:item.stepID,
                     stepCode: item.stepCode,
@@ -282,6 +284,7 @@ class Edit extends Component {
                     ...data
                 },
                 pathname: `/pipeline/task/add`,
+                search:  this.props.location.search,
             })
     }
 
@@ -313,8 +316,10 @@ class Edit extends Component {
     }
 
     setPipelineInfo(){
+        const parsedHash = queryString.parse(this.props.location.search);
         reqGet('/pipeline/taskdetail', {
-            taskID: this.props.match.params.taskID
+            taskID: this.props.match.params.taskID,
+            buildNum: parsedHash.buildNumber
         }).then((res) => {
             if (res.code === 0) {
                 let branchID = res.task.branchID

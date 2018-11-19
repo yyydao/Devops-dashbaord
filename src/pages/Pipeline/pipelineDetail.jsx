@@ -1,12 +1,15 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
+import queryString from 'query-string'
 import './index.scss'
 import {formatTime ,compatibleTime } from '@/utils/utils'
 import { reqPost, reqGet,reqDelete,reqPostURLEncode } from '@/api/api'
 import toPairs from 'lodash.topairs'
 import uniq from 'lodash.uniq'
 import { setStep,removeSteps,setSteps } from '@/store/action'
+
+
 
 import { Chart, Geom, Axis, Tooltip, Legend, Coord, track } from 'bizcharts';
 
@@ -209,6 +212,7 @@ class pipelineDetail extends Component {
         }))
         this.props.history.push({
             pathname: `/pipeline/edit/${this.props.match.params.taskID}`,
+            search:  this.props.location.search,
             state: {
                 fullSteps: this.state.fullSteps,
                 stepsList : this.state.stepsList,
@@ -218,6 +222,7 @@ class pipelineDetail extends Component {
     }
 
     getPipelineDetail = () => {
+        const parsedHash = queryString.parse(this.props.location.search);
         const {timer } = this.state;
         if (timer) {
             clearTimeout(timer);
@@ -226,9 +231,9 @@ class pipelineDetail extends Component {
             });
         }
 
-
         reqGet('/pipeline/taskdetail', {
-            taskID: this.props.match.params.taskID
+            taskID: this.props.match.params.taskID,
+            buildNum: parsedHash.buildNumber
         }).then((res) => {
             if (res.code === 0) {
                 const taskList = res.task
@@ -257,18 +262,22 @@ class pipelineDetail extends Component {
         let tempStepObject = {}
         let finalStep = []
         category.forEach((value, index) => {
-            tempStepObject[value] = []
+            if(value !== undefined){
+                tempStepObject[value] = []
+            }
         })
         for (let i = 0; i < stepsList.length; i++) {
             const stepListElement = stepsList[i]
             for (const tempStepObjectKey in tempStepObject) {
                 if (stepListElement.stepCategory + '' === tempStepObjectKey + '') {
-                    tempStepObject[tempStepObjectKey].push(stepListElement)
+                        tempStepObject[tempStepObjectKey].push(stepListElement)
                 }
             }
 
         }
+        // console.log(tempStepObject)
         finalStep = toPairs(tempStepObject)
+        // console.log(finalStep)
         this.setState({stepsList: stepsList})
         this.setState({finalStep: finalStep})
         this.setState({fullSteps: this.composeEditFinalStep(finalStep)})
@@ -297,8 +306,10 @@ class pipelineDetail extends Component {
         this.setState({historyStep: historyStep})
     }
     getPipelineRunStatus = (stepsList)=>{
+        const parsedHash = queryString.parse(this.props.location.search);
         reqGet('/pipeline/taskstatus',{
-            taskID: this.props.match.params.taskID
+            taskID: this.props.match.params.taskID,
+            buildNum: parsedHash.buildNumber
         }).then((res) => {
             if (res.code === 0) {
 
@@ -674,7 +685,7 @@ class pipelineDetail extends Component {
                                 >
                                     <Step title="开始"></Step>
 
-                                    {!showHistory && finalStep && finalStep.map((item, index) => {
+                                    {!showHistory && finalStep  && finalStep.map((item, index) => {
                                         return <Step title={enumStepsText[item[0]].title} key={index}
                                                      icon={this.setStepStatusIcon(item)}
                                                      description={

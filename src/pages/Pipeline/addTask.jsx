@@ -293,7 +293,7 @@ class taskAdd extends Component {
                     stepsList = this.props.location.state.stepsList
                     let notFormattedSteps = this.state.paramsDatasource;
                     let obj= isJsonString(stepParamstoObject(notFormattedSteps)) ? JSON.parse(stepParamstoObject(notFormattedSteps)): stepParamstoObject(notFormattedSteps)
-                    console.log(obj)
+                    // console.log(obj)
                     // let obj= transLocalStorage(stepParamstoObject(notFormattedSteps))
                     reqPost('pipeline/addstep',{
                         stepCategory: this.state.stepCategory,
@@ -328,6 +328,7 @@ class taskAdd extends Component {
                             }))
                             this.props.history.replace({
                                 pathname:`/pipeline/edit/${this.props.location.state.taskID}`,
+                                search:  this.props.location.search,
                                 state: {
                                     fullSteps: oldSteps,
                                     stepsList: stepsList,
