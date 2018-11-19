@@ -158,9 +158,9 @@ class PipelineChart1 extends Component {
           }
         },
         formatter: (params) =>{
-          let res=`<div><p>${params[0].data[0]}</p></div>`
+          let res=`<div><p style="font-size: 12px">${params[0].data[0]}</p></div>`
           for(let i=0;i<params.length;i++){
-            res+=`<p style="width: 180px">${params[i].marker}${params[i].seriesName}(${type[params[i].data[2]]}):<span style="float:right;padding-right: 8px">${this.formatSeconds(params[i].data[1])}</span></p>`
+            res+=`<p style="width: 180px;font-size: 12px">${params[i].marker}${params[i].seriesName}(${type[params[i].data[2]]}):<span style="float:right;padding-right: 8px">${this.formatSeconds(params[i].data[1])}</span></p>`
           }
           return res;
         }
