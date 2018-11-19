@@ -316,7 +316,7 @@ class Dashboard extends Component{
                 </Col>
                 <Col span={4} className="btn-group">
                   <p>
-                    <Button type="primary" onClick={(e)=>{this.openUrl(basicInformation.reinforceAppPath,0)}}>原包下载</Button>
+                    <Button type="primary" onClick={(e)=>{this.openUrl(basicInformation.sourceAppPath,0)}}>原包下载</Button>
                   </p>
                   {
                     basicInformation.reinforceAppPath && <Button type="primary" onClick={(e)=>{this.openUrl(basicInformation.reinforceAppPath,1)}}>加固包下载</Button>
