@@ -22,7 +22,7 @@ import {
     Dropdown,
     Menu
 } from 'antd'
-import queryString from 'query-string'
+import qs from 'qs'
 
 const BreadcrumbItem = Breadcrumb.Item
 const Step = Steps.Step
@@ -316,7 +316,8 @@ class Edit extends Component {
     }
 
     setPipelineInfo(){
-        const parsedHash = queryString.parse(this.props.location.search);
+        const parsedHash = qs.parse(this.props.location.search.slice(1));
+        console.log(parsedHash)
         reqGet('/pipeline/taskdetail', {
             taskID: this.props.match.params.taskID,
             buildNum: parsedHash.buildNumber

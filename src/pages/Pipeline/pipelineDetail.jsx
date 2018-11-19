@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import queryString from 'query-string'
+import qs from 'qs'
 import './index.scss'
 import {formatTime ,compatibleTime } from '@/utils/utils'
 import { reqPost, reqGet,reqDelete,reqPostURLEncode } from '@/api/api'
@@ -222,7 +222,8 @@ class pipelineDetail extends Component {
     }
 
     getPipelineDetail = () => {
-        const parsedHash = queryString.parse(this.props.location.search);
+        const parsedHash = qs.parse(this.props.location.search.slice(1));
+        console.log(parsedHash)
         const {timer } = this.state;
         if (timer) {
             clearTimeout(timer);
@@ -306,7 +307,8 @@ class pipelineDetail extends Component {
         this.setState({historyStep: historyStep})
     }
     getPipelineRunStatus = (stepsList)=>{
-        const parsedHash = queryString.parse(this.props.location.search);
+        const parsedHash = qs.parse(this.props.location.search.slice(1));
+        console.log(parsedHash)
         reqGet('/pipeline/taskstatus',{
             taskID: this.props.match.params.taskID,
             buildNum: parsedHash.buildNumber
