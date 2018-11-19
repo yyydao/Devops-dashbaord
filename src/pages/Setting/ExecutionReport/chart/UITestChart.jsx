@@ -13,6 +13,13 @@ import DataSet from "@antv/data-set";
 import {Row, Col, Progress, Card} from 'antd';
 
 class UITestChart extends React.Component {
+  constructor(props) {
+    super(props)
+    // this.initChart = this.initChart.bind(this)
+  }
+  componentDidMount() {
+    // this.initChart();
+  }
   render() {
     const { DataView } = DataSet;
     const data = [
@@ -44,7 +51,7 @@ class UITestChart extends React.Component {
       dimension: "item",
       as: "percent"
     });
-
+    console.log(dv)
     const cols = {
       percent: {
         formatter: val => {

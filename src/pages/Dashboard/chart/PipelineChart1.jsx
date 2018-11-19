@@ -87,6 +87,44 @@ class PipelineChart1 extends Component {
   componentDidUpdate() {
     this.initChart();
   }
+
+  formatSeconds = (value) =>{
+    var theTime = parseInt(value);// 秒
+    var theTime1 = 0;// 分
+    var theTime2 = 0;// 小时
+    if(theTime > 60) {
+      theTime1 = parseInt(theTime/60);
+      theTime = parseInt(theTime%60);
+      if(theTime1 > 60) {
+        theTime2 = parseInt(theTime1/60);
+        theTime1 = parseInt(theTime1%60);
+      }
+    }
+    var result = ""+parseInt(theTime)+"s";
+    if(theTime1 > 0) {
+      result = ""+parseInt(theTime1)+"''"+result;
+    }
+    if(theTime2 > 0) {
+      result = ""+parseInt(theTime2)+"'"+result;
+    }
+    return result;
+  }
+  zeroize = (value, length) =>{
+
+    if (!length) length = 2;
+
+    value = String(value);
+
+    for (var i = 0, zeros = ''; i < (length - value.length); i++) {
+
+      zeros += '0';
+
+    }
+
+    return zeros + value;
+
+  }
+
   initChart = () =>{
     const { pipeLineData } = this.props
     let myChart = echarts.init(this.refs.pieChart)
@@ -114,15 +152,15 @@ class PipelineChart1 extends Component {
       tooltip : {
         trigger: 'axis',
         axisPointer: {
-          type: 'cross',
+          type:'cross',
           label: {
-            backgroundColor: '#fff'
+            backgroundColor: '#6a7985'
           }
         },
-        formatter: function (params) {
+        formatter: (params) =>{
           let res=`<div><p>${params[0].data[0]}</p></div>`
-          for(var i=0;i<params.length;i++){
-            res+=`<p style="width: 180px">${params[i].marker}${params[i].seriesName}(${type[params[i].data[2]]}):<span style="float:right;padding-right: 8px">${params[i].data[1]}s</span></p>`
+          for(let i=0;i<params.length;i++){
+            res+=`<p style="width: 180px">${params[i].marker}${params[i].seriesName}(${type[params[i].data[2]]}):<span style="float:right;padding-right: 8px">${this.formatSeconds(params[i].data[1])}</span></p>`
           }
           return res;
         }
@@ -138,7 +176,14 @@ class PipelineChart1 extends Component {
       },
       xAxis : [
         {
-          type : 'category'
+          type : 'category',
+          axisLabel:{
+            formatter: (value, index)=>{
+              // 格式化成月/日，只在第一个刻度显示年份
+              var date = new Date(value);
+              return `${this.zeroize(date.getMonth() + 1)}-${this.zeroize(date.getDate())}\n${this.zeroize(date.getHours())}:${this.zeroize(date.getMinutes())}`;
+            }
+          }
           // boundaryGap : false
         }
       ],

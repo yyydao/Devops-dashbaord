@@ -324,27 +324,50 @@ class Dashboard extends Component{
                 </Col>
               </Row>
             </Card>
-            <Card  title="流水线监控分析" style={{marginTop: 30}}>
-              {/*<PipelineChart pipeLineData={monitorData.pipelines}></PipelineChart>*/}
-              <PipelineChart1 id={'kaka'} name={'kaka'} pipeLineData={monitorData.pipelines}></PipelineChart1>
-            </Card>
-            <Card  title="单元测试监控分析" style={{marginTop: 30}}>
-              <UnitTestChart unitData={monitorData.unitTestMonitors}></UnitTestChart>
-            </Card>
-            <Card  title="UI测试监控分析" style={{marginTop: 30}}>
-              <UiTestChart uiData={monitorData.uiTestMonitors}></UiTestChart>
-            </Card>
-            <Card  title="深度性能分析" style={{marginTop: 30}}>
-              <Card type="inner" title="CPU&内存分析">
-                <CpuChart cpuData={monitorData.cpuMemoryAnalysis}></CpuChart>
+            {
+              monitorData.pipelines&&monitorData.pipelines.length>0 &&
+              <Card  title="流水线监控分析" style={{marginTop: 30}}>
+                {/*<PipelineChart pipeLineData={monitorData.pipelines}></PipelineChart>*/}
+                <PipelineChart1 id={'kaka'} name={'kaka'} pipeLineData={monitorData.pipelines}></PipelineChart1>
               </Card>
-              <Card type="inner" title="流畅度&冷启动时间分析" style={{marginTop: 18}}>
-                <FluencyChart fluencyData={monitorData.fluentColdStartTimeAnalysis}></FluencyChart>
+            }
+            {
+              monitorData.unitTestMonitors&&monitorData.unitTestMonitors.length>0&&
+              <Card  title="单元测试监控分析" style={{marginTop: 30}}>
+                <UnitTestChart unitData={monitorData.unitTestMonitors}></UnitTestChart>
               </Card>
-              <Card type="inner" title="包体监控分析" style={{marginTop: 18}}>
-                <PackageChart packageData={monitorData.packageBodyMonitors}></PackageChart>
+            }
+            {
+              monitorData.uiTestMonitors&& monitorData.uiTestMonitors.length>0&&
+              <Card  title="UI测试监控分析" style={{marginTop: 30}}>
+                <UiTestChart uiData={monitorData.uiTestMonitors}></UiTestChart>
               </Card>
-            </Card>
+            }
+            {
+              ( (monitorData.cpuMemoryAnalysis&&monitorData.cpuMemoryAnalysis.length>0)||
+                  (monitorData.fluentColdStartTimeAnalysis&&monitorData.fluentColdStartTimeAnalysis.length>0)||
+                  (monitorData.packageBodyMonitors&&monitorData.packageBodyMonitors.length>0)) &&
+              <Card  title="深度性能分析" style={{marginTop: 30}}>
+                {
+                  monitorData.cpuMemoryAnalysis.length>0 &&
+                  <Card type="inner" title="CPU&内存分析">
+                    <CpuChart cpuData={monitorData.cpuMemoryAnalysis}></CpuChart>
+                  </Card>
+                }
+                {
+                  monitorData.fluentColdStartTimeAnalysis.length>0&&
+                  <Card type="inner" title="流畅度&冷启动时间分析" style={{marginTop: 18}}>
+                    <FluencyChart fluencyData={monitorData.fluentColdStartTimeAnalysis}></FluencyChart>
+                  </Card>
+                }
+                {
+                  monitorData.packageBodyMonitors.length>0&&
+                  <Card type="inner" title="包体监控分析" style={{marginTop: 18}}>
+                    <PackageChart packageData={monitorData.packageBodyMonitors}></PackageChart>
+                  </Card>
+                }
+              </Card>
+            }
             </div>
           }
         </div>
