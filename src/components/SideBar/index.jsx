@@ -18,6 +18,7 @@ class SideBar extends Component{
             menuList: [],
             projectList: [],
             currentMenu: '',
+            defaultCurrentMenu: [],
             menuOpenKeys: []
         }
     }
@@ -27,6 +28,7 @@ class SideBar extends Component{
         this.getProjectList();
 
         const currentMenu = sessionStorage.getItem('currentMenu');
+        const defaultCurrentMenu = sessionStorage.getItem('defaultCurrentMenu');
         const menuOpenKeys = JSON.parse(sessionStorage.getItem('menuOpenKeys'));
         const { pathName } = this.props;
         if(currentMenu && pathName.indexOf('welcome') === -1){
@@ -35,27 +37,36 @@ class SideBar extends Component{
         if(menuOpenKeys && pathName.indexOf('welcome') === -1){
             this.setState({ menuOpenKeys });
         }
+        if(defaultCurrentMenu && pathName.indexOf('welcome') === -1){
+            this.setState({ defaultCurrentMenu });
+        }
     }
 
     componentWillUnmount() {
         this.props.setProjectId(null);
         this.setState({
+            defaultCurrentMenu:[],
             currentMenu: '',
             menuOpenKeys: []
         })
     }
 
     selectChange = (value) => {
+        console.log('change select type')
+        sessionStorage.clear()
         this.props.setProjectId(value);
         this.props.projectIdChange(value);
-        this.setState({
-            currentMenu: '',
-            menuOpenKeys: []
-        })
+        const currentMenu = sessionStorage.getItem('currentMenu');
+        const menuOpenKeys = JSON.parse(sessionStorage.getItem('menuOpenKeys'));
+        this.setState({currentMenu})
+        this.setState({ menuOpenKeys });
+        this.getPermissionList()
     }
 
     menuClick = (e) => {
+        let key = e.key
         sessionStorage.setItem('currentMenu', e.key);
+        this.setState({currentMenu:e.key})
     }
 
     menuOpenChange = (openKeys) => {
@@ -67,7 +78,7 @@ class SideBar extends Component{
 
         reqPost('/permission/list').then(res => {
             if(parseInt(res.code, 0) === 0){
-               
+
                 setPermissionList(res.data.permissionList);
                 const menuList = this.getMenuList(res.data.menuList);
                 this.setState({ menuList });
@@ -79,7 +90,7 @@ class SideBar extends Component{
 
     getMenuList(menuObj){
         let menuList = [];
-
+         console.log(menuObj)
         for(let item of menuObj){
             let list = [];
             if(item.children){
@@ -121,7 +132,7 @@ class SideBar extends Component{
     }
 
     render(){
-        const { menuList, projectList, currentMenu, menuOpenKeys } = this.state;
+        const { menuList, projectList, currentMenu, menuOpenKeys,defaultCurrentMenu } = this.state;
         const { projectId } = this.props;
 
         return(
@@ -138,7 +149,8 @@ class SideBar extends Component{
                         </Select>
                     }
                 </div>
-                <Menu mode="inline" theme="dark" onClick={this.menuClick} onOpenChange={this.menuOpenChange} defaultSelectedKeys={[currentMenu]} defaultOpenKeys={menuOpenKeys}>
+                <Menu mode="inline" selectedKeys={[currentMenu]} theme="dark" onClick={this.menuClick} onOpenChange={this.menuOpenChange}
+                      defaultSelectedKeys={defaultCurrentMenu} defaultOpenKeys={menuOpenKeys}>
                     { menuList }
                 </Menu>
             </div>
