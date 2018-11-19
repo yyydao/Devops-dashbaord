@@ -56,11 +56,12 @@ class ThirdPartyManager extends Component{
   jenkinsSubmit = (e)=>{
     const {jenkins} =this.state
     e.preventDefault();
-    this.props.form.validateFields(['jk_accessUrl','jk_userName','jk_userPwd'],(err, values) => {
+    this.props.form.validateFields(['jk_accessUrl','jk_userName','jk_userPwd','jk_token'],(err, values) => {
       if (!err) {
         jenkins.accessUrl=values.jk_accessUrl
         jenkins.userName=values.jk_userName
         jenkins.userPwd=values.jk_userPwd
+        jenkins.token=values.jk_token
         this.setState({jenkins})
         this.saveConfig(jenkins)
       }
@@ -74,7 +75,8 @@ class ThirdPartyManager extends Component{
     this.props.form.setFieldsValue({
       jk_accessUrl:jenkins.accessUrl,
       jk_userName:jenkins.userName,
-      jk_userPwd:jenkins.userPwd
+      jk_userPwd:jenkins.userPwd,
+      jk_token:jenkins.token
     })
   }
 
@@ -224,6 +226,18 @@ class ThirdPartyManager extends Component{
                     initialValue:jenkins.accessUrl
                   })(
                       <Input />
+                  )
+                }
+              </FormItem>
+              <FormItem {...fromItemLayout} label="Token">
+                {
+                  getFieldDecorator('jk_token',{
+                    rules: [{
+                      required: true, message: '请填写Token'
+                    }],
+                    initialValue:jenkins.token
+                  })(
+                      <Input/>
                   )
                 }
               </FormItem>
