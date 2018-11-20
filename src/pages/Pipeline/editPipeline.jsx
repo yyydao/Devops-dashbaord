@@ -323,6 +323,10 @@ class Edit extends Component {
             buildNum: parsedHash.buildNumber
         }).then((res) => {
             if (res.code === 0) {
+                if(res.task === null){
+                    message.error('数据不完整，无任务信息')
+                    return
+                }
                 let branchID = res.task.branchID
                 this.props.form.setFieldsValue({
                     taskName: res.task.taskName,
