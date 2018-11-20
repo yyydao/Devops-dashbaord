@@ -12,7 +12,7 @@ import 'echarts/lib/chart/line';
 class PipelineChart1 extends Component {
   constructor(props) {
     super(props)
-    this.setOption = this.setOption.bind(this)
+    this.setOptions = this.setOptions.bind(this)
     this.initChart = this.initChart.bind(this)
   }
   componentDidMount() {
@@ -128,11 +128,13 @@ class PipelineChart1 extends Component {
   initChart = () =>{
     const { pipeLineData } = this.props
     let myChart = echarts.init(this.refs.pieChart)
-    let options = this.setOption(pipeLineData)
-    myChart.setOption(options)
+    myChart.showLoading();
+    let options = this.setOptions(pipeLineData)
+    myChart.setOption(options,true)
+    myChart.hideLoading();
   }
-//这是一个最简单的饼图~
-  setOption=(data)=> {
+
+  setOptions=(data)=> {
     const type=['开始','构建','测试','部署','完成','无']
     let legend=[]
     let series=[]

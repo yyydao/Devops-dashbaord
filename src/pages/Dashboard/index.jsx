@@ -112,10 +112,7 @@ class Dashboard extends Component{
           res.data.unitTestMonitors.map(item=>item.sqaleValue=parseFloat(item.sqaleValue))
           const type=[,'源码','加固','补丁']
           res.data.packageBodyMonitors.map(item=>{item.appFileSize=parseFloat(item.appFileSize);item.name=type[item.packageType]})
-          this.setState({monitorData:res.data})
-          this.dealUiData(res.data.uiTestMonitors)
-          this.dealCpuData(res.data.cpuMemoryAnalysis||[])
-          this.dealFluencyData(res.data.fluentColdStartTimeAnalysis||[])
+          this.dealUiData(res.data)
         }
       })
   }
@@ -125,7 +122,7 @@ class Dashboard extends Component{
    */
   dealUiData = (data) =>{
     const ds = new DataSet();
-    const dv = ds.createView('ui').source(data);
+    const dv = ds.createView('ui').source(data.uiTestMonitors||[]);
     dv.transform({
       type: "fold",
       fields: ["features", "scenarios","steps"],
@@ -134,9 +131,8 @@ class Dashboard extends Component{
       // key字段
       value: "successRateValue" // value字段
     });
-    let result = this.state.monitorData
-    result.uiTestMonitors = dv
-    this.setState({result})
+    data.uiTestMonitors = dv
+    this.dealCpuData(data)
   }
   /**
    *  @desc 处理cpuMemoryAnalysis仪表盘数据
@@ -160,7 +156,7 @@ class Dashboard extends Component{
       },
     ]
     let cData=[]
-    data.map(item=>{
+    data.cpuMemoryAnalysis.map(item=>{
       for(let i in item){
         if(i.indexOf('cpuAverage')!==-1){
           cData.push({
@@ -196,9 +192,8 @@ class Dashboard extends Component{
         }
       }
     })
-    let result = this.state.monitorData
-    result.cpuMemoryAnalysis = cData
-    this.setState({result})
+    data.cpuMemoryAnalysis = cData
+    this.dealFluencyData(data)
   }
   /**
    *  @desc 处理cpuMemoryAnalysis仪表盘数据
@@ -220,7 +215,7 @@ class Dashboard extends Component{
       }
     ]
     let cData=[]
-    data.map(item=>{
+    data.fluentColdStartTimeAnalysis.map(item=>{
       for(let i in item){
         if(i.indexOf('smAverage')!==-1){
           cData.push({
@@ -245,9 +240,8 @@ class Dashboard extends Component{
         }
       }
     })
-    let result = this.state.monitorData
-    result.fluentColdStartTimeAnalysis = cData
-    this.setState({result})
+    data.fluentColdStartTimeAnalysis = cData
+    this.setState({monitorData:data})
   }
 
   /**
@@ -281,6 +275,17 @@ class Dashboard extends Component{
             </Select>
             <Card  title="基本信息" style={{marginTop: 30}}>
               <Row>
+                {
+                  !basicInformation.fileType &&
+                  <Col span={8} className="info-menu">
+                    <div><Tag color="#2db7f5">Identifier</Tag>-</div>
+                    <div><Tag color="#2db7f5">SDK Name</Tag>-</div>
+                    <div><Tag color="#2db7f5">Version</Tag>-</div>
+                    <div><Tag color="#2db7f5">Platform Version</Tag>-</div>
+                    <div><Tag color="#2db7f5">MinOS Version</Tag>-</div>
+                  </Col>
+                }
+                {basicInformation.fileType===1&&
                 <Col span={8} className="info-menu">
                   <div><Tag color="#2db7f5">Identifier</Tag> {basicInformation.packageName}</div>
                   <div><Tag color="#2db7f5">SDK Name</Tag>{basicInformation.displayName}</div>
@@ -290,27 +295,37 @@ class Dashboard extends Component{
                   <div><Tag color="#2db7f5">minSdk</Tag>{basicInformation.minSdk}</div>
                   <div><Tag color="#2db7f5">targetSdk</Tag>{basicInformation.targetSdk}</div>
                 </Col>
+                }{
+                basicInformation.fileType===2&&
+                <Col span={8} className="info-menu">
+                  <div><Tag color="#2db7f5">Identifier</Tag> {basicInformation.packageName}</div>
+                  <div><Tag color="#2db7f5">SDK Name</Tag>{basicInformation.displayName}</div>
+                  <div><Tag color="#2db7f5">Version</Tag>{basicInformation.versionCode}</div>
+                  <div><Tag color="#2db7f5">Platform Version</Tag>{basicInformation.versionName}</div>
+                  <div><Tag color="#2db7f5">MinOS Version</Tag>{basicInformation.minSdk}</div>
+                </Col>
+              }
                 <Col span={12}>
                   <Row>
                     <Col span={8}>
                       <span className="data_title">代码总行数</span>
-                      <p className="data_num" style={{color:"#2db7f5"}}>{basicInformation.codeTotalRow||0}</p>
+                      <p className="data_num" style={{color:"#2db7f5"}}>{basicInformation.codeTotalRow||"-"}</p>
                     </Col>
                     <Col span={8} offset={1}>
                       <span className="data_title">测试数</span>
-                      <p className="data_num" style={{color:"#2db7f5"}}>{basicInformation.testQuantity||0}</p>
+                      <p className="data_num" style={{color:"#2db7f5"}}>{basicInformation.testQuantity||"-"}</p>
                     </Col>
                     <Col span={8} >
                       <span className="data_title">Bugs</span>
-                      <p className="data_num" style={{color:"#f50"}}>{basicInformation.bugQuantity||0}</p>
+                      <p className="data_num" style={{color:"#f50"}}>{basicInformation.bugQuantity||"-"}</p>
                     </Col>
                     <Col span={8}>
                       <span className="data_title">漏洞</span>
-                      <p className="data_num" style={{color:"#f50"}}>{basicInformation.vulnerabilities||0}</p>
+                      <p className="data_num" style={{color:"#f50"}}>{basicInformation.vulnerabilities||"-"}</p>
                     </Col>
                     <Col span={8}>
                       <span className="data_title">坏味道</span>
-                      <p className="data_num" style={{color:"#f50"}}>{basicInformation.codeSmells||0}</p>
+                      <p className="data_num" style={{color:"#f50"}}>{basicInformation.codeSmells||"-"}</p>
                     </Col>
                   </Row>
                 </Col>
