@@ -521,6 +521,13 @@ class pipelineDetail extends Component {
     }
 
     componentWillMount () {
+        const oldProjectId = window.localStorage.getItem('oldProjectId');
+
+        window.localStorage.setItem('oldProjectId', this.props.projectId);
+
+        if (oldProjectId !== null && oldProjectId !== this.props.projectId) {
+            this.props.history.push('/pipeline');
+        }
     }
 
     componentDidMount () {
@@ -743,8 +750,10 @@ class pipelineDetail extends Component {
 }
 
 pipelineDetail = connect((state) => {
+    console.log(state)
     return {
-        taskID: state.taskID
+        taskID: state.taskID,
+        projectId: state.projectId
     }
 },{setStep,removeSteps,setSteps})(pipelineDetail)
 
