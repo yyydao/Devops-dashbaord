@@ -454,7 +454,7 @@ class taskEdit extends Component {
         //判断是否是编辑已存在流水线
         if(this.props.match.params.stepID){
             console.log('steps has stepID')
-            reqGet(`/pipeline/stepdetail/`,{stepID:this.props.match.params.stepID}).then(res=>{
+            reqGet(`/pipeline/stepdetail`,{stepID:this.props.match.params.stepID}).then(res=>{
                 if(res.code === 0){
                     let d = res.step.stepParams
                     this.setState({ paramsDatasource: stepParamstoArray(d) });

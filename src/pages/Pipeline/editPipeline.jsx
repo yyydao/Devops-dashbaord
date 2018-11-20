@@ -318,7 +318,7 @@ class Edit extends Component {
     setPipelineInfo(){
         const parsedHash = qs.parse(this.props.location.search.slice(1));
         console.log(parsedHash)
-        reqGet('/pipeline/taskdetail', {
+        reqGet('/pipeline/taskinfo', {
             taskID: this.props.match.params.taskID,
             buildNum: parsedHash.buildNumber
         }).then((res) => {

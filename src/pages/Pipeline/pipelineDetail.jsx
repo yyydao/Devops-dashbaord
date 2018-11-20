@@ -222,10 +222,6 @@ class pipelineDetail extends Component {
                 this.checkTaskList(taskList)
                 this.checkStepList(stepsList)
 
-                this.setState({
-                    timer: taskList &&  taskList.taskStatus !== 2 && (new Date().getTime() - this.state.timerStart < 3600000) ? setTimeout(this.getPipelineDetail, 10e3) : null
-                })
-
             }else{
                 message.error(res.msg)
             }
@@ -236,6 +232,76 @@ class pipelineDetail extends Component {
             });
         })
     }
+
+
+    refreshTaskDetail = () => {
+        const parsedHash = qs.parse(this.props.location.search.slice(1));
+        const {timer } = this.state;
+        if (timer) {
+            clearTimeout(timer);
+            this.setState({
+                timer: null
+            });
+        }
+
+
+        reqGet('/pipeline/taskstatus',{
+            taskID: this.props.match.params.taskID,
+            buildNum: parsedHash.buildNumber
+        }).then((res) => {
+            if (res.code === 0) {
+
+                let statusList = res.list
+                let taskList = res.data
+                // console.log(statusList)
+                let temparray = []
+                statusList.map((statusItem)=>{
+                    temparray.push(statusItem)
+                })
+                this.makeStepCard(temparray)
+                this.checkTaskList(taskList)
+                this.setState({
+                    timer: taskList &&  taskList.taskStatus !== 2 && (new Date().getTime() - this.state.timerStart < 3600000) ? setTimeout(this.refreshTaskDetail, 10e3) : null
+                })
+            }else{
+                message.error(res.msg)
+            }
+        }).catch((e)=>{
+            message.error(e)
+            this.setState({
+                timer: null
+            });
+        })
+
+        // reqGet('/pipeline/taskinfo', {
+        //     taskID: this.props.match.params.taskID,
+        // }).then((res) => {
+        //     if (res.code === 0) {
+        //         const taskList = res.task
+        //         if(!taskList){
+        //             message.error('数据不完整，无任务信息')
+        //             return
+        //         }
+        //         const stepsList = res.steps
+        //         this.checkTaskList(taskList)
+        //         this.getPipelineRunStatus(stepsList)
+        //
+        //         this.setState({
+        //             timer: taskList &&  taskList.taskStatus !== 2 && (new Date().getTime() - this.state.timerStart < 3600000) ? setTimeout(this.refreshTaskDetail, 10e3) : null
+        //         })
+        //
+        //     }else{
+        //         message.error(res.msg)
+        //     }
+        // }).catch((e)=>{
+        //     message.error(e)
+        //     this.setState({
+        //         timer: null
+        //     });
+        // })
+    }
+
+
     makeStepCard = (stepsList) => {
         // console.log(`stepsList ${JSON.stringify(stepsList)}`)
         const category = uniq(stepsList.map(item => item.stepCategory))
@@ -445,7 +511,7 @@ class pipelineDetail extends Component {
             if (res.code === 0) {
                 this.setState({taskStatus: 1})
                 message.success('开始执行')
-                setTimeout(this.getPipelineDetail,10e3)
+                setTimeout(this.refreshTaskDetail,10e3)
             }else{
                 message.error(res.msg)
             }
