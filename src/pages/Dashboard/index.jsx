@@ -325,26 +325,26 @@ class Dashboard extends Component{
               </Row>
             </Card>
             {
-              monitorData.pipelines&&monitorData.pipelines.length>0 &&
+              monitorData.pipelines && monitorData.pipelines.length>0 &&
               <Card  title="流水线监控分析" style={{marginTop: 30}}>
                 {/*<PipelineChart pipeLineData={monitorData.pipelines}></PipelineChart>*/}
                 <PipelineChart1 id={'kaka'} name={'kaka'} pipeLineData={monitorData.pipelines}></PipelineChart1>
               </Card>
             }
             {
-              monitorData.unitTestMonitors&&monitorData.unitTestMonitors.length>0&&
+              monitorData.unitTestMonitors && monitorData.unitTestMonitors.length>0&&
               <Card  title="单元测试监控分析" style={{marginTop: 30}}>
                 <UnitTestChart unitData={monitorData.unitTestMonitors}></UnitTestChart>
               </Card>
             }
             {
-              monitorData.uiTestMonitors&& monitorData.uiTestMonitors.length>0&&
+              monitorData.uiTestMonitors && monitorData.uiTestMonitors.length>0&&
               <Card  title="UI测试监控分析" style={{marginTop: 30}}>
                 <UiTestChart uiData={monitorData.uiTestMonitors}></UiTestChart>
               </Card>
             }
             {
-              ( (monitorData.cpuMemoryAnalysis&&monitorData.cpuMemoryAnalysis.length>0)||
+              ( (monitorData.cpuMemoryAnalysis &&monitorData.cpuMemoryAnalysis.length>0)||
                   (monitorData.fluentColdStartTimeAnalysis&&monitorData.fluentColdStartTimeAnalysis.length>0)||
                   (monitorData.packageBodyMonitors&&monitorData.packageBodyMonitors.length>0)) &&
               <Card  title="深度性能分析" style={{marginTop: 30}}>
@@ -355,13 +355,13 @@ class Dashboard extends Component{
                   </Card>
                 }
                 {
-                  monitorData.fluentColdStartTimeAnalysis.length>0&&
+                    monitorData && monitorData.fluentColdStartTimeAnalysis &&  monitorData.fluentColdStartTimeAnalysis.length>0&&
                   <Card type="inner" title="流畅度&冷启动时间分析" style={{marginTop: 18}}>
                     <FluencyChart fluencyData={monitorData.fluentColdStartTimeAnalysis}></FluencyChart>
                   </Card>
                 }
                 {
-                  monitorData.packageBodyMonitors.length>0&&
+                    monitorData && monitorData.packageBodyMonitors && monitorData.packageBodyMonitors.length>0&&
                   <Card type="inner" title="包体监控分析" style={{marginTop: 18}}>
                     <PackageChart packageData={monitorData.packageBodyMonitors}></PackageChart>
                   </Card>
