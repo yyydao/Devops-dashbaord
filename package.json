@@ -79,7 +79,7 @@
       "<rootDir>/src/**/?(*.)(spec|test).{js,jsx,mjs}"
     ],
     "testEnvironment": "node",
-    "testURL": "http://localhost",
+    "testURL": "http://localhost:2000/#/pipeline/edit/6465dab49a534b5ab3efcccb5c4ce9a8n0AgY4?buildNum=42",
     "transform": {
       "^.+\\.(js|jsx|mjs)$": "<rootDir>/node_modules/babel-jest",
       "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
@@ -110,6 +110,7 @@
     "extends": "react-app"
   },
   "devDependencies": {
+    "jsdom": "^13.0.0",
     "redux-devtools-extension": "^2.13.5"
   },
   "proxy": {
