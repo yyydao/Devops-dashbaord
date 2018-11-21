@@ -318,11 +318,15 @@ class Edit extends Component {
     setPipelineInfo(){
         const parsedHash = qs.parse(this.props.location.search.slice(1));
         console.log(parsedHash)
-        reqGet('/pipeline/taskdetail', {
+        reqGet('/pipeline/taskinfo', {
             taskID: this.props.match.params.taskID,
             buildNum: parsedHash.buildNumber
         }).then((res) => {
             if (res.code === 0) {
+                if(res.task === null){
+                    message.error('数据不完整，无任务信息')
+                    return
+                }
                 let branchID = res.task.branchID
                 this.props.form.setFieldsValue({
                     taskName: res.task.taskName,

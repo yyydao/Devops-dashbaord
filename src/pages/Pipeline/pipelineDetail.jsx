@@ -3,15 +3,15 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import qs from 'qs'
 import './index.scss'
-import {formatTime ,compatibleTime } from '@/utils/utils'
-import { reqPost, reqGet,reqDelete,reqPostURLEncode } from '@/api/api'
+import {formatTime} from '@/utils/utils'
+import {reqGet,reqDelete,reqPostURLEncode } from '@/api/api'
 import toPairs from 'lodash.topairs'
 import uniq from 'lodash.uniq'
 import { setStep,removeSteps,setSteps } from '@/store/action'
 
 
 
-import { Chart, Geom, Axis, Tooltip, Legend, Coord, track } from 'bizcharts';
+import {track } from 'bizcharts';
 
 import {
     Steps,
@@ -19,20 +19,15 @@ import {
     Card,
     Button,
     Icon,
-    Collapse,
     Row,
     Col,
     Select,
-    Menu,
     message,
-    Dropdown,
-    Radio,
     Modal
 } from 'antd'
 
 const BreadcrumbItem = Breadcrumb.Item
 const Step = Steps.Step
-const Panel = Collapse.Panel
 const Option = Select.Option
 
 const enumStepsText = [{
@@ -83,30 +78,12 @@ const enumPipelineResultColor={
 
 }
 
-const enumButtonType = {
-    0: 'wait',
-    1: 'process',
-    2: 'finish',
-    3: 'error'
-}
-
 const enumButtonText = {
     0: '开始执行',
     1: '执行中',
     2: '开始执行',
     3: '开始执行'
 }
-
-const menu = (
-    <Menu>
-        <Menu.Item>
-            <a target="_blank" rel="noopener noreferrer" href="http://www.alipay.com/">编辑任务</a>
-        </Menu.Item>
-        <Menu.Item>
-            <a target="_blank" rel="noopener noreferrer" href="http://www.taobao.com/">删除任务</a>
-        </Menu.Item>
-    </Menu>
-);
 
 track(false);
 
@@ -223,7 +200,6 @@ class pipelineDetail extends Component {
 
     getPipelineDetail = () => {
         const parsedHash = qs.parse(this.props.location.search.slice(1));
-        console.log(parsedHash)
         const {timer } = this.state;
         if (timer) {
             clearTimeout(timer);
@@ -238,13 +214,13 @@ class pipelineDetail extends Component {
         }).then((res) => {
             if (res.code === 0) {
                 const taskList = res.task
+                if(!taskList){
+                    message.error('数据不完整，无任务信息')
+                    return
+                }
                 const stepsList = res.steps
                 this.checkTaskList(taskList)
                 this.checkStepList(stepsList)
-
-                this.setState({
-                    timer: taskList &&  taskList.taskStatus !== 2 && (new Date().getTime() - this.state.timerStart < 3600000) ? setTimeout(this.getPipelineDetail, 10e3) : null
-                })
 
             }else{
                 message.error(res.msg)
@@ -256,6 +232,76 @@ class pipelineDetail extends Component {
             });
         })
     }
+
+
+    refreshTaskDetail = () => {
+        const parsedHash = qs.parse(this.props.location.search.slice(1));
+        const {timer } = this.state;
+        if (timer) {
+            clearTimeout(timer);
+            this.setState({
+                timer: null
+            });
+        }
+
+
+        reqGet('/pipeline/taskstatus',{
+            taskID: this.props.match.params.taskID,
+            buildNum: parsedHash.buildNumber
+        }).then((res) => {
+            if (res.code === 0) {
+
+                let statusList = res.list
+                let taskList = res.data
+                // console.log(statusList)
+                let temparray = []
+                statusList.map((statusItem)=>{
+                    temparray.push(statusItem)
+                })
+                this.makeStepCard(temparray)
+                this.checkTaskList(taskList)
+                this.setState({
+                    timer: taskList &&  taskList.taskStatus !== 2 && (new Date().getTime() - this.state.timerStart < 3600000) ? setTimeout(this.refreshTaskDetail, 10e3) : null
+                })
+            }else{
+                message.error(res.msg)
+            }
+        }).catch((e)=>{
+            message.error(e)
+            this.setState({
+                timer: null
+            });
+        })
+
+        // reqGet('/pipeline/taskinfo', {
+        //     taskID: this.props.match.params.taskID,
+        // }).then((res) => {
+        //     if (res.code === 0) {
+        //         const taskList = res.task
+        //         if(!taskList){
+        //             message.error('数据不完整，无任务信息')
+        //             return
+        //         }
+        //         const stepsList = res.steps
+        //         this.checkTaskList(taskList)
+        //         this.getPipelineRunStatus(stepsList)
+        //
+        //         this.setState({
+        //             timer: taskList &&  taskList.taskStatus !== 2 && (new Date().getTime() - this.state.timerStart < 3600000) ? setTimeout(this.refreshTaskDetail, 10e3) : null
+        //         })
+        //
+        //     }else{
+        //         message.error(res.msg)
+        //     }
+        // }).catch((e)=>{
+        //     message.error(e)
+        //     this.setState({
+        //         timer: null
+        //     });
+        // })
+    }
+
+
     makeStepCard = (stepsList) => {
         // console.log(`stepsList ${JSON.stringify(stepsList)}`)
         const category = uniq(stepsList.map(item => item.stepCategory))
@@ -308,7 +354,6 @@ class pipelineDetail extends Component {
     }
     getPipelineRunStatus = (stepsList)=>{
         const parsedHash = qs.parse(this.props.location.search.slice(1));
-        console.log(parsedHash)
         reqGet('/pipeline/taskstatus',{
             taskID: this.props.match.params.taskID,
             buildNum: parsedHash.buildNumber
@@ -332,14 +377,13 @@ class pipelineDetail extends Component {
         let stepStatus = item.stepStatus
         switch (stepStatus) {
             case 0:
-                break;
+                return `#ffffff`
             case 1:
                 return `#1890ff`
-                break;
             case 2:
                 return enumPipelineResultColor[item.stepResult]
-                break;
-
+            default:
+                return `#ffffff`
         }
     }
 
@@ -356,16 +400,14 @@ class pipelineDetail extends Component {
                 switch (this.state.taskStatus) {
                     case 0:
                         return ''
-                    break;
                     case 1:
                         return <Icon type="loading" />
-                    break;
                     case 2:
                         return ''
-                    break;
                     case 3:
                         return ''
-
+                    default:
+                        return ''
                 }
 
             }
@@ -425,7 +467,6 @@ class pipelineDetail extends Component {
 
     checkTaskList = (taskList) => {
         const {
-            projectID,
             taskCode,
             taskName,
             jenkinsJob,
@@ -441,7 +482,6 @@ class pipelineDetail extends Component {
 
         } = taskList
         this.setState({
-            projectID,
             taskCode,
             taskName,
             jenkinsJob,
@@ -471,7 +511,7 @@ class pipelineDetail extends Component {
             if (res.code === 0) {
                 this.setState({taskStatus: 1})
                 message.success('开始执行')
-                setTimeout(this.getPipelineDetail,10e3)
+                setTimeout(this.refreshTaskDetail,10e3)
             }else{
                 message.error(res.msg)
             }
@@ -516,7 +556,6 @@ class pipelineDetail extends Component {
 
     showDistanceTime=() =>{
         let d = formatTime(this.state.lastExecTime,'minute')
-        console.log(d)
         this.setState({distanceTime: d})
     }
 
@@ -550,35 +589,17 @@ class pipelineDetail extends Component {
         const {
             delModalVisible,
             taskCode,
-            taskID,
             taskName,
-            jenkinsJob,
             branchName,
             taskStatus,
             taskResult,
-            lastExecTime,
             distanceTime,
             execTimeStr,
             finalStep,
-            stepsList,
             waitCount,
             showHistory,
             historyStep
         } = this.state
-        // 数据源
-        const data = [
-            { genre: 'Sports', sold: 275, income: 2300 },
-            { genre: 'Strategy', sold: 115, income: 667 },
-            { genre: 'Action', sold: 120, income: 982 },
-            { genre: 'Shooter', sold: 350, income: 5271 },
-            { genre: 'Other', sold: 150, income: 3710 }
-        ];
-
-// 定义度量
-        const cols = {
-            sold: { alias: '销售量' },
-            genre: { alias: '游戏种类' }
-        };
 
         return (
             <div className="pipeline">
@@ -750,7 +771,6 @@ class pipelineDetail extends Component {
 }
 
 pipelineDetail = connect((state) => {
-    console.log(state)
     return {
         taskID: state.taskID,
         projectId: state.projectId
