@@ -56,7 +56,8 @@ const enumStatus = {
 const enumStatusText = {
     0: '未开始',
     1: '执行中',
-    2: '结束'
+    2: '结束',
+    3: '等待中'
 }
 
 
@@ -82,7 +83,7 @@ const enumButtonText = {
     0: '开始执行',
     1: '执行中',
     2: '开始执行',
-    3: '开始执行'
+    3: '等待中'
 }
 
 track(false);
@@ -120,37 +121,42 @@ class pipelineDetail extends Component {
        if(this.state.showHistory){
            return 5
        }else{
-           let currentSteps = this.state.stepsList
-           if(this.state.taskStatus ===2){
-                if(this.state.taskResult === 2){
-                    for (let i = 0; i < currentSteps.length; i++) {
-                        const currentStep = currentSteps[i]
-                        // console.log(currentStep.stepStatus)
-                        if(currentStep.stepStatus === 2 && currentStep.stepResult === 2){
-                            return currentStep.stepCategory -1
-                        }
-                    }
-                }
-                if(this.state.taskResult === 3){
-                    for (let i = 0; i < currentSteps.length; i++) {
-                        const currentStep = currentSteps[i]
-                        // console.log(currentStep.stepStatus)
-                        if(currentStep.stepStatus === 2 && currentStep.stepResult === 3){
-                            return currentStep.stepCategory
-                        }
-                    }
-                }
-           }else{
-               for (let i = 0; i < currentSteps.length; i++) {
-                   const currentStep = currentSteps[i]
-                   // console.log(currentStep.stepStatus)
-                   if(currentStep.stepStatus === 1){
-                       return currentStep.stepCategory
+           const currentSteps = this.state.stepsList
+           const taskStatus = this.state.taskStatus
+
+           switch (taskStatus) {
+               case 1:
+                   for (let i = 0; i < currentSteps.length; i++) {
+                       const currentStep = currentSteps[i]
+                       // console.log(currentStep.stepStatus)
+                       if(currentStep.stepStatus === 1){
+                           return currentStep.stepCategory
+                       }
                    }
-               }
+                   break;
+               case 2:
+                   if(this.state.taskResult === 2){
+                       for (let i = 0; i < currentSteps.length; i++) {
+                           const currentStep = currentSteps[i]
+                           // console.log(currentStep.stepStatus)
+                           if(currentStep.stepStatus === 2 && currentStep.stepResult === 2){
+                               return currentStep.stepCategory -1
+                           }
+                       }
+                   }
+                   if(this.state.taskResult === 3){
+                       for (let i = 0; i < currentSteps.length; i++) {
+                           const currentStep = currentSteps[i]
+                           // console.log(currentStep.stepStatus)
+                           if(currentStep.stepStatus === 2 && currentStep.stepResult === 3){
+                               return currentStep.stepCategory
+                           }
+                       }
+                   }
+                   break;
+               case 3:
+                   return 1
            }
-
-
        }
     }
 
@@ -220,7 +226,12 @@ class pipelineDetail extends Component {
                 }
                 const stepsList = res.steps
                 this.checkTaskList(taskList)
-                this.checkStepList(stepsList)
+                if(taskList.taskStatus===1||taskList.taskStatus===3){
+                    this.refreshTaskDetail()
+                }else{
+                    this.checkStepList(stepsList)
+                }
+
 
             }else{
                 message.error(res.msg)
@@ -384,6 +395,8 @@ class pipelineDetail extends Component {
                 return `#1890ff`
             case 2:
                 return enumPipelineResultColor[item.stepResult]
+             case 3:
+                return `#ffffff`
             default:
                 return `#ffffff`
         }
@@ -711,14 +724,14 @@ class pipelineDetail extends Component {
                                                     <span>最近执行状态：</span>{this.pipelineRunStatusText(taskStatus,taskResult)}
                                                 </Col>
                                                 <Col>
-                                                    <Button disabled={taskStatus===1} type="primary" onClick={()=>this.runTask()}>{enumButtonText[taskStatus]}</Button>
+                                                    <Button disabled={taskStatus===1 || taskStatus === 3} type="primary" onClick={()=>this.runTask()}>{enumButtonText[taskStatus]}</Button>
                                                 </Col>
                                             </Row>
                                         </div>
                                     </Col>
                                 </Row>
                                 <Steps size="small"
-                                       status={enumStatus[taskStatus]}
+                                       status={this.pipelineStepStatus(taskStatus,taskResult)}
                                        labelPlacement="vertical"
                                        current={this.pipelineStepCurrent()}
                                 >

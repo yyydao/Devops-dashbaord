@@ -47,13 +47,14 @@ const enumButtonText = {
     0: '开始执行',
     1: '执行中',
     2: '开始执行',
-    3: '开始执行'
+    3: '等待中'
 }
 
 const enumStatusText = {
     0: '未开始',
     1: '执行中',
-    2: '结束'
+    2: '结束',
+    3: '等待中'
 }
 
 
@@ -80,6 +81,11 @@ class Pipeline extends Component {
     pipelineRunStatusText = (taskStatus,taskResult) =>{
         return (taskStatus === 2 || taskStatus=== '2') ? enumPipelineResult[taskResult]:enumStatusText[taskStatus]
     }
+    pipelineStepStatus = (taskStatus,taskResult) =>{
+        return (taskStatus === 2 || taskStatus=== '2') ? enumPipelineResult[taskResult]:enumStatusText[taskStatus]
+    }
+
+
 
     getPipelineList = () => {
         reqGet('/pipeline/tasklist', {
@@ -195,8 +201,8 @@ class Pipeline extends Component {
                                                         <span><i>执行分支：</i>{item.branchName}</span>
                                                         <span><i>最近执行时长：</i>{item.execTimeStr}</span>
                                                     </p>
-                                                    <Steps size="small" status={enumStatus[item.taskStatus]}
-                                                           current={item.taskStatus === 2? 5:item.taskStatus}>
+                                                    <Steps size="small" status={this.pipelineStepStatus(item.taskStatus,item.taskResult)}
+                                                           current={item.taskStatus === 2? 5:1}>
                                                         {steps.map((item, index) => <Step key={index}
                                                                                           title={item.title}/>)}
                                                     </Steps>
@@ -206,7 +212,7 @@ class Pipeline extends Component {
                                                 <div className="pipeline-item-ctrl">
                                                     <div className="status">
                                                         <span>最近执行状态：</span>{this.pipelineRunStatusText(item.taskStatus,item.taskResult)}</div>
-                                                    <Button type="primary" disabled={item.taskStatus === 1} onClick={()=>this.runTask(item)}>{enumButtonText[item.taskStatus]}</Button>
+                                                    <Button type="primary" disabled={item.taskStatus === 1 ||item.taskStatus === 3} onClick={()=>this.runTask(item)}>{enumButtonText[item.taskStatus]}</Button>
                                                 </div>
                                             </Col>
                                         </Row>
