@@ -65,7 +65,7 @@ class Dashboard extends Component{
         if(res.data.list.length > 0){
           this.setState({
             taskList:res.data.list,
-           currentTaskId:res.data.list[0].taskID
+            currentTaskId:res.data.list[0].taskID
           })
           this.getBasicInfor()
         }else{
@@ -103,18 +103,17 @@ class Dashboard extends Component{
    * @desc 获取仪表盘各项数据
    */
   getAllMonitorReport = () =>{
-    let that=this;
-      reqGet('/dashboard/report', {
-        taskId:this.state.currentTaskId,
-        dataType:2
-      }).then((res) => {
-        if (res.code === 0) {
-          res.data.unitTestMonitors.map(item=>item.sqaleValue=parseFloat(item.sqaleValue))
-          const type=[,'源码','加固','补丁']
-          res.data.packageBodyMonitors.map(item=>{item.appFileSize=parseFloat(item.appFileSize);item.name=type[item.packageType]})
-          this.dealUiData(res.data)
-        }
-      })
+    reqGet('/dashboard/report', {
+      taskId:this.state.currentTaskId,
+      dataType:2
+    }).then((res) => {
+      if (res.code === 0) {
+        res.data.unitTestMonitors.map(item=>item.sqaleValue=parseFloat(item.sqaleValue))
+        const type=[,'源码','加固','补丁']
+        res.data.packageBodyMonitors.map(item=>{item.appFileSize=parseFloat(item.appFileSize);item.name=type[item.packageType]})
+        this.dealUiData(res.data)
+      }
+    })
   }
   /**
    *  @desc 处理uiTestMonitors仪表盘数据
@@ -140,13 +139,13 @@ class Dashboard extends Component{
    */
   dealCpuData = (data) =>{
     let dat=[
-        {
-          cpuAverage:'19.25%',
-          createTime:'2018-10-26 09:58:38.0',
-          memoryAverage:'227.43MB',
-          memoryMax:'309.0MB',
-          cpuMax:'36.2%'
-        },
+      {
+        cpuAverage:'19.25%',
+        createTime:'2018-10-26 09:58:38.0',
+        memoryAverage:'227.43MB',
+        memoryMax:'309.0MB',
+        cpuMax:'36.2%'
+      },
       {
         cpuAverage:'39.25%',
         createTime:'2018-10-24 09:58:38.0',
@@ -271,18 +270,14 @@ class Dashboard extends Component{
           {currentTaskId &&
           <div>
             <Select defaultValue={currentTaskId} onChange={e => {this.onPipeLineChange(e)}} style={{minWidth:200}}>
-            {taskList.map((item,index)=><Option value={item.taskID} key={index}>{item.taskName}</Option>)}
+              {taskList.map((item,index)=><Option value={item.taskID} key={index}>{item.taskName}</Option>)}
             </Select>
             <Card  title="基本信息" style={{marginTop: 30}}>
               <Row>
                 {
                   !basicInformation.fileType &&
                   <Col span={8} className="info-menu">
-                    <div><Tag color="#2db7f5">Identifier</Tag>-</div>
-                    <div><Tag color="#2db7f5">SDK Name</Tag>-</div>
-                    <div><Tag color="#2db7f5">Version</Tag>-</div>
-                    <div><Tag color="#2db7f5">Platform Version</Tag>-</div>
-                    <div><Tag color="#2db7f5">MinOS Version</Tag>-</div>
+                    <p>暂无基本数据</p>
                   </Col>
                 }
                 {basicInformation.fileType===1&&
@@ -353,7 +348,7 @@ class Dashboard extends Component{
               </Card>
             }
             {
-              monitorData.uiTestMonitors&& monitorData.uiTestMonitors.length>0&&
+              monitorData.uiTestMonitors&& monitorData.uiTestMonitors.rows.length>0&&
               <Card  title="UI测试监控分析" style={{marginTop: 30}}>
                 <UiTestChart uiData={monitorData.uiTestMonitors}></UiTestChart>
               </Card>
@@ -383,7 +378,7 @@ class Dashboard extends Component{
                 }
               </Card>
             }
-            </div>
+          </div>
           }
         </div>
     )
