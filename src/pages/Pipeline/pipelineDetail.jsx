@@ -439,19 +439,19 @@ class pipelineDetail extends Component {
                 }
         })
     }
-    changeHistory = (buildNum)=>{
+    changeHistory = (recordNo)=>{
         clearTimeout(this.state.timer);
-        this.getHistoryDetail(buildNum)
+        this.getHistoryDetail(recordNo)
         this.setState({showHistory:true})
     }
 
-    getHistoryDetail = (buildNum) =>{
-        if(buildNum === 0){
+    getHistoryDetail = (recordNo) =>{
+        if(recordNo === 0){
            message.info(`等待中任务无数据`)
         }else{
             reqGet('/pipeline/taskhistorydetail',{
                 taskID:this.props.match.params.taskID,
-                buildNum: buildNum
+                recordNo: recordNo
             }).then((res)=>{
                 if (res.code === 0) {
                     let data = res.data
@@ -574,7 +574,6 @@ class pipelineDetail extends Component {
 
     componentDidMount () {
         const parsedHash = qs.parse(this.props.location.search.slice(1));
-        console.log(this.props.location.state.taskStatus)
         if(this.props.location.state &&( this.props.location.state.taskStatus === 3 || this.props.location.state.taskStatus === 1)){
             this.refreshTaskDetail()
         }else{
@@ -658,8 +657,8 @@ class pipelineDetail extends Component {
                                             {
                                                 this.state.historyBranch.map((item,key) => {
                                                     return <Option
-                                                        title={item.buildNum+''}
-                                                        value={item.buildNum}
+                                                        title={item.recordNo+''}
+                                                        value={item.recordNo}
                                                         key={key}
                                                     >{item.updateTime}</Option>
                                                 })
