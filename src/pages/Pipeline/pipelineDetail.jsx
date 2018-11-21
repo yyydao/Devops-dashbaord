@@ -247,12 +247,13 @@ class pipelineDetail extends Component {
 
         reqGet('/pipeline/taskstatus',{
             taskID: this.props.match.params.taskID,
-            buildNum: parsedHash.buildNumber
+            buildNum: parsedHash.buildNumber,
+            recordNo: parsedHash.curRecordNo
         }).then((res) => {
             if (res.code === 0) {
 
-                let statusList = res.list
-                let taskList = res.data
+                let statusList = res.steps
+                let taskList = res.task
                 // console.log(statusList)
                 let temparray = []
                 statusList.map((statusItem)=>{
@@ -572,8 +573,14 @@ class pipelineDetail extends Component {
     }
 
     componentDidMount () {
-        this.getPipelineDetail()
-        // this.getHistoryDetail()
+        const parsedHash = qs.parse(this.props.location.search.slice(1));
+        console.log(this.props.location.state.taskStatus)
+        if(this.props.location.state &&( this.props.location.state.taskStatus === 3 || this.props.location.state.taskStatus === 1)){
+            this.refreshTaskDetail()
+        }else{
+            this.getPipelineDetail()
+        }
+
         this.getHistoryList()
         this.setState({
             timerStart: new Date().getTime()

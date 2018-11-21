@@ -107,10 +107,19 @@ class Pipeline extends Component {
         })
     }
 
-
+    jumpToDetail = (item)=>{
+        console.log(item.recordNo)
+        console.log(item.curRecordNo)
+        this.props.history.push({
+            pathname:`/pipeline/detail/${item.taskID}`,
+            search: `?buildNumber=${item.buildNum}&curRecordNo=${item.curRecordNo}`,
+            state:{
+                taskStatus:item.taskStatus
+            }
+        })
+    }
 
     runTask = (item) => {
-
         this.setState({taskStatus: 1})
         reqPostURLEncode('/pipeline/taskbuild', {
             taskID: item.taskID
@@ -123,7 +132,9 @@ class Pipeline extends Component {
                 for (let i = 0; i < pipelineList.length; i++) {
                     const pipelineItem = pipelineList[i]
                     if(pipelineItem.taskID === item.taskID){
-                        pipelineList[i].taskStatus = 1
+                        pipelineList[i].taskStatus = res.status
+                        pipelineList[i].curRecordNo = res.recordNo
+                        pipelineList[i].taskStatus = res.status
                     }
                 }
                 this.setState({pipelineList:pipelineList})
@@ -163,14 +174,11 @@ class Pipeline extends Component {
                             pipelineList.map((item, index) => {
                                 return <div className="pipeline-item" key={index}>
 
-                                    <div className="pipeline-item-header">
+                                    <div className="pipeline-item-header" onClick={()=>this.jumpToDetail(item)}>
                                         <Row type="flex" justify="space-between">
                                             <Col span={12}>
-                                                <Link to={{
-                                                    pathname:`/pipeline/detail/${item.taskID}`,
-                                                    search: `?buildNumber=${item.buildNum}`
-                                                }}><h2>{item.taskName}
-                                                    <span>（ID：{item.taskCode}）</span></h2></Link>
+                                              <h2>{item.taskName}
+                                                    <span>（ID：{item.taskCode}）</span></h2>
                                             </Col>
                                             <Col span={12}>
                                                 <div className="pipeline-item-user">
