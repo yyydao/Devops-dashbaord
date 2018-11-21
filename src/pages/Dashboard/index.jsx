@@ -103,7 +103,6 @@ class Dashboard extends Component{
    * @desc 获取仪表盘各项数据
    */
   getAllMonitorReport = () =>{
-    let that=this;
       reqGet('/dashboard/report', {
         taskId:this.state.currentTaskId,
         dataType:2
@@ -278,11 +277,7 @@ class Dashboard extends Component{
                 {
                   !basicInformation.fileType &&
                   <Col span={8} className="info-menu">
-                    <div><Tag color="#2db7f5">Identifier</Tag>-</div>
-                    <div><Tag color="#2db7f5">SDK Name</Tag>-</div>
-                    <div><Tag color="#2db7f5">Version</Tag>-</div>
-                    <div><Tag color="#2db7f5">Platform Version</Tag>-</div>
-                    <div><Tag color="#2db7f5">MinOS Version</Tag>-</div>
+                    <p>暂无基本数据</p>
                   </Col>
                 }
                 {basicInformation.fileType===1&&
@@ -353,7 +348,7 @@ class Dashboard extends Component{
               </Card>
             }
             {
-              monitorData.uiTestMonitors&& monitorData.uiTestMonitors.length>0&&
+              monitorData.uiTestMonitors&& monitorData.uiTestMonitors.rows.length>0&&
               <Card  title="UI测试监控分析" style={{marginTop: 30}}>
                 <UiTestChart uiData={monitorData.uiTestMonitors}></UiTestChart>
               </Card>
