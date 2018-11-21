@@ -364,7 +364,8 @@ class pipelineDetail extends Component {
                 // console.log(statusList)
                 let temparray = []
                 statusList.map((statusItem)=>{
-                    temparray.push(Object.assign({},stepsList.find((finalStepItem)=>finalStepItem.stepCode===statusItem.stepCode),statusItem))
+                    // temparray.push(Object.assign({},stepsList.find((finalStepItem)=>finalStepItem.stepCode===statusItem.stepCode),statusItem))
+                    temparray.push(statusItem)
                 })
                 this.makeStepCard(temparray)
             }else{
@@ -499,7 +500,8 @@ class pipelineDetail extends Component {
     }
 
     checkStepList = (stepsList) => {
-        this.getPipelineRunStatus(stepsList)
+        // this.getPipelineRunStatus(stepsList)
+        this.makeStepCard(stepsList)
     }
 
     runTask = () => {
@@ -571,6 +573,7 @@ class pipelineDetail extends Component {
 
     componentDidMount () {
         this.getPipelineDetail()
+        // this.getHistoryDetail()
         this.getHistoryList()
         this.setState({
             timerStart: new Date().getTime()
