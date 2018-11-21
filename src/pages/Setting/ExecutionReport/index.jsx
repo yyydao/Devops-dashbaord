@@ -22,202 +22,13 @@ class ExecutionReport extends Component{
   constructor(){
     super();
     this.state = {
-      allData:{
-        "scoreStandard": {
-          "securityScore": 0,
-          "compileTimeScore": 0,
-          "prismScore": 0,
-          "testScore": 0,
-          "releaseScore": 0,
-          "totalScore": 0,
-          "previousTotalScore": "0",
-          "previousSecurityScore": 0,
-          "previousCompileTimeScore": 0,
-          "previousPrismScore": 0,
-          "previousTestScore": 0,
-          "previousReleaseScore": 0
-        },
-        "packageList": [
-          {
-            "packageID": 34,
-            "packageName": "com.junte",
-            "targetSdk": "26",
-            "minSdk": "14",
-            "versionCode": "147",
-            "versionName": "5.4.0",
-            "appFileSize": "25.46MB",
-            "filePath": "./package/7fac5ab3ba474657ad8923a803d390080N4D86/Android/code_source/20181108142427/app-normal-debug.apk"
-          },
-          {
-            "packageID": 34,
-            "packageName": "com.junte",
-            "targetSdk": "26",
-            "minSdk": "14",
-            "versionCode": "147",
-            "versionName": "5.4.0",
-            "appFileSize": "25.46MB",
-            "filePath": "./package/7fac5ab3ba474657ad8923a803d390080N4D86/Android/code_source/20181108142427/app-normal-debug.apk"
-          }
-        ],
-        "codeList": [
-          {
-            "sonarID": 407,
-            "metric": "vulnerabilities",
-            "sqaleValue": "2",
-            "updateTime": "2018-11-08 14:18:26.0"
-          },
-          {
-            "sonarID": 407,
-            "metric": "vulnerabilities",
-            "sqaleValue": "2",
-            "updateTime": "2018-11-08 14:18:26.0"
-          },
-          {
-            "sonarID": 407,
-            "metric": "vulnerabilities",
-            "sqaleValue": "2",
-            "updateTime": "2018-11-08 14:18:26.0"
-          },
-          {
-            "sonarID": 407,
-            "metric": "vulnerabilities",
-            "sqaleValue": "2",
-            "updateTime": "2018-11-08 14:18:26.0"
-          },
-          {
-            "sonarID": 407,
-            "metric": "vulnerabilities",
-            "sqaleValue": "2",
-            "updateTime": "2018-11-08 14:18:26.0"
-          },
-          {
-            "sonarID": 407,
-            "metric": "vulnerabilities",
-            "sqaleValue": "2",
-            "updateTime": "2018-11-08 14:18:26.0"
-          },
-          {
-            "sonarID": 407,
-            "metric": "vulnerabilities",
-            "sqaleValue": "2",
-            "updateTime": "2018-11-08 14:18:26.0"
-          }
-        ],
-        "unitList": [
-          {
-            "sonarID": 414,
-            "metric": "test_success_density",
-            "sqaleValue": "90.8",
-            "updateTime": "2018-11-08 14:24:44.0"
-          },
-          {
-            "sonarID": 414,
-            "metric": "test_success_density",
-            "sqaleValue": "90.8",
-            "updateTime": "2018-11-08 14:24:44.0"
-          },
-          {
-            "sonarID": 414,
-            "metric": "test_success_density",
-            "sqaleValue": "90.8",
-            "updateTime": "2018-11-08 14:24:44.0"
-          },
-          {
-            "sonarID": 414,
-            "metric": "test_success_density",
-            "sqaleValue": "90.8",
-            "updateTime": "2018-11-08 14:24:44.0"
-          },
-          {
-            "sonarID": 414,
-            "metric": "test_success_density",
-            "sqaleValue": "90.8",
-            "updateTime": "2018-11-08 14:24:44.0"
-          },
-          {
-            "sonarID": 414,
-            "metric": "test_success_density",
-            "sqaleValue": "90.8",
-            "updateTime": "2018-11-08 14:24:44.0"
-          },
-          {
-            "sonarID": 414,
-            "metric": "test_success_density",
-            "sqaleValue": "90.8",
-            "updateTime": "2018-11-08 14:24:44.0"
-          },
-          {
-            "sonarID": 414,
-            "metric": "test_success_density",
-            "sqaleValue": "90.8",
-            "updateTime": "2018-11-08 14:24:44.0"
-          },
-          {
-            "sonarID": 414,
-            "metric": "test_success_density",
-            "sqaleValue": "90.8",
-            "updateTime": "2018-11-08 14:24:44.0"
-          }
-        ],
-        "cucumber": {
-          "cucID": 22,
-          "projectID": 0,
-          "stepID": "",
-          "steps": 27,
-          "passedSteps": 27,
-          "skippedSteps": 0,
-          "pendingSteps": 0,
-          "undefinedSteps": 0,
-          "scenarios": 2,
-          "passedScenarios": 2,
-          "failedScenarios": 0,
-          "features": 1,
-          "passedFeatures": 1,
-          "failedFeatures": 0,
-          "updateTime": "2018-11-08 14:26:49.0",
-          "remark": ""
-        },
-        "prism": {
-          "prismID": 18,
-          "projectID": 0,
-          "platform": 1,
-          "dataJsUrl": "./package/7fac5ab3ba474657ad8923a803d390080N4D86/PrismReport/20181108142650/data/data.js",
-          "coldStartTime": "1.321秒",
-          "cpuMax": "31.49%",
-          "cpuAverage": "19.19%",
-          "memoryMax": "250.0MB",
-          "memoryAverage": "225.65MB",
-          "flowUp": "151KB",
-          "flowDown": "959KB",
-          "smAverage": "54帧/s",
-          "smMin": "5帧/s",
-          "updateTime": "2018-11-08 14:26:50.0",
-          "remark": ""
-        },
-        "security": {
-          "securityID": 14,
-          "projectID": 0,
-          "stepID": "",
-          "platform": 1,
-          "actCount": 213,
-          "eAct": 6,
-          "servCount": 10,
-          "eSer": 1,
-          "provCount": 5,
-          "eCnt": 1,
-          "broCount": 4,
-          "eBro": 1,
-          "urls": 19,
-          "strings": 1,
-          "findings": 11,
-          "manifest": 7,
-          "binaryAnalysis": 1,
-          "certz": 8,
-          "creator": "",
-          "updateTime": "2018-11-08 14:24:42.0",
-          "remark": ""
-        }
-      }
+      scoreStandard: {},
+      basicInfo:{},
+      staticScan:{},
+      appSecurityScan:{},
+      unitTest:{},
+      uiTest:{},
+      performanceTest:{}
     }
   }
 
@@ -230,50 +41,113 @@ class ExecutionReport extends Component{
    */
   getExecutionReport = () =>{
     reqGet('pipeline/report/taskreport', {
-      taskID : '19222158ce6441899b92c57ca42a92e922T70J',
-      buildNum : 11,
+      taskID : 'bf92ca791fcb421aba227c2d95427e32tG6Fun',
+      buildNum : 8,
       platform :  2
     }).then(res => {
       if (res.code === 0) {
+        let basicInfo = res.data.basicInfo
+        let scoreStandard = res.data.scoreStandard
+        let performanceTest = res.data.performanceTest
+        //静态扫描数据处理
+        let staticScan = res.data.staticScan
+        staticScan.basicDataStatistics = this.dealFanData(res.data.staticScan.basicDataStatistics)
+
+        //安全扫描数据处理
+        let appSecurityScan = res.data.appSecurityScan
+        if(appSecurityScan.appType===1){
+          appSecurityScan.fourComponents = this.dealBarData(res.data.appSecurityScan.fourComponents)
+          appSecurityScan.safetyProblem = this.dealFanData(res.data.appSecurityScan.safetyProblem)
+          appSecurityScan.sensitiveInfo = this.dealFanData(res.data.appSecurityScan.sensitiveInfo)
+        }else{
+          appSecurityScan.iosSafetyProblem = this.dealFanData(res.data.appSecurityScan.iosSafetyProblem)
+          appSecurityScan.fileScan = this.dealFanData(res.data.appSecurityScan.fileScan)
+        }
+
+        //单元测试数据处理
+        let unitTest = res.data.unitTest
+        unitTest.executionResult = this.dealFanData(res.data.unitTest.executionResult)
+
+        //ui测试数据处理
+        let uiTest = res.data.uiTest
+        uiTest.setps = this.dealFanData(res.data.uiTest.setps)
+        uiTest.features = this.dealFanData(res.data.uiTest.features)
+        uiTest.scenarios = this.dealFanData(res.data.uiTest.scenarios)
+
+
+        this.setState({basicInfo, staticScan, scoreStandard, appSecurityScan, unitTest, uiTest, performanceTest})
       } else {
         message.error(res.msg);
       }
     })
   }
 
+  /**
+   * @desc 处理扇形数据
+   */
+  dealFanData = (data) => {
+    const { DataView } = DataSet;
+    const dv = new DataView();
+    dv.source(data).transform({
+      type: "percent",
+      field: "count",
+      dimension: "type",
+      as: "percent"
+    });
+    return dv
+  }
+
+  /**
+   * @desc 处理柱状图数据
+   */
+  dealBarData = (data) => {
+    const { DataView } = DataSet;
+    const ds = new DataSet();
+    const dv = ds.createView().source(data);
+    dv.transform({
+      type: "fold",
+      fields: ["activity", "service", "broadcastReceiver", "contentProvider"],
+      // 展开字段集
+      key: "key",
+      // key字段
+      value: "value" // value字段
+    });
+    return dv
+  }
+
 
   render(){
-    const {allData} = this.state;
+    const {basicInfo, scoreStandard, staticScan, appSecurityScan, unitTest, uiTest, performanceTest} = this.state;
     return(
         <div>
           <Card  title="基本信息" style={{marginTop: 30}}>
             <Row>
               <Col span={12}>
-                <LabelItem label={"Package Name："}>com.junte</LabelItem>
-                <LabelItem label={"Target SDK："}>23</LabelItem>
-                <LabelItem label={"Min SDK："}>14</LabelItem>
-                <LabelItem label={"Version Code："}>137</LabelItem>
-                <LabelItem label={"Version Name："}>5.3.4.1</LabelItem>
-                <LabelItem label={"Size："}>27.8MB</LabelItem>
-                <LabelItem label={"源包下载："}>http://10.100.11.222:8082/job/TuandaiAS2-develop-v3/112/artifact/integrations/apk/TuandaiAS2-debug.apk</LabelItem>
-                <LabelItem label={"加固包下载："}>http://10.100.11.222:8082/job/TuandaiAS2-tinker-v3/46/artifact/integrations/tinkerPatch/normal-release/app-normal-release_signed.apk</LabelItem>
-                <LabelItem label={"补丁包下载："}>http://10.100.11.222:8082/job/TuandaiAS2-tinker-v3/44/artifact/integrations/tinkerPatch/normal/release/patch_signed_7zip.apk</LabelItem>
+                <LabelItem label={"Package Name："}>{basicInfo.packageName||'-'}</LabelItem>
+                <LabelItem label={"Target SDK："}>{basicInfo.targetSdk||'-'}</LabelItem>
+                <LabelItem label={"Min SDK："}>{basicInfo.minSdk||'-'}</LabelItem>
+                <LabelItem label={"Version Code："}>{basicInfo.versionCode||'-'}</LabelItem>
+                <LabelItem label={"Version Name："}>{basicInfo.versionName||'-'}</LabelItem>
+                <LabelItem label={"Size："}>{basicInfo.packageName||'-'}</LabelItem>
+                <LabelItem label={"源包下载："}>{basicInfo.sourcePackagePath||'-'}</LabelItem>
+                <LabelItem label={"加固包下载："}>{basicInfo.reinforcePackagePath||'-'}</LabelItem>
+                <LabelItem label={"补丁包下载："}>{basicInfo.patchPackagePath||'-'}</LabelItem>
               </Col>
               <Col span={8}>
-                <ScoreChart></ScoreChart>
+                <ScoreChart data={scoreStandard.items}></ScoreChart>
               </Col>
               <Col span={4}>
                 <p>综合评分:</p>
-                <p style={{fontSize:80,fontWeight:"bold"}}>89</p>
+                <p style={{fontSize:80,fontWeight:"bold"}}>{scoreStandard.compositeScore}</p>
               </Col>
             </Row>
           </Card>
-          <StaticScanChart></StaticScanChart>
-          <SecurityScanChart></SecurityScanChart>
-          <UnitTestChart></UnitTestChart>
-          <UITestChart data={allData.cucumber}/>
-          <PerformanceTestChart></PerformanceTestChart>
-          <IosSecurityScanChart></IosSecurityScanChart>
+          <StaticScanChart data={staticScan}/>
+          {appSecurityScan.appType===1&&<SecurityScanChart data={appSecurityScan}/>}
+          {appSecurityScan.appType===2&&<IosSecurityScanChart data={appSecurityScan}/>}
+          <UnitTestChart data={unitTest}/>
+          <UITestChart data={uiTest}/>
+          <PerformanceTestChart data={performanceTest}/>
         </div>
     )
   }

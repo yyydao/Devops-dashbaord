@@ -283,9 +283,9 @@ class Dashboard extends Component{
                 {basicInformation.fileType===1&&
                 <Col span={8} className="info-menu">
                   <div><Tag color="#2db7f5">Identifier</Tag> {basicInformation.packageName}</div>
-                  <div><Tag color="#2db7f5">SDK Name</Tag>{basicInformation.displayName}</div>
+                  <div><Tag color="#2db7f5">APP Name</Tag>{basicInformation.displayName}</div>
                   <div><Tag color="#2db7f5">versionCode</Tag>{basicInformation.versionCode}</div>
-                  <div><Tag color="#2db7f5">versionName</Tag>{basicInformation.versionName}</div>
+                  <div><Tag color="#2db7f5">APP Version</Tag>{basicInformation.versionName}</div>
                   <div><Tag color="#2db7f5">appFileSize</Tag>{basicInformation.appFileSize}</div>
                   <div><Tag color="#2db7f5">minSdk</Tag>{basicInformation.minSdk}</div>
                   <div><Tag color="#2db7f5">targetSdk</Tag>{basicInformation.targetSdk}</div>
@@ -294,10 +294,10 @@ class Dashboard extends Component{
                 basicInformation.fileType===2&&
                 <Col span={8} className="info-menu">
                   <div><Tag color="#2db7f5">Identifier</Tag> {basicInformation.packageName}</div>
-                  <div><Tag color="#2db7f5">SDK Name</Tag>{basicInformation.displayName}</div>
+                  <div><Tag color="#2db7f5">APP Name</Tag>{basicInformation.displayName}</div>
                   <div><Tag color="#2db7f5">Version</Tag>{basicInformation.versionCode}</div>
-                  <div><Tag color="#2db7f5">Platform Version</Tag>{basicInformation.versionName}</div>
-                  <div><Tag color="#2db7f5">MinOS Version</Tag>{basicInformation.minSdk}</div>
+                  <div><Tag color="#2db7f5">APP Version</Tag>{basicInformation.versionName}</div>
+                  <div><Tag color="#2db7f5">appFileSize</Tag>{basicInformation.appFileSize}</div>
                 </Col>
               }
                 <Col span={12}>

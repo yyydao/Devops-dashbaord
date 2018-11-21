@@ -11,7 +11,7 @@ export default class Edit extends Component{
     const {label,children} = this.props
     return(
         <div style={{display:'flex'}}>
-          <span style={{display:'block',width:120}}>{label}</span>
+          <p style={{width:120}}>{label}</p>
           <p style={{flex:1,wordBreak:'break-all',display:'inline-block'}}>{children}</p>
         </div>
     )

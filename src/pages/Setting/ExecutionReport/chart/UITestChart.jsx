@@ -1,15 +1,5 @@
 import React from "react";
-import {
-  G2,
-  Chart,
-  Geom,
-  Axis,
-  Tooltip,
-  Coord,
-  Label,
-  Legend
-} from "bizcharts";
-import DataSet from "@antv/data-set";
+import FanChart from './FanChart';
 import {Row, Col, Progress, Card} from 'antd';
 
 class UITestChart extends React.Component {
@@ -21,45 +11,7 @@ class UITestChart extends React.Component {
     // this.initChart();
   }
   render() {
-    const { DataView } = DataSet;
-    const data = [
-      {
-        item: "事例一",
-        count: 40
-      },
-      {
-        item: "事例二",
-        count: 21
-      },
-      {
-        item: "事例三",
-        count: 17
-      },
-      {
-        item: "事例四",
-        count: 13
-      },
-      {
-        item: "事例五",
-        count: 9
-      }
-    ];
-    const dv = new DataView();
-    dv.source(data).transform({
-      type: "percent",
-      field: "count",
-      dimension: "item",
-      as: "percent"
-    });
-    console.log(dv)
-    const cols = {
-      percent: {
-        formatter: val => {
-          val = val * 100 + "%";
-          return val;
-        }
-      }
-    };
+    const { data } = this.props
     return (
         <Card  title="UI测试" style={{marginTop: 30}}>
           <Row gutter={16}>
@@ -68,47 +20,7 @@ class UITestChart extends React.Component {
                   type="inner"
                   title="Setps："
               >
-                <Chart
-                    height={400}
-                    data={dv}
-                    scale={cols}
-                    padding={[80, 100, 80, 80]}
-                    forceFit
-                >
-                  <Coord type="theta" radius={0.75} />
-                  <Axis name="percent" />
-                  <Legend/>
-                  <Tooltip
-                      showTitle={false}
-                      itemTpl="<li><span style=&quot;background-color:{color};&quot; class=&quot;g2-tooltip-marker&quot;></span>{name}: {value}</li>"
-                  />
-                  <Geom
-                      type="intervalStack"
-                      position="percent"
-                      color="item"
-                      tooltip={[
-                        "item*percent",
-                        (item, percent) => {
-                          percent = percent * 100 + "%";
-                          return {
-                            name: item,
-                            value: percent
-                          };
-                        }
-                      ]}
-                      style={{
-                        lineWidth: 1,
-                        stroke: "#fff"
-                      }}
-                  >
-                    <Label
-                        content="percent"
-                        formatter={(val, item) => {
-                          return item.point.item + ": " + val;
-                        }}
-                    />
-                  </Geom>
-                </Chart>
+                <FanChart data={data.setps}/>
               </Card>
             </Col>
             <Col span={8}>
@@ -116,47 +28,7 @@ class UITestChart extends React.Component {
                   type="inner"
                   title="Scenarios："
               >
-                <Chart
-                    height={400}
-                    data={dv}
-                    scale={cols}
-                    padding={[80, 100, 80, 80]}
-                    forceFit
-                >
-                  <Coord type={"theta"} radius={0.75} innerRadius={0.6} />
-                  <Axis name="percent" />
-                  <Legend/>
-                  <Tooltip
-                      showTitle={false}
-                      itemTpl="<li><span style=&quot;background-color:{color};&quot; class=&quot;g2-tooltip-marker&quot;></span>{name}: {value}</li>"
-                  />
-                  <Geom
-                      type="intervalStack"
-                      position="percent"
-                      color="item"
-                      tooltip={[
-                        "item*percent",
-                        (item, percent) => {
-                          percent = percent * 100 + "%";
-                          return {
-                            name: item,
-                            value: percent
-                          };
-                        }
-                      ]}
-                      style={{
-                        lineWidth: 1,
-                        stroke: "#fff"
-                      }}
-                  >
-                    <Label
-                        content="percent"
-                        formatter={(val, item) => {
-                          return item.point.item + ": " + val;
-                        }}
-                    />
-                  </Geom>
-                </Chart>
+                <FanChart data={data.scenarios}/>
               </Card>
             </Col>
             <Col span={8}>
@@ -164,47 +36,7 @@ class UITestChart extends React.Component {
                   type="inner"
                   title="Features："
               >
-                <Chart
-                    height={400}
-                    data={dv}
-                    scale={cols}
-                    padding={[80, 100, 80, 80]}
-                    forceFit
-                >
-                  <Coord type="theta" radius={0.75} />
-                  <Axis name="percent" />
-                  <Legend/>
-                  <Tooltip
-                      showTitle={false}
-                      itemTpl="<li><span style=&quot;background-color:{color};&quot; class=&quot;g2-tooltip-marker&quot;></span>{name}: {value}</li>"
-                  />
-                  <Geom
-                      type="intervalStack"
-                      position="percent"
-                      color="item"
-                      tooltip={[
-                        "item*percent",
-                        (item, percent) => {
-                          percent = percent * 100 + "%";
-                          return {
-                            name: item,
-                            value: percent
-                          };
-                        }
-                      ]}
-                      style={{
-                        lineWidth: 1,
-                        stroke: "#fff"
-                      }}
-                  >
-                    <Label
-                        content="percent"
-                        formatter={(val, item) => {
-                          return item.point.item + ": " + val;
-                        }}
-                    />
-                  </Geom>
-                </Chart>
+                <FanChart data={data.features}/>
               </Card>
             </Col>
           </Row>

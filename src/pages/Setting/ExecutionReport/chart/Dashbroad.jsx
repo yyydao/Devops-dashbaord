@@ -8,7 +8,7 @@ import 'echarts/lib/component/tooltip';
 import 'echarts/lib/component/title';
 import 'echarts/lib/chart/gauge';
 
-class EchartsTest extends Component {
+class Dashbroad extends Component {
   componentDidMount() {
     // 基于准备好的dom，初始化echarts实例
     var myChart = echarts.init(document.getElementById(this.props.id));
@@ -19,21 +19,18 @@ class EchartsTest extends Component {
       },
       series: [
         {
-          name: '平均CPU使用率',
+          name: this.props.name,
           type: 'gauge',
-          detail: {formatter:'{value}%'},
-          data: [{value: 50,name:this.props.name}],
+          detail: {formatter:'{value}'+this.props.unit},
+          data: [{value:this.props.value, name:this.props.name}],
           min:0,
-          max:100,
+          max:this.props.max,
           title:{
             offsetCenter:[0, '80%']
           },
           axisLine: { // 坐标轴线
             lineStyle: { // 属性lineStyle控制线条样式
-              color: [
-                [0.65, '#1890ff'],
-                [1, '#FF6A6A']
-              ],
+              color: this.props.color,
               width:18
             }
           },
@@ -52,4 +49,4 @@ class EchartsTest extends Component {
   }
 }
 
-export default EchartsTest;
+export default Dashbroad;
