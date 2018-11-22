@@ -470,7 +470,7 @@ class pipelineDetail extends Component {
                     let data = res.data
                     let list = res.list
 
-                    data && this.setState({exexTime:data.execTime})
+                    data && this.setState({execTimeStr:data.execTimeStr})
                     this.makeHistoryStepCard(list)
                 }else{
                     message.error(res.msg)
@@ -712,7 +712,7 @@ class pipelineDetail extends Component {
                                             {showHistory && <p className="pipeline-item-timemeta">
                                                 <span><i>执行时间：</i>{distanceTime}</span>
                                                 <span><i>执行分支：</i>{branchName}</span>
-                                                <span><i>执行时长：</i>{this.state.exexTime}</span>
+                                                <span><i>执行时长：</i>{execTimeStr}</span>
                                             </p>}
                                         </div>
                                     </Col>
