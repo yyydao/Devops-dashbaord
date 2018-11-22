@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Breadcrumb, Row, Col, Tag, Button, message, Divider, Select, Card, Modal } from 'antd';
+import { Row, Col, message, Card } from 'antd';
 
 
-import { reqPost, reqGet} from '@/api/api';
+import { reqGet} from '@/api/api';
 import './index.scss';
 import LabelItem from './LabelItem';
 import ScoreChart from './chart/ScoreChart';
