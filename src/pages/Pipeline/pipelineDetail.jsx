@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import qs from 'qs'
 import './index.scss'
-import {formatTime} from '@/utils/utils'
+import {formatTime, constructStepCard} from '@/utils/utils'
 import {reqGet,reqDelete,reqPostURLEncode } from '@/api/api'
 import toPairs from 'lodash.topairs'
 import uniq from 'lodash.uniq'
@@ -342,53 +342,16 @@ class pipelineDetail extends Component {
 
 
     makeStepCard = (stepsList) => {
-        // console.log(`stepsList ${JSON.stringify(stepsList)}`)
-        const category = uniq(stepsList.map(item => item.stepCategory))
-        // console.log(category)
-        let tempStepObject = {}
-        let finalStep = []
-        category.forEach((value, index) => {
-            if(value !== undefined){
-                tempStepObject[value] = []
-            }
-        })
-        for (let i = 0; i < stepsList.length; i++) {
-            const stepListElement = stepsList[i]
-            for (const tempStepObjectKey in tempStepObject) {
-                if (stepListElement.stepCategory + '' === tempStepObjectKey + '') {
-                        tempStepObject[tempStepObjectKey].push(stepListElement)
-                }
-            }
-
-        }
-        // console.log(tempStepObject)
-        finalStep = toPairs(tempStepObject)
-        // console.log(finalStep)
+        let finalStep
+        finalStep = constructStepCard(stepsList)
         this.setState({stepsList: stepsList})
         this.setState({finalStep: finalStep})
         this.setState({fullSteps: this.composeEditFinalStep(finalStep)})
     }
 
     makeHistoryStepCard = (stepsList) => {
-        // console.log(`stepsList ${JSON.stringify(stepsList)}`)
-        const category = uniq(stepsList.map(item => item.stepCategory))
-        // console.log(category)
-        let tempStepObject = {}
-        let historyStep = []
-        category.forEach((value, index) => {
-            tempStepObject[value] = []
-        })
-        for (let i = 0; i < stepsList.length; i++) {
-            const stepListElement = stepsList[i]
-            for (const tempStepObjectKey in tempStepObject) {
-                if (stepListElement.stepCategory + '' === tempStepObjectKey + '') {
-                    tempStepObject[tempStepObjectKey].push(stepListElement)
-                }
-            }
-
-        }
-        historyStep = toPairs(tempStepObject)
-        // console.log(historyStep)
+        let historyStep
+        historyStep = constructStepCard(stepsList)
         this.setState({historyStep: historyStep})
     }
     getPipelineRunStatus = (stepsList)=>{
@@ -479,10 +442,13 @@ class pipelineDetail extends Component {
                 }
         })
     }
-    changeHistory = (recordNo)=>{
+    changeHistory = (recordNoWithBuildNum)=>{
         clearTimeout(this.state.timer);
+        const recordNo = recordNoWithBuildNum && recordNoWithBuildNum.split('|')[0]
+        const buildNum = recordNoWithBuildNum && recordNoWithBuildNum.split('|')[1]
         this.getHistoryDetail(recordNo)
         this.setState({showHistory:true})
+        this.setState({historyBuildNum:buildNum})
     }
 
     getHistoryDetail = (recordNo) =>{
@@ -827,7 +793,14 @@ class pipelineDetail extends Component {
                         </div>
                     </section>
                 </section>
-                <ExecutionReport className="pipeline-box" taskID={taskID} buildNum={buildNum} platform={platform} />
+                {
+                    !showHistory &&
+                    <ExecutionReport className="pipeline-box" taskID={taskID} buildNum={buildNum} platform={platform}/>
+                }
+                {
+                    showHistory  &&
+                    <ExecutionReport className="pipeline-box" taskID={taskID} buildNum={this.state.historyBuildNum} platform={platform}/>
+                }
 
             </div>
         )
