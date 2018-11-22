@@ -26,7 +26,8 @@ class ExecutionReport extends Component {
             appSecurityScan: {},
             unitTest: {},
             uiTest: {},
-            performanceTest: {}
+            performanceTest: {},
+            host:window.location.host
         }
     }
 
@@ -86,7 +87,7 @@ class ExecutionReport extends Component {
                     appSecurityScan,
                     unitTest,
                     uiTest,
-                    performanceTest
+                  performanceTest
                 })
             } else {
                 message.error(res.msg)
@@ -136,31 +137,50 @@ class ExecutionReport extends Component {
         }
     }
 
-    render () {
-        const {basicInfo, scoreStandard, staticScan, appSecurityScan, unitTest, uiTest, performanceTest} = this.state
+  /**
+   * @desc 判断对象是否为空
+   */
+  checkNullObj = obj=> {
+    console.log(obj,Object.keys(obj).length)
+    return Object.keys(obj).length !== 0
+  }
+
+  render () {
+        const {basicInfo, scoreStandard, staticScan, appSecurityScan, unitTest, uiTest, performanceTest, host} = this.state
         return (
             <div>
                 <Card title="基本信息" style={{marginTop: 30}}>
                     <Row>
-                        {basicInfo && Object.keys(basicInfo) && <Col span={12}>
+                        {basicInfo && this.checkNullObj(basicInfo) && <Col span={12}>
 
-                            <LabelItem label={'Package Name：'}>{basicInfo.packageName || '-'}</LabelItem>
+                            <LabelItem label={'Identifier：'}>{basicInfo.packageName || '-'}</LabelItem>
                             <LabelItem label={'Target SDK：'}>{basicInfo.targetSdk || '-'}</LabelItem>
                             <LabelItem label={'Min SDK：'}>{basicInfo.minSdk || '-'}</LabelItem>
                             <LabelItem label={'Version Code：'}>{basicInfo.versionCode || '-'}</LabelItem>
                             <LabelItem label={'Version Name：'}>{basicInfo.versionName || '-'}</LabelItem>
-                            <LabelItem label={'Size：'}>{basicInfo.packageName || '-'}</LabelItem>
-                            <LabelItem label={'源包下载：'}>{basicInfo.sourcePackagePath || '-'}</LabelItem>
-                            <LabelItem label={'加固包下载：'}>{basicInfo.reinforcePackagePath || '-'}</LabelItem>
-                            <LabelItem label={'补丁包下载：'}>{basicInfo.patchPackagePath || '-'}</LabelItem>
-
+                            <LabelItem label={'Size：'}>{basicInfo.appFileSize || '-'}</LabelItem>
+                            {basicInfo.sourcePackagePath&&
+                            <LabelItem label={'源包下载：'}>
+                              <a href={`http://${host}/download/downloadApk?filePath=${basicInfo.sourcePackagePath}`}>点击下载</a>
+                            </LabelItem>
+                            }
+                            {basicInfo.reinforcePackagePath&&
+                            <LabelItem label={'加固包下载：'}>
+                                <a href={`http://${host}/download/downloadApk?filePath=${basicInfo.reinforcePackagePath}`}>点击下载</a>
+                            </LabelItem>
+                            }
+                            {basicInfo.patchPackagePath &&
+                            <LabelItem label={'补丁包下载：'}>
+                              <a href={`http://${host}/download/downloadApk?filePath=${basicInfo.patchPackagePath}`}>点击下载</a>
+                            </LabelItem>
+                            }
                         </Col>}
-                        {scoreStandard && Object.keys(scoreStandard) &&
+                        {scoreStandard && scoreStandard.items &&
                         <Col span={8}>
                             <ScoreChart data={scoreStandard.items}></ScoreChart>
                         </Col>
                         }
-                        {scoreStandard && Object.keys(scoreStandard) &&
+                        {scoreStandard && scoreStandard.compositeScore &&
                         <Col span={4}>
                             <p>综合评分:</p>
                             <p style={{fontSize: 80, fontWeight: 'bold'}}>{scoreStandard.compositeScore}</p>
@@ -168,21 +188,20 @@ class ExecutionReport extends Component {
                         }
                     </Row>
                 </Card>
-                {staticScan &&  Object.keys(staticScan) &&
+                {staticScan &&  this.checkNullObj(staticScan) &&
                     <StaticScanChart data={staticScan}/>
                 }
                 {appSecurityScan && appSecurityScan.appType === 1 && <SecurityScanChart data={appSecurityScan}/>}
                 {appSecurityScan && appSecurityScan.appType === 2 && <IosSecurityScanChart data={appSecurityScan}/>}
-                {unitTest && Object.keys(unitTest) &&
+                {unitTest && this.checkNullObj(unitTest) &&
                     <UnitTestChart data={unitTest}/>
                 }
-                {   uiTest && Object.keys(uiTest) &&
+                {   uiTest && this.checkNullObj(uiTest) &&
                     <UITestChart data={uiTest}/>
                 }
-                {   performanceTest && Object.keys(performanceTest) &&
+                {   performanceTest && this.checkNullObj(performanceTest) &&
                     <PerformanceTestChart data={performanceTest}/>
                 }
-
             </div>
         )
     }

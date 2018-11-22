@@ -29,7 +29,9 @@ class FanChart extends React.Component {
                   padding={[80, 100, 80, 80]}
                   forceFit
               >
-                <Coord type="theta" radius={0.75} />
+                <Coord type="theta" radius={0.75} background={{
+                  fill: "#eeeeee",
+                }}/>
                 <Axis name="percent" />
                 <Legend/>
                 <Tooltip

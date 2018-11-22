@@ -15,6 +15,7 @@ class UITestChart extends React.Component {
     return (
         <Card  title="UI测试" style={{marginTop: 30}}>
           <Row gutter={16}>
+            {data.setps && data.setps.rows.length!== 0 &&
             <Col span={8}>
               <Card
                   type="inner"
@@ -23,6 +24,8 @@ class UITestChart extends React.Component {
                 <FanChart data={data.setps}/>
               </Card>
             </Col>
+            }
+            {data.scenarios && data.scenarios.rows.length!== 0 &&
             <Col span={8}>
               <Card
                   type="inner"
@@ -31,6 +34,8 @@ class UITestChart extends React.Component {
                 <FanChart data={data.scenarios}/>
               </Card>
             </Col>
+            }
+            {data.features && data.features.rows.length!== 0 &&
             <Col span={8}>
               <Card
                   type="inner"
@@ -39,6 +44,7 @@ class UITestChart extends React.Component {
                 <FanChart data={data.features}/>
               </Card>
             </Col>
+            }
           </Row>
 
         </Card>
