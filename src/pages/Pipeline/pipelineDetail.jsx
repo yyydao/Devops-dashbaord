@@ -9,8 +9,6 @@ import toPairs from 'lodash.topairs'
 import uniq from 'lodash.uniq'
 import { setStep,removeSteps,setSteps } from '@/store/action'
 
-
-
 import {track } from 'bizcharts';
 
 import {
@@ -201,6 +199,38 @@ class pipelineDetail extends Component {
                 stepsList : this.state.stepsList,
                 branchName:this.state.branchName
             },
+        })
+    }
+    getBasicInfo = () =>{
+        const parsedHash = qs.parse(this.props.location.search.slice(1));
+        const {timer } = this.state;
+        if (timer) {
+            clearTimeout(timer);
+            this.setState({
+                timer: null
+            });
+        }
+        reqGet('/pipeline/taskinfo', {
+            taskID: this.props.match.params.taskID,
+            buildNum: parsedHash.buildNumber
+        }).then((res) => {
+            if (res.code === 0) {
+                const taskList = res.task
+                if(!taskList){
+                    message.error('数据不完整，无任务信息')
+                    return
+                }
+                const stepsList = res.steps
+                this.checkTaskList(taskList)
+                if(taskList.taskStatus===1||taskList.taskStatus===3){
+                    this.checkStepList(stepsList)
+                    // this.refreshTaskDetail(parsedHash.curRecordNo)
+                }else{
+                    this.checkStepList(stepsList)
+                }
+            }else{
+                message.error(res.msg)
+            }
         })
     }
 
@@ -580,11 +610,19 @@ class pipelineDetail extends Component {
     }
 
     componentDidMount () {
-        const parsedHash = qs.parse(this.props.location.search.slice(1));
-        if(this.props.location.state &&( this.props.location.state.taskStatus === 3 || this.props.location.state.taskStatus === 1)){
-            this.refreshTaskDetail(parsedHash.curRecordNo)
-        }else{
-            this.getPipelineDetail()
+        const parsedHash = qs.parse(this.props.location.search.slice(1))
+        if (this.props.location.state && (this.props.location.state.taskStatus === 3 || this.props.location.state.taskStatus === 1)) {
+            if (parsedHash.buildNumber + '' === '0') {
+                this.getBasicInfo()
+            } else {
+                this.refreshTaskDetail(parsedHash.curRecordNo)
+            }
+        } else {
+            if (parsedHash.buildNumber + '' === '0') {
+                this.getBasicInfo()
+            } else {
+                this.getPipelineDetail()
+            }
         }
 
         this.getHistoryList()
