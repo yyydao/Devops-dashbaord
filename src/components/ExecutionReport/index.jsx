@@ -109,7 +109,7 @@ class ExecutionReport extends Component {
             })
             return dv
         } else {
-            message.error(`数据异常`)
+            // message.error(`数据异常`)
         }
 
     }
@@ -132,7 +132,7 @@ class ExecutionReport extends Component {
             })
             return dv
         } else {
-            message.error(`数据异常`)
+            // message.error(`数据异常`)
         }
     }
 
