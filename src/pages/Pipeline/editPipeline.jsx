@@ -23,6 +23,8 @@ import {
     Menu
 } from 'antd'
 import qs from 'qs'
+import uniq from 'lodash.uniq'
+import toPairs from 'lodash.topairs'
 
 const BreadcrumbItem = Breadcrumb.Item
 const Step = Steps.Step
@@ -315,6 +317,32 @@ class Edit extends Component {
         this.setState({branchName:branchObject.label})
     }
 
+    makeStepCard = (stepsList) => {
+        // console.log(`stepsList ${JSON.stringify(stepsList)}`)
+        const category = uniq(stepsList.map(item => item.stepCategory))
+        // console.log(category)
+        let tempStepObject = {}
+        let finalStep = []
+        category.forEach((value, index) => {
+            if(value !== undefined){
+                tempStepObject[value] = []
+            }
+        })
+        for (let i = 0; i < stepsList.length; i++) {
+            const stepListElement = stepsList[i]
+            for (const tempStepObjectKey in tempStepObject) {
+                if (stepListElement.stepCategory + '' === tempStepObjectKey + '') {
+                    tempStepObject[tempStepObjectKey].push(stepListElement)
+                }
+            }
+
+        }
+        // console.log(tempStepObject)
+        finalStep = toPairs(tempStepObject)
+        // console.log(finalStep)
+        this.setState({fullSteps: finalStep})
+    }
+
     setPipelineInfo(){
         const parsedHash = qs.parse(this.props.location.search.slice(1));
         console.log(parsedHash)
@@ -334,7 +362,7 @@ class Edit extends Component {
                     branchObject:{key:branchID},
                     jenkinsJob: res.task.jenkinsJob,
                 });
-
+                this.makeStepCard(res.steps)
                 this.setState({branchID: res.task.branchID })
                 this.setState({branchName: res.task.branchName })
             }else{
