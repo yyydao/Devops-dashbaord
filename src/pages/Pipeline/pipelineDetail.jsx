@@ -9,6 +9,7 @@ import toPairs from 'lodash.topairs'
 import uniq from 'lodash.uniq'
 import { setStep,removeSteps,setSteps } from '@/store/action'
 
+import ExecutionReport from '@/components/ExecutionReport'
 import {track } from 'bizcharts';
 
 import {
@@ -607,18 +608,27 @@ class pipelineDetail extends Component {
         if (oldProjectId !== null && oldProjectId !== this.props.projectId) {
             this.props.history.push('/pipeline');
         }
+        const parsedHash = qs.parse(this.props.location.search.slice(1))
+        const taskID = this.props.match.params.taskID
+        const buildNum = parsedHash.buildNumber+ ''
+        const platform = parsedHash.platform+ ''
+        this.setState({
+            taskID,
+            buildNum,
+            platform,
+        })
     }
 
     componentDidMount () {
         const parsedHash = qs.parse(this.props.location.search.slice(1))
         if (this.props.location.state && (this.props.location.state.taskStatus === 3 || this.props.location.state.taskStatus === 1)) {
-            if (parsedHash.buildNumber + '' === '0') {
+            if (this.state.buildNum === '0') {
                 this.getBasicInfo()
             } else {
                 this.refreshTaskDetail(parsedHash.curRecordNo)
             }
         } else {
-            if (parsedHash.buildNumber + '' === '0') {
+            if (this.state.buildNum  === '0') {
                 this.getBasicInfo()
             } else {
                 this.getPipelineDetail()
@@ -641,6 +651,9 @@ class pipelineDetail extends Component {
 
     render () {
         const {
+            taskID,
+            buildNum,
+            platform,
             delModalVisible,
             taskCode,
             taskName,
@@ -654,7 +667,6 @@ class pipelineDetail extends Component {
             showHistory,
             historyStep
         } = this.state
-
         return (
             <div className="pipeline">
                 <Breadcrumb className="devops-breadcrumb">
@@ -815,10 +827,8 @@ class pipelineDetail extends Component {
                         </div>
                     </section>
                 </section>
-                <section className="pipeline-box">
-                    <Card title="基本信息">
-                    </Card>
-                </section>
+                <ExecutionReport className="pipeline-box" taskID={taskID} buildNum={buildNum} platform={platform} />
+
             </div>
         )
     }

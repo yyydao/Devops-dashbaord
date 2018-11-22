@@ -118,7 +118,7 @@ class Pipeline extends Component {
         console.log(item.curRecordNo)
         this.props.history.push({
             pathname:`/pipeline/detail/${item.taskID}`,
-            search: `?buildNumber=${item.buildNum}&curRecordNo=${item.curRecordNo}`,
+            search: `?buildNumber=${item.buildNum}&curRecordNo=${item.curRecordNo}&platform=${item.platform}`,
             state:{
                 taskStatus:item.taskStatus
             }
