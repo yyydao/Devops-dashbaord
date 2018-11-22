@@ -254,8 +254,7 @@ class Dashboard extends Component{
       return
     }
     let host = window.location.host
-    let url1=url.substring(url.indexOf('./')+1)
-    window.open(`http://${host}${url1}`)
+    window.open(`http://${host}/download/downloadApk?filePath=${url}`)
   }
 
 
