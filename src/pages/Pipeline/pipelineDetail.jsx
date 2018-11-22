@@ -227,12 +227,10 @@ class pipelineDetail extends Component {
                 const stepsList = res.steps
                 this.checkTaskList(taskList)
                 if(taskList.taskStatus===1||taskList.taskStatus===3){
-                    this.refreshTaskDetail()
+                    this.refreshTaskDetail(parsedHash.curRecordNo)
                 }else{
                     this.checkStepList(stepsList)
                 }
-
-
             }else{
                 message.error(res.msg)
             }
@@ -245,8 +243,7 @@ class pipelineDetail extends Component {
     }
 
 
-    refreshTaskDetail = () => {
-        const parsedHash = qs.parse(this.props.location.search.slice(1));
+    refreshTaskDetail = (recordNo) => {
         const {timer } = this.state;
         if (timer) {
             clearTimeout(timer);
@@ -258,8 +255,7 @@ class pipelineDetail extends Component {
 
         reqGet('/pipeline/taskstatus',{
             taskID: this.props.match.params.taskID,
-            buildNum: parsedHash.buildNumber,
-            recordNo: parsedHash.curRecordNo
+            recordNo: recordNo
         }).then((res) => {
             if (res.code === 0) {
 
@@ -273,7 +269,7 @@ class pipelineDetail extends Component {
                 this.makeStepCard(temparray)
                 this.checkTaskList(taskList)
                 this.setState({
-                    timer: taskList &&  taskList.taskStatus !== 2 && (new Date().getTime() - this.state.timerStart < 3600000) ? setTimeout(this.refreshTaskDetail, 10e3) : null
+                    timer: taskList &&  taskList.taskStatus !== 2 && (new Date().getTime() - this.state.timerStart < 3600000) ? setTimeout(()=>this.refreshTaskDetail(recordNo), 10e3) : null
                 })
             }else{
                 message.error(res.msg)
@@ -519,15 +515,13 @@ class pipelineDetail extends Component {
     }
 
     runTask = () => {
-
         reqPostURLEncode('/pipeline/taskbuild', {
             taskID: this.props.match.params.taskID
-
         }).then((res) => {
             if (res.code === 0) {
-                this.setState({taskStatus: 1})
+                this.setState({taskStatus: res.status})
                 message.success('开始执行')
-                setTimeout(this.refreshTaskDetail,10e3)
+                setTimeout(this.refreshTaskDetail(res.recordNo),10e3)
             }else{
                 message.error(res.msg)
             }
@@ -588,7 +582,7 @@ class pipelineDetail extends Component {
     componentDidMount () {
         const parsedHash = qs.parse(this.props.location.search.slice(1));
         if(this.props.location.state &&( this.props.location.state.taskStatus === 3 || this.props.location.state.taskStatus === 1)){
-            this.refreshTaskDetail()
+            this.refreshTaskDetail(parsedHash.curRecordNo)
         }else{
             this.getPipelineDetail()
         }
@@ -689,7 +683,7 @@ class pipelineDetail extends Component {
                             <div className="pipeline-item-header">
                                 <Row type="flex" justify="space-between">
                                     <Col span={12}>
-                                        <h2>{taskName} <span>（ID：{taskCode}）{ taskStatus === 1 && <Icon type="loading" />}</span></h2>
+                                        <h2>{taskName} <span>（ID：{taskCode}）{!showHistory && taskStatus === 1 && <Icon type="loading" />}</span></h2>
                                     </Col>
                                     <Col span={12}>
                                         <div className="pipeline-item-user">
