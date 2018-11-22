@@ -20,6 +20,9 @@ class ExecutionReport extends Component {
     constructor (props) {
         super(props)
         this.state = {
+            taskID: props.taskID,
+            buildNum: props.buildNum,
+            platform: props.platform,
             scoreStandard: {},
             basicInfo: {},
             staticScan: {},
@@ -37,6 +40,15 @@ class ExecutionReport extends Component {
         platform: PropTypes.string.isRequired
     }
 
+    componentWillReceiveProps(nextProps) {
+        console.log(nextProps)
+        this.setState({
+            taskID: nextProps.taskID,
+            buildNum: nextProps.buildNum,
+            platform: nextProps.platform,
+        },()=>this.getExecutionReport());
+
+    }
     componentWillMount () {
         this.getExecutionReport()
     }
@@ -45,7 +57,7 @@ class ExecutionReport extends Component {
      * @desc 获取基本信息
      */
     getExecutionReport = () => {
-        const {taskID, buildNum, platform} = this.props
+        const {taskID, buildNum, platform} = this.state
         reqGet('pipeline/report/taskreport', {
             taskID,
             buildNum,
