@@ -48,7 +48,7 @@ class PackageTest extends Component {
                     value: 2
                 }
             ],
-            
+
             versionTotal: 0,
             versionPage: 1,
             versionList: [],
@@ -123,7 +123,7 @@ class PackageTest extends Component {
     addBuild = () => {
         const { envId, passwdBuild, formDataName, formDataBranch, fromDataMail, formDataDesc, formDataWiki, formDataReDesc, formDataUser, formDataPassword, modalType } = this.state;
         const url = modalType === 1 ? '/package/addSubmit' : '/package/regression';
-        
+
         if (!formDataName) {
             message.error('请填写“提测人”');
             return;
@@ -133,10 +133,6 @@ class PackageTest extends Component {
         }
           if (!formDataDesc) {
             message.error('请填写“提测概要”');
-            return;
-          }
-          if (!formDataWiki) {
-            message.error('请选择“提测详情”');
             return;
           }
         if (passwdBuild === 1) {
@@ -205,7 +201,7 @@ class PackageTest extends Component {
 
     changeType = (e) => {
         const newValue = e.target.value;
-    
+
         clearTimeout(this.state.timer);
 
         this.setState({
@@ -428,7 +424,7 @@ class PackageTest extends Component {
                     }
 
                     {
-                        passwdBuild === 1 && 
+                        passwdBuild === 1 &&
                         <div>
                             <div className="package-modal-item">
                                 <Input placeholder="构建账号" value={formDataUser} onChange={(e) => {
@@ -453,7 +449,7 @@ class PackageTest extends Component {
                         breadcrumbPath.map((item, index) => {
                             return <BreadcrumbItem key={index}>
                                         {
-                                            index === breadcrumbPath.length - 1 ? 
+                                            index === breadcrumbPath.length - 1 ?
                                             <span>{item.name}</span> : <Link to={item.path}>{item.name}</Link>
                                         }
                                     </BreadcrumbItem>
@@ -478,9 +474,9 @@ class PackageTest extends Component {
                         }
                     </Radio.Group>
                 </div>
-                
+
                 {
-                    typeValue === 1 &&  
+                    typeValue === 1 &&
                     <div className="package-main">
                         <Collapse defaultActiveKey={['0']}>
                             <Panel header="构建队列" key="0" className="package-container">
@@ -530,7 +526,7 @@ class PackageTest extends Component {
                 }
 
                 {
-                    typeValue === 2 &&  
+                    typeValue === 2 &&
                     <div className="package-main">
                         <Collapse defaultActiveKey={['0']}>
                             <Panel header="失败列表" key="0" className="package-container">
