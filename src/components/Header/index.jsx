@@ -11,7 +11,7 @@ class Header extends Component{
         let { userInfo } = this.props;
         const menu = <Menu>
                         <MenuItem key="account"><Link to="/personal"><Icon type="user" style={{minWidth: 12, marginRight: 8}} />账户信息</Link></MenuItem>
-                        <MenuItem key="logot"><a href="/uas/logout"><Icon type="logout" style={{minWidth: 12, marginRight: 8}} />退出</a></MenuItem>
+                        <MenuItem key="logot"><a href="/devops/loginOut"><Icon type="logout" style={{minWidth: 12, marginRight: 8}} />退出</a></MenuItem>
                     </Menu>;
 
         return(
