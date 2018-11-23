@@ -153,8 +153,7 @@ class ExecutionReport extends Component {
    * @desc 判断对象是否为空
    */
   checkNullObj = obj=> {
-    console.log(obj,Object.keys(obj).length)
-    return Object.keys(obj).length !== 0
+    return JSON.stringify(obj)!=='{}'
   }
 
   render () {
