@@ -102,6 +102,17 @@ class Pipeline extends Component {
         })
     }
 
+    jumpToAddPipeline = ()=>{
+        const hasAddAuth = checkPermission('/pipeline/add/',this.props.permissionList)
+        if(!hasAddAuth){
+            message.error(message.error('该用户无此操作权限'))
+            return
+        }
+        this.props.history.push({
+            pathname:`/pipeline/add`
+        })
+    }
+
     runTask = (item) => {
         this.setState({taskStatus: 1})
         reqPostURLEncode('/pipeline/taskbuild', {
@@ -136,10 +147,10 @@ class Pipeline extends Component {
 
     componentDidMount () {
         this.getPipelineList()
-        const hasAddAuth = checkPermission('/pipeline/add',this.props.permissionList)
-        const authButtonText =`新增流水线`
-        const addPathTo ={pathName:`/pipeline/add`}
-        this.setState({hasAddAuth:hasAddAuth,authButtonText:authButtonText,addPathTo:addPathTo})
+        // const hasAddAuth = checkPermission('/pipeline/add',this.props.permissionList)
+        // const authButtonText =`新增流水线`
+        // const addPathTo ={pathName:`/pipeline/add`}
+        // this.setState({hasAddAuth:hasAddAuth,authButtonText:authButtonText,addPathTo:addPathTo})
     }
 
     render () {
@@ -154,7 +165,8 @@ class Pipeline extends Component {
                 </Breadcrumb>
 
                 <div className="pipeline-menu">
-                    <AuthButton hasAuth={hasAddAuth} buttonText={authButtonText} to={addPathTo}/>
+                    <Button type="primary" onClick={this.jumpToAddPipeline}>新增流水线</Button>
+                    {/*<AuthButton hasAuth={hasAddAuth} buttonText={authButtonText} to={addPathTo}/>*/}
                 </div>
                 <section className="pipeline-box">
                     <section className="pipeline-main">
