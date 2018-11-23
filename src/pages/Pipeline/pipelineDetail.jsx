@@ -797,7 +797,7 @@ class pipelineDetail extends Component {
                     </section>
                 </section>
                 {
-                    buildNum!==0 && !showHistory &&
+                    buildNum!== '0' && !showHistory &&
                     <ExecutionReport className="pipeline-box" taskID={taskID} buildNum={buildNum} platform={platform}/>
                 }
                 {
