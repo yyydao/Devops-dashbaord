@@ -43,7 +43,7 @@ class FanChart extends React.Component {
                     tooltip={[
                       "type*percent",
                       (item, percent) => {
-                        percent = percent * 100 + "%";
+                        percent = parseFloat(percent * 100).toFixed(2) + "%";
                         return {
                           name: item,
                           value: percent

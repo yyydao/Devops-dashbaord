@@ -21,7 +21,10 @@ class Dashbroad extends Component {
         {
           name: this.props.name,
           type: 'gauge',
-          detail: {formatter:'{value}'+this.props.unit},
+          detail: {
+            formatter:'{value}'+this.props.unit,
+            fontSize:16
+          },
           data: [{value:this.props.value, name:this.props.name}],
           min:0,
           max:this.props.max,
@@ -44,7 +47,7 @@ class Dashbroad extends Component {
   render() {
     const {id}=this.props
     return (
-        <div id={id} style={{ width:300, height: 300,float:'left' }}></div>
+        <div id={id} style={{ width:'25%',minWidth:300, height: 300,float:'left' }}></div>
     );
   }
 }
