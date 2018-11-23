@@ -129,7 +129,6 @@ class Pipeline extends Component {
     }
 
     componentWillMount () {
-       this.setState({hasAuth:true,buttonText:`新增流水线`})
         window.localStorage.removeItem('currentEditedPipeline')
         window.localStorage.removeItem('steps')
         window.localStorage.setItem('oldProjectId', this.props.projectId)
