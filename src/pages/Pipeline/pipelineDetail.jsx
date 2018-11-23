@@ -3,10 +3,8 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import qs from 'qs'
 import './index.scss'
-import {formatTime, constructStepCard} from '@/utils/utils'
+import {formatTime, constructStepCard,checkPermission} from '@/utils/utils'
 import {reqGet,reqDelete,reqPostURLEncode } from '@/api/api'
-import toPairs from 'lodash.topairs'
-import uniq from 'lodash.uniq'
 import { setStep,removeSteps,setSteps } from '@/store/action'
 
 import ExecutionReport from '@/components/ExecutionReport'
@@ -188,6 +186,11 @@ class pipelineDetail extends Component {
     }
 
     gotoEditPipeline = () =>{
+        const hasEditAuth = checkPermission('/pipeline/edit/',this.props.permissionList)
+        if(!hasEditAuth){
+            message.error(message.error('该用户无此操作权限'))
+            return
+        }
         localStorage.setItem('currentEditedPipeline',JSON.stringify({
             fullSteps: this.state.fullSteps,
             stepsList : this.state.stepsList

@@ -93,8 +93,6 @@ class Pipeline extends Component {
     }
 
     jumpToDetail = (item)=>{
-        console.log(item.recordNo)
-        console.log(item.curRecordNo)
         this.props.history.push({
             pathname:`/pipeline/detail/${item.taskID}`,
             search: `?buildNumber=${item.buildNum}&curRecordNo=${item.curRecordNo}&platform=${item.platform}`,
@@ -157,7 +155,6 @@ class Pipeline extends Component {
                 </Breadcrumb>
 
                 <div className="pipeline-menu">
-                    {/*<Button type="primary"><Link to={`/pipeline/add`}>新增流水线</Link></Button>*/}
                     <AuthButton hasAuth={hasAddAuth} buttonText={authButtonText} to={addPathTo}/>
                 </div>
                 <section className="pipeline-box">
