@@ -2,14 +2,13 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import './index.scss'
-import { reqPost, reqGet,reqPostURLEncode } from '@/api/api'
-import {formatTime ,compatibleTime } from '@/utils/utils'
-import { Steps, Breadcrumb, Card, Button, Icon, Collapse, Row, Col, message } from 'antd'
-import { Radio } from 'antd/lib/radio'
+import { reqGet,reqPostURLEncode } from '@/api/api'
+import {formatTime ,checkPermission  } from '@/utils/utils'
+import { Steps, Breadcrumb, Button, Row, Col, message } from 'antd'
+import AuthButton from '@/components/AuthButton'
 
 const BreadcrumbItem = Breadcrumb.Item
 const Step = Steps.Step
-const Panel = Collapse.Panel
 
 const steps = [{
     title: '开始',
@@ -22,26 +21,6 @@ const steps = [{
 }, {
     title: '完成',
 }]
-
-const enumStatus = {
-    0: 'wait',
-    1: 'process',
-    2: 'finish',
-    3: 'error'
-}
-// const enumStatusText = {
-//     0: '未开始',
-//     1: '执行中',
-//     2: '成功',
-//     3: '失败'
-// }
-
-const enumButtonType = {
-    0: 'wait',
-    1: 'process',
-    2: 'error',
-    3: 'finish'
-}
 
 const enumButtonText = {
     0: '开始执行',
@@ -152,6 +131,7 @@ class Pipeline extends Component {
     }
 
     componentWillMount () {
+       this.setState({hasAuth:true,buttonText:`新增流水线`})
         window.localStorage.removeItem('currentEditedPipeline')
         window.localStorage.removeItem('steps')
         window.localStorage.setItem('oldProjectId', this.props.projectId)
@@ -159,10 +139,15 @@ class Pipeline extends Component {
 
     componentDidMount () {
         this.getPipelineList()
+        const hasAddAuth = checkPermission('/pipeline/add',this.props.permissionList)
+        const authButtonText =`新增流水线`
+        const addPathTo ={pathName:`/pipeline/add`}
+        this.setState({hasAddAuth:hasAddAuth,authButtonText:authButtonText,addPathTo:addPathTo})
     }
 
     render () {
-        const {pipelineList} = this.state
+
+        const {pipelineList,hasAddAuth,authButtonText,addPathTo} = this.state
 
         return (
             <div>
@@ -172,7 +157,8 @@ class Pipeline extends Component {
                 </Breadcrumb>
 
                 <div className="pipeline-menu">
-                    <Button type="primary"><Link to={`/pipeline/add`}>新增流水线</Link></Button>
+                    {/*<Button type="primary"><Link to={`/pipeline/add`}>新增流水线</Link></Button>*/}
+                    <AuthButton hasAuth={hasAddAuth} buttonText={authButtonText} to={addPathTo}/>
                 </div>
                 <section className="pipeline-box">
                     <section className="pipeline-main">
@@ -230,7 +216,8 @@ class Pipeline extends Component {
 
 Pipeline = connect((state) => {
     return {
-        projectId: state.projectId
+        projectId: state.projectId,
+        permissionList: state.permissionList
     }
 })(Pipeline)
 

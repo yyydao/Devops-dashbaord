@@ -243,3 +243,21 @@ export function composeEditFinalStep (oldFinalStep){
     }
     return oldFinalStep
 }
+
+/**
+ * 检查用户权限
+ * @param permissionUrl
+ * @param permissionList
+ * @returns {Boolean}
+ */
+export function checkPermission (permissionUrl,permissionList) {
+    if(!Array.isArray(permissionList)){
+        return false
+    }
+    let result = permissionList.map(item=>{
+        if(typeof item === 'string'){
+            return item.indexOf(permissionUrl)>-1
+        }
+    })
+    return result.includes(true)
+}
