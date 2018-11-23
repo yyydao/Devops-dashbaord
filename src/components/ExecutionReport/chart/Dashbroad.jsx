@@ -15,7 +15,7 @@ class Dashbroad extends Component {
     // 绘制图表
     myChart.setOption({
       tooltip : {
-        formatter: "{a} <br/>{b} : {c}"
+        formatter: "{a} <br/>{b} : {c}"+this.props.unit
       },
       series: [
         {
