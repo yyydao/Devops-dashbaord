@@ -103,7 +103,7 @@ class Pipeline extends Component {
     }
 
     jumpToAddPipeline = ()=>{
-        const hasAddAuth = checkPermission('/pipeline/add/',this.props.permissionList)
+        const hasAddAuth = checkPermission('/pipeline/add',this.props.permissionList)
         if(!hasAddAuth){
             message.error(message.error('该用户无此操作权限'))
             return

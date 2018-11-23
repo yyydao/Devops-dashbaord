@@ -186,7 +186,7 @@ class pipelineDetail extends Component {
     }
 
     gotoEditPipeline = () =>{
-        const hasEditAuth = checkPermission('/pipeline/edit/',this.props.permissionList)
+        const hasEditAuth = checkPermission('/pipeline/edit',this.props.permissionList)
         if(!hasEditAuth){
             message.error(message.error('该用户无此操作权限'))
             return
@@ -797,7 +797,7 @@ class pipelineDetail extends Component {
                     </section>
                 </section>
                 {
-                    !showHistory &&
+                    buildNum!==0 && !showHistory &&
                     <ExecutionReport className="pipeline-box" taskID={taskID} buildNum={buildNum} platform={platform}/>
                 }
                 {
