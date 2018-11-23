@@ -41,12 +41,12 @@ class PerformanceTestChart extends React.Component {
                   id={'haha2'}
                   name={'平均内存使用'}
                   color={[
-                    [0.9, '#1890ff'],
+                    [0.6, '#1890ff'],
                     [1, '#FF6A6A']
                   ]}
                   unit={'MB'}
                   value={parseFloat(data.averageMemory)||0}
-                  max={300}/>
+                  max={500}/>
             }
             {
               data.maxMemory&&
@@ -54,12 +54,12 @@ class PerformanceTestChart extends React.Component {
                   id={'haha6'}
                   name={'最高内存使用率'}
                   color={[
-                    [0.9, '#1890ff'],
+                    [0.6, '#1890ff'],
                     [1, '#FF6A6A']
                   ]}
                   unit={'MB'}
                   value={parseFloat(data.maxMemory)||0}
-                  max={300}/>
+                  max={500}/>
             }
             {
               data.averageFluency&&
@@ -67,7 +67,7 @@ class PerformanceTestChart extends React.Component {
                   id={'haha3'}
                   name={'平均流畅值'}
                   color={[
-                    [0.5, '#FF6A6A'],
+                    [0.9,'#FF6A6A'],
                     [1, '#1890ff']
                   ]}
                   unit={'帧/s'}
@@ -80,7 +80,7 @@ class PerformanceTestChart extends React.Component {
                   id={'haha7'}
                   name={'最低流畅值'}
                   color={[
-                    [0.5, '#FF6A6A'],
+                    [0.1,'#FF6A6A'],
                     [1, '#1890ff']
                   ]}
                   unit={'帧/s'}
@@ -93,12 +93,12 @@ class PerformanceTestChart extends React.Component {
                   id={'haha4'}
                   name={'冷启动时间'}
                   color={[
-                    [0.83, '#1890ff'],
+                    [0.5, '#1890ff'],
                     [1, '#FF6A6A']
                   ]}
                   unit={'ms'}
                   value={parseFloat(data.coldBootTime)||0}
-                  max={3000}/>
+                  max={5000}/>
             }
           </div>
         </Card>
