@@ -188,7 +188,7 @@ class pipelineDetail extends Component {
     gotoEditPipeline = () =>{
         const hasEditAuth = checkPermission('/pipeline/edit',this.props.permissionList)
         if(!hasEditAuth){
-            message.error(message.error('该用户无此操作权限'))
+            message.error('该用户无此操作权限')
             return
         }
         localStorage.setItem('currentEditedPipeline',JSON.stringify({
