@@ -274,5 +274,16 @@ describe('utils', () => {
         expect(checkPermission('/home', permissionList)).toBeFalsy()
 
     })
+    it('permission fail url with ***', () => {
+        const permissionList = ['/pipeline/edit/**']
+        expect(checkPermission('/pipeline/edit', permissionList)).toBeFalsy()
+
+    })
+
+    it('pipeline/edit', () => {
+        const permissionList = ["/pipeline/addtask,/pipeline/add","/pipeline/updatetask,/pipeline/edit"]
+        expect(checkPermission('/pipeline/edit', permissionList)).toBeTruthy()
+
+    })
 
 })
