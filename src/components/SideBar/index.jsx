@@ -32,13 +32,13 @@ class SideBar extends Component{
         const menuOpenKeys = JSON.parse(sessionStorage.getItem('menuOpenKeys'));
         const { pathName } = this.props;
         if(currentMenu && pathName.indexOf('welcome') === -1){
-            this.setState({ currentMenu });
+            // this.setState({ currentMenu });
         }
         if(menuOpenKeys && pathName.indexOf('welcome') === -1){
-            this.setState({ menuOpenKeys });
+            // this.setState({ menuOpenKeys });
         }
         if(defaultCurrentMenu && pathName.indexOf('welcome') === -1){
-            this.setState({ defaultCurrentMenu });
+            // this.setState({ defaultCurrentMenu });
         }
     }
 
@@ -82,6 +82,12 @@ class SideBar extends Component{
                 setPermissionList(res.data.permissionList);
                 const menuList = this.getMenuList(res.data.menuList);
                 this.setState({ menuList });
+                if(menuList && menuList.length>0){
+                    this.setState({defaultCurrentMenu:[menuList[0].key]})
+                }
+                if(this.props.pathName.indexOf('dashboard') >-1){
+                    this.setState({currentMenu:menuList[0].key})
+                }
             }else{
                 message.error(res.msg);
             }
@@ -90,7 +96,6 @@ class SideBar extends Component{
 
     getMenuList(menuObj){
         let menuList = [];
-         console.log(menuObj)
         for(let item of menuObj){
             let list = [];
             if(item.children){
