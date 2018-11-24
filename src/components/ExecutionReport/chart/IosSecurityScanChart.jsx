@@ -8,7 +8,7 @@ class IosSecurityScanChart extends React.Component {
     return (
         <Card  title="APP安全扫描" style={{marginTop: 30}}>
           <Row style={{marginTop: 30}} gutter={16}>
-            <Col span={12}>
+            <Col span={12} style={{minWidth:600}}>
               <Card
                   type="inner"
                   title="安全问题："
@@ -16,7 +16,7 @@ class IosSecurityScanChart extends React.Component {
                 <FanChart data={data.iosSafetyProblem}/>
               </Card>
             </Col>
-            <Col span={12}>
+            <Col span={12} style={{minWidth:600}}>
               <Card
                   type="inner"
                   title="文件扫描："
