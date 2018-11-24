@@ -813,7 +813,8 @@ class pipelineDetail extends Component {
 pipelineDetail = connect((state) => {
     return {
         taskID: state.taskID,
-        projectId: state.projectId
+        projectId: state.projectId,
+        permissionList: state.permissionList
     }
 },{setStep,removeSteps,setSteps})(pipelineDetail)
 
