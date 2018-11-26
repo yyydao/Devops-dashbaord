@@ -1,11 +1,41 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { configure,shallow } from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
+import App from './App';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
 
-import App from './index';
+const store = configureStore([
+    thunk,
+])();
 
+class LocalStorageMock {
+    constructor() {
+        this.store = {};
+    }
+
+    clear() {
+        this.store = {};
+    }
+
+    getItem(key) {
+        return this.store[key] || null;
+    }
+
+    setItem(key, value) {
+        this.store[key] = value.toString();
+    }
+
+    removeItem(key) {
+        delete this.store[key];
+    }
+};
+
+global.localStorage = new LocalStorageMock;
+
+configure({ adapter: new Adapter() });
 it('renders without crashing', () => {
-  // const div = document.createElement('div');
-  // ReactDOM.render(<App />, div);
-  // ReactDOM.unmountComponentAtNode(div);
-    shallow(<App />);
+    shallow(
+        <App   store={store} />
+    ).dive();
 });
