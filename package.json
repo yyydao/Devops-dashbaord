@@ -89,7 +89,8 @@
       "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs)$"
     ],
     "moduleNameMapper": {
-      "^react-native$": "react-native-web"
+      "^react-native$": "react-native-web",
+      "@(.*)$": "<rootDir>/src/$1"
     },
     "moduleFileExtensions": [
       "web.js",
@@ -110,6 +111,7 @@
     "extends": "react-app"
   },
   "devDependencies": {
+    "enzyme": "^3.7.0",
     "jsdom": "^13.0.0",
     "redux-devtools-extension": "^2.13.5"
   },
