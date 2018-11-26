@@ -5,11 +5,11 @@ import {
     composeEditFinalStep,
     checkPermission
 } from './utils'
-import { JSDOM } from 'jsdom'
 
 describe('utils', () => {
 
     it('works', () => {
+        /* eslint-disable no-restricted-globals */
         expect(location.href).toBe('http://localhost:2000/#/pipeline/edit/6465dab49a534b5ab3efcccb5c4ce9a8n0AgY4?buildNum=42')
     })
 
@@ -274,9 +274,14 @@ describe('utils', () => {
         expect(checkPermission('/home', permissionList)).toBeFalsy()
 
     })
-    it('permission fail url with ***', () => {
-        const permissionList = ['/pipeline/edit/**']
-        expect(checkPermission('/pipeline/edit', permissionList)).toBeFalsy()
+    it('permission fail url with **', () => {
+        const permissionList = ['/pipeline/edit/**',"/pipeline/addtask,/pipeline/add",]
+        expect(checkPermission('/pipeline/edit', permissionList)).toBeTruthy()
+
+    })
+    it('permission fail url with *', () => {
+        const permissionList = ['/pipeline/edit/*',"/pipeline/addtask,/pipeline/add",]
+        expect(checkPermission('/pipeline/edit', permissionList)).toBeTruthy()
 
     })
 
