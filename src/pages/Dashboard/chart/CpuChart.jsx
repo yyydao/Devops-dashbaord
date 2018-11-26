@@ -25,9 +25,7 @@ class CpuChart extends React.Component {
       },
       cpuValue:{
         alias:'CPU(%)',
-        min:0,
-        max:100,
-        tickInterval:20
+        min:0
       },
       memoryValue:{
         alias:'内存(MB)',

@@ -1,3 +1,5 @@
+import uniq from 'lodash.uniq'
+import toPairs from 'lodash.topairs'
 
 export function getQueryString(name){
     var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
@@ -155,3 +157,107 @@ export function formatTime(time,precision, option) {
     }
 }
 
+export function makeHistoryStepCard (stepsList){
+    const category = uniq(stepsList.map(item => item.stepCategory))
+    let tempStepObject = {}
+    let historyStep = []
+    category.forEach((value) => {
+        if(value !== undefined){
+            tempStepObject[value] = []
+        }
+    })
+    for (let i = 0; i < stepsList.length; i++) {
+        const stepListElement = stepsList[i]
+        for (const tempStepObjectKey in tempStepObject) {
+            if (stepListElement.stepCategory + '' === tempStepObjectKey + '') {
+                tempStepObject[tempStepObjectKey].push(stepListElement)
+            }
+        }
+
+    }
+    historyStep = toPairs(tempStepObject)
+    return historyStep
+}
+
+/**
+ * 转换接口的一维对象数组，按照stepCategory 区分，组装出对应的二维对象数组
+ *
+ * @param stepsList [{item.stepCategory:1,....},{item.stepCategory:2,....},{item.stepCategory:3,....},....]
+ * @returns {Array} [1:[{item.stepCategory:1,....},...],2:[{item.stepCategory:2,....},.....],3:[{item.stepCategory:3,....}]]
+ */
+export function constructStepCard(stepsList){
+    const category = uniq(stepsList.map(item => item.stepCategory))
+    let tempStepObject = {}
+    let stepCardArray
+    category.forEach((value) => {
+        if(value !== undefined){
+            tempStepObject[value] = []
+        }
+    })
+    for (let i = 0; i < stepsList.length; i++) {
+        const stepListElement = stepsList[i]
+        for (const tempStepObjectKey in tempStepObject) {
+            if (stepListElement.stepCategory + '' === tempStepObjectKey + '') {
+                tempStepObject[tempStepObjectKey].push(stepListElement)
+            }
+        }
+
+    }
+    stepCardArray = toPairs(tempStepObject)
+    return stepCardArray
+}
+
+
+export function composeEditFinalStep (oldFinalStep){
+    if(oldFinalStep.length === 0){
+        oldFinalStep = [["1", []],
+            ["2", []],
+            ["3", []]]
+    } else if(oldFinalStep.length === 1){
+        if(oldFinalStep[0][0] === "1"){
+            oldFinalStep.splice(1,0,["2",[]],["3",[]])
+        }else if(oldFinalStep[0][0] === "2"){
+            oldFinalStep.splice(0,0,["1",[]])
+            oldFinalStep.splice(2,0,["3",[]])
+        }else if(oldFinalStep[0][0] === "3"){
+            oldFinalStep.splice(1,0,["2",[]])
+            oldFinalStep.splice(2,0,["3",[]])
+        }
+    }else if(oldFinalStep.length=== 2){
+        let tempSum = 0
+        for (let i = 0; i < oldFinalStep.length; i++) {
+            const oldFinalStepElement = oldFinalStep[i]
+            tempSum +=oldFinalStepElement[0]*1
+        }
+        switch (tempSum) {
+            case 3:
+                oldFinalStep.splice(2,0,["3",[]])
+                break;
+            case 4:
+                oldFinalStep.splice(1,0,["2",[]])
+                break;
+            case 5:
+                oldFinalStep.splice(0,0,["1",[]])
+                break;
+        }
+    }
+    return oldFinalStep
+}
+
+/**
+ * 检查用户权限
+ * @param permissionUrl
+ * @param permissionList
+ * @returns {Boolean}
+ */
+export function checkPermission (permissionUrl,permissionList) {
+    if(!Array.isArray(permissionList)){
+        return false
+    }
+    let result = permissionList.map(item=>{
+        if(typeof item === 'string'){
+            return item.indexOf(permissionUrl)>-1
+        }
+    })
+    return result.includes(true)
+}

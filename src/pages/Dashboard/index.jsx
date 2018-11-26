@@ -65,7 +65,7 @@ class Dashboard extends Component{
         if(res.data.list.length > 0){
           this.setState({
             taskList:res.data.list,
-           currentTaskId:res.data.list[0].taskID
+            currentTaskId:res.data.list[0].taskID
           })
           this.getBasicInfor()
         }else{
@@ -103,21 +103,17 @@ class Dashboard extends Component{
    * @desc 获取仪表盘各项数据
    */
   getAllMonitorReport = () =>{
-    let that=this;
-      reqGet('/dashboard/report', {
-        taskId:this.state.currentTaskId,
-        dataType:2
-      }).then((res) => {
-        if (res.code === 0) {
-          res.data.unitTestMonitors.map(item=>item.sqaleValue=parseFloat(item.sqaleValue))
-          const type=[,'源码','加固','补丁']
-          res.data.packageBodyMonitors.map(item=>{item.appFileSize=parseFloat(item.appFileSize);item.name=type[item.packageType]})
-          this.setState({monitorData:res.data})
-          this.dealUiData(res.data.uiTestMonitors)
-          this.dealCpuData(res.data.cpuMemoryAnalysis||[])
-          this.dealFluencyData(res.data.fluentColdStartTimeAnalysis||[])
-        }
-      })
+    reqGet('/dashboard/report', {
+      taskId:this.state.currentTaskId,
+      dataType:2
+    }).then((res) => {
+      if (res.code === 0) {
+        res.data.unitTestMonitors.map(item=>item.sqaleValue=parseFloat(item.sqaleValue))
+        const type=[,'源码','加固','补丁']
+        res.data.packageBodyMonitors.map(item=>{item.appFileSize=parseFloat(item.appFileSize);item.name=type[item.packageType]})
+        this.dealUiData(res.data)
+      }
+    })
   }
   /**
    *  @desc 处理uiTestMonitors仪表盘数据
@@ -125,7 +121,7 @@ class Dashboard extends Component{
    */
   dealUiData = (data) =>{
     const ds = new DataSet();
-    const dv = ds.createView('ui').source(data);
+    const dv = ds.createView('ui').source(data.uiTestMonitors||[]);
     dv.transform({
       type: "fold",
       fields: ["features", "scenarios","steps"],
@@ -134,9 +130,8 @@ class Dashboard extends Component{
       // key字段
       value: "successRateValue" // value字段
     });
-    let result = this.state.monitorData
-    result.uiTestMonitors = dv
-    this.setState({result})
+    data.uiTestMonitors = dv
+    this.dealCpuData(data)
   }
   /**
    *  @desc 处理cpuMemoryAnalysis仪表盘数据
@@ -144,13 +139,13 @@ class Dashboard extends Component{
    */
   dealCpuData = (data) =>{
     let dat=[
-        {
-          cpuAverage:'19.25%',
-          createTime:'2018-10-26 09:58:38.0',
-          memoryAverage:'227.43MB',
-          memoryMax:'309.0MB',
-          cpuMax:'36.2%'
-        },
+      {
+        cpuAverage:'19.25%',
+        createTime:'2018-10-26 09:58:38.0',
+        memoryAverage:'227.43MB',
+        memoryMax:'309.0MB',
+        cpuMax:'36.2%'
+      },
       {
         cpuAverage:'39.25%',
         createTime:'2018-10-24 09:58:38.0',
@@ -160,7 +155,7 @@ class Dashboard extends Component{
       },
     ]
     let cData=[]
-    data.map(item=>{
+    data.cpuMemoryAnalysis.map(item=>{
       for(let i in item){
         if(i.indexOf('cpuAverage')!==-1){
           cData.push({
@@ -196,9 +191,8 @@ class Dashboard extends Component{
         }
       }
     })
-    let result = this.state.monitorData
-    result.cpuMemoryAnalysis = cData
-    this.setState({result})
+    data.cpuMemoryAnalysis = cData
+    this.dealFluencyData(data)
   }
   /**
    *  @desc 处理cpuMemoryAnalysis仪表盘数据
@@ -220,7 +214,7 @@ class Dashboard extends Component{
       }
     ]
     let cData=[]
-    data.map(item=>{
+    data.fluentColdStartTimeAnalysis.map(item=>{
       for(let i in item){
         if(i.indexOf('smAverage')!==-1){
           cData.push({
@@ -245,9 +239,8 @@ class Dashboard extends Component{
         }
       }
     })
-    let result = this.state.monitorData
-    result.fluentColdStartTimeAnalysis = cData
-    this.setState({result})
+    data.fluentColdStartTimeAnalysis = cData
+    this.setState({monitorData:data})
   }
 
   /**
@@ -261,8 +254,7 @@ class Dashboard extends Component{
       return
     }
     let host = window.location.host
-    let url1=url.substring(url.indexOf('./')+1)
-    window.open(`http://${host}${url1}`)
+    window.open(`http://${host}/download/downloadApk?filePath=${url}`)
   }
 
 
@@ -277,46 +269,63 @@ class Dashboard extends Component{
           {currentTaskId &&
           <div>
             <Select defaultValue={currentTaskId} onChange={e => {this.onPipeLineChange(e)}} style={{minWidth:200}}>
-            {taskList.map((item,index)=><Option value={item.taskID} key={index}>{item.taskName}</Option>)}
+              {taskList.map((item,index)=><Option value={item.taskID} key={index}>{item.taskName}</Option>)}
             </Select>
             <Card  title="基本信息" style={{marginTop: 30}}>
               <Row>
+                {
+                  !basicInformation.fileType &&
+                  <Col span={8} className="info-menu">
+                    <p>暂无基本数据</p>
+                  </Col>
+                }
+                {basicInformation.fileType===1&&
                 <Col span={8} className="info-menu">
                   <div><Tag color="#2db7f5">Identifier</Tag> {basicInformation.packageName}</div>
-                  <div><Tag color="#2db7f5">SDK Name</Tag>{basicInformation.displayName}</div>
+                  <div><Tag color="#2db7f5">APP Name</Tag>{basicInformation.displayName}</div>
                   <div><Tag color="#2db7f5">versionCode</Tag>{basicInformation.versionCode}</div>
-                  <div><Tag color="#2db7f5">versionName</Tag>{basicInformation.versionName}</div>
+                  <div><Tag color="#2db7f5">APP Version</Tag>{basicInformation.versionName}</div>
                   <div><Tag color="#2db7f5">appFileSize</Tag>{basicInformation.appFileSize}</div>
                   <div><Tag color="#2db7f5">minSdk</Tag>{basicInformation.minSdk}</div>
                   <div><Tag color="#2db7f5">targetSdk</Tag>{basicInformation.targetSdk}</div>
                 </Col>
+                }{
+                basicInformation.fileType===2&&
+                <Col span={8} className="info-menu">
+                  <div><Tag color="#2db7f5">Identifier</Tag> {basicInformation.packageName}</div>
+                  <div><Tag color="#2db7f5">APP Name</Tag>{basicInformation.displayName}</div>
+                  <div><Tag color="#2db7f5">Version</Tag>{basicInformation.versionCode}</div>
+                  <div><Tag color="#2db7f5">APP Version</Tag>{basicInformation.versionName}</div>
+                  <div><Tag color="#2db7f5">appFileSize</Tag>{basicInformation.appFileSize}</div>
+                </Col>
+              }
                 <Col span={12}>
                   <Row>
                     <Col span={8}>
                       <span className="data_title">代码总行数</span>
-                      <p className="data_num" style={{color:"#2db7f5"}}>{basicInformation.codeTotalRow||0}</p>
+                      <p className="data_num" style={{color:"#2db7f5"}}>{basicInformation.codeTotalRow||"-"}</p>
                     </Col>
                     <Col span={8} offset={1}>
                       <span className="data_title">测试数</span>
-                      <p className="data_num" style={{color:"#2db7f5"}}>{basicInformation.testQuantity||0}</p>
+                      <p className="data_num" style={{color:"#2db7f5"}}>{basicInformation.testQuantity||"-"}</p>
                     </Col>
                     <Col span={8} >
                       <span className="data_title">Bugs</span>
-                      <p className="data_num" style={{color:"#f50"}}>{basicInformation.bugQuantity||0}</p>
+                      <p className="data_num" style={{color:"#f50"}}>{basicInformation.bugQuantity||"-"}</p>
                     </Col>
                     <Col span={8}>
                       <span className="data_title">漏洞</span>
-                      <p className="data_num" style={{color:"#f50"}}>{basicInformation.vulnerabilities||0}</p>
+                      <p className="data_num" style={{color:"#f50"}}>{basicInformation.vulnerabilities||"-"}</p>
                     </Col>
                     <Col span={8}>
                       <span className="data_title">坏味道</span>
-                      <p className="data_num" style={{color:"#f50"}}>{basicInformation.codeSmells||0}</p>
+                      <p className="data_num" style={{color:"#f50"}}>{basicInformation.codeSmells||"-"}</p>
                     </Col>
                   </Row>
                 </Col>
                 <Col span={4} className="btn-group">
                   <p>
-                    <Button type="primary" onClick={(e)=>{this.openUrl(basicInformation.reinforceAppPath,0)}}>原包下载</Button>
+                    <Button type="primary" onClick={(e)=>{this.openUrl(basicInformation.sourceAppPath,0)}}>原包下载</Button>
                   </p>
                   {
                     basicInformation.reinforceAppPath && <Button type="primary" onClick={(e)=>{this.openUrl(basicInformation.reinforceAppPath,1)}}>加固包下载</Button>
@@ -338,7 +347,7 @@ class Dashboard extends Component{
               </Card>
             }
             {
-              monitorData.uiTestMonitors&& monitorData.uiTestMonitors.length>0&&
+              monitorData.uiTestMonitors&& monitorData.uiTestMonitors.rows.length>0&&
               <Card  title="UI测试监控分析" style={{marginTop: 30}}>
                 <UiTestChart uiData={monitorData.uiTestMonitors}></UiTestChart>
               </Card>
@@ -368,7 +377,7 @@ class Dashboard extends Component{
                 }
               </Card>
             }
-            </div>
+          </div>
           }
         </div>
     )

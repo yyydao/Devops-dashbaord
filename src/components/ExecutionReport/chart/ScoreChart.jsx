@@ -13,67 +13,7 @@ import DataSet from "@antv/data-set";
 class ScoreChart extends React.Component {
   render() {
     const { DataView } = DataSet;
-    const data = [
-      {
-        item: "Design",
-        a: 70,
-        b: 30
-      },
-      {
-        item: "Development",
-        a: 60,
-        b: 70
-      },
-      {
-        item: "Marketing",
-        a: 50,
-        b: 60
-      },
-      {
-        item: "Users",
-        a: 40,
-        b: 50
-      },
-      {
-        item: "Test",
-        a: 60,
-        b: 70
-      },
-      {
-        item: "Language",
-        a: 70,
-        b: 50
-      },
-      {
-        item: "Technology",
-        a: 50,
-        b: 40
-      },
-      {
-        item: "Support",
-        a: 30,
-        b: 40
-      },
-      {
-        item: "Sales",
-        a: 60,
-        b: 40
-      },
-      {
-        item: "UX",
-        a: 50,
-        b: 60
-      }
-    ];
-    const dv = new DataView().source(data);
-    dv.transform({
-      type: "fold",
-      fields: ["a", "b"],
-      // 展开字段集
-      key: "user",
-      // key字段
-      value: "score" // value字段
-    });
+    const { data } = this.props
     const cols = {
       score: {
         min: 0,
@@ -84,14 +24,14 @@ class ScoreChart extends React.Component {
         <div>
           <Chart
               height={400}
-              data={dv}
+              data={data}
               padding={[20, 20, 95, 20]}
               scale={cols}
               forceFit
           >
             <Coord type="polar" radius={0.8} />
             <Axis
-                name="item"
+                name="name"
                 line={null}
                 tickLine={null}
                 grid={{
@@ -114,13 +54,13 @@ class ScoreChart extends React.Component {
                   alternateColor: "rgba(0, 0, 0, 0.04)"
                 }}
             />
-            <Legend name="user" marker="circle" offset={30} />
-            <Geom type="area" position="item*score" color="user" />
-            <Geom type="line" position="item*score" color="user" size={2} />
+            <Legend name="type" marker="circle" offset={30} />
+            <Geom type="area" position="name*score" color="type" />
+            <Geom type="line" position="name*score" color="type" size={2} />
             <Geom
                 type="point"
-                position="item*score"
-                color="user"
+                position="name*score"
+                color="type"
                 shape="circle"
                 size={4}
                 style={{

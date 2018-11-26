@@ -21,7 +21,7 @@ import PackageDetail from '@/pages/Package/detail';
 import Dashboard from '@/pages/Dashboard'
 import ThirdParty from '@/pages/Setting/ThirdPartyManager'
 import NoticeManager from '@/pages/Setting/NoticeManager'
-import ExecutionReport from '@/pages/Setting/ExecutionReport'
+// import ExecutionReport from '@/pages/Setting/ExecutionReport'
 
 
 export default [
@@ -142,9 +142,9 @@ export default [
     name: 'thirdparty',
     component: ThirdParty
   },
-  {
-    path: '/exeReport',
-    name: 'exeReport',
-    component: ExecutionReport
-  }
+  // {
+  //   path: '/exeReport',
+  //   name: 'exeReport',
+  //   component: ExecutionReport
+  // }
 ]

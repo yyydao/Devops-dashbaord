@@ -31,6 +31,7 @@ axios.interceptors.response.use(
                 content: '登录信息过期，请重新登录！',
                 onOk(){
                     localStorage.removeItem('token');
+                    localStorage.removeItem('projectId')
                     window.location.href = 'http://uas.tuandai888.com';
                 },
                 onCancel(){}
@@ -45,6 +46,8 @@ axios.interceptors.response.use(
             return Promise.reject(err);
         }
         if(err.response && err.response.status === 494){
+            localStorage.removeItem('token');
+            localStorage.removeItem('projectId')
             window.location.href = err.response.data;
         }
 

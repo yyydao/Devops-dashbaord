@@ -2,14 +2,13 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import './index.scss'
-import { reqPost, reqGet,reqPostURLEncode } from '@/api/api'
-import {formatTime ,compatibleTime } from '@/utils/utils'
-import { Steps, Breadcrumb, Card, Button, Icon, Collapse, Row, Col, message } from 'antd'
-import { Radio } from 'antd/lib/radio'
+import { reqGet,reqPostURLEncode } from '@/api/api'
+import {formatTime ,checkPermission  } from '@/utils/utils'
+import { Steps, Breadcrumb, Button, Row, Col, message } from 'antd'
+import AuthButton from '@/components/AuthButton'
 
 const BreadcrumbItem = Breadcrumb.Item
 const Step = Steps.Step
-const Panel = Collapse.Panel
 
 const steps = [{
     title: '开始',
@@ -23,37 +22,18 @@ const steps = [{
     title: '完成',
 }]
 
-const enumStatus = {
-    0: 'wait',
-    1: 'process',
-    2: 'finish',
-    3: 'error'
-}
-// const enumStatusText = {
-//     0: '未开始',
-//     1: '执行中',
-//     2: '成功',
-//     3: '失败'
-// }
-
-const enumButtonType = {
-    0: 'wait',
-    1: 'process',
-    2: 'error',
-    3: 'finish'
-}
-
 const enumButtonText = {
     0: '开始执行',
     1: '执行中',
     2: '开始执行',
-    3: '开始执行'
+    3: '等待中'
 }
 
 const enumStatusText = {
     0: '未开始',
     1: '执行中',
-    2: '结束'
+    2: '结束',
+    3: '等待中'
 }
 
 
@@ -80,6 +60,11 @@ class Pipeline extends Component {
     pipelineRunStatusText = (taskStatus,taskResult) =>{
         return (taskStatus === 2 || taskStatus=== '2') ? enumPipelineResult[taskResult]:enumStatusText[taskStatus]
     }
+    pipelineStepStatus = (taskStatus,taskResult) =>{
+        return (taskStatus === 2 || taskStatus=== '2') ? enumPipelineResult[taskResult]:enumStatusText[taskStatus]
+    }
+
+
 
     getPipelineList = () => {
         reqGet('/pipeline/tasklist', {
@@ -107,10 +92,28 @@ class Pipeline extends Component {
         })
     }
 
+    jumpToDetail = (item)=>{
+        this.props.history.push({
+            pathname:`/pipeline/detail/${item.taskID}`,
+            search: `?buildNumber=${item.buildNum}&curRecordNo=${item.curRecordNo}&platform=${item.platform}`,
+            state:{
+                taskStatus:item.taskStatus
+            }
+        })
+    }
 
+    jumpToAddPipeline = ()=>{
+        const hasAddAuth = checkPermission('/pipeline/add',this.props.permissionList)
+        if(!hasAddAuth){
+            message.error('该用户无此操作权限')
+            return
+        }
+        this.props.history.push({
+            pathname:`/pipeline/add`
+        })
+    }
 
     runTask = (item) => {
-
         this.setState({taskStatus: 1})
         reqPostURLEncode('/pipeline/taskbuild', {
             taskID: item.taskID
@@ -123,7 +126,9 @@ class Pipeline extends Component {
                 for (let i = 0; i < pipelineList.length; i++) {
                     const pipelineItem = pipelineList[i]
                     if(pipelineItem.taskID === item.taskID){
-                        pipelineList[i].taskStatus = 1
+                        pipelineList[i].taskStatus = res.status
+                        pipelineList[i].curRecordNo = res.recordNo
+                        pipelineList[i].taskStatus = res.status
                     }
                 }
                 this.setState({pipelineList:pipelineList})
@@ -142,10 +147,15 @@ class Pipeline extends Component {
 
     componentDidMount () {
         this.getPipelineList()
+        // const hasAddAuth = checkPermission('/pipeline/add',this.props.permissionList)
+        // const authButtonText =`新增流水线`
+        // const addPathTo ={pathName:`/pipeline/add`}
+        // this.setState({hasAddAuth:hasAddAuth,authButtonText:authButtonText,addPathTo:addPathTo})
     }
 
     render () {
-        const {pipelineList} = this.state
+
+        const {pipelineList,hasAddAuth,authButtonText,addPathTo} = this.state
 
         return (
             <div>
@@ -155,7 +165,8 @@ class Pipeline extends Component {
                 </Breadcrumb>
 
                 <div className="pipeline-menu">
-                    <Button type="primary"><Link to={`/pipeline/add`}>新增流水线</Link></Button>
+                    <Button type="primary" onClick={this.jumpToAddPipeline}>新增流水线</Button>
+                    {/*<AuthButton hasAuth={hasAddAuth} buttonText={authButtonText} to={addPathTo}/>*/}
                 </div>
                 <section className="pipeline-box">
                     <section className="pipeline-main">
@@ -163,14 +174,11 @@ class Pipeline extends Component {
                             pipelineList.map((item, index) => {
                                 return <div className="pipeline-item" key={index}>
 
-                                    <div className="pipeline-item-header">
+                                    <div className="pipeline-item-header" onClick={()=>this.jumpToDetail(item)}>
                                         <Row type="flex" justify="space-between">
                                             <Col span={12}>
-                                                <Link to={{
-                                                    pathname:`/pipeline/detail/${item.taskID}`,
-                                                    search: `?buildNumber=${item.buildNum}`
-                                                }}><h2>{item.taskName}
-                                                    <span>（ID：{item.taskCode}）</span></h2></Link>
+                                              <h2>{item.taskName}
+                                                    <span>（ID：{item.taskCode}）</span></h2>
                                             </Col>
                                             <Col span={12}>
                                                 <div className="pipeline-item-user">
@@ -187,8 +195,8 @@ class Pipeline extends Component {
                                                         <span><i>执行分支：</i>{item.branchName}</span>
                                                         <span><i>最近执行时长：</i>{item.execTimeStr}</span>
                                                     </p>
-                                                    <Steps size="small" status={enumStatus[item.taskStatus]}
-                                                           current={item.taskStatus === 2? 5:item.taskStatus}>
+                                                    <Steps size="small" status={this.pipelineStepStatus(item.taskStatus,item.taskResult)}
+                                                           current={item.taskStatus === 2? 5:1}>
                                                         {steps.map((item, index) => <Step key={index}
                                                                                           title={item.title}/>)}
                                                     </Steps>
@@ -198,7 +206,7 @@ class Pipeline extends Component {
                                                 <div className="pipeline-item-ctrl">
                                                     <div className="status">
                                                         <span>最近执行状态：</span>{this.pipelineRunStatusText(item.taskStatus,item.taskResult)}</div>
-                                                    <Button type="primary" disabled={item.taskStatus === 1} onClick={()=>this.runTask(item)}>{enumButtonText[item.taskStatus]}</Button>
+                                                    <Button type="primary" disabled={item.taskStatus === 1 ||item.taskStatus === 3} onClick={()=>this.runTask(item)}>{enumButtonText[item.taskStatus]}</Button>
                                                 </div>
                                             </Col>
                                         </Row>
@@ -216,7 +224,8 @@ class Pipeline extends Component {
 
 Pipeline = connect((state) => {
     return {
-        projectId: state.projectId
+        projectId: state.projectId,
+        permissionList: state.permissionList
     }
 })(Pipeline)
 
