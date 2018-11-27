@@ -132,3 +132,18 @@ export function composeCompleteStep ( incompleteDDA) {
     const stepLength = incompleteDDA.length
     return composeRules[stepLength](incompleteDDA)
 }
+
+export function composeCompleteStepAfterRemove ( oldeCompleteDAA,deleteItem) {
+    for (let i = 0; i < oldeCompleteDAA.length; i++) {
+        if (oldeCompleteDAA[i][0] === deleteItem.stepCategory+'') {
+            let steps = oldeCompleteDAA[i][1]
+            for (let j = 0; j < steps.length; j++) {
+                if(steps[j].stepID+'' === deleteItem.stepID+''){
+                    oldeCompleteDAA[i][1].splice(j,1)
+                }
+            }
+
+        }
+    }
+    return oldeCompleteDAA
+}

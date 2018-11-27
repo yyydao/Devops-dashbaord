@@ -1,4 +1,8 @@
-import { constructStepCard, composeCompleteStep } from './constructSteps'
+import {
+    constructStepCard,
+    composeCompleteStep,
+    composeCompleteStepAfterRemove
+} from './constructSteps'
 
 it('should return what I need', () => {
     const stepList = [
@@ -559,7 +563,7 @@ it('should return complete double dimensional array steps construction while has
         ])
 })
 
-it('should do nothing with full construction step',()=>{
+it('should do nothing with full construction step', () => {
     const alreadyCompleteDDA = [
         [
             '1',
@@ -677,4 +681,101 @@ it('should do nothing with full construction step',()=>{
         ]
     ]
     expect(composeCompleteStep(alreadyCompleteDDA)).toEqual(alreadyCompleteDDA)
+})
+
+it('should return right full construction step after remove', () => {
+    const deleteItem = {
+        buildNum: 0,
+        buildType: 1,
+        createTime: '2018-11-27 20:12:35.0',
+        execTime: 0,
+        execTimeStr: '-',
+        remark: '',
+        stepCategory: 2,
+        stepCode: 1,
+        stepDesc: '单元测试',
+        stepID: '09cf2d2c1d22443192e98485f47103b21XW1v3',
+        stepName: '单元测试',
+        stepParams: '{"stageId":1}',
+        stepResult: 0,
+        stepStatus: 0,
+        updateTime: '2018-11-27 20:12:35.0'
+    }
+    const oldCompleteDAA = [
+        ['1',
+            [
+                {
+                    buildNum: 0,
+                    buildType: 1,
+                    createTime: "2018-11-27 17:42:41.0",
+                    execTime: 0,
+                    execTimeStr: "-",
+                    remark: "",
+                    stepCategory: 1,
+                    stepCode: 0,
+                    stepDesc: "Gitlab 代码同步",
+                    stepID: "5f6650d2e6b04cc89d780a7c0c9a5b7bR273uC",
+                    stepName: "代码拉取",
+                    stepParams: "{\"stageId\":0}",
+                    stepResult: 0,
+                    stepStatus: 0,
+                    updateTime: "2018-11-27 17:42:41.0"}
+            ]
+        ],
+        ['2',[
+            {
+
+                buildNum: 0,
+                buildType: 1,
+                createTime: "2018-11-27 20:12:35.0",
+                execTime: 0,
+                execTimeStr: "-",
+                remark: "",
+                stepCategory: 2,
+                stepCode: 1,
+                stepDesc: "单元测试",
+                stepID: "09cf2d2c1d22443192e98485f47103b21XW1v3",
+                stepName: "单元测试",
+                stepParams: "{\"stageId\":1}",
+                stepResult: 0,
+                stepStatus: 0,
+                updateTime: "2018-11-27 20:12:35.0"
+            }
+            ]
+        ],
+        ['3',
+            [
+
+            ]
+        ]
+    ]
+    const finalResult = [
+        ['1',
+            [
+                {
+                    buildNum: 0,
+                    buildType: 1,
+                    createTime: "2018-11-27 17:42:41.0",
+                    execTime: 0,
+                    execTimeStr: "-",
+                    remark: "",
+                    stepCategory: 1,
+                    stepCode: 0,
+                    stepDesc: "Gitlab 代码同步",
+                    stepID: "5f6650d2e6b04cc89d780a7c0c9a5b7bR273uC",
+                    stepName: "代码拉取",
+                    stepParams: "{\"stageId\":0}",
+                    stepResult: 0,
+                    stepStatus: 0,
+                    updateTime: "2018-11-27 17:42:41.0"}
+            ]
+        ],
+        ['2',[
+
+        ]],
+        ['3',[
+
+        ]]
+    ]
+    expect(composeCompleteStepAfterRemove(oldCompleteDAA,deleteItem)).toEqual(finalResult)
 })

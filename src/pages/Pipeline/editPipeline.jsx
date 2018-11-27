@@ -6,6 +6,7 @@ import { reqPost, reqGet, reqDelete } from '@/api/api'
 
 import { setStep,removeSteps,setSteps } from '@/store/action'
 import {stepParamstoArray, stepParamstoObject } from '@/utils/utils.js'
+import {constructStepCard, composeCompleteStep,composeCompleteStepAfterRemove } from './constructSteps'
 
 import {
     Steps,
@@ -71,7 +72,7 @@ class Edit extends Component {
             autoCompleteResult: [],
             branchList: [],
             formDataBranch: null,
-            fullSteps: [],
+            completeFullSteps: [],
             stepsList: []
         }
     }
@@ -123,7 +124,7 @@ class Edit extends Component {
         e.preventDefault()
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-                let notFormattedSteps = this.state.fullSteps, formattedSteps = [];
+                let notFormattedSteps = this.state.completeFullSteps, formattedSteps = [];
                 console.log(notFormattedSteps)
                 for (let i = 0; i < notFormattedSteps.length; i++) {
                     const notFormattedStep = notFormattedSteps[i]
@@ -158,10 +159,10 @@ class Edit extends Component {
     }
 
     handleDeleteTask = (item) =>{
-        console.log(`item ${JSON.stringify(item)}`)
         let { setSteps } = this.props;
         let stepsList = this.state.stepsList
-        let oldSteps = this.state.fullSteps
+        const oldCompleteSteps = this.state.completeFullSteps
+        console.log(stepsList)
         if(!!item.stepID){
             reqDelete(`/pipeline/deltaskstep/${item.stepID}`,{}).then(res=>{
                 if(res.code === 0){
@@ -172,22 +173,23 @@ class Edit extends Component {
                             stepsList.splice(i,1)
                         }
                     }
-                    for (let i = 0; i < oldSteps.length; i++) {
-                        if (oldSteps[i][0] === item.stepCategory+'') {
-                            let steps = oldSteps[i][1]
-                            console.log(steps)
-                            for (let j = 0; j < steps.length; j++) {
-                                console.log(steps[j].stepID+'' === item.stepID+'')
-                                if(steps[j].stepID+'' === item.stepID+''){
-                                    oldSteps[i][1].splice(j,1)
-                                }
-                            }
-
-                        }
-                    }
-                    setSteps(oldSteps)
-                    this.setState({stepsList: stepsList})
-                    this.setState({fullSteps: oldSteps})
+                    // console.log(stepsList)
+                    // for (let i = 0; i < oldSteps.length; i++) {
+                    //     if (oldSteps[i][0] === item.stepCategory+'') {
+                    //         let steps = oldSteps[i][1]
+                    //         console.log(steps)
+                    //         for (let j = 0; j < steps.length; j++) {
+                    //             console.log(steps[j].stepID+'' === item.stepID+'')
+                    //             if(steps[j].stepID+'' === item.stepID+''){
+                    //                 oldSteps[i][1].splice(j,1)
+                    //             }
+                    //         }
+                    //
+                    //     }
+                    // }
+                    // console.log(oldSteps)
+                    let removedoldSteps = composeCompleteStepAfterRemove(oldCompleteSteps,item)
+                    this.setState({completeFullSteps: removedoldSteps})
                     this.setState({stepsList: stepsList})
                     // setSteps(this.state.stepsList)
                 }else{
@@ -279,7 +281,7 @@ class Edit extends Component {
                     stepCode: item.id,
                     existPipeline: true,
                     taskID: this.props.match.params.taskID,
-                    fullSteps: this.state.fullSteps,
+                    fullSteps: this.state.completeFullSteps,
                     stepsList: this.state.stepsList,
                     stepCategory: this.state.stepCategory,
                     jenkinsJob: this.props.form.getFieldValue('jenkinsJob'),
@@ -317,32 +319,6 @@ class Edit extends Component {
         this.setState({branchName:branchObject.label})
     }
 
-    makeStepCard = (stepsList) => {
-        // console.log(`stepsList ${JSON.stringify(stepsList)}`)
-        const category = uniq(stepsList.map(item => item.stepCategory))
-        // console.log(category)
-        let tempStepObject = {}
-        let finalStep = []
-        category.forEach((value, index) => {
-            if(value !== undefined){
-                tempStepObject[value] = []
-            }
-        })
-        for (let i = 0; i < stepsList.length; i++) {
-            const stepListElement = stepsList[i]
-            for (const tempStepObjectKey in tempStepObject) {
-                if (stepListElement.stepCategory + '' === tempStepObjectKey + '') {
-                    tempStepObject[tempStepObjectKey].push(stepListElement)
-                }
-            }
-
-        }
-        // console.log(tempStepObject)
-        finalStep = toPairs(tempStepObject)
-        // console.log(finalStep)
-        this.setState({fullSteps: finalStep})
-    }
-
     setPipelineInfo(){
         const parsedHash = qs.parse(this.props.location.search.slice(1));
         console.log(parsedHash)
@@ -362,7 +338,12 @@ class Edit extends Component {
                     branchObject:{key:branchID},
                     jenkinsJob: res.task.jenkinsJob,
                 });
-                this.makeStepCard(res.steps)
+                const linearArray = res.steps
+                const incompleteDDA = constructStepCard(linearArray)
+                console.log(incompleteDDA)
+                const completeDDA = composeCompleteStep(incompleteDDA)
+                // this.makeStepCard(res.steps)
+                this.setState({completeFullSteps:completeDDA})
                 this.setState({branchID: res.task.branchID })
                 this.setState({branchName: res.task.branchName })
             }else{
@@ -383,8 +364,8 @@ class Edit extends Component {
         if(!this.props.location.state){
             console.log('1')
 
-            this.setState({stepsList:parsedStepsList})
-            this.setState({fullSteps:parsedFullSteps})
+            // this.setState({stepsList:parsedStepsList})
+            // this.setState({fullSteps:parsedFullSteps})
         }else{
             console.log('2')
             if(!!this.props.location.state.fullSteps){
@@ -416,7 +397,7 @@ class Edit extends Component {
             addConfirmLoading,
             taskStatus,
             stepCategory,
-            fullSteps,
+            completeFullSteps,
             stepsList
         } = this.state
 
@@ -539,7 +520,7 @@ class Edit extends Component {
                             <Steps size="small" labelPlacement="vertical" current={taskStatus}>
                                 <Step title="开始"></Step>
                                 {
-                                    fullSteps.map((item, index) => {
+                                    completeFullSteps && completeFullSteps.length>0 && completeFullSteps.map((item, index) => {
                                         return <Step title={enumStepsText[item[0]].title} key={index} description={<div>
                                             {item[1].map((item, index) => {
                                                 // console.log(item)
