@@ -1,20 +1,33 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
-import './index.scss';
-import { reqGet, reqPost } from '@/api/api';
+import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
+import './index.scss'
+import { reqGet, reqPost } from '@/api/api'
 
-import { Breadcrumb, Icon, Button, Radio, Collapse, Modal, Select, Checkbox, message, TimePicker, Pagination, Popconfirm } from 'antd';
-import PanelContent from './panelContent';
-const BreadcrumbItem = Breadcrumb.Item;
-const Panel = Collapse.Panel;
-const Option = Select.Option;
-const CheckboxGroup = Checkbox.Group;
+import {
+    Breadcrumb,
+    Icon,
+    Button,
+    Radio,
+    Collapse,
+    Modal,
+    Select,
+    Checkbox,
+    message,
+    TimePicker,
+    Pagination,
+    Popconfirm
+} from 'antd'
+import PanelContent from './panelContent'
 
+const BreadcrumbItem = Breadcrumb.Item
+const Panel = Collapse.Panel
+const Option = Select.Option
+const CheckboxGroup = Checkbox.Group
 
 class Performance extends Component {
-    constructor(props) {
-        super(props);
+    constructor (props) {
+        super(props)
 
         this.state = {
             addVisible: false,
@@ -31,7 +44,6 @@ class Performance extends Component {
             taskListTotalCount: 1,
             taskListPage: 1,
             taskList: [],
-
 
             typeValue: 1,
             typeList: [
@@ -80,22 +92,22 @@ class Performance extends Component {
 
     //新建构建任务
     addItem = () => {
-        const { typeValue, formDataBranch, formDataScene, formDataTime } = this.state;
+        const {typeValue, formDataBranch, formDataScene, formDataTime} = this.state
 
         if (!formDataBranch) {
-            message.error('请选择“开发分支”');
-            return;
+            message.error('请选择“开发分支”')
+            return
         } else if (formDataScene.length < 1) {
-            message.error('请选择“执行场景”');
-            return;
-        }else if (this.state.typeValue === 2 && !formDataTime) {
-            message.error('请选择“定时时间”');
-            return;
+            message.error('请选择“执行场景”')
+            return
+        } else if (this.state.typeValue === 2 && !formDataTime) {
+            message.error('请选择“定时时间”')
+            return
         }
 
         this.setState({
             addConfirmLoading: true
-        });
+        })
 
         reqPost('/task/addSubmit', {
             projectId: Number(this.props.projectId),
@@ -104,18 +116,18 @@ class Performance extends Component {
             sceneId: formDataScene.join(','),
             fixTime: formDataTime
         }).then(res => {
-            this.hideModal();
+            this.hideModal()
 
             if (res.code == 0) {
-                this.getList('buildingList');    
+                this.getList('buildingList')
             } else {
                 Modal.info({
                     title: '提示',
                     content: (
                         <p>{res.msg}</p>
                     ),
-                    onOk() {}
-                });
+                    onOk () {}
+                })
             }
 
         })
@@ -123,12 +135,12 @@ class Performance extends Component {
 
     //显示新建窗口
     showModal = () => {
-        this.getBranchList();
-        this.getSceneList();
+        this.getBranchList()
+        this.getSceneList()
 
         this.setState({
             addVisible: true
-        });
+        })
     }
 
     //隐藏新建窗口
@@ -141,11 +153,11 @@ class Performance extends Component {
             formDataBranch: null,
             formDataScene: [],
             formDataTime: ''
-        });
+        })
     }
 
     //获取分支列表
-    getBranchList = (value='') => {
+    getBranchList = (value = '') => {
         reqPost('/branch/selectBranch', {
             projectId: this.props.projectId,
             branchName: value,
@@ -157,23 +169,23 @@ class Performance extends Component {
             if (res.code === 0) {
                 this.setState({
                     branchList: res.data
-                });
+                })
             }
         })
     }
-    
+
     //修改选中分支
     changeBranch = (formDataBranch) => {
         this.setState({
             formDataBranch
-        });
+        })
     }
 
     //显示定时任务列表
     showTaskList = () => {
         this.setState({
             taskListVisible: true
-        });
+        })
 
         this.getTimerList()
     }
@@ -182,7 +194,7 @@ class Performance extends Component {
     hideTaskList = (res) => {
         this.setState({
             taskListVisible: false
-        });
+        })
     }
 
     //获取场景列表
@@ -191,12 +203,12 @@ class Performance extends Component {
             if (res.code == 0) {
                 this.setState({
                     sceneList: res.data.map(item => {
-                                return {
-                                    label: item.name,
-                                    value: item.id
-                                }
-                            })
-                });
+                        return {
+                            label: item.name,
+                            value: item.id
+                        }
+                    })
+                })
             }
         })
     }
@@ -207,7 +219,7 @@ class Performance extends Component {
             formDataScene,
             sceneIndeterminate: !!formDataScene.length && (formDataScene.length < this.state.sceneList.length),
             sceneCheckAll: formDataScene.length === this.state.sceneList.length
-        });
+        })
     }
 
     //全选场景
@@ -218,14 +230,14 @@ class Performance extends Component {
             }) : [],
             sceneIndeterminate: false,
             sceneCheckAll: e.target.checked
-        });
+        })
     }
 
     //修改新建定时时间
     changeTime = (moment) => {
         this.setState({
             formDataTime: moment.format('HH:mm:ss')
-        });
+        })
     }
 
     //获取定时任务列表
@@ -233,14 +245,14 @@ class Performance extends Component {
         console.log(page)
         reqPost('/task/timer/list', {
             projectId: Number(this.props.projectId),
-            pageNum: page === undefined ? this.state.taskListPage: page,
+            pageNum: page === undefined ? this.state.taskListPage : page,
             pageSize: 10
         }).then(res => {
             if (res.code == 0) {
                 this.setState({
                     taskList: res.data,
                     taskListTotalCount: res.total,
-                });
+                })
             }
         })
     }
@@ -259,7 +271,7 @@ class Performance extends Component {
 
     //修改类型
     changeType = (e) => {
-        clearTimeout(this.state.timer);
+        clearTimeout(this.state.timer)
 
         this.setState({
             typeValue: e.target.value,
@@ -277,44 +289,43 @@ class Performance extends Component {
             },
             timer: null
         }, () => {
-            this.getList('buildingList');
-            this.getList('successList');
-            this.getList('failureList');
-        });
+            this.getList('buildingList')
+            this.getList('successList')
+            this.getList('failureList')
+        })
     }
 
-
     //获取主列表数据
-    getList = (type, loadMore=0) => {
+    getList = (type, loadMore = 0) => {
         if (this.state[type].loading) {
-            return;
+            return
         }
 
         if (this.state.timer) {
-            clearTimeout(this.state.timer);
+            clearTimeout(this.state.timer)
             this.setState({
                 timer: null
-            });
+            })
         }
-        
-        const tabType = this.state.typeValue;
-        const newState = {};
+
+        const tabType = this.state.typeValue
+        const newState = {}
         newState[type] = {
             ...this.state[type],
             loading: true
-        };
-        this.setState(newState);
+        }
+        this.setState(newState)
 
         reqPost(this.state[type].url, {
             projectId: Number(this.props.projectId),
             type: this.state.typeValue,
             page: loadMore === 0 ? 1 : this.state[type].page + 1,
-            count: type==='buildingList'?20:3
+            count: type === 'buildingList' ? 20 : 3
         }).then(res => {
             if (res.code === 0) {
                 const newState = {},
-                      dataSize = res.data.length,
-                      nextPage = dataSize > 0 ? this.state[type].page + 1 : this.state[type].page;
+                    dataSize = res.data.length,
+                    nextPage = dataSize > 0 ? this.state[type].page + 1 : this.state[type].page
 
                 newState[type] = {
                     ...this.state[type],
@@ -324,28 +335,28 @@ class Performance extends Component {
 
                 if (type === 'buildingList') {
                     if (this.state.buildingOldSize !== dataSize) {
-                        newState.buildingOldSize = dataSize;
+                        newState.buildingOldSize = dataSize
 
                         if (this.state.buildingOldSize > dataSize) {
-                            this.getList('successList');
-                            this.getList('failureList');
+                            this.getList('successList')
+                            this.getList('failureList')
                         }
                     }
 
                     if (dataSize > 0 && tabType === this.state.typeValue && new Date().getTime() - this.state.timerStart < 3600000) {
-                        newState.timer = setTimeout(this.getList.bind(this, 'buildingList'), 10e3);
+                        newState.timer = setTimeout(this.getList.bind(this, 'buildingList'), 10e3)
                     }
                 }
 
-                this.setState(newState);
+                this.setState(newState)
             }
         }).finally(() => {
-            const newState = {};
+            const newState = {}
             newState[type] = {
                 ...this.state[type],
                 loading: false
-            };
-            this.setState(newState);
+            }
+            this.setState(newState)
         })
     }
 
@@ -356,15 +367,15 @@ class Performance extends Component {
             type: this.state.typeValue
         }).then(res => {
             if (res.code == 0) {
-                this.getList('buildingList');
+                this.getList('buildingList')
             } else {
                 Modal.info({
                     title: '提示',
                     content: (
                         <p>{res.msg}</p>
                     ),
-                    onOk() {}
-                });
+                    onOk () {}
+                })
             }
         })
     }
@@ -375,73 +386,74 @@ class Performance extends Component {
             buildId
         }).then((res) => {
             if (res.code == 0) {
-                this.props.history.push(`/package/detail/${res.data.id}`);
+                this.props.history.push(`/package/detail/${res.data.id}`)
             }
         })
     }
 
-    componentWillMount() {
+    componentWillMount () {
         window.localStorage.setItem('detailBreadcrumbPath', JSON.stringify([{
             path: '/performanceConfig',
             name: '性能测试管理'
-        }]));
+        }]))
     }
 
-    componentDidMount() {
-        this.getList('successList');
-        this.getList('failureList');
-        this.getList('buildingList');
+    componentDidMount () {
+        this.getList('successList')
+        this.getList('failureList')
+        this.getList('buildingList')
 
         this.setState({
             timerStart: new Date().getTime()
         })
     }
 
-    componentWillUnmount() {
-        clearTimeout(this.state.timer);
+    componentWillUnmount () {
+        clearTimeout(this.state.timer)
     }
 
-    render() {
-        const { addVisible, addConfirmLoading, branchList, typeValue, sceneIndeterminate, sceneCheckAll, sceneList, formDataScene, taskListVisible, taskList, taskListTotalCount, typeList, buildingList, successList, failureList, formDataBranch } = this.state;
+    render () {
+        const {addVisible, addConfirmLoading, branchList, typeValue, sceneIndeterminate, sceneCheckAll, sceneList, formDataScene, taskListVisible, taskList, taskListTotalCount, typeList, buildingList, successList, failureList, formDataBranch} = this.state
 
         return (
             <div className="performance">
                 <Modal title="新增提测性能测试"
-                    visible={addVisible}
-                    onOk={this.addItem}
-                    confirmLoading={addConfirmLoading}
-                    onCancel={this.hideModal}
-                    maskClosable={false}
-                    destroyOnClose={true}
+                       visible={addVisible}
+                       onOk={this.addItem}
+                       confirmLoading={addConfirmLoading}
+                       onCancel={this.hideModal}
+                       maskClosable={false}
+                       destroyOnClose={true}
                 >
                     <div className="performance-modal-item">
                         <label className="performance-modal-item-label">开发分支：</label>
                         <div className="performance-modal-item-content">
-                                <Select placeholder="开发分支"
-                                        onChange={this.changeBranch}
-                                        style={{ width: 300 }}
-                                        showSearch
-                                        value={formDataBranch}
-                                        onSearch={this.getBranchList}
-                                        onChange={this.changeBranch}>
-                                    {
-                                        branchList.map((item) => {
-                                            return <Option value={item.name} key={item.id} title={item.name}>{item.name}</Option>
-                                        })
-                                    }
-                                </Select>
+                            <Select placeholder="开发分支"
+                                    onChange={this.changeBranch}
+                                    style={{width: 300}}
+                                    showSearch
+                                    value={formDataBranch}
+                                    onSearch={this.getBranchList}
+                                    onChange={this.changeBranch}>
+                                {
+                                    branchList.map((item) => {
+                                        return <Option value={item.name} key={item.id}
+                                                       title={item.name}>{item.name}</Option>
+                                    })
+                                }
+                            </Select>
                         </div>
                     </div>
 
                     {
                         typeValue === 2 && <div className="performance-modal-item">
-                                                <label className="performance-modal-item-label">定时时间：</label>
-                                                <div className="performance-modal-item-content">
-                                                    {
-                                                        addVisible && <TimePicker onChange={this.changeTime}/>
-                                                    }
-                                                </div>
-                                            </div>
+                            <label className="performance-modal-item-label">定时时间：</label>
+                            <div className="performance-modal-item-content">
+                                {
+                                    addVisible && <TimePicker onChange={this.changeTime}/>
+                                }
+                            </div>
+                        </div>
                     }
 
                     <div className="performance-modal-item">
@@ -452,9 +464,9 @@ class Performance extends Component {
                                 onChange={this.checkAllScene}
                                 checked={sceneCheckAll}
                             >
-                              全部
+                                全部
                             </Checkbox>
-                            <CheckboxGroup options={sceneList} value={formDataScene} onChange={this.changeScene} />
+                            <CheckboxGroup options={sceneList} value={formDataScene} onChange={this.changeScene}/>
                         </div>
                     </div>
                 </Modal>
@@ -471,7 +483,7 @@ class Performance extends Component {
                         {
                             taskList.map((item, index) => {
                                 return <div className="performance-task-list-item" key={item.id}>
-                                    <img src={require('@/assets/favicon.ico')} />
+                                    <img src={require('@/assets/favicon.ico')}/>
                                     <p className="performance-task-list-item-content">
                                         <span>分支:{item.branchName}</span>
                                         <span>场景:{item.scene}</span>
@@ -487,7 +499,8 @@ class Performance extends Component {
                         }
                     </div>
                     <div className="performance-task-list-pagination">
-                        <Pagination pageSize={10} defaultCurrent={1} total={taskListTotalCount} onChange={this.getTimerList}  />
+                        <Pagination pageSize={10} defaultCurrent={1} total={taskListTotalCount}
+                                    onChange={this.getTimerList}/>
                     </div>
                 </Modal>
 
@@ -499,8 +512,8 @@ class Performance extends Component {
 
 
                 <div className="performance-menu">
-                    { typeValue < 3 && <Button type="primary" onClick={this.showModal}>新增测试</Button> }
-                    { typeValue === 2 && <Button type="primary" onClick={this.showTaskList}>定时任务列表</Button> }
+                    {typeValue < 3 && <Button type="primary" onClick={this.showModal}>新增测试</Button>}
+                    {typeValue === 2 && <Button type="primary" onClick={this.showTaskList}>定时任务列表</Button>}
 
                     <Radio.Group value={typeValue} onChange={this.changeType} className="fr">
                         {
@@ -514,15 +527,17 @@ class Performance extends Component {
 
                 <div className="performance-main">
                     <Collapse defaultActiveKey={['0', '1', '2']}>
-                        
+
                         {/*正在构建*/}
                         <Panel header={buildingList.title} key="0" className="performance-container">
                             <div className={`performance-container-load ${buildingList.loading ? 'act' : ''}`} onClick={
                                 () => {
                                     this.getList('buildingList', 1)
                                 }
-                            }>{buildingList.loading && <Icon type="loading" theme="outlined" />} 加载更多</div>
-                            <PanelContent list={buildingList.list} handlerTaskCancel={this.cancelTask} handlerToDetail={this.toDetail} showDetail={typeValue === 3}/>
+                            }>{buildingList.loading && <Icon type="loading" theme="outlined"/>} 加载更多
+                            </div>
+                            <PanelContent list={buildingList.list} handlerTaskCancel={this.cancelTask}
+                                          handlerToDetail={this.toDetail} showDetail={typeValue === 3}/>
                         </Panel>
 
                         {/*构建成功*/}
@@ -531,8 +546,10 @@ class Performance extends Component {
                                 () => {
                                     this.getList('successList', 1)
                                 }
-                            }>{successList.loading && <Icon type="loading" theme="outlined" />} 加载更多</div>
-                            <PanelContent list={successList.list} handlerToDetail={this.toDetail} showDetail={typeValue === 3}/>
+                            }>{successList.loading && <Icon type="loading" theme="outlined"/>} 加载更多
+                            </div>
+                            <PanelContent list={successList.list} handlerToDetail={this.toDetail}
+                                          showDetail={typeValue === 3}/>
                         </Panel>
 
                         {/*构建失败*/}
@@ -541,8 +558,10 @@ class Performance extends Component {
                                 () => {
                                     this.getList('failureList', 1)
                                 }
-                            }>{failureList.loading && <Icon type="loading" theme="outlined" />} 加载更多</div>
-                            <PanelContent list={failureList.list} handlerToDetail={this.toDetail} showDetail={typeValue === 3}/>
+                            }>{failureList.loading && <Icon type="loading" theme="outlined"/>} 加载更多
+                            </div>
+                            <PanelContent list={failureList.list} handlerToDetail={this.toDetail}
+                                          showDetail={typeValue === 3}/>
                         </Panel>
 
                     </Collapse>
@@ -552,11 +571,10 @@ class Performance extends Component {
     }
 }
 
-
 Performance = connect((state) => {
     return {
         projectId: state.projectId
     }
-})(Performance);
+})(Performance)
 
-export default Performance;
+export default Performance
