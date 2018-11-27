@@ -32,7 +32,8 @@ export function constructStepCard (stepsList) {
 const composeRules = {
     0:(dataSource)=> composeZero(dataSource),
     1:(dataSource) => composeSingless(dataSource),
-    2: (dataSource)=> composePair(dataSource)
+    2: (dataSource)=> composePair(dataSource),
+    3:(dataSource)=>(dataSource)
 }
 
 function composeZero () {
