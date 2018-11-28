@@ -41,7 +41,6 @@ class ExecutionReport extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log(nextProps)
         this.setState({
             taskID: nextProps.taskID,
             buildNum: nextProps.buildNum,

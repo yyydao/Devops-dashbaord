@@ -16,6 +16,7 @@ import pipelineTaskEdit from '@/pages/Pipeline/editTask'
 
 import Performance from '@/pages/Test/Performance';
 import Package from '@/pages/Package/';
+import Package1 from '@/pages/PackageNew';
 import PackageList from '@/pages/Package/list';
 import PackageDetail from '@/pages/Package/detail';
 import Dashboard from '@/pages/Dashboard'
@@ -84,6 +85,11 @@ export default [
     component: Package
   },
   {
+    path: '/package1',
+    name: 'package1',
+    component: Package1
+  },
+  {
     path: '/package/:envId',
     name: 'packageList',
     component: PackageList
@@ -142,9 +148,4 @@ export default [
     name: 'thirdparty',
     component: ThirdParty
   },
-  // {
-  //   path: '/exeReport',
-  //   name: 'exeReport',
-  //   component: ExecutionReport
-  // }
 ]
