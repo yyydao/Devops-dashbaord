@@ -196,3 +196,40 @@
     line-height: 24px;
     margin: 0px;
 }
+.package-title{
+    background: #eeeeee;
+    padding: 8px 16px;
+}
+.package-list{
+    width: 600px;
+    border: 1px solid #eeeeee;
+}
+.package-content{
+    padding: 8px 0px;
+}
+.package-list-item{
+    display: flex;
+    padding: 8px 16px;
+    border-bottom: 1px solid #eeeeee;
+    align-items: center;
+    cursor: pointer;
+    p{
+        width: 400px;
+        align-items: center;
+        margin-bottom: 0px;
+        padding-left: 16px;
+    }
+    img{
+        align-items: center;
+        width: 40px;
+        height: 40px;
+    }
+}
+.package-list-item:before,
+.package-list-item:after    /* :after 可以不需要 */
+{
+    display: inline-block;
+    vertical-align: middle;
+    content: '';
+    height: 100%;
+}
