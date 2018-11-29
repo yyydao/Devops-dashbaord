@@ -93,10 +93,10 @@ class pipelinePackageDetail extends Component {
             title:'扫码下载',
             content:
                 <div>
-                    <Row align='center'>
+                    <Row type="flex"  align='middle' justify='center'>
                         <QRCode value={appUrl} width={250} />
                     </Row>
-                    <Row  align='center'>
+                    <Row type="flex"  align='middle'  justify='center'>
                         <Button><a href={appUrl} target="_blank">点击下载</a></Button>
                     </Row>
 
@@ -106,7 +106,7 @@ class pipelinePackageDetail extends Component {
     }
 
     jumpToPipelineDetail = (recordNo, taskID) =>{
-        
+
     }
 
     getDetail = () => {
