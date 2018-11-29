@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { reqPost, reqGet } from '@/api/api';
 import './list.scss';
+import VersionPanel from './versionPanel';
 
 import { Breadcrumb, Icon, Button, Input, Collapse, Modal, Select, Pagination, Popconfirm, message } from 'antd';
 const BreadcrumbItem = Breadcrumb.Item;
@@ -11,7 +12,7 @@ const { TextArea } = Input;
 const Option = Select.Option;
 
 
-class BuildTestPackage extends Component {
+class PipelinePackage extends Component {
   constructor(props) {
     super(props);
 
@@ -31,11 +32,8 @@ class BuildTestPackage extends Component {
 
       //筛选条件
       envID:'',
-      status:0,//默认显示成功列表
       version:'',
 
-      //正在构建的数量
-      buildingNum:0,
       //状态集合
       statusList:["成功","等待构建","正在构建","构建失败","取消构建"]
     }
@@ -48,13 +46,11 @@ class BuildTestPackage extends Component {
     this.setState({
       projectId: nextProps.projectId
     },()=>{
-      this.getEnvList()
-      this.getBuildingNum()
+      // this.getEnvList()
     });
   }
   componentWillMount () {
-    this.getEnvList()
-    this.getBuildingNum()
+    // this.getEnvList()
   }
 
   /**
@@ -101,26 +97,11 @@ class BuildTestPackage extends Component {
   }
 
   /**
-   * @desc 获取正在构建的数量
-   */
-  getBuildingNum = () => {
-    const {projectId} = this.state
-    reqGet('package/buildingcount', {
-      projectID:projectId
-    }).then(res => {
-      if (res.code === 0) {
-        this.setState({buildingNum:res.data})
-      } else {
-        message.error(res.msg)
-      }
-    })
-  }
-
-  /**
    * @desc 获取提测列表
    */
   getPackageList = () => {
     const {projectId, envID, status, version,curPage} = this.state
+    console.log("llllll")
     reqGet('package/packagelist', {
       projectID:projectId,envID, status,version,page:curPage,limit:10
     }).then(res => {
@@ -134,7 +115,6 @@ class BuildTestPackage extends Component {
       }
     })
   }
-
   /**
    * @desc 筛选条件改变事件
    * @param e 条件被修改的值
@@ -207,38 +187,21 @@ class BuildTestPackage extends Component {
   }
 
   render() {
-    const { totalCount, curPage, envList, versionList,dataList, envID, status, buildingNum, version, statusList} = this.state;
+    const { totalCount, curPage, envList, versionList,dataList, envID, version, statusList} = this.state;
 
     return (
         <div className="package">
           <div className="package-title">
-            <Button type="primary" onClick={() => {this.toggleBuildModal(true, 1)}}>新增提测</Button>
-            <span style={{paddingRight:8,paddingLeft:24}}>环境</span>
+            <span style={{paddingRight:8,paddingLeft:8}}>流水线</span>
             <Select value={envID}
                     style={{ width: 150, marginRight:24 }}
                     onChange={(e)=>{this.filterChange(e,'envID')}}>
-              {envList.length>0&&envList.map((item,index) => {
-                  return <Option value={item.id} key={index}>{item.name}</Option>
-              })}
             </Select>
             <span style={{paddingRight:8}}>版本</span>
             <Select value={version}
                     style={{ width: 150, marginRight:24 }}
                     onChange={(e)=>{this.filterChange(e,'version')}}>
-              {versionList.length>0&&versionList.map((item,index) => {
-                return <Option value={item.buildVersion} key={index}>{item.appVersion}</Option>
-              })}
             </Select>
-            <span style={{paddingRight:8}}>类型</span>
-            <Select value={status}
-                    style={{ width: 150, marginRight:24 }}
-                    onChange={(e)=>{this.filterChange(e,'status')}}>
-              <Option value={0} >成功</Option>
-              <Option value={3} >失败</Option>
-              <Option value={99} >构建中</Option>
-            </Select>
-            <span style={{color:"#6DD200",paddingRight:8}}>Tips:</span>
-            <span>{buildingNum}个任务正在构建...</span>
           </div>
           <div className="package-content">
             {
@@ -268,19 +231,19 @@ class BuildTestPackage extends Component {
                           style={{marginRight:"auto"}}>查看</Button>
                     }
                     return <a className="package-list-item"
-                                key={index}
-                                style={{background:item.active?"#eee":"#fff"}}
-                                onClick={()=>{this.onListItemClick(item.buildID)}}>
-                              <img src={require('@/assets/favicon.ico')} />
-                              <p>
-                                {fileName}
-                                <span style={{paddingLeft:8}}>buildId：{item.buildID}</span><br/>
-                                <span>时间：{item.createTime}</span><br/>
-                                <span>提测人：{item.developer}</span>
-                              </p>
-                              {!item.active&& button}
-                              {!item.active&&<Icon type="right"/>}
-                            </a>
+                              key={index}
+                              style={{background:item.active?"#eee":"#fff"}}
+                              onClick={()=>{this.onListItemClick(item.buildID)}}>
+                      <img src={require('@/assets/favicon.ico')} />
+                      <p>
+                        {fileName}
+                        <span style={{paddingLeft:8}}>buildId：{item.buildID}</span><br/>
+                        <span>时间：{item.createTime}</span><br/>
+                        <span>提测人：{item.developer}</span>
+                      </p>
+                      {!item.active&& button}
+                      {!item.active&&<Icon type="right"/>}
+                    </a>
                   })
                   }
                 </div>
@@ -299,11 +262,11 @@ class BuildTestPackage extends Component {
   }
 }
 
-BuildTestPackage = connect((state) => {
+PipelinePackage = connect((state) => {
   console.log(state)
   return {
     projectId: state.projectId
   }
-})(BuildTestPackage)
+})(PipelinePackage)
 
-export default BuildTestPackage;
+export default PipelinePackage;

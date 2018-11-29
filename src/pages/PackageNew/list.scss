@@ -200,9 +200,16 @@
     background: #eeeeee;
     padding: 8px 16px;
 }
-.package-list{
+.package-content-left{
     width: 600px;
+}
+.package-list{
+    max-height:600px;
     border: 1px solid #eeeeee;
+    overflow-y: scroll;
+}
+.package-list::-webkit-scrollbar {
+    display: none;
 }
 .package-content{
     padding: 8px 0px;
@@ -213,6 +220,7 @@
     border-bottom: 1px solid #eeeeee;
     align-items: center;
     cursor: pointer;
+    color:#4e4e4e;
     p{
         width: 400px;
         align-items: center;
@@ -225,11 +233,4 @@
         height: 40px;
     }
 }
-.package-list-item:before,
-.package-list-item:after    /* :after 可以不需要 */
-{
-    display: inline-block;
-    vertical-align: middle;
-    content: '';
-    height: 100%;
-}
+a:hover {color: #000;}
