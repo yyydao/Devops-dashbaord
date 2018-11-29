@@ -3,85 +3,49 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { reqPost, reqGet } from '@/api/api' ;
 
-import { Breadcrumb, Card } from 'antd';
+import BuildTestPackage from './BuildTestPackage'
+import PipelinePackage from './PipelinePackage'
+
+import { Breadcrumb, Card, Tabs } from 'antd';
 const BreadcrumbItem = Breadcrumb.Item;
+const TabPane = Tabs.TabPane;
+
 
 class Package extends Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
+  }
 
-        this.state = {
-            envList: []
-        }
-    }
+  componentWillMount() {
+    console.log(this.props.projectId)
+    window.localStorage.setItem('oldProjectId', this.props.projectId);
+  }
 
-    getEnvList = () => {
-        reqGet('/env/list', {
-            projectId: this.props.projectId,
-            categoryId: 0
-        }).then((res) => {
-            if (res.code === 0) {
-                this.setState({
-                    envList: res.data
-                })
+  render() {
+    return (
+        <div>
+          <Breadcrumb className="devops-breadcrumb">
+            <BreadcrumbItem><Link to="/home">首页</Link></BreadcrumbItem>
+            <BreadcrumbItem>安装包</BreadcrumbItem>
+          </Breadcrumb>
 
-                const envList = res.data.map((item, index) => {
-                    return {
-                        id: item.id,
-                        name: item.name,
-                        passwdBuild: item.passwdBuild
-                    }
-                })
-
-                window.localStorage.setItem('envList', JSON.stringify(envList));
-            }
-        })
-    }
-
-    componentWillMount() {
-        window.localStorage.setItem('oldProjectId', this.props.projectId);
-    }
-
-    componentDidMount() {
-        this.getEnvList()
-    }
-
-    render() {
-        const { envList } = this.state;
-
-        return (
-            <div>
-                <Breadcrumb className="devops-breadcrumb">
-                    <BreadcrumbItem><Link to="/home">首页</Link></BreadcrumbItem>
-                    <BreadcrumbItem>安装包</BreadcrumbItem>
-                </Breadcrumb>
-                
-                <div className="config-card-list clear">
-                {
-                    envList.map((item, index) => {
-                        return  <Link to={{
-                                    pathname: `/package/${item.id}`,
-                                    state: {
-                                        envId: item.id,
-                                        envName: item.name,
-                                        passwdBuild: item.passwdBuild
-                                    }
-                                }} key={index}>
-                                    <Card hoverable className="config-card">{item.name}</Card>
-                                </Link>
-                                
-                    })
-                }
-                </div>
-            </div>
-        )
-    }
+          <Tabs type="card">
+            <TabPane tab=" 提测包 " key="1">
+              <BuildTestPackage projectId={this.props.projectId}></BuildTestPackage>
+            </TabPane>
+            <TabPane tab="流水线包" key="2">
+              <PipelinePackage projectId={this.props.projectId}></PipelinePackage>
+            </TabPane>
+          </Tabs>
+        </div>
+    )
+  }
 }
 
 Package = connect((state) => {
-    return {
-        projectId: state.projectId
-    }
+  return {
+    projectId: state.projectId
+  }
 })(Package);
 
 export default Package;
