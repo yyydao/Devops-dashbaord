@@ -212,7 +212,7 @@ class BuildTestPackage extends Component {
     return (
         <div className="package">
           <div className="package-title">
-            <Button type="primary" onClick={() => {this.toggleBuildModal(true, 1)}}>新增提测</Button>
+            <Button type="primary">新增提测</Button>
             <span style={{paddingRight:8,paddingLeft:24}}>环境</span>
             <Select value={envID}
                     style={{ width: 150, marginRight:24 }}
