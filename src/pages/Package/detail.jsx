@@ -30,6 +30,7 @@ class packageDetail extends Component {
         super(props)
 
         this.state = {
+            buildId: props.buildId,
             addVisible: false,
             regressModalVisible: false,
             addConfirmLoading: false,
@@ -44,7 +45,7 @@ class packageDetail extends Component {
             formDataReDesc: '',
             regressDesc: '',
             loading: true,
-            skeletonloading:true,
+            skeletonLoading: true,
 
             timer: null,
 
@@ -75,11 +76,15 @@ class packageDetail extends Component {
         }
     }
 
+    propTypes: {
+        buildId: PropTypes.string.isRequired
+    }
+    /**
+     * @desc 获取详情
+     */
     getDetail = () => {
-        clearTimeout(this.state.timer)
-
         reqGet('/package/detail', {
-            buildId: this.props.match.params.buildId
+            buildId: this.state.buildId
         }).then((res) => {
             if (res.code == 0) {
                 const {
@@ -138,10 +143,13 @@ class packageDetail extends Component {
         }).finally(() => {
             this.setState({
                 loading: false,
-                skeletonloading:false,
+                skeletonLoading: false,
             })
         })
     }
+    /**
+     * @desc 发起构建
+     */
     rebuild = () => {
         reqGet('/package/failure/recommit', {
             taskId: this.state.taskId
@@ -156,7 +164,9 @@ class packageDetail extends Component {
             })
         })
     }
-    //版本回归
+    /**
+     * @desc 回归
+     */
     versionRegress = () => {
         const {envId, taskMaster, codeBranch, submitContent, submitDetails, regressDesc, formDataUser, formDataPassword} = this.state
         if (!this.state.regressDesc) {
@@ -186,14 +196,18 @@ class packageDetail extends Component {
         })
     }
 
-    //显示回归的窗口
+    /**
+     * @desc 显示回归的窗口
+     */
     showRegressModal = () => {
         this.setState({
             regressModalVisible: true
         })
     }
 
-    //隐藏回归的窗口
+    /**
+     * @desc 隐藏回归的窗口
+     */
     hideRegressModal = () => {
         this.setState({
             regressModalVisible: false,
@@ -204,39 +218,48 @@ class packageDetail extends Component {
     componentWillMount () {
         const oldProjectId = window.localStorage.getItem('oldProjectId')
 
-        window.localStorage.setItem('oldProjectId', this.props.projectId)
-
-        if (oldProjectId !== null && oldProjectId !== this.props.projectId) {
-            this.props.history.push('/package')
-        }
+        // window.localStorage.setItem('oldProjectId', this.props.projectId)
+        //
+        // if (oldProjectId !== null && oldProjectId !== this.props.projectId) {
+        //     this.props.history.push('/package')
+        // }
         let passwdBuild = 0
-        if (this.props.location.state) {
-            passwdBuild = this.props.location.state.passwdBuild
-        }
-        console.log(this.props)
-        if (this.props.match.params.buildId) {
-            this.getDetail()
+        // if (this.props.location.state) {
+        //     passwdBuild = this.props.location.state.passwdBuild
+        // }
+        // console.log(this.props)
+        this.getDetail()
+        this.setState({
+            appUrl: `${window.location.origin}/package/download?buildId=${this.state.buildId}&token=${this.props.token ? this.props.token : ''}`,
+            passwdBuild: passwdBuild
+        })
+        //
+        // if (this.props.match.params.buildId) {
+        //
+        //
+        //     let breadcrumbPath = []
+        //     try {
+        //         let dataBreadcrumb = window.localStorage.getItem('detailBreadcrumbPath')
+        //         if (dataBreadcrumb) {
+        //             breadcrumbPath = JSON.parse(dataBreadcrumb)
+        //         }
+        //     } catch (err) {
+        //         console.log(err)
+        //         breadcrumbPath = [{
+        //             path: '/package',
+        //             name: '安装包'
+        //         }]
+        //     }
+        //
+        //
+        // }
+    }
 
-            let breadcrumbPath = []
-            try {
-                let dataBreadcrumb = window.localStorage.getItem('detailBreadcrumbPath')
-                if (dataBreadcrumb) {
-                    breadcrumbPath = JSON.parse(dataBreadcrumb)
-                }
-            } catch (err) {
-                console.log(err)
-                breadcrumbPath = [{
-                    path: '/package',
-                    name: '安装包'
-                }]
-            }
+    componentWillReceiveProps (nextProps) {
+        this.setState({
+            buildId: nextProps.buildId,
+        }, () => this.getDetail())
 
-            this.setState({
-                breadcrumbPath,
-                appUrl: `${window.location.origin}/package/download?buildId=${this.props.match.params.buildId}&token=${this.props.token ? this.props.token : ''}`,
-                passwdBuild: passwdBuild
-            })
-        }
     }
 
     componentWillUnmount () {
@@ -255,10 +278,10 @@ class packageDetail extends Component {
         let rebuildButton
         let downloadButton
         let actionArray = []
-        let cardTitle =<span color='#1890ff'>正在构建...</span>;
+        let cardTitle = <span color='#1890ff'>正在构建...</span>
 
         if (status === 0) {
-            cardTitle= fileName
+            cardTitle = fileName
             downloadButton =
                 <Button ghost type="primary" icon="download"><a href={appUrl} target="_blank">下载</a></Button>
             actionArray.push(downloadButton)
@@ -270,12 +293,10 @@ class packageDetail extends Component {
         }
 
         if (status === 1 || status === 2) {
-            cardTitle= <span color='#f5222d'>failure</span>;
+            cardTitle = <span color='#f5222d'>failure</span>
             rebuildButton = <Button ghost type="primary" icon="redo" onClick={this.rebuild}>重新提交</Button>
             actionArray.push(rebuildButton)
         }
-
-
 
         const formItemLayout = {
             labelCol: {
@@ -354,18 +375,7 @@ class packageDetail extends Component {
                         }
                     </Form>
                 </Modal>
-                <Breadcrumb className="devops-breadcrumb">
-                    <BreadcrumbItem><Link to="/home">首页</Link></BreadcrumbItem>
-                    {
-                        breadcrumbPath.map((item, index) => {
-                            return <BreadcrumbItem key={index}><Link to={item.path}>{item.name}</Link></BreadcrumbItem>
-                        })
-                    }
-                    <BreadcrumbItem>安装包详情</BreadcrumbItem>
-                </Breadcrumb>
-
-                {
-                    <Skeleton loading={this.state.skeletonloading}>
+                <Skeleton loading={this.state.skeletonLoading}>
 
                     <Card
                         style={{width: 560}}
@@ -380,17 +390,17 @@ class packageDetail extends Component {
                                     <Row>
                                         <Col span={12}>
                                             <Row>
-                                                { status === 0 &&
+                                                {status === 0 &&
                                                 <Col>版本：{version}</Col>}
                                                 {status === 0 && this.state.apkBuildId && this.state.apkBuildId.length > 0 &&
                                                 <Col>Code:{apkBuildId}</Col>}
-                                                { status === 0 &&<Col>大小：{fileSize}</Col> }
+                                                {status === 0 && <Col>大小：{fileSize}</Col>}
                                                 <Col>时间：{buildTime}</Col>
                                             </Row>
                                         </Col>
                                         <Col span={12}>
-                                            { status === 0 &&
-                                                <QRCode value={appUrl} size={170}/>
+                                            {status === 0 &&
+                                            <QRCode value={appUrl} size={170}/>
                                             }
                                         </Col>
 
@@ -414,52 +424,7 @@ class packageDetail extends Component {
                             }
                         />
                     </Card>
-                    </Skeleton>
-                }
-
-                {/*<dl className="pkgdetail-info">*/}
-                {/*<dt>{envName}</dt>*/}
-                {/*{*/}
-                {/*status === 0 &&*/}
-                {/*<dd>*/}
-                {/*<div className="pkgdetail-info-1">*/}
-                {/*<p>{fileName}</p>*/}
-                {/*<Button type="primary"><a href={appUrl} target="_blank">下载</a></Button>*/}
-                {/*{regressButton}*/}
-                {/*</div>*/}
-                {/*<div className="pkgdetail-info-2">*/}
-                {/*<p>*/}
-                {/*<span>版本：{version}</span>*/}
-                {/*<span>大小：{fileSize}</span>*/}
-                {/*<span>{buildTime}</span>*/}
-                {/*</p>*/}
-                {/*<QRCode value={appUrl} size={170}/>*/}
-                {/*</div>*/}
-                {/*</dd>*/}
-                {/*}*/}
-                {/*<dd>*/}
-                {/*<p>提测人：{taskMaster}</p>*/}
-                {/*<p>提测分支：{codeBranch}</p>*/}
-                {/*<p>提测详情：{submitDetails}</p>*/}
-                {/*<p>提测概要：</p>*/}
-                {/*<p className="pkgdetail-info-desc">{submitContent}</p>*/}
-                {/*{*/}
-                {/*rebuildContent &&*/}
-                {/*<div>*/}
-                {/*<p>回归内容：</p>*/}
-                {/*<p className="pkgdetail-info-desc">{rebuildContent}</p>*/}
-                {/*</div>*/}
-                {/*}*/}
-                {/*</dd>*/}
-                {/*{*/}
-                {/*(status === 1 || status === 2) &&*/}
-                {/*<dd>*/}
-                {/*<Button type="primary" onClick={this.rebuild}>重新提交</Button>*/}
-                {/*</dd>*/}
-                {/*}*/}
-                {/*</dl>*/}
-
-
+                </Skeleton>
             </div>
         )
     }

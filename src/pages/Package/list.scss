@@ -147,6 +147,7 @@
 
 
 .pkgdetail{
+    //background: #eeeeee;
     &-info{
         dt{
             margin-bottom:20px;
@@ -213,6 +214,9 @@
 }
 .package-content{
     padding: 8px 0px;
+    .ant-layout{
+        background: #ffffff;
+    }
 }
 .package-list-item{
     display: flex;

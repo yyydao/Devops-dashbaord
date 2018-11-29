@@ -4,7 +4,14 @@ import { Link } from 'react-router-dom';
 import { reqPost, reqGet } from '@/api/api';
 import './list.scss';
 
-import { Breadcrumb, Icon, Button, Input, Collapse, Modal, Select, Pagination, Popconfirm, message } from 'antd';
+import BuildTestPackageDetail from './detail'
+
+import { Breadcrumb, Icon, Button, Input, Collapse, Modal, Select, Pagination,
+    Row,
+    Layout,
+    Col, message } from 'antd';
+import light from 'echarts/src/theme/light'
+const { Content, Sider } = Layout;
 const BreadcrumbItem = Breadcrumb.Item;
 const Panel = Collapse.Panel;
 const { TextArea } = Input;
@@ -28,6 +35,8 @@ class BuildTestPackage extends Component {
       envList:[],
       //版本列表
       versionList:[],
+      // 当前buildId
+        currentBuild:'',
 
       //筛选条件
       envID:'',
@@ -169,7 +178,7 @@ class BuildTestPackage extends Component {
     dataList.map(item=>{
       item.active=item.buildID===buildID?true:false
     })
-    this.setState({dataList})
+    this.setState({dataList,currentBuild:buildID})
   }
 
   /**
@@ -243,8 +252,11 @@ class BuildTestPackage extends Component {
           <div className="package-content">
             {
               dataList.length>0&&
-              <div className="package-content-left">
-                <div className="package-list">
+                  <Layout>
+                    <Sider theme="light"
+                        width={600}>
+                      <div className="package-content-left">
+                      <div className="package-list">
                   {dataList.map((item,index) =>{
                     let fileName='', button=''
                     if(item.status===0){
@@ -291,6 +303,14 @@ class BuildTestPackage extends Component {
                             current={curPage}
                             style={{marginTop:16,cssFloat:"right"}}/>
               </div>
+                    </Sider>
+                      <Content>
+                          { !!this.state.currentBuild &&
+                            <BuildTestPackageDetail buildId={this.state.currentBuild}/>
+                          }
+                      </Content>
+                  </Layout>
+
             }
           </div>
         </div>
