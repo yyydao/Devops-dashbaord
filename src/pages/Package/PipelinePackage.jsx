@@ -166,6 +166,19 @@ class PipelinePackage extends Component {
     window.open(`${window.location.origin}/package/download?buildId=${buildId}&token=${this.props.token ? this.props.token : ''}`)
   }
 
+  /**
+   * @desc 帮助
+   */
+  toggleDialogInfo = () => {
+    Modal.info({
+      title: '提示',
+      content: (
+          <p>归档【流水线】模块生成的安装包（含源包、加固包、补丁包）。</p>
+      ),
+      onOk() {}
+    });
+  }
+
   render() {
     const { totalCount, curPage, pipelineList, versionList,dataList, taskID, version} = this.state;
 
@@ -188,6 +201,7 @@ class PipelinePackage extends Component {
                 return <Option value={item.versionCode} key={index}>{item.versionName}</Option>
               })}
             </Select>
+            <Icon type="question-circle" style={{fontSize:24,color:"#000",verticalAlign:"middle",marginLeft:50}} onClick={()=>this.toggleDialogInfo()}/>
           </div>
           <div className="package-content">
             {
@@ -215,7 +229,7 @@ class PipelinePackage extends Component {
                   })
                   }
                 </div>
-                <Pagination onChange={()=>{this.onPaginationChange}}
+                <Pagination onChange={(e)=>{this.onPaginationChange(e)}}
                             total={totalCount}
                             showTotal={total => `共 ${totalCount} 条`}
                             pageSize={10}
