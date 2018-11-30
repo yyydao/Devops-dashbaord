@@ -190,6 +190,17 @@
     }
 }
 
+.pipeline-package-detail{
+    .detail-info{
+        .detail-row{
+            padding: 8px;
+            &.build-info{
+                margin-top: 50px;
+            }
+        }
+    }
+}
+
 .pForList{
     padding: 5px;
     border: #dddddd 1px solid;
