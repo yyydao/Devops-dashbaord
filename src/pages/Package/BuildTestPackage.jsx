@@ -128,7 +128,7 @@ class BuildTestPackage extends Component {
   /**
    * @desc 获取提测列表
    */
-  getPackageList = () => {
+  getPackageList = (e) => {
     const {projectId, envID, status, version,curPage} = this.state
     reqGet('package/packagelist', {
       projectID:projectId,envID, status,version,page:curPage,limit:10
@@ -166,7 +166,7 @@ class BuildTestPackage extends Component {
    * @param page 修改成的页数
    */
   onPaginationChange = (page) =>{
-    this.setState({curPage:page},()=>this.getPackageList())
+    this.setState({curPage:page},()=>{this.getPackageList()})
   }
 
   /**
@@ -296,7 +296,7 @@ class BuildTestPackage extends Component {
                   })
                   }
                 </div>
-                <Pagination onChange={()=>{this.onPaginationChange}}
+                <Pagination onChange={(e)=>{this.onPaginationChange(e)}}
                             total={totalCount}
                             showTotal={total => `共 ${totalCount} 条`}
                             pageSize={10}
