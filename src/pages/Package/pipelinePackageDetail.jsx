@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import {withRouter} from 'react-router-dom'
+import PropTypes from 'prop-types'
 import { reqGet } from '@/api/api'
 import './list.scss';
 
@@ -22,6 +24,11 @@ class pipelinePackageDetail extends Component {
         super(props)
 
         this.state = {
+            recordNo: props.recordNo,
+            taskID: props.taskID,
+            buildId: props.buildId,
+            fileType: props.fileType,
+
             addVisible: false,
             regressModalVisible: false,
             addConfirmLoading: false,
@@ -45,6 +52,13 @@ class pipelinePackageDetail extends Component {
             buildTime: '',
             packageList: []
         }
+    }
+
+    propTypes: {
+        buildId: PropTypes.string.isRequired,
+        recordNo:PropTypes.string.isRequired,
+        taskID:PropTypes.string.isRequired,
+        fileType:PropTypes.string.isRequired,
     }
 
     /**
@@ -71,15 +85,15 @@ class pipelinePackageDetail extends Component {
         })
     }
 
-    jumpToPipelineDetail = (recordNo, taskID,buildId,fileType) => {
+    jumpToPipelineDetail = () => {
         const inheritFromParent={
-            taskID: 'd53d33cb21e24ce58b1658816491f8852kuV00',
-            recordNo: '954f602a265048a181e164ce79a8e6f2oW3505',
-            buildId:55,
-            fileType:1,
+            taskID: this.state.taskID,
+            recordNo: this.state.recordNo,
+            fileType:this.state.fileType,
+            buildId:this.state.buildId
         }
         this.props.history.replace({
-            pathname: `/pipeline/packageDetail/${inheritFromParent.taskID}`,
+            pathname: `/pipeline/detail/${inheritFromParent.taskID}`,
             search: `?buildNumber=${inheritFromParent.buildId}&curRecordNo=${inheritFromParent.recordNo}&platform=${inheritFromParent.fileType}`,
             state:{
                 taskStatus:2
@@ -89,10 +103,10 @@ class pipelinePackageDetail extends Component {
 
     getDetail = () => {
 
-        this.setState({skeletonLoading: false})
+        // this.setState({skeletonLoading: false})
         reqGet('/pipeline/package/taskpackagedetail', {
-            taskID: 'd53d33cb21e24ce58b1658816491f8852kuV00',
-            recordNo: '954f602a265048a181e164ce79a8e6f2oW3505'
+            taskID: this.state.taskID,
+            recordNo: this.state.recordNo,
         }).then((res) => {
             if (res.code == 0) {
                 const {
@@ -100,8 +114,6 @@ class pipelinePackageDetail extends Component {
                     branchName,
                     buildTime,
                     buildType,
-                    recordNo,
-                    taskID
                 } = res.record
 
                 const packageList = res.data
@@ -112,8 +124,6 @@ class pipelinePackageDetail extends Component {
                     buildTime,
                     packageList,
                     buildType,
-                    recordNo,
-                    taskID
                 })
             } else {
                 Modal.info({
@@ -132,24 +142,32 @@ class pipelinePackageDetail extends Component {
             })
         })
     }
+    componentWillReceiveProps (nextProps) {
+        this.setState({
+            recordNo: nextProps.recordNo,
+            taskID: nextProps.taskID,
+            buildId: nextProps.buildId,
+            fileType: nextProps.fileType,
+        }, () => this.getDetail())
+
+    }
+
 
     componentWillMount () {
-        const oldProjectId = window.localStorage.getItem('oldProjectId')
+        // const oldProjectId = window.localStorage.getItem('oldProjectId')
 
-        window.localStorage.setItem('oldProjectId', this.props.projectId)
-
-        if (oldProjectId !== null && oldProjectId !== this.props.projectId) {
-            this.props.history.push('/package')
-        }
+        // window.localStorage.setItem('oldProjectId', this.props.projectId)
+        //
+        // if (oldProjectId !== null && oldProjectId !== this.props.projectId) {
+        //     this.props.history.push('/package')
+        // }
         this.getDetail()
-        if (this.props.match.params.buildId) {
 
             // this.setState({
             //     breadcrumbPath,
             //     appUrl: `${window.location.origin}/package/download?buildId=${this.props.match.params.buildId}&token=${this.props.token ? this.props.token : ''}`,
             //     passwdBuild: passwdBuild
             // })
-        }
     }
 
     render () {
@@ -197,7 +215,7 @@ class pipelinePackageDetail extends Component {
                     >
                         <Meta
                             description={
-                                <div class="detail-info">
+                                <div className="detail-info">
                                     {packageList && packageList.map((item, index) => {
                                         return <Row type="flex" justify="space-around" align="middle" key={index} className='detail-row'>
                                             <Col span={12}>
@@ -243,4 +261,4 @@ pipelinePackageDetail = connect((state) => {
     }
 })(pipelinePackageDetail)
 
-export default pipelinePackageDetail
+export default withRouter(pipelinePackageDetail)

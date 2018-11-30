@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { reqPost, reqGet } from '@/api/api';
+import { reqGet } from '@/api/api';
 import './list.scss';
-import VersionPanel from './versionPanel';
 
-import { Breadcrumb, Icon, Button, Input, Collapse, Modal, Select, Pagination, Popconfirm, message } from 'antd';
-const BreadcrumbItem = Breadcrumb.Item;
-const Panel = Collapse.Panel;
-const { TextArea } = Input;
+import {  Icon, Button, Modal, Select, Pagination, Layout, message } from 'antd';
+import PipelinePackageDetail from './pipelinePackageDetail'
 const Option = Select.Option;
+const { Content, Sider } = Layout;
 
 
 class PipelinePackage extends Component {
@@ -35,7 +32,12 @@ class PipelinePackage extends Component {
       version:'',
 
       //状态集合
-      statusList:["成功","等待构建","正在构建","构建失败","取消构建"]
+      statusList:["成功","等待构建","正在构建","构建失败","取消构建"],
+
+        currentRecordNo:'',
+        currentTaskID: '',
+        currentBuildId: '',
+        currentFileType: '',
     }
   }
   propTypes: {
@@ -149,12 +151,23 @@ class PipelinePackage extends Component {
    * @desc 列表item的高亮显示以及详情页的调起
    * @param buildID
    */
-  onListItemClick = (buildID) =>{
+  onListItemClick = (item) =>{
+    console.log(item)
     let dataList = this.state.dataList
+      const buildID = item.buildID
+      const recordNo = item.recordNo
+      const fileType = item.fileType
+      const taskID = item.taskID
     dataList.map(item=>{
       item.active=item.buildID===buildID?true:false
     })
-    this.setState({dataList})
+    this.setState({
+        dataList,
+        currentRecordNo:recordNo,
+        currentTaskID: taskID,
+        currentBuildId: buildID,
+        currentFileType:fileType,
+    })
   }
 
   /**
@@ -206,13 +219,16 @@ class PipelinePackage extends Component {
           <div className="package-content">
             {
               dataList.length>0&&
+              <Layout>
+                  <Sider theme="light"
+                         width={600}>
               <div className="package-content-left">
                 <div className="package-list">
                   {dataList.map((item,index) =>{
                     return <a className="package-list-item"
                               key={index}
                               style={{background:item.active?"#eee":"#fff"}}
-                              onClick={()=>{this.onListItemClick(item.buildID)}}>
+                              onClick={()=>{this.onListItemClick(item)}}>
                       <img src={require('@/assets/favicon.ico')} />
                       <p>
                         <span style={{color:"#39A1EE"}}>{item.fileName}</span>
@@ -236,6 +252,18 @@ class PipelinePackage extends Component {
                             current={curPage}
                             style={{marginTop:16,cssFloat:"right"}}/>
               </div>
+                  </Sider>
+                  <Content>
+                      { !!this.state.currentBuildId &&
+                      <PipelinePackageDetail
+                          buildId={this.state.currentBuildId}
+                          recordNo={this.state.currentRecordNo}
+                          taskID={this.state.currentTaskID}
+                          fileType={this.state.currentFileType}
+                      />
+                      }
+                  </Content>
+              </Layout>
             }
           </div>
         </div>
