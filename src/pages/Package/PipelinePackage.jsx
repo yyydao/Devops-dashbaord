@@ -25,13 +25,13 @@ class PipelinePackage extends Component {
 
       //列表list
       dataList: [],
-      //环境列表
-      envList:[],
+      //流水线列表
+      pipelineList:[],
       //版本列表
       versionList:[],
 
       //筛选条件
-      envID:'',
+      taskID:'',
       version:'',
 
       //状态集合
@@ -46,26 +46,27 @@ class PipelinePackage extends Component {
     this.setState({
       projectId: nextProps.projectId
     },()=>{
-      // this.getEnvList()
+      this.getPipelineList()
     });
   }
   componentWillMount () {
-    // this.getEnvList()
+    this.getPipelineList()
   }
 
   /**
-   * @desc 获取环境列表
+   * @desc 获取流水线列表
    */
-  getEnvList = () =>{
+  getPipelineList = () =>{
     const {projectId} = this.state
-    reqGet('package/envselect', {projectID:projectId}).then(res => {
+    reqGet('pipeline/package/taskselect', {projectID:projectId}).then(res => {
       if (res.code === 0) {
         let id=''
-        res.data.map(item=>{if(item.name==="测试环境"){id=item.id}})
+        if(res.data.length>0){
+          id = res.data[0].taskID
+        }
         this.setState({
-          envList:res.data,
-          envID:id////默认为测试环境
-        },()=>{this.getVersionList()})
+          pipelineList:res.data,
+          taskID:id},()=>{this.getVersionList()})
       } else {
         message.error(res.msg)
       }
@@ -76,15 +77,14 @@ class PipelinePackage extends Component {
    * @desc 获取版本列表
    */
   getVersionList = () =>{
-    const {projectId,envID} = this.state
-    reqGet('package/versionselect', {
-      projectID:projectId,
-      envID:envID
+    const {taskID} = this.state
+    reqGet('pipeline/package/packageversionselect', {
+      taskID:taskID
     }).then(res => {
       if (res.code === 0) {
         let buildVersion=''
         if(res.data.length>0){
-          buildVersion=res.data[0].buildVersion
+          buildVersion=res.data[0].versionCode
         }
         this.setState({
           versionList:res.data,
@@ -97,13 +97,17 @@ class PipelinePackage extends Component {
   }
 
   /**
-   * @desc 获取提测列表
+   * @desc 获取流水线包列表
    */
   getPackageList = () => {
-    const {projectId, envID, status, version,curPage} = this.state
+    const {projectId, taskID, version,curPage} = this.state
     console.log("llllll")
-    reqGet('package/packagelist', {
-      projectID:projectId,envID, status,version,page:curPage,limit:10
+    reqGet('pipeline/package/taskpackagelist', {
+      projectID:projectId,
+      taskID,
+      versionCode:version,
+      page:curPage,
+      limit:10
     }).then(res => {
       if (res.code === 0) {
         this.setState({
@@ -123,8 +127,9 @@ class PipelinePackage extends Component {
   filterChange = (e,key) =>{
     let newState={}
     newState[key]=e
+    newState['curPage']=1
     this.setState(newState,()=>{
-      if(key==="envID"){
+      if(key==="taskID"){
         this.getVersionList()
       }else{
         this.getPackageList()
@@ -155,53 +160,48 @@ class PipelinePackage extends Component {
   /**
    * @desc 下载按钮点击
    */
-  onDownloadClick = (e,url) =>{
+  onDownloadClick = (e,buildId) =>{
     e.preventDefault()
-    let host = window.location.host
-    window.open(`http://${host}/download/downloadApk?filePath=${url}`)
+    e.stopPropagation()
+    window.open(`${window.location.origin}/package/download?buildId=${buildId}&token=${this.props.token ? this.props.token : ''}`)
   }
 
   /**
-   * @desc 取消按钮事件
+   * @desc 帮助
    */
-  onCancleClick= (e,id) =>{
-    e.preventDefault()
-    const { envID } = this.state;
-    reqPost('/package/cancel', {
-      buildId: id,
-      type: 0,
-      envId: envID
-    }).then((res) => {
-      if (res.code != 0) {
-        Modal.info({
-          title: '提示',
-          content: (
-              <p>{res.msg}</p>
-          ),
-          onOk() {}
-        });
-      } else {
-        this.getPackageList();
-      }
-    })
+  toggleDialogInfo = () => {
+    Modal.info({
+      title: '提示',
+      content: (
+          <p>归档【流水线】模块生成的安装包（含源包、加固包、补丁包）。</p>
+      ),
+      onOk() {}
+    });
   }
 
   render() {
-    const { totalCount, curPage, envList, versionList,dataList, envID, version, statusList} = this.state;
+    const { totalCount, curPage, pipelineList, versionList,dataList, taskID, version} = this.state;
 
     return (
         <div className="package">
           <div className="package-title">
             <span style={{paddingRight:8,paddingLeft:8}}>流水线</span>
-            <Select value={envID}
+            <Select value={taskID}
                     style={{ width: 150, marginRight:24 }}
-                    onChange={(e)=>{this.filterChange(e,'envID')}}>
+                    onChange={(e)=>{this.filterChange(e,'taskID')}}>
+              {pipelineList.map((item,index) => {
+                return <Option value={item.taskID} key={index}>{item.taskName}</Option>
+              })}
             </Select>
             <span style={{paddingRight:8}}>版本</span>
             <Select value={version}
                     style={{ width: 150, marginRight:24 }}
                     onChange={(e)=>{this.filterChange(e,'version')}}>
+              {versionList.map((item,index) => {
+                return <Option value={item.versionCode} key={index}>{item.versionName}</Option>
+              })}
             </Select>
+            <Icon type="question-circle" style={{fontSize:24,color:"#000",verticalAlign:"middle",marginLeft:50}} onClick={()=>this.toggleDialogInfo()}/>
           </div>
           <div className="package-content">
             {
@@ -209,45 +209,27 @@ class PipelinePackage extends Component {
               <div className="package-content-left">
                 <div className="package-list">
                   {dataList.map((item,index) =>{
-                    let fileName='', button=''
-                    if(item.status===0){
-                      fileName=<span style={{color:"#39A1EE"}}>{item.fileName}</span>
-                      button=<Button
-                          type="primary"
-                          style={{marginRight:"auto"}}
-                          onClick={(e)=>{this.onDownloadClick(e,item.filePath)}}>下载</Button>
-                    }
-                    if(item.status>0&&item.status<3){
-                      fileName=<span style={{color:"#39A1EE"}}>{statusList[item.status]}</span>
-                      button=<Button
-                          type="primary"
-                          style={{marginRight:"auto"}}
-                          onClick={(e)=>{this.onCancleClick(e,item.buildID)}}>取消</Button>
-                    }
-                    if(item.status>0&&item.status<4){
-                      fileName=<span style={{color:"#FF0000"}}>{statusList[item.status]}</span>
-                      button=<Button
-                          type="primary"
-                          style={{marginRight:"auto"}}>查看</Button>
-                    }
                     return <a className="package-list-item"
                               key={index}
                               style={{background:item.active?"#eee":"#fff"}}
                               onClick={()=>{this.onListItemClick(item.buildID)}}>
                       <img src={require('@/assets/favicon.ico')} />
                       <p>
-                        {fileName}
+                        <span style={{color:"#39A1EE"}}>{item.fileName}</span>
                         <span style={{paddingLeft:8}}>buildId：{item.buildID}</span><br/>
-                        <span>时间：{item.createTime}</span><br/>
-                        <span>提测人：{item.developer}</span>
+                        <span>时间：{item.updateTime}</span><br/>
+                        <span>提测人：{item.buildor}</span>
                       </p>
-                      {!item.active&& button}
+                      {!item.active&& <Button
+                          type="primary"
+                          style={{marginRight:"auto"}}
+                          onClick={(e)=>{this.onDownloadClick(e,item.filePath)}}>下载</Button>}
                       {!item.active&&<Icon type="right"/>}
                     </a>
                   })
                   }
                 </div>
-                <Pagination onChange={()=>{this.onPaginationChange}}
+                <Pagination onChange={(e)=>{this.onPaginationChange(e)}}
                             total={totalCount}
                             showTotal={total => `共 ${totalCount} 条`}
                             pageSize={10}
@@ -265,6 +247,7 @@ class PipelinePackage extends Component {
 PipelinePackage = connect((state) => {
   console.log(state)
   return {
+    token: state.token,
     projectId: state.projectId
   }
 })(PipelinePackage)
