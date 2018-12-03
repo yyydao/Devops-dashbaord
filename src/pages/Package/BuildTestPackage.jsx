@@ -178,7 +178,11 @@ class BuildTestPackage extends Component {
         if(e===99||e===3){//状态为失败和构建中时，版本为不可选
           this.setState({version:'',selectDisabled:true},()=>{this.getPackageList()})
         }else{
-          this.setState({selectDisabled:false},()=>{this.getPackageList()})
+          let version=this.state.version
+          if(this.state.versionList.length>0&&!this.state.version){
+            version = this.state.versionList[0].buildVersion
+          }
+          this.setState({selectDisabled:false,version:version},()=>{this.getPackageList()})
         }
       }else{
         this.getPackageList()
@@ -454,8 +458,8 @@ class BuildTestPackage extends Component {
                       onChange={(e)=>this.changeNewBuildSelect(e,'formDataBranch')}
                       style={{ width: 300 }}>
                 {branchList.map((item,index) => {
-                    return <Option value={item.name} key={index}>{item.name}</Option>
-                  })}
+                  return <Option value={item.name} key={index}>{item.name}</Option>
+                })}
               </Select>
             </div>
             <div className="package-modal-item">
@@ -481,18 +485,18 @@ class BuildTestPackage extends Component {
                   onChange={(e) => {this.bindInput(e, 'formDataWiki')}}/>
             </div>
             {passwdBuild === 1 &&
-              <div>
-                <div className="package-modal-item">
-                  <Input placeholder="构建账号" value={formDataUser} onChange={(e) => {
-                    this.bindInput(e, 'formDataUser');
-                  }} />
-                </div>
-                <div className="package-modal-item">
-                  <Input placeholder="构建密码" value={formDataPassword} onChange={(e) => {
-                    this.bindInput(e, 'formDataPassword');
-                  }} />
-                </div>
+            <div>
+              <div className="package-modal-item">
+                <Input placeholder="构建账号" value={formDataUser} onChange={(e) => {
+                  this.bindInput(e, 'formDataUser');
+                }} />
               </div>
+              <div className="package-modal-item">
+                <Input placeholder="构建密码" value={formDataPassword} onChange={(e) => {
+                  this.bindInput(e, 'formDataPassword');
+                }} />
+              </div>
+            </div>
             }
           </Modal>
           <div className="package-title">
@@ -502,7 +506,7 @@ class BuildTestPackage extends Component {
                     style={{ width: 150, marginRight:24 }}
                     onChange={(e)=>{this.filterChange(e,'envID')}}>
               {envList.length>0&&envList.map((item,index) => {
-                  return <Option value={item.id} key={index}>{item.name}</Option>
+                return <Option value={item.id} key={index}>{item.name}</Option>
               })}
             </Select>
             <span style={{paddingRight:8}}>版本</span>
@@ -528,64 +532,64 @@ class BuildTestPackage extends Component {
           <div className="package-content">
             {
               dataList.length>0&&
-                  <Layout>
-                    <Sider theme="light"
-                        width={600}>
-                      <div className="package-content-left">
-                      <div className="package-list">
-                  {dataList.map((item,index) =>{
-                    let fileName='', button=''
-                    if(item.jenkinsStatus===0){
-                      fileName=<span style={{color:"#39A1EE"}}>{item.fileName}</span>
-                      button=<Button
-                          type="primary"
-                          style={{marginRight:"auto"}}
-                          onClick={(e)=>{this.onDownloadClick(e,item.buildID)}}>下载</Button>
-                    }
-                    if(item.jenkinsStatus>0&&item.jenkinsStatus<3){
-                      fileName=<span style={{color:"#39A1EE"}}>{statusList[item.jenkinsStatus]}</span>
-                      button=<Button
-                          type="primary"
-                          style={{marginRight:"auto"}}
-                          onClick={(e)=>{this.onCancleClick(e,item.buildID,item.envID)}}>取消</Button>
-                    }
-                    if(item.jenkinsStatus>2&&item.jenkinsStatus<4){
-                      fileName=<span style={{color:"#FF0000"}}>{statusList[item.jenkinsStatus]}</span>
-                      button=<Button
-                          type="primary"
-                          style={{marginRight:"auto"}}>查看</Button>
-                    }
-                    return <a className="package-list-item"
-                                key={index}
-                                style={{background:item.active?"#eee":"#fff"}}
-                                onClick={()=>{this.onListItemClick(item.buildID)}}>
-                              <img src={item.iconPath||require('@/assets/favicon.ico')} />
-                              <p>
-                                {fileName}
-                                <span style={{paddingLeft:8}}>buildId：{item.buildID}</span><br/>
-                                <span>时间：{item.createTime}</span><br/>
-                                <span>提测人：{item.developer}</span>
-                              </p>
-                              {!item.active&& button}
-                              {!item.active&&<Icon type="right"/>}
-                            </a>
-                  })
+              <Layout>
+                <Sider theme="light"
+                       width={600}>
+                  <div className="package-content-left">
+                    <div className="package-list">
+                      {dataList.map((item,index) =>{
+                        let fileName='', button=''
+                        if(item.jenkinsStatus===0){
+                          fileName=<span style={{color:"#39A1EE"}}>{item.fileName}</span>
+                          button=<Button
+                              type="primary"
+                              style={{marginRight:"auto"}}
+                              onClick={(e)=>{this.onDownloadClick(e,item.buildID)}}>下载</Button>
+                        }
+                        if(item.jenkinsStatus>0&&item.jenkinsStatus<3){
+                          fileName=<span style={{color:"#39A1EE"}}>{statusList[item.jenkinsStatus]}</span>
+                          button=<Button
+                              type="primary"
+                              style={{marginRight:"auto"}}
+                              onClick={(e)=>{this.onCancleClick(e,item.buildID,item.envID)}}>取消</Button>
+                        }
+                        if(item.jenkinsStatus>2&&item.jenkinsStatus<4){
+                          fileName=<span style={{color:"#FF0000"}}>{statusList[item.jenkinsStatus]}</span>
+                          button=<Button
+                              type="primary"
+                              style={{marginRight:"auto"}}>查看</Button>
+                        }
+                        return <a className="package-list-item"
+                                  key={index}
+                                  style={{background:item.active?"#eee":"#fff"}}
+                                  onClick={()=>{this.onListItemClick(item.buildID)}}>
+                          <img src={item.iconPath||require('@/assets/favicon.ico')} />
+                          <p>
+                            {fileName}
+                            <span style={{paddingLeft:8}}>buildId：{item.buildID}</span><br/>
+                            <span>时间：{item.createTime}</span><br/>
+                            <span>提测人：{item.developer}</span>
+                          </p>
+                          {!item.active&& button}
+                          {!item.active&&<Icon type="right"/>}
+                        </a>
+                      })
+                      }
+                    </div>
+                    <Pagination onChange={(e)=>{this.onPaginationChange(e)}}
+                                total={totalCount}
+                                showTotal={total => `共 ${totalCount} 条`}
+                                pageSize={10}
+                                current={curPage}
+                                style={{marginTop:16,cssFloat:"right"}}/>
+                  </div>
+                </Sider>
+                <Content>
+                  { !!this.state.currentBuild &&
+                  <BuildTestPackageDetail buildId={this.state.currentBuild}/>
                   }
-                </div>
-                <Pagination onChange={(e)=>{this.onPaginationChange(e)}}
-                            total={totalCount}
-                            showTotal={total => `共 ${totalCount} 条`}
-                            pageSize={10}
-                            current={curPage}
-                            style={{marginTop:16,cssFloat:"right"}}/>
-              </div>
-                    </Sider>
-                      <Content>
-                          { !!this.state.currentBuild &&
-                            <BuildTestPackageDetail buildId={this.state.currentBuild}/>
-                          }
-                      </Content>
-                  </Layout>
+                </Content>
+              </Layout>
 
             }
           </div>
