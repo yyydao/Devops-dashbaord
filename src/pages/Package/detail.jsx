@@ -68,6 +68,7 @@ class packageDetail extends Component {
             envId: '',
             appUrl: '',
             apkBuildId: '',
+            dingTalk:"",
 
             passwdBuild: 0,
             formDataUser: '',
@@ -104,7 +105,7 @@ class packageDetail extends Component {
                     envName,
                     taskId,
                     envId,
-
+                    dingTalk
                 } = res.data
 
                 this.setState({
@@ -125,6 +126,7 @@ class packageDetail extends Component {
                     envName,
                     taskId,
                     envId,
+                    dingTalk
                 })
                 if (res.data.apkBuildId) {
                     this.setState({apkBuildId: res.data.apkBuildId})
@@ -167,7 +169,7 @@ class packageDetail extends Component {
      * @desc 回归
      */
     versionRegress = () => {
-        const {envId, taskMaster, codeBranch, submitContent, submitDetails, regressDesc, formDataUser, formDataPassword} = this.state
+        const {envId, taskMaster, codeBranch, submitContent, submitDetails, regressDesc, formDataUser, formDataPassword, dingTalk} = this.state
         if (!this.state.regressDesc) {
             message.error('请输入回归内容')
             return
@@ -182,7 +184,8 @@ class packageDetail extends Component {
             noticeEmails: '',
             regression: regressDesc,
             userName: formDataUser,
-            password: formDataPassword
+            password: formDataPassword,
+            dingTalk:dingTalk
         }).then((res) => {
             if (res.code == 0) {
                 message.success(res.msg)
@@ -267,7 +270,7 @@ class packageDetail extends Component {
 
     render () {
         const {
-            regressModalVisible, addConfirmLoading, breadcrumbPath,
+            regressModalVisible, addConfirmLoading, dingTalk,
             status, apkBuildId, fileName, version, fileSize, buildTime, taskMaster, codeBranch, submitDetails,
             submitContent, rebuildContent, appUrl, openTesting,
             formDataUser, regressDesc, formDataPassword, passwdBuild
@@ -335,7 +338,7 @@ class packageDetail extends Component {
                           {...formItemLayout}
                               label="提及@"
                           >
-                            <p className="pForList">{submitDetails}</p>
+                            <p className="pForList">{dingTalk}</p>
                         </FormItem>
                         <FormItem
                             {...formItemLayout}
