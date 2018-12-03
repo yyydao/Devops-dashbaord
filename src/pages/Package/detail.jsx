@@ -332,6 +332,12 @@ class packageDetail extends Component {
                             <p className="pForList">{codeBranch}</p>
                         </FormItem>
                         <FormItem
+                          {...formItemLayout}
+                              label="提及@"
+                          >
+                            <p className="pForList">{submitDetails}</p>
+                        </FormItem>
+                        <FormItem
                             {...formItemLayout}
                             label="提测概要"
                         >
@@ -347,9 +353,9 @@ class packageDetail extends Component {
                             {...formItemLayout}
                             label="回归内容"
                         >
-              <TextArea rows={4} placeholder="回归内容（多行）" value={regressDesc} onChange={(e) => {
-                  this.setState({regressDesc: e.target.value})
-              }}/>
+                          <TextArea rows={4} placeholder="回归内容（多行）" value={regressDesc} onChange={(e) => {
+                              this.setState({regressDesc: e.target.value})
+                          }}/>
                         </FormItem>
                         {
                             passwdBuild === 1 &&

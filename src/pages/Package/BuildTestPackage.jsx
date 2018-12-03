@@ -104,14 +104,14 @@ class BuildTestPackage extends Component {
    * @desc 获取版本列表
    */
   getVersionList = () =>{
-    const {projectId,envID} = this.state
+    const {projectId,envID,selectDisabled} = this.state
     reqGet('package/versionselect', {
       projectID:projectId,
       envID:envID
     }).then(res => {
       if (res.code === 0) {
         let buildVersion=''
-        if(res.data.length>0){
+        if(res.data.length>0&&!selectDisabled){
           buildVersion=res.data[0].buildVersion
         }
         this.setState({
@@ -143,8 +143,10 @@ class BuildTestPackage extends Component {
   /**
    * @desc 获取提测列表
    */
-  getPackageList = (e) => {
+  getPackageList = () => {
     const {projectId, envID, status, version,curPage} = this.state
+    this.setState({currentBuild:''})//隐藏详情
+
     reqGet('package/packagelist', {
       projectID:projectId,envID, status,version,page:curPage,limit:10
     }).then(res => {
@@ -173,8 +175,8 @@ class BuildTestPackage extends Component {
         this.getVersionList()
       }
       else if(key==="status"){
-        if(e===99){
-          this.setState({envID:'',version:'',selectDisabled:true,versionList:[]},()=>{this.getPackageList()})
+        if(e===99||e===3){//状态为失败和构建中时，版本为不可选
+          this.setState({version:'',selectDisabled:true},()=>{this.getPackageList()})
         }else{
           this.setState({selectDisabled:false},()=>{this.getPackageList()})
         }
@@ -372,6 +374,7 @@ class BuildTestPackage extends Component {
       this.toggleBuildModal(false);
 
       if (res.code == 0) {
+        message.success("新增提测成功")
         this.getPackageList();
       } else {
         Modal.info({
@@ -497,8 +500,7 @@ class BuildTestPackage extends Component {
             <span style={{paddingRight:8,paddingLeft:24}}>环境</span>
             <Select value={envID}
                     style={{ width: 150, marginRight:24 }}
-                    onChange={(e)=>{this.filterChange(e,'envID')}}
-                    disabled={selectDisabled}>
+                    onChange={(e)=>{this.filterChange(e,'envID')}}>
               {envList.length>0&&envList.map((item,index) => {
                   return <Option value={item.id} key={index}>{item.name}</Option>
               })}
