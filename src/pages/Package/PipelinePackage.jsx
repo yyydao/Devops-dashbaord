@@ -103,7 +103,7 @@ class PipelinePackage extends Component {
    */
   getPackageList = () => {
     const {projectId, taskID, version,curPage} = this.state
-    console.log("llllll")
+    this.setState({currentBuildId:''})
     reqGet('pipeline/package/taskpackagelist', {
       projectID:projectId,
       taskID,
