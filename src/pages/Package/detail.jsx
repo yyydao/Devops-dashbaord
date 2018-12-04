@@ -410,7 +410,10 @@ class packageDetail extends Component {
                                         </Col>
                                         <Col span={12}>
                                             {status === 0 &&
-                                            <QRCode value={appUrl} size={170}/>
+                                                <div style={{width:170}}>
+                                                  <QRCode value={appUrl} size={170}/>
+                                                  <p style={{textAlign:"center",color:"#000"}}>【钉钉】扫码安装</p>
+                                                </div>
                                             }
                                         </Col>
 
