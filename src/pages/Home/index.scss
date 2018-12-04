@@ -31,3 +31,20 @@
         }
     }
 }
+.qrCode-mask{
+    width: 170px;
+    height: 170px;
+    background: rgba(0,0,0,0.4);
+    position: absolute;
+    top:200px;
+    left: 0;
+    text-align: center;
+    padding-top: 75px;
+    span{
+        display: inline-block;
+        background: #ffffff;
+        height: 20px;
+        line-height: 20px;
+        padding: 0px 8px;
+    }
+}
