@@ -4,6 +4,8 @@ import { connect } from 'react-redux'
 import './index.scss'
 import { reqGet, reqPost } from '@/api/api'
 
+import { differenceArray } from './arrayUtils'
+
 import {
     Breadcrumb,
     Icon,
@@ -15,6 +17,8 @@ import {
     Checkbox,
     message,
     TimePicker,
+    Row,
+    Col,
     Pagination,
     Popconfirm
 } from 'antd'
@@ -23,7 +27,200 @@ import PanelContent from './panelContent'
 const BreadcrumbItem = Breadcrumb.Item
 const Panel = Collapse.Panel
 const Option = Select.Option
-const CheckboxGroup = Checkbox.Group
+// const CheckboxGroup = Checkbox.Group
+//
+// const parentOptions = [
+//     {name: 'Apple', id: 'Apple'},
+//     {name: 'Pear', id: 'Pear'},
+//     {name: 'Orange', id: 'Orange'},
+// ]
+const DDASceneList = [
+    {
+        name: 'Apple', id: 'Apple',
+        children: [
+            {name: 'a', id: 'a'},
+            {name: 'b', id: 'b'},
+            {name: 'c', id: 'c'},]
+    },
+    {
+        name: 'Pear', id: 'Pear',
+        children: [
+            {name: 'd', id: 'd'},
+            {name: 'e', id: 'e'},
+            {name: 'f', id: 'f'},]
+    },
+    {
+        name: 'Orange', id: 'Orange',
+        children: [
+            {name: 'g', id: 'g'},
+            {name: 'h', id: 'h'},
+            {name: 'i', id: 'i'},]
+    },
+]
+
+const mockData = [
+    {
+        'id': 2327,
+        'projectId': 63,
+        'envId': 63,
+        'name': '检查各一级页面',
+        'jenkinsParam': '',
+        'children': [
+            {
+                'id': 2328,
+                'projectId': 63,
+                'envId': 63,
+                'name': '检查我的一级页面',
+                'jenkinsParam': 'My',
+                'children': []
+            },
+            {
+                'id': 2329,
+                'projectId': 63,
+                'envId': 63,
+                'name': '检查首页一级页面',
+                'jenkinsParam': 'Home',
+                'children': []
+            },
+            {
+                'id': 2330,
+                'projectId': 63,
+                'envId': 63,
+                'name': '检查投资一级页面',
+                'jenkinsParam': 'Invest',
+                'children': []
+            }
+        ]
+    }, {
+        'id': 2331,
+        'projectId': 63,
+        'envId': 63,
+        'name': '检查各2级页面',
+        'jenkinsParam': '',
+        'children': [
+            {
+                'id': 2332,
+                'projectId': 63,
+                'envId': 63,
+                'name': '检查我的2级页面',
+                'jenkinsParam': 'My',
+                'children': []
+            },
+            {
+                'id': 2333,
+                'projectId': 63,
+                'envId': 63,
+                'name': '检查首页2级页面',
+                'jenkinsParam': 'Home',
+                'children': []
+            },
+            {
+                'id': 2334,
+                'projectId': 63,
+                'envId': 63,
+                'name': '检查投资2级页面',
+                'jenkinsParam': 'Invest',
+                'children': []
+            }
+        ]
+    }, {
+        'id': 2335,
+        'projectId': 63,
+        'envId': 63,
+        'name': '检查各3级页面',
+        'jenkinsParam': '',
+        'children': [
+            {
+                'id': 2336,
+                'projectId': 63,
+                'envId': 63,
+                'name': '检查我的3级页面',
+                'jenkinsParam': 'My',
+                'children': []
+            },
+            {
+                'id': 2337,
+                'projectId': 63,
+                'envId': 63,
+                'name': '检查首页3级页面',
+                'jenkinsParam': 'Home',
+                'children': []
+            },
+            {
+                'id': 2338,
+                'projectId': 63,
+                'envId': 63,
+                'name': '检查投资3级页面',
+                'jenkinsParam': 'Invest',
+                'children': []
+            }
+        ]
+    }, {
+        'id': 2339,
+        'projectId': 63,
+        'envId': 63,
+        'name': '检查各4级页面',
+        'jenkinsParam': '',
+        'children': [
+            {
+                'id': 2340,
+                'projectId': 63,
+                'envId': 63,
+                'name': '检查我的4级页面',
+                'jenkinsParam': 'My',
+                'children': []
+            },
+            {
+                'id': 2341,
+                'projectId': 63,
+                'envId': 63,
+                'name': '检查首页4级页面',
+                'jenkinsParam': 'Home',
+                'children': []
+            },
+            {
+                'id': 2342,
+                'projectId': 63,
+                'envId': 63,
+                'name': '检查投资4级页面',
+                'jenkinsParam': 'Invest',
+                'children': []
+            }
+        ]
+    }, {
+        'id': 2345,
+        'projectId': 63,
+        'envId': 63,
+        'name': '检查各5级页面',
+        'jenkinsParam': '',
+        'children': [
+            {
+                'id': 2346,
+                'projectId': 63,
+                'envId': 63,
+                'name': '检查我的5级页面',
+                'jenkinsParam': 'My',
+                'children': []
+            },
+            {
+                'id': 2347,
+                'projectId': 63,
+                'envId': 63,
+                'name': '检查首页5级页面',
+                'jenkinsParam': 'Home',
+                'children': []
+            },
+            {
+                'id': 2348,
+                'projectId': 63,
+                'envId': 63,
+                'name': '检查投资5级页面',
+                'jenkinsParam': 'Invest',
+                'children': []
+            }
+        ]
+    },
+]
 
 class Performance extends Component {
     constructor (props) {
@@ -33,11 +230,15 @@ class Performance extends Component {
             addVisible: false,
             addConfirmLoading: false,
             branchList: [],
-            sceneList: [],
-            sceneIndeterminate: false,
+
+            parentsSceneList: [],
+            changeParentSceneItem: [],
+            currentChildrenSceneList: [],
+            allSceneIndeterminate: false,
             sceneCheckAll: false,
             formDataBranch: null,
-            formDataScene: [],
+            currentParentsScene: [],
+            currentChildScene: [],
             formDataTime: '',
 
             taskListVisible: false,
@@ -92,12 +293,12 @@ class Performance extends Component {
 
     //新建构建任务
     addItem = () => {
-        const {typeValue, formDataBranch, formDataScene, formDataTime} = this.state
+        const {typeValue, formDataBranch, currentParentsScene, formDataTime} = this.state
 
         if (!formDataBranch) {
             message.error('请选择“开发分支”')
             return
-        } else if (formDataScene.length < 1) {
+        } else if (currentParentsScene.length < 1) {
             message.error('请选择“执行场景”')
             return
         } else if (this.state.typeValue === 2 && !formDataTime) {
@@ -113,7 +314,7 @@ class Performance extends Component {
             projectId: Number(this.props.projectId),
             buildType: typeValue,
             branchName: formDataBranch,
-            sceneId: formDataScene.join(','),
+            sceneId: currentParentsScene.join(','),
             fixTime: formDataTime
         }).then(res => {
             this.hideModal()
@@ -135,8 +336,8 @@ class Performance extends Component {
 
     //显示新建窗口
     showModal = () => {
-        this.getBranchList()
-        this.getSceneList()
+        // this.getBranchList()
+        // this.getSceneList()
 
         this.setState({
             addVisible: true
@@ -148,10 +349,10 @@ class Performance extends Component {
         this.setState({
             addVisible: false,
             addConfirmLoading: false,
-            sceneIndeterminate: false,
+            allSceneIndeterminate: false,
             sceneCheckAll: false,
             formDataBranch: null,
-            formDataScene: [],
+            currentParentsScene: [],
             formDataTime: ''
         })
     }
@@ -199,37 +400,144 @@ class Performance extends Component {
 
     //获取场景列表
     getSceneList = () => {
-        reqGet('/testScene/list/' + this.props.projectId).then(res => {
-            if (res.code == 0) {
-                this.setState({
-                    sceneList: res.data.map(item => {
-                        return {
-                            label: item.name,
-                            value: item.id
-                        }
-                    })
-                })
-            }
-        })
-    }
-
-    //修改选中场景
-    changeScene = (formDataScene) => {
         this.setState({
-            formDataScene,
-            sceneIndeterminate: !!formDataScene.length && (formDataScene.length < this.state.sceneList.length),
-            sceneCheckAll: formDataScene.length === this.state.sceneList.length
+            parentsSceneList: mockData.map(item => {
+                // console.log(item)
+                return {
+                    name: item.name,
+                    id: item.id,
+                    indeterminate: false,
+                    checked: false
+                }
+            })
+        }, () => {
+            console.log(this.state.parentsSceneList)
         })
+
+        // reqGet('/testScene/list/' + this.props.projectId).then(res => {
+        //     if (res.code == 0) {
+        //         this.setState({
+        //             parentsSceneList: res.data.map(item => {
+        //                 return {
+        //                     label: item.name,
+        //                     value: item.id
+        //                 }
+        //             })
+        //         })
+        //     }
+        // })
     }
 
     //全选场景
-    checkAllScene = (e) => {
+    checkAllSceneChange = (e) => {
+        console.log('choose all')
+        const oldList = this.state.parentsSceneList
+        let resetParentIndeterminateList
+
+        resetParentIndeterminateList = oldList && oldList.length > 0 && oldList.map(item => {
+            item.indeterminate = false
+            return item
+        })
+        this.setState({currentChildrenSceneList: []})
+
         this.setState({
-            formDataScene: e.target.checked ? this.state.sceneList.map(item => {
-                return item.value
+            currentParentsScene: e.target.checked ? this.state.parentsSceneList.map(item => {
+                return item.id
             }) : [],
-            sceneIndeterminate: false,
-            sceneCheckAll: e.target.checked
+            allSceneIndeterminate: false,
+            sceneCheckAll: e.target.checked,
+            parentsSceneList: resetParentIndeterminateList,
+        }, () => {
+            console.log(this.state.currentParentsScene)
+        })
+
+    }
+
+    //@todo:修复选择父级重置
+    //修改选父类中场景
+    changeParentsScene = (changeScene) => {
+        console.log('choose parents')
+        const currentParentsScene = this.state.currentParentsScene
+        let tempParentSceneList = this.state.parentsSceneList
+
+        let diff = differenceArray(changeScene, this.state.currentParentsScene)
+        let childrenList = mockData.find(x => x.id + '' === diff.toString())['children']
+        let currentParentIndeterminate = tempParentSceneList.find(x => x.id + '' === diff.toString())['indeterminate']
+        let currentChildrenList
+
+        //当前是否处于子项indeterminate
+        if (currentParentIndeterminate) {
+            tempParentSceneList.map(item => {
+                if (item.id + '' === this.state.changeParentSceneItem.toString()) {
+                    item.indeterminate = false
+                }
+                return item
+            })
+
+            this.setState({
+                parentsSceneList: tempParentSceneList,
+                currentChildScene: childrenList.map(item => {
+                    return item.id
+                })
+            })
+        } else {
+            tempParentSceneList.map(item => {
+                if (item.id + '' === this.state.changeParentSceneItem.toString()) {
+                    item.indeterminate = currentParentIndeterminate
+                }
+                return item
+            })
+
+            if (currentParentsScene.length===0) {
+                currentChildrenList = childrenList.map(item => {
+                    return item.id
+                })
+
+            } else {
+                if(changeScene.length> currentParentsScene.length){
+                    currentChildrenList = childrenList.map(item => {
+                        return item.id
+                    })
+                }else{
+                    currentChildrenList = []
+                }
+
+
+            }
+            this.setState({
+                parentsSceneList: tempParentSceneList,
+                currentParentsScene: changeScene,
+                currentChildScene: currentChildrenList
+            })
+        }
+        this.setState({
+
+            allSceneIndeterminate: !!changeScene && (changeScene.length < this.state.parentsSceneList.length),
+            sceneCheckAll: changeScene.length === this.state.parentsSceneList.length,
+            changeParentSceneItem: diff,
+            currentChildrenSceneList: childrenList,
+
+        }, () => {
+            console.log(this.state.currentParentsScene)
+        })
+    }
+    //修改选中子类场景
+    childSceneChangeScene = (currentChildScene) => {
+        let tempParentSceneList = this.state.parentsSceneList
+        let currentIndeterminate = !!currentChildScene && (currentChildScene.length < this.state.currentChildrenSceneList.length)
+        let d = tempParentSceneList.map(item => {
+            if (item.id + '' === this.state.changeParentSceneItem.toString()) {
+                item.indeterminate = currentIndeterminate
+            }
+            return item
+        })
+        this.setState({
+            parentsSceneList: tempParentSceneList,
+            currentChildScene: currentChildScene,
+            childSceneIndeterminate: !!currentChildScene && (currentChildScene.length < this.state.currentChildrenSceneList.length),
+            sceneCheckAll: currentChildScene.length === this.state.currentChildScene.length
+        }, () => {
+            console.log(this.state.currentParentsScene)
         })
     }
 
@@ -402,7 +710,7 @@ class Performance extends Component {
         this.getList('successList')
         this.getList('failureList')
         this.getList('buildingList')
-
+        this.getSceneList()
         this.setState({
             timerStart: new Date().getTime()
         })
@@ -413,63 +721,165 @@ class Performance extends Component {
     }
 
     render () {
-        const {addVisible, addConfirmLoading, branchList, typeValue, sceneIndeterminate, sceneCheckAll, sceneList, formDataScene, taskListVisible, taskList, taskListTotalCount, typeList, buildingList, successList, failureList, formDataBranch} = this.state
+        const {
+            addVisible,
+            addConfirmLoading,
+            typeValue,
+            allSceneIndeterminate,
+            sceneCheckAll,
+            parentsSceneList,
+            currentParentsScene,
+            currentChildScene,
+            taskListVisible,
+            taskList,
+            taskListTotalCount,
+            typeList, buildingList, successList, failureList, formDataBranch
+        } = this.state
 
         return (
             <div className="performance">
                 <Modal title="新增提测性能测试"
-                       visible={addVisible}
+                       visible={true}
+                       centered
                        onOk={this.addItem}
                        confirmLoading={addConfirmLoading}
                        onCancel={this.hideModal}
                        maskClosable={false}
                        destroyOnClose={true}
+                       width={720}
                 >
-                    <div className="performance-modal-item">
-                        <label className="performance-modal-item-label">开发分支：</label>
-                        <div className="performance-modal-item-content">
-                            <Select placeholder="开发分支"
-                                    onChange={this.changeBranch}
-                                    style={{width: 300}}
-                                    showSearch
-                                    value={formDataBranch}
-                                    onSearch={this.getBranchList}
-                                    onChange={this.changeBranch}>
-                                {
-                                    branchList.map((item) => {
-                                        return <Option value={item.name} key={item.id}
-                                                       title={item.name}>{item.name}</Option>
-                                    })
-                                }
-                            </Select>
-                        </div>
-                    </div>
+                    {/*<div className="performance-modal-item">*/}
+                    {/*<label className="performance-modal-item-label">开发分支：</label>*/}
+                    {/*<div className="performance-modal-item-content">*/}
+                    {/*<Select placeholder="开发分支"*/}
+                    {/*onChange={this.changeBranch}*/}
+                    {/*style={{width: 300}}*/}
+                    {/*showSearch*/}
+                    {/*value={formDataBranch}*/}
+                    {/*onSearch={this.getBranchList}*/}
+                    {/*onChange={this.changeBranch}>*/}
+                    {/*{*/}
+                    {/*branchList.map((item) => {*/}
+                    {/*return <Option value={item.name} key={item.id}*/}
+                    {/*title={item.name}>{item.name}</Option>*/}
+                    {/*})*/}
+                    {/*}*/}
+                    {/*</Select>*/}
+                    {/*</div>*/}
+                    {/*</div>*/}
 
-                    {
-                        typeValue === 2 && <div className="performance-modal-item">
-                            <label className="performance-modal-item-label">定时时间：</label>
-                            <div className="performance-modal-item-content">
-                                {
-                                    addVisible && <TimePicker onChange={this.changeTime}/>
-                                }
-                            </div>
-                        </div>
-                    }
+                    {/*{*/}
+                    {/*typeValue === 2 && <div className="performance-modal-item">*/}
+                    {/*<label className="performance-modal-item-label">定时时间：</label>*/}
+                    {/*<div className="performance-modal-item-content">*/}
+                    {/*{*/}
+                    {/*addVisible && <TimePicker onChange={this.changeTime}/>*/}
+                    {/*}*/}
+                    {/*</div>*/}
+                    {/*</div>*/}
+                    {/*}*/}
 
                     <div className="performance-modal-item">
                         <label className="performance-modal-item-label">执行场景：</label>
-                        <div className="performance-modal-item-content performance-modal-checkbox-group">
-                            <Checkbox
-                                indeterminate={sceneIndeterminate}
-                                onChange={this.checkAllScene}
-                                checked={sceneCheckAll}
-                            >
-                                全部
-                            </Checkbox>
-                            <CheckboxGroup options={sceneList} value={formDataScene} onChange={this.changeScene}/>
-                        </div>
+                        {/*<div className="performance-modal-item-content performance-modal-checkbox-group">*/}
+                        <Checkbox
+                            indeterminate={allSceneIndeterminate}
+                            onChange={this.checkAllSceneChange}
+                            checked={sceneCheckAll}
+                        >
+                            全部
+                        </Checkbox>
+                        <Checkbox.Group
+                            // options={parentsSceneList}
+                            value={currentParentsScene} onChange={this.changeParentsScene}>
+                            {
+                                parentsSceneList.map((item, index) => {
+                                    return <Checkbox
+                                        indeterminate={item.indeterminate}
+                                        key={index}
+                                        value={item.id}
+                                    >
+                                        {item.name}</Checkbox>
+                                })
+                            }
+                        </Checkbox.Group>
+                        <Checkbox.Group
+                            style={{width: '100%'}}
+                            value={currentChildScene}
+                            onChange={this.childSceneChangeScene}
+                        >
+                            <Row>
+                                {
+                                    this.state.currentChildrenSceneList.map((item, index) => {
+                                        return <Col key={index}
+                                                    span={8}><Checkbox
+                                            value={item.id}
+                                            // onChange={() => this.childSceneChangeScene(item.id)}
+                                        >
+                                            {item.name}</Checkbox></Col>
+                                    })
+                                }
+                            </Row>
+                        </Checkbox.Group>
+                        {/*<Checkbox.Group style={{ width: '100%' }} onChange={this.childSceneChangeScene}>*/}
+                        {/*</Checkbox.Group>*/}
+                        {/*</div>*/}
                     </div>
                 </Modal>
+
+                {/*<Modal title="新增提测性能测试"*/}
+                {/*visible={addVisible}*/}
+                {/*onOk={this.addItem}*/}
+                {/*confirmLoading={addConfirmLoading}*/}
+                {/*onCancel={this.hideModal}*/}
+                {/*maskClosable={false}*/}
+                {/*destroyOnClose={true}*/}
+                {/*>*/}
+                {/*<div className="performance-modal-item">*/}
+                {/*<label className="performance-modal-item-label">开发分支：</label>*/}
+                {/*<div className="performance-modal-item-content">*/}
+                {/*<Select placeholder="开发分支"*/}
+                {/*onChange={this.changeBranch}*/}
+                {/*style={{width: 300}}*/}
+                {/*showSearch*/}
+                {/*value={formDataBranch}*/}
+                {/*onSearch={this.getBranchList}*/}
+                {/*onChange={this.changeBranch}>*/}
+                {/*{*/}
+                {/*branchList.map((item) => {*/}
+                {/*return <Option value={item.name} key={item.id}*/}
+                {/*title={item.name}>{item.name}</Option>*/}
+                {/*})*/}
+                {/*}*/}
+                {/*</Select>*/}
+                {/*</div>*/}
+                {/*</div>*/}
+
+                {/*{*/}
+                {/*typeValue === 2 && <div className="performance-modal-item">*/}
+                {/*<label className="performance-modal-item-label">定时时间：</label>*/}
+                {/*<div className="performance-modal-item-content">*/}
+                {/*{*/}
+                {/*addVisible && <TimePicker onChange={this.changeTime}/>*/}
+                {/*}*/}
+                {/*</div>*/}
+                {/*</div>*/}
+                {/*}*/}
+
+                {/*<div className="performance-modal-item">*/}
+                {/*<label className="performance-modal-item-label">执行场景：</label>*/}
+                {/*<div className="performance-modal-item-content performance-modal-checkbox-group">*/}
+                {/*<Checkbox*/}
+                {/*indeterminate={allSceneIndeterminate}*/}
+                {/*onChange={this.checkAllSceneChange}*/}
+                {/*checked={sceneCheckAll}*/}
+                {/*>*/}
+                {/*全部*/}
+                {/*</Checkbox>*/}
+                {/*<CheckboxGroup options={parentsSceneList} value={currentParentsScene} onChange={this.changeParentsScene}/>*/}
+                {/*</div>*/}
+                {/*</div>*/}
+                {/*</Modal>*/}
 
 
                 <Modal
