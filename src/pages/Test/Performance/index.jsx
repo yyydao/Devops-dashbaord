@@ -26,37 +26,6 @@ import PanelContent from './panelContent'
 
 const BreadcrumbItem = Breadcrumb.Item
 const Panel = Collapse.Panel
-const Option = Select.Option
-// const CheckboxGroup = Checkbox.Group
-//
-// const parentOptions = [
-//     {name: 'Apple', id: 'Apple'},
-//     {name: 'Pear', id: 'Pear'},
-//     {name: 'Orange', id: 'Orange'},
-// ]
-const DDASceneList = [
-    {
-        name: 'Apple', id: 'Apple',
-        children: [
-            {name: 'a', id: 'a'},
-            {name: 'b', id: 'b'},
-            {name: 'c', id: 'c'},]
-    },
-    {
-        name: 'Pear', id: 'Pear',
-        children: [
-            {name: 'd', id: 'd'},
-            {name: 'e', id: 'e'},
-            {name: 'f', id: 'f'},]
-    },
-    {
-        name: 'Orange', id: 'Orange',
-        children: [
-            {name: 'g', id: 'g'},
-            {name: 'h', id: 'h'},
-            {name: 'i', id: 'i'},]
-    },
-]
 
 const mockData = [
     {
@@ -231,14 +200,24 @@ class Performance extends Component {
             addConfirmLoading: false,
             branchList: [],
 
-            parentsSceneList: [],
+            //场景选择-变化选择框
             changeParentSceneItem: [],
+            //场景选择-全体一级Option
+            parentsSceneList: [],
+            //场景选择-当前二级Option
             currentChildrenSceneList: [],
+            // 场景选择-全选Indeterminate状态
             allSceneIndeterminate: false,
+            // 全选
             sceneCheckAll: false,
-            formDataBranch: null,
+            // 场景选择-当前一级id数组
             currentParentsScene: [],
+            //  场景选择-当前二级id数组
             currentChildScene: [],
+            // 所有选中子ID
+            chooseSceneID:[],
+
+            formDataBranch: null,
             formDataTime: '',
 
             taskListVisible: false,
@@ -293,12 +272,12 @@ class Performance extends Component {
 
     //新建构建任务
     addItem = () => {
-        const {typeValue, formDataBranch, currentParentsScene, formDataTime} = this.state
-
+        const {typeValue, formDataBranch, chooseSceneID, formDataTime} = this.state
+        console.log(chooseSceneID)
         if (!formDataBranch) {
             message.error('请选择“开发分支”')
             return
-        } else if (currentParentsScene.length < 1) {
+        } else if (chooseSceneID.length < 1) {
             message.error('请选择“执行场景”')
             return
         } else if (this.state.typeValue === 2 && !formDataTime) {
@@ -310,28 +289,29 @@ class Performance extends Component {
             addConfirmLoading: true
         })
 
-        reqPost('/task/addSubmit', {
-            projectId: Number(this.props.projectId),
-            buildType: typeValue,
-            branchName: formDataBranch,
-            sceneId: currentParentsScene.join(','),
-            fixTime: formDataTime
-        }).then(res => {
-            this.hideModal()
-
-            if (res.code == 0) {
-                this.getList('buildingList')
-            } else {
-                Modal.info({
-                    title: '提示',
-                    content: (
-                        <p>{res.msg}</p>
-                    ),
-                    onOk () {}
-                })
-            }
-
-        })
+        //
+        // reqPost('/task/addSubmit', {
+        //     projectId: Number(this.props.projectId),
+        //     buildType: typeValue,
+        //     branchName: formDataBranch,
+        //     sceneId: chooseSceneID.join(','),
+        //     fixTime: formDataTime
+        // }).then(res => {
+        //     this.hideModal()
+        //
+        //     if (res.code == 0) {
+        //         this.getList('buildingList')
+        //     } else {
+        //         Modal.info({
+        //             title: '提示',
+        //             content: (
+        //                 <p>{res.msg}</p>
+        //             ),
+        //             onOk () {}
+        //         })
+        //     }
+        //
+        // })
     }
 
     //显示新建窗口
@@ -428,25 +408,59 @@ class Performance extends Component {
         // })
     }
 
+    getSceneByCheckAll = () =>{
+        let tempArray=[]
+        for (let i = 0; i < mockData.length; i++) {
+            const mockDatum = mockData[i].children
+            for (let j = 0; j < mockDatum.length; j++) {
+                const mockDatumElement = mockDatum[j]
+                tempArray.push(mockDatumElement['id'])
+            }
+        }
+        return tempArray
+    }
+    getSceneByCheckParent = (parentSceneID) =>{
+        let tempArray=[]
+        for (let i = 0; i < parentSceneID.length; i++) {
+            const parentID = parentSceneID[i]
+            let childrenScene = mockData.find(x=>x.id+''===parentID+'')['children']
+            for (let j = 0; j < childrenScene.length; j++) {
+                tempArray.push(childrenScene[j]['id'])
+
+            }
+        }
+        return tempArray
+    }
+
     //全选场景
     checkAllSceneChange = (e) => {
         console.log('choose all')
         const oldList = this.state.parentsSceneList
+        const checked = e.target.checked
         let resetParentIndeterminateList
+        let chosen
 
         resetParentIndeterminateList = oldList && oldList.length > 0 && oldList.map(item => {
             item.indeterminate = false
             return item
         })
+        if(checked){
+            chosen = this.getSceneByCheckAll()
+        }else{
+            chosen = []
+        }
+
+
         this.setState({currentChildrenSceneList: []})
 
         this.setState({
-            currentParentsScene: e.target.checked ? this.state.parentsSceneList.map(item => {
+            currentParentsScene: checked ? this.state.parentsSceneList.map(item => {
                 return item.id
             }) : [],
             allSceneIndeterminate: false,
             sceneCheckAll: e.target.checked,
             parentsSceneList: resetParentIndeterminateList,
+            chooseSceneID:chosen
         }, () => {
             console.log(this.state.currentParentsScene)
         })
@@ -459,6 +473,7 @@ class Performance extends Component {
         console.log('choose parents')
         const currentParentsScene = this.state.currentParentsScene
         let tempParentSceneList = this.state.parentsSceneList
+        let tempChosenChildID = []
 
         let diff = differenceArray(changeScene, this.state.currentParentsScene)
         let childrenList = mockData.find(x => x.id + '' === diff.toString())['children']
@@ -467,13 +482,36 @@ class Performance extends Component {
 
         //当前是否处于子项indeterminate
         if (currentParentIndeterminate) {
-            tempParentSceneList.map(item => {
-                if (item.id + '' === this.state.changeParentSceneItem.toString()) {
-                    item.indeterminate = false
-                }
-                return item
-            })
+            console.log(`===========`)
+            console.log(`Indeterminate`)
+            console.log(`===========`)
+            console.log(`===========`)
+            console.log(currentParentsScene)
+            console.log(this.state.changeParentSceneItem)
+            console.log(currentParentIndeterminate)
+            console.log(`===========`)
 
+            if(currentParentsScene.includes(this.state.changeParentSceneItem.toString()*1)){
+
+                tempParentSceneList.map(item => {
+                    console.log(item.id)
+                    console.log(this.state.changeParentSceneItem.toString())
+                    item.indeterminate = false
+                    return item
+                })
+            }else{
+                tempParentSceneList.map(item => {
+                    if (item.id + '' === currentParentsScene.toString()) {
+                        item.indeterminate = currentParentIndeterminate
+                    }
+                    return item
+                })
+            }
+
+            console.log(tempParentSceneList)
+
+            console.log(currentParentsScene)
+            tempChosenChildID = this.getSceneByCheckParent(currentParentsScene)
             this.setState({
                 parentsSceneList: tempParentSceneList,
                 currentChildScene: childrenList.map(item => {
@@ -481,19 +519,38 @@ class Performance extends Component {
                 })
             })
         } else {
-            tempParentSceneList.map(item => {
-                if (item.id + '' === this.state.changeParentSceneItem.toString()) {
-                    item.indeterminate = currentParentIndeterminate
-                }
-                return item
-            })
+            console.log(`===========`)
+            console.log(`no Indeterminate`)
+            console.log(`===========`)
+            console.log(`===========`)
+            console.log(currentParentsScene)
+            console.log(this.state.changeParentSceneItem)
+            console.log(currentParentIndeterminate)
+            console.log(`===========`)
+            if(currentParentsScene === this.state.changeParentSceneItem){
+                tempParentSceneList.map(item => {
+                    if (item.id + '' === currentParentsScene.toString()) {
+                        item.indeterminate = currentParentIndeterminate
+                    }
+                    return item
+                })
+            }else{
+                tempParentSceneList.map(item => {
+                    if (item.id + '' === currentParentsScene.toString()) {
+                        item.indeterminate = currentParentIndeterminate
+                    }
+                    return item
+                })
+            }
 
             if (currentParentsScene.length===0) {
                 currentChildrenList = childrenList.map(item => {
                     return item.id
                 })
-
             } else {
+                console.log(`====>`)
+                console.log(`${changeScene}`)
+                console.log(`====>`)
                 if(changeScene.length> currentParentsScene.length){
                     currentChildrenList = childrenList.map(item => {
                         return item.id
@@ -501,14 +558,16 @@ class Performance extends Component {
                 }else{
                     currentChildrenList = []
                 }
-
-
             }
+            // console.log(changeScene)
+            tempChosenChildID = this.getSceneByCheckParent(changeScene)
+            // console.log(tempChosenChildID)
             this.setState({
                 parentsSceneList: tempParentSceneList,
                 currentParentsScene: changeScene,
                 currentChildScene: currentChildrenList
             })
+
         }
         this.setState({
 
