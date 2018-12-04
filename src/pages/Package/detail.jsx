@@ -105,7 +105,8 @@ class packageDetail extends Component {
                     envName,
                     taskId,
                     envId,
-                    dingTalk
+                    dingTalk,
+                    passwdBuild
                 } = res.data
 
                 this.setState({
@@ -126,7 +127,8 @@ class packageDetail extends Component {
                     envName,
                     taskId,
                     envId,
-                    dingTalk
+                    dingTalk,
+                    passwdBuild
                 })
                 if (res.data.apkBuildId) {
                     this.setState({apkBuildId: res.data.apkBuildId})
@@ -187,7 +189,7 @@ class packageDetail extends Component {
             password: formDataPassword,
             dingTalk:dingTalk
         }).then((res) => {
-            if (res.code == 0) {
+            if (res.code === 0) {
                 message.success(res.msg)
             } else {
                 message.error(res.msg)
@@ -225,7 +227,7 @@ class packageDetail extends Component {
         // if (oldProjectId !== null && oldProjectId !== this.props.projectId) {
         //     this.props.history.push('/package')
         // }
-        let passwdBuild = 0
+        // let passwdBuild = 0
         // if (this.props.location.state) {
         //     passwdBuild = this.props.location.state.passwdBuild
         // }
@@ -233,7 +235,7 @@ class packageDetail extends Component {
         this.getDetail()
         this.setState({
             appUrl: `${window.location.origin}/package/download?buildId=${this.state.buildId}&token=${this.props.token ? this.props.token : ''}`,
-            passwdBuild: passwdBuild
+            // passwdBuild: passwdBuild
         })
         //
         // if (this.props.match.params.buildId) {
@@ -289,10 +291,10 @@ class packageDetail extends Component {
             actionArray.push(downloadButton)
         }
 
-        if (openTesting) {
-            regressButton = <Button ghost type="primary" icon="sync" onClick={this.showRegressModal}>版本回归</Button>
-            actionArray.push(regressButton)
-        }
+        // if (openTesting) {
+        //     regressButton = <Button ghost type="primary" icon="sync" onClick={this.showRegressModal}>版本回归</Button>
+        //     actionArray.push(regressButton)
+        // }
 
         if (status === 1 || status === 2) {
             cardTitle = <span color='#f5222d'>failure</span>

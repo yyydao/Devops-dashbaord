@@ -173,10 +173,10 @@ class PipelinePackage extends Component {
   /**
    * @desc 下载按钮点击
    */
-  onDownloadClick = (e,buildId) =>{
+  onDownloadClick = (e,filePath) =>{
     e.preventDefault()
     e.stopPropagation()
-    window.open(`${window.location.origin}/package/download?buildId=${buildId}&token=${this.props.token ? this.props.token : ''}`)
+    window.open(filePath)
   }
 
   /**
