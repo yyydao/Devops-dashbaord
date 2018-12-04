@@ -67,7 +67,7 @@ class pipelinePackageDetail extends Component {
      */
     showQR = (item) => {
         console.log(item)
-        const appUrl = `${window.location.origin}${item.filePath}`
+        const appUrl = item.filePath
         Modal.info({
             iconType: 'download',
             title: '扫码下载',
@@ -225,8 +225,8 @@ class pipelinePackageDetail extends Component {
                                                 </Row>
                                             </Col>
                                             < Col span={12}>
-                                                <Icon style={{'cursor':'pointer'}} type='qrcode'  onClick={() => this.showQR(item)}/>
-                                                <a style={{'paddingLeft':'14px'}}  target="_blank" href={`${window.location.origin}${item.filePath}`}>点我下载</a>
+                                                <Icon style={{'cursor':'pointer',fontSize:24,verticalAlign:"middle"}} type='qrcode'  onClick={() => this.showQR(item)}/>
+                                                <a style={{'paddingLeft':'14px',verticalAlign:"middle"}}  target="_blank" href={item.filePath}>点我下载</a>
                                             </Col>
                                         </Row>
                                     })}
