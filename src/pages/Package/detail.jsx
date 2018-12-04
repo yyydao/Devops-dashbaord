@@ -68,6 +68,7 @@ class packageDetail extends Component {
             envId: '',
             appUrl: '',
             apkBuildId: '',
+            dingTalk:"",
 
             passwdBuild: 0,
             formDataUser: '',
@@ -104,7 +105,8 @@ class packageDetail extends Component {
                     envName,
                     taskId,
                     envId,
-
+                    dingTalk,
+                    passwdBuild
                 } = res.data
 
                 this.setState({
@@ -125,6 +127,8 @@ class packageDetail extends Component {
                     envName,
                     taskId,
                     envId,
+                    dingTalk,
+                    passwdBuild
                 })
                 if (res.data.apkBuildId) {
                     this.setState({apkBuildId: res.data.apkBuildId})
@@ -167,7 +171,7 @@ class packageDetail extends Component {
      * @desc 回归
      */
     versionRegress = () => {
-        const {envId, taskMaster, codeBranch, submitContent, submitDetails, regressDesc, formDataUser, formDataPassword} = this.state
+        const {envId, taskMaster, codeBranch, submitContent, submitDetails, regressDesc, formDataUser, formDataPassword, dingTalk} = this.state
         if (!this.state.regressDesc) {
             message.error('请输入回归内容')
             return
@@ -182,9 +186,10 @@ class packageDetail extends Component {
             noticeEmails: '',
             regression: regressDesc,
             userName: formDataUser,
-            password: formDataPassword
+            password: formDataPassword,
+            dingTalk:dingTalk
         }).then((res) => {
-            if (res.code == 0) {
+            if (res.code === 0) {
                 message.success(res.msg)
             } else {
                 message.error(res.msg)
@@ -222,7 +227,7 @@ class packageDetail extends Component {
         // if (oldProjectId !== null && oldProjectId !== this.props.projectId) {
         //     this.props.history.push('/package')
         // }
-        let passwdBuild = 0
+        // let passwdBuild = 0
         // if (this.props.location.state) {
         //     passwdBuild = this.props.location.state.passwdBuild
         // }
@@ -230,7 +235,7 @@ class packageDetail extends Component {
         this.getDetail()
         this.setState({
             appUrl: `${window.location.origin}/package/download?buildId=${this.state.buildId}&token=${this.props.token ? this.props.token : ''}`,
-            passwdBuild: passwdBuild
+            // passwdBuild: passwdBuild
         })
         //
         // if (this.props.match.params.buildId) {
@@ -267,7 +272,7 @@ class packageDetail extends Component {
 
     render () {
         const {
-            regressModalVisible, addConfirmLoading, breadcrumbPath,
+            regressModalVisible, addConfirmLoading, dingTalk,
             status, apkBuildId, fileName, version, fileSize, buildTime, taskMaster, codeBranch, submitDetails,
             submitContent, rebuildContent, appUrl, openTesting,
             formDataUser, regressDesc, formDataPassword, passwdBuild
@@ -286,10 +291,10 @@ class packageDetail extends Component {
             actionArray.push(downloadButton)
         }
 
-        if (openTesting) {
-            regressButton = <Button ghost type="primary" icon="sync" onClick={this.showRegressModal}>版本回归</Button>
-            actionArray.push(regressButton)
-        }
+        // if (openTesting) {
+        //     regressButton = <Button ghost type="primary" icon="sync" onClick={this.showRegressModal}>版本回归</Button>
+        //     actionArray.push(regressButton)
+        // }
 
         if (status === 1 || status === 2) {
             cardTitle = <span color='#f5222d'>failure</span>
@@ -332,6 +337,12 @@ class packageDetail extends Component {
                             <p className="pForList">{codeBranch}</p>
                         </FormItem>
                         <FormItem
+                          {...formItemLayout}
+                              label="提及@"
+                          >
+                            <p className="pForList">{dingTalk}</p>
+                        </FormItem>
+                        <FormItem
                             {...formItemLayout}
                             label="提测概要"
                         >
@@ -347,9 +358,9 @@ class packageDetail extends Component {
                             {...formItemLayout}
                             label="回归内容"
                         >
-              <TextArea rows={4} placeholder="回归内容（多行）" value={regressDesc} onChange={(e) => {
-                  this.setState({regressDesc: e.target.value})
-              }}/>
+                          <TextArea rows={4} placeholder="回归内容（多行）" value={regressDesc} onChange={(e) => {
+                              this.setState({regressDesc: e.target.value})
+                          }}/>
                         </FormItem>
                         {
                             passwdBuild === 1 &&
@@ -399,7 +410,10 @@ class packageDetail extends Component {
                                         </Col>
                                         <Col span={12}>
                                             {status === 0 &&
-                                            <QRCode value={appUrl} size={170}/>
+                                                <div style={{width:170}}>
+                                                  <QRCode value={appUrl} size={170}/>
+                                                  <p style={{textAlign:"center",color:"#000"}}>【钉钉】扫码安装</p>
+                                                </div>
                                             }
                                         </Col>
 
