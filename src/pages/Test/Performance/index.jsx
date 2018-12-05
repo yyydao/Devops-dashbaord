@@ -29,309 +29,6 @@ const Panel = Collapse.Panel
 const CheckboxGroup = Checkbox.group
 const Option = Select.Option
 
-// const mockData = [
-//     {
-//         'id': 2327,
-//         'projectId': 63,
-//         'envId': 63,
-//         'name': '检查各一级页面',
-//         'jenkinsParam': '',
-//         'children': [
-//             {
-//                 'id': 2328,
-//                 'projectId': 63,
-//                 'envId': 63,
-//                 'name': '检查我的一级页面',
-//                 'jenkinsParam': 'My',
-//                 'children': []
-//             },
-//             {
-//                 'id': 2329,
-//                 'projectId': 63,
-//                 'envId': 63,
-//                 'name': '检查首页一级页面',
-//                 'jenkinsParam': 'Home',
-//                 'children': []
-//             },
-//             {
-//                 'id': 2330,
-//                 'projectId': 63,
-//                 'envId': 63,
-//                 'name': '检查投资一级页面',
-//                 'jenkinsParam': 'Invest',
-//                 'children': []
-//             }
-//         ]
-//     }, {
-//         'id': 2331,
-//         'projectId': 63,
-//         'envId': 63,
-//         'name': '检查各2级页面',
-//         'jenkinsParam': '',
-//         'children': [
-//             {
-//                 'id': 2332,
-//                 'projectId': 63,
-//                 'envId': 63,
-//                 'name': '检查我的2级页面',
-//                 'jenkinsParam': 'My',
-//                 'children': []
-//             },
-//             {
-//                 'id': 2333,
-//                 'projectId': 63,
-//                 'envId': 63,
-//                 'name': '检查首页2级页面',
-//                 'jenkinsParam': 'Home',
-//                 'children': []
-//             },
-//             {
-//                 'id': 2334,
-//                 'projectId': 63,
-//                 'envId': 63,
-//                 'name': '检查投资2级页面',
-//                 'jenkinsParam': 'Invest',
-//                 'children': []
-//             }
-//         ]
-//     }, {
-//         'id': 2335,
-//         'projectId': 63,
-//         'envId': 63,
-//         'name': '检查各3级页面',
-//         'jenkinsParam': '',
-//         'children': [
-//             {
-//                 'id': 2336,
-//                 'projectId': 63,
-//                 'envId': 63,
-//                 'name': '检查我的3级页面',
-//                 'jenkinsParam': 'My',
-//                 'children': []
-//             },
-//             {
-//                 'id': 2337,
-//                 'projectId': 63,
-//                 'envId': 63,
-//                 'name': '检查首页3级页面',
-//                 'jenkinsParam': 'Home',
-//                 'children': []
-//             },
-//             {
-//                 'id': 2338,
-//                 'projectId': 63,
-//                 'envId': 63,
-//                 'name': '检查投资3级页面',
-//                 'jenkinsParam': 'Invest',
-//                 'children': []
-//             }
-//         ]
-//     }, {
-//         'id': 2339,
-//         'projectId': 63,
-//         'envId': 63,
-//         'name': '检查各4级页面',
-//         'jenkinsParam': '',
-//         'children': [
-//             {
-//                 'id': 2340,
-//                 'projectId': 63,
-//                 'envId': 63,
-//                 'name': '检查我的4级页面',
-//                 'jenkinsParam': 'My',
-//                 'children': []
-//             },
-//             {
-//                 'id': 2341,
-//                 'projectId': 63,
-//                 'envId': 63,
-//                 'name': '检查首页4级页面',
-//                 'jenkinsParam': 'Home',
-//                 'children': []
-//             },
-//             {
-//                 'id': 2342,
-//                 'projectId': 63,
-//                 'envId': 63,
-//                 'name': '检查投资4级页面',
-//                 'jenkinsParam': 'Invest',
-//                 'children': []
-//             }
-//         ]
-//     }, {
-//         'id': 2345,
-//         'projectId': 63,
-//         'envId': 63,
-//         'name': '检查各5级页面',
-//         'jenkinsParam': '',
-//         'children': [
-//             {
-//                 'id': 2346,
-//                 'projectId': 63,
-//                 'envId': 63,
-//                 'name': '检查我的5级页面',
-//                 'jenkinsParam': 'My',
-//                 'children': []
-//             },
-//             {
-//                 'id': 2347,
-//                 'projectId': 63,
-//                 'envId': 63,
-//                 'name': '检查首页5级页面',
-//                 'jenkinsParam': 'Home',
-//                 'children': []
-//             },
-//             {
-//                 'id': 2348,
-//                 'projectId': 63,
-//                 'envId': 63,
-//                 'name': '检查投资5级页面',
-//                 'jenkinsParam': 'Invest',
-//                 'children': []
-//             }
-//         ]
-//     },
-// ]
-
-const mockData = [
-    {
-        'id': 2327,
-        'projectId': 63,
-        'envId': 63,
-        'name': '检查各一级页面',
-        'jenkinsParam': '',
-        'children': []
-    }, {
-        'id': 2331,
-        'projectId': 63,
-        'envId': 63,
-        'name': '检查各2级页面',
-        'jenkinsParam': '',
-        'children': [
-            {
-                'id': 2332,
-                'projectId': 63,
-                'envId': 63,
-                'name': '检查我的2级页面',
-                'jenkinsParam': 'My',
-                'children': []
-            },
-            {
-                'id': 2333,
-                'projectId': 63,
-                'envId': 63,
-                'name': '检查首页2级页面',
-                'jenkinsParam': 'Home',
-                'children': []
-            },
-            {
-                'id': 2334,
-                'projectId': 63,
-                'envId': 63,
-                'name': '检查投资2级页面',
-                'jenkinsParam': 'Invest',
-                'children': []
-            }
-        ]
-    }, {
-        'id': 2335,
-        'projectId': 63,
-        'envId': 63,
-        'name': '检查各3级页面',
-        'jenkinsParam': '',
-        'children': [
-            {
-                'id': 2336,
-                'projectId': 63,
-                'envId': 63,
-                'name': '检查我的3级页面',
-                'jenkinsParam': 'My',
-                'children': []
-            },
-            {
-                'id': 2337,
-                'projectId': 63,
-                'envId': 63,
-                'name': '检查首页3级页面',
-                'jenkinsParam': 'Home',
-                'children': []
-            },
-            {
-                'id': 2338,
-                'projectId': 63,
-                'envId': 63,
-                'name': '检查投资3级页面',
-                'jenkinsParam': 'Invest',
-                'children': []
-            }
-        ]
-    }, {
-        'id': 2339,
-        'projectId': 63,
-        'envId': 63,
-        'name': '检查各4级页面',
-        'jenkinsParam': '',
-        'children': [
-            {
-                'id': 2340,
-                'projectId': 63,
-                'envId': 63,
-                'name': '检查我的4级页面',
-                'jenkinsParam': 'My',
-                'children': []
-            },
-            {
-                'id': 2341,
-                'projectId': 63,
-                'envId': 63,
-                'name': '检查首页4级页面',
-                'jenkinsParam': 'Home',
-                'children': []
-            },
-            {
-                'id': 2342,
-                'projectId': 63,
-                'envId': 63,
-                'name': '检查投资4级页面',
-                'jenkinsParam': 'Invest',
-                'children': []
-            }
-        ]
-    }, {
-        'id': 2345,
-        'projectId': 63,
-        'envId': 63,
-        'name': '检查各5级页面',
-        'jenkinsParam': '',
-        'children': [
-            {
-                'id': 2346,
-                'projectId': 63,
-                'envId': 63,
-                'name': '检查我的5级页面',
-                'jenkinsParam': 'My',
-                'children': []
-            },
-            {
-                'id': 2347,
-                'projectId': 63,
-                'envId': 63,
-                'name': '检查首页5级页面',
-                'jenkinsParam': 'Home',
-                'children': []
-            },
-            {
-                'id': 2348,
-                'projectId': 63,
-                'envId': 63,
-                'name': '检查投资5级页面',
-                'jenkinsParam': 'Invest',
-                'children': []
-            }
-        ]
-    },
-]
-
 class Performance extends Component {
     constructor (props) {
         super(props)
@@ -430,35 +127,35 @@ class Performance extends Component {
             addConfirmLoading: true
         })
 
-        //
-        // reqPost('/task/addSubmit', {
-        //     projectId: Number(this.props.projectId),
-        //     buildType: typeValue,
-        //     branchName: formDataBranch,
-        //     sceneId: chooseSceneID.join(','),
-        //     fixTime: formDataTime
-        // }).then(res => {
-        //     this.hideModal()
-        //
-        //     if (res.code == 0) {
-        //         this.getList('buildingList')
-        //     } else {
-        //         Modal.info({
-        //             title: '提示',
-        //             content: (
-        //                 <p>{res.msg}</p>
-        //             ),
-        //             onOk () {}
-        //         })
-        //     }
-        //
-        // })
+
+        reqPost('/task/addSubmit', {
+            projectId: Number(this.props.projectId),
+            buildType: typeValue,
+            branchName: formDataBranch,
+            sceneId: chooseSceneID.join(','),
+            fixTime: formDataTime
+        }).then(res => {
+            this.hideModal()
+
+            if (res.code == 0) {
+                this.getList('buildingList')
+            } else {
+                Modal.info({
+                    title: '提示',
+                    content: (
+                        <p>{res.msg}</p>
+                    ),
+                    onOk () {}
+                })
+            }
+
+        })
     }
 
     //显示新建窗口
     showModal = () => {
-        // this.getBranchList()
-        // this.getSceneList()
+        this.getBranchList()
+        this.getSceneList()
 
         this.setState({
             addVisible: true
@@ -521,53 +218,33 @@ class Performance extends Component {
 
     //获取场景列表
     getSceneList = () => {
-        this.setState({
-            parentsSceneList: mockData.map(item => {
-                // console.log(item)
-                return {
-                    name: item.name,
-                    id: item.id,
-                    indeterminate: false,
-                    checked: false
-                }
-            })
-        }, () => {
-            console.log(this.state.parentsSceneList)
+        reqGet('/testScene/list/' + this.props.projectId).then(res => {
+            if (res.code == 0) {
+                this.setState({
+                    parentsSceneList: res.data.map(item => {
+                        return {
+                            name: item.name,
+                            id: item.id,
+                            indeterminate: false,
+                            checked: false
+                        }
+                    }),
+                    sceneData:res.data
+                }, () => {
+                    console.log(this.state.parentsSceneList)
+                })
+            }
         })
-
-        // reqGet('/testScene/list/' + this.props.projectId).then(res => {
-        //     if (res.code == 0) {
-        //         this.setState({
-        //             parentsSceneList: res.data.map(item => {
-        //                 return {
-        //                     label: item.name,
-        //                     value: item.id
-        //                 }
-        //             })
-        //         })
-        //     }
-        // })
     }
 
     getSceneByCheckAll = () => {
         let tempArray = []
-        for (let i = 0; i < mockData.length; i++) {
-            const mockDatum = mockData[i].children
+        const sceneData = this.state.sceneData
+        for (let i = 0; i < sceneData.length; i++) {
+            const mockDatum = sceneData[i].children
             for (let j = 0; j < mockDatum.length; j++) {
                 const mockDatumElement = mockDatum[j]
                 tempArray.push(mockDatumElement['id'])
-            }
-        }
-        return tempArray
-    }
-    getSceneByCheckParent = (parentSceneID) => {
-        let tempArray = []
-        for (let i = 0; i < parentSceneID.length; i++) {
-            const parentID = parentSceneID[i]
-            let childrenScene = mockData.find(x => x.id + '' === parentID + '')['children']
-            for (let j = 0; j < childrenScene.length; j++) {
-                tempArray.push(childrenScene[j]['id'])
-
             }
         }
         return tempArray
@@ -619,6 +296,7 @@ class Performance extends Component {
     //修改选父类中场景
     changeParentsScene = (currentCheckedItem) => {
         console.group('changeParentsScene')
+        const sceneData = this.state.sceneData
         // console.log('choose parents')
         // console.log(`currentCheckedItem ${currentCheckedItem}`)
         const previousParentsScene = this.state.currentParentsScene
@@ -630,7 +308,7 @@ class Performance extends Component {
         let previousChosen = this.state.chooseSceneID || []
         console.log(`previousChosen ${previousChosen}`)
 
-        let childrenList = mockData.find(x => x.id + '' === diff.toString())['children']
+        let childrenList = sceneData.find(x => x.id + '' === diff.toString())['children']
         let previousIndeterminate = previousParentsSceneList.find(x => x.id + '' === diff.toString())['indeterminate']
         // console.log(`previousIndeterminate ${previousIndeterminate}`)
         let currentChildrenList
@@ -986,7 +664,6 @@ class Performance extends Component {
         this.getList('successList')
         this.getList('failureList')
         this.getList('buildingList')
-        this.getSceneList()
         this.setState({
             timerStart: new Date().getTime()
         })
@@ -1016,7 +693,7 @@ class Performance extends Component {
         return (
             <div className="performance">
                 <Modal title="新增提测性能测试"
-                       visible={true}
+                       visible={addVisible}
                        centered
                        onOk={this.addItem}
                        confirmLoading={addConfirmLoading}
@@ -1058,17 +735,19 @@ class Performance extends Component {
 
                     <div className="performance-modal-item">
                         <label className="performance-modal-item-label">执行场景：</label>
-                            <Checkbox
-                                indeterminate={checkAllSceneIndeterminate}
-                                onChange={this.checkAllSceneChange}
-                                checked={sceneCheckAll}
-                            >
-                                全部
-                            </Checkbox>
+                        <br/>
+                        <Checkbox
+                            indeterminate={checkAllSceneIndeterminate}
+                            onChange={this.checkAllSceneChange}
+                            checked={sceneCheckAll}
+                        >
+                            全部
+                        </Checkbox>
                         <Checkbox.Group
                             // options={parentsSceneList}
                             style={{width: '100%'}}
                             value={currentParentsScene} onChange={this.changeParentsScene}>
+
                             <Row>
                                 {
                                     parentsSceneList.map((item, index) => {
@@ -1094,7 +773,6 @@ class Performance extends Component {
                                                     key={index}
                                                     span={8}><Checkbox
                                             value={item.id}
-                                            // onChange={() => this.childSceneChangeScene(item.id)}
                                         >
                                             {item.name}</Checkbox></Col>
                                     })
