@@ -158,6 +158,15 @@ class SideBar extends Component{
                       defaultSelectedKeys={defaultCurrentMenu} defaultOpenKeys={menuOpenKeys}>
                     { menuList }
                 </Menu>
+                <div style={{color: 'rgba(255,255,255,0.65)',
+                    textAlign: 'center',
+                    position: 'absolute',
+                    width: '100%',
+                    left: '0',
+                    bottom: '38px'}}>
+                    {process.env.NODE_ENV === 'development' ? '开发测试环境：V' : '生产环境：V'}
+                    {process.env.VERSION}
+                </div>
             </div>
         )
     }
