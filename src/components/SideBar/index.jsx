@@ -164,8 +164,7 @@ class SideBar extends Component{
                     width: '100%',
                     left: '0',
                     bottom: '38px'}}>
-                    {process.env.NODE_ENV === 'development' ? '开发测试环境：V' : '生产环境：V'}
-                    {process.env.VERSION}
+                    版本：V{process.env.VERSION}
                 </div>
             </div>
         )
