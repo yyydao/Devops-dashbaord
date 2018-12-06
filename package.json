@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@antv/data-set": "^0.9.1",
-    "antd": "^3.8.4",
+    "antd": "^3.11.0",
     "autoprefixer": "7.1.6",
     "axios": "^0.18.0",
     "babel-core": "6.26.0",
