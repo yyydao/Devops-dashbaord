@@ -36,7 +36,7 @@
     height: 170px;
     background: rgba(0,0,0,0.4);
     position: absolute;
-    top:200px;
+    top:0px;
     left: 0;
     text-align: center;
     padding-top: 75px;
@@ -47,4 +47,9 @@
         line-height: 20px;
         padding: 0px 8px;
     }
+}
+.appQRcodeContainer{
+    display: flex;
+    justify-content:center;
+    margin-top:200px;
 }
