@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import './index.scss'
 import { reqGet, reqPost } from '@/api/api'
 
-import { differenceArray } from './arrayUtils'
+import { differenceArray,removeItemsByValue } from './arrayUtils'
 
 import {
     Breadcrumb,
@@ -447,11 +447,17 @@ class Performance extends Component {
         })
 
         notChooseChildScene = differenceArray(currentChildScene, fullCurrentChildScene)
-        console.log(`notChooseChildScene ${notChooseChildScene}`)
-        console.log(`previousChosen ${previousChosen}`)
+        console.log(`未选中子项 ${notChooseChildScene}`)
+        console.log(`原有全部子项 ${previousChosen}`)
         if (notChooseChildScene.length > 0) {
             console.log('移除了子项')
-            finalChangeChoose = differenceArray(notChooseChildScene, previousChosen)
+            if(previousChosen.length === 0){
+                console.log('原有全部子项为空')
+                finalChangeChoose = currentChildScene
+            }else{
+                finalChangeChoose = removeItemsByValue(previousChosen,notChooseChildScene )
+            }
+
         } else {
             console.log('新加了子项')
             let finalChosen = previousChosen.concat(currentChildScene)
@@ -461,7 +467,7 @@ class Performance extends Component {
             console.dir(chosenSet)
             finalChangeChoose = [...chosenSet]
         }
-        console.log(`finalChangeChoose ${finalChangeChoose}`)
+        console.log(`修改后全部子项 ${finalChangeChoose}`)
         for (let i = 0; i < parentSceneList.length; i++) {
             const parentSceneListElement = parentSceneList[i]
             if (parentSceneListElement.checked || parentSceneListElement.indeterminate) {

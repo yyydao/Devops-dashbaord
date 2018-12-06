@@ -1,6 +1,7 @@
 import {
     intersectionArray,
     differenceArray,
+    removeItemsByValue,
 } from './arrayUtils'
 
 it('should get 2 array intersection ', () => {
@@ -71,4 +72,11 @@ it('should get 2 array diff symmetric part2 ', () => {
     const arr2 = [1]
 
     expect(differenceArray(arr1,arr2)).toEqual([1])
+})
+
+it('should delete',()=>{
+    const 未选中子项 = [2477,2478]
+    const 原有全部子项  = [2478,2479]
+
+    expect(removeItemsByValue(原有全部子项,未选中子项)).toEqual([2479])
 })
