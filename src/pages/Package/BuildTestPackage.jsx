@@ -223,8 +223,10 @@ class BuildTestPackage extends Component {
    * @desc 取消按钮事件
    */
   onCancleClick= (e,buildId,envID) =>{
-    e.preventDefault()
-    e.stopPropagation()
+    if(e){
+      e.preventDefault()
+      e.stopPropagation()
+    }
     reqPost('/package/cancel', {
       buildId: buildId,
       type: 0,
@@ -586,7 +588,7 @@ class BuildTestPackage extends Component {
                 </Sider>
                 <Content>
                   { !!this.state.currentBuild &&
-                  <BuildTestPackageDetail buildId={this.state.currentBuild}/>
+                  <BuildTestPackageDetail buildId={this.state.currentBuild} onCancleSuccess={this.onCancleClick}/>
                   }
                 </Content>
               </Layout>
