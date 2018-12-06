@@ -167,7 +167,17 @@ class Home extends Component{
         sm: { span: 18 }
       }
     };
-
+    let appQRcode = (appUrl,type) =>{
+      return <div style={{width:170,margin:"0px 75px",position:"relative"}}>
+        <QRCode value={appUrl} size={170}/>
+        {!appUrl&&
+        <div className="qrCode-mask">
+          <span>即将开放</span>
+        </div>
+        }
+        <p style={{textAlign:"center",marginTop:8,color:"#000"}}>【DevOps】{type}下载</p>
+      </div>
+    }
     return(
         <div className="home-card">
           <div className="header clear">
@@ -179,13 +189,10 @@ class Home extends Component{
               <Link to="/personal"><Icon type="user" />个人信息</Link>
             </p>
           </div>
-          <Table columns={this.state.columns} rowKey={record => record.id} dataSource={this.state.data} pagination={this.state.pagination} loading={this.state.loading} onChange={this.handleTableChange}></Table>
-          <div style={{width:170,margin:'0 auto',position:"relative"}}>
-            <QRCode value="" size={170} style={{marginTop:200}}/>
-            <div className="qrCode-mask">
-              <span>即将开放</span>
-            </div>
-            <p style={{textAlign:"center",marginTop:8,color:"#000"}}>【DevOps】App下载</p>
+          <Table columns={this.state.columns} rowKey={record => record.id} dataSource={this.state.data} pagination={this.state.pagination} loading={this.state.loading} onChange={this.handleTableChange}/>
+          <div className="appQRcodeContainer">
+            {appQRcode('','IOS')}
+            {appQRcode('','Android')}
           </div>
           { /* 新建项目弹窗 */ }
           <Modal title="新建项目" visible={this.state.proModalVisible} onOk={this.handleOk} onCancel={this.handleCancel} okText="确认" cancelText="取消">
