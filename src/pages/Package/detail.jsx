@@ -236,6 +236,7 @@ class packageDetail extends Component {
         this.setState({
             appUrl: `${window.location.origin}/package/download?buildId=${this.state.buildId}&token=${this.props.token ? this.props.token : ''}`,
             // passwdBuild: passwdBuild
+        },()=>{
         })
         //
         // if (this.props.match.params.buildId) {
@@ -262,7 +263,11 @@ class packageDetail extends Component {
     componentWillReceiveProps (nextProps) {
         this.setState({
             buildId: nextProps.buildId,
-        }, () => this.getDetail())
+            appUrl: `${window.location.origin}/package/download?buildId=${nextProps.buildId}&token=${this.props.token ? this.props.token : ''}`,
+        }, () =>{
+            this.getDetail()
+            // console.log(this.state.appUrl)
+        })
 
     }
 
