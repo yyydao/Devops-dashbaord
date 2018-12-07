@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Input, Icon, Table, Modal, Form, Radio, message } from 'antd';
 
-import { reqPost } from '@/api/api';
+import { reqPost, reqGet } from '@/api/api';
 import './index.scss';
 
 const Search = Input.Search;
@@ -63,7 +63,7 @@ class Home extends Component{
         pageNum: 1,
         projectName: ''
       },
-      platformList: []
+      platformList: [],
     }
   }
 
@@ -156,7 +156,6 @@ class Home extends Component{
 
   render(){
     const { getFieldDecorator } = this.props.form;
-
     const fromItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -167,10 +166,15 @@ class Home extends Component{
         sm: { span: 18 }
       }
     };
-    let appQRcode = (appUrl,type) =>{
+    let appQRcode = (type) =>{
       return <div style={{width:170,margin:"0px 75px",position:"relative"}}>
-        <QRCode value={appUrl} size={170}/>
-        {!appUrl&&
+        {
+          type==='iOS'&& <img src={`${window.location.origin}/version/getQRCode?platform=2`} style={{width:170,height:170,display:'block'}} alt=""/>
+        }
+        {
+          type==='Android'&& <img src={`${window.location.origin}/version/getQRCode?platform=1`} style={{width:170,height:170,display:'block'}} alt=""/>
+        }
+        {!type&&
         <div className="qrCode-mask">
           <span>即将开放</span>
         </div>
@@ -191,8 +195,8 @@ class Home extends Component{
           </div>
           <Table columns={this.state.columns} rowKey={record => record.id} dataSource={this.state.data} pagination={this.state.pagination} loading={this.state.loading} onChange={this.handleTableChange}/>
           <div className="appQRcodeContainer">
-            {appQRcode('','IOS')}
-            {appQRcode('','Android')}
+            {appQRcode('iOS')}
+            {appQRcode('Android')}
           </div>
           { /* 新建项目弹窗 */ }
           <Modal title="新建项目" visible={this.state.proModalVisible} onOk={this.handleOk} onCancel={this.handleCancel} okText="确认" cancelText="取消">
