@@ -256,19 +256,14 @@ class packageDetail extends Component {
     }
 
     componentWillReceiveProps (nextProps) {
+        console.log(nextProps)
         this.setState({
             buildId: nextProps.buildId,
             appUrl: `${window.location.origin}/package/download?buildId=${nextProps.buildId}&token=${this.props.token ? this.props.token : ''}`,
         }, () => {
             this.getDetail()
+          console.log(`${this.state.appUrl}`)
         })
-    }
-
-    componentWillReceiveProps (nextProps) {
-        this.setState({
-            buildId: nextProps.buildId,
-        }, () => this.getDetail())
-
     }
 
     componentWillUnmount () {
