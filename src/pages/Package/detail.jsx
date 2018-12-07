@@ -263,14 +263,7 @@ class packageDetail extends Component {
       this.getDetail()
     })
   }
-
-  componentWillReceiveProps (nextProps) {
-    this.setState({
-      buildId: nextProps.buildId,
-    }, () => this.getDetail())
-
-  }
-
+  
   componentWillUnmount () {
     clearTimeout(this.state.timer)
   }
