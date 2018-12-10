@@ -665,7 +665,7 @@ class pipelineDetail extends Component {
                     <span>Tips: 有{waitCount}个任务正在等待</span>
                   </Col>
                   <Col>
-                    <Button disabled={taskStatus === 1}
+                    <Button disabled={taskStatus === 1 || taskStatus === 3}
                             type="primary" onClick={() => {
                       this.gotoEditPipeline()
                     }}>编辑</Button>
