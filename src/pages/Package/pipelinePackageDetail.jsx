@@ -68,13 +68,14 @@ class pipelinePackageDetail extends Component {
     showQR = (item) => {
         console.log(item)
         const appUrl = item.filePath
+        const ipaPath = item.ipaPath
         Modal.info({
             iconType: 'download',
             title: '扫码下载',
             content:
                 <div>
                     <Row type="flex" align='middle' justify='center'>
-                        <QRCode value={appUrl} />
+                        <QRCode value={ipaPath} />
                     </Row>
                     <Row type="flex" align='middle' justify='center' style={{'paddingTop':'16px'}}>
                         <Button><a href={appUrl} target="_blank">点击下载</a></Button>

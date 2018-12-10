@@ -67,6 +67,7 @@ class packageDetail extends Component {
       taskId: '',
       envId: '',
       appUrl: '',
+      ipaPath:'',
       apkBuildId: '',
       dingTalk: '',
       jenkinsStatus: '',
@@ -108,7 +109,8 @@ class packageDetail extends Component {
           envId,
           dingTalk,
           passwdBuild,
-          jenkinsStatus
+          jenkinsStatus,
+          ipaPath,
         } = res.data
 
         this.setState({
@@ -131,7 +133,8 @@ class packageDetail extends Component {
           envId,
           dingTalk,
           passwdBuild,
-          jenkinsStatus
+          jenkinsStatus,
+          ipaPath,
         })
         if (res.data.apkBuildId) {
           this.setState({ apkBuildId: res.data.apkBuildId })
@@ -250,6 +253,7 @@ class packageDetail extends Component {
     this.getDetail()
     this.setState({
       appUrl: `${window.location.origin}/package/download?buildId=${this.state.buildId}&token=${this.props.token ? this.props.token : ''}`,
+      ipaPath:this.state.ipaPath,
       // passwdBuild: passwdBuild
     }, () => {
     })
@@ -259,6 +263,7 @@ class packageDetail extends Component {
     this.setState({
       buildId: nextProps.buildId,
       appUrl: `${window.location.origin}/package/download?buildId=${nextProps.buildId}&token=${this.props.token ? this.props.token : ''}`,
+      ipaPath:nextProps.ipaPath,
     }, () => {
       this.getDetail()
     })
@@ -272,7 +277,7 @@ class packageDetail extends Component {
     const {
       regressModalVisible, addConfirmLoading, dingTalk,
       status, apkBuildId, fileName, version, fileSize, buildTime, taskMaster, codeBranch, submitDetails,
-      submitContent, rebuildContent, appUrl, openTesting,
+      submitContent, rebuildContent, appUrl,ipaPath, openTesting,imageUrl,
       formDataUser, regressDesc, formDataPassword, passwdBuild, jenkinsStatus, buildId, envId
     } = this.state
     const { onCancleSuccess } = this.props
@@ -412,7 +417,8 @@ class packageDetail extends Component {
                     <Col span={12}>
                       {status === 0 &&
                       <div style={{ width: 170 }}>
-                        <QRCode value={appUrl} size={170}/>
+                        {/*{ipaPath && <QRCode value={ipaPath} size={170}/>}*/}
+                        <img src={imageUrl}/>
                         <p style={{ textAlign: 'center', color: '#000' }}>【钉钉】扫码安装</p>
                       </div>
                       }
