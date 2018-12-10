@@ -170,7 +170,7 @@ class Pipeline extends Component {
               pipelineList.map((item, index) => {
                 return <div className="pipeline-item" key={index}>
 
-                  <div className="pipeline-item-header" onClick={() => this.jumpToDetail(item)}>
+                  <div className="pipeline-item-header" onClick={() => this.jumpToDetail(item)} style={{cursor:'pointer',height:'45px'}}>
                     <Row type="flex" justify="space-between">
                       <Col span={12}>
                         <h2>{item.taskName}
