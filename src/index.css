@@ -6,8 +6,8 @@ ul, li { list-style: none; }
 .fl { float: left; }
 .mb10 { margin-bottom: 10px; }
 .container { position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%; min-width: 1200px; }
-.container .main-container { position: absolute; left: 250px; right: 0; top: 64px; padding: 30px; }
-.container .devops-breadcrumb { margin-bottom: 20px; }
+.container .main-container { position: absolute; left: 240px; right: 0; top: 64px;}
+.container .devops-breadcrumb { padding: 16px 32px; }
 .clear:after { visibility: hidden; display: block; font-size: 0; content: '.'; clear: both; height: 0; }
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-thumb { display: block; width: 8px; border-radius: 5px; background-color: rgba(193, 193, 193, .6); }

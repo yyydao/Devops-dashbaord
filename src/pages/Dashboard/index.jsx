@@ -243,117 +243,139 @@ class Dashboard extends Component{
           </Breadcrumb>
           {currentTaskId &&
           <div>
-            <Select defaultValue={currentTaskId} onChange={e => {this.onPipeLineChange(e)}} style={{minWidth:200}}>
-              {taskList.map((item,index)=><Option value={item.taskID} key={index}>{item.taskName}</Option>)}
-            </Select>
-            <Card  title="基本信息" style={{marginTop: 30}}>
-              <Row>
-                {
-                  !basicInformation.fileType &&
-                  <Col span={8} className="info-menu">
-                    <p>暂无基本数据</p>
-                  </Col>
-                }
-                {basicInformation.fileType===1&&
-                <Col span={8} className="info-menu">
-                  <div><Tag color="#2db7f5">Identifier</Tag> {basicInformation.packageName}</div>
-                  <div><Tag color="#2db7f5">APP Name</Tag>{basicInformation.displayName}</div>
-                  <div><Tag color="#2db7f5">versionCode</Tag>{basicInformation.versionCode}</div>
-                  <div><Tag color="#2db7f5">APP Version</Tag>{basicInformation.versionName}</div>
-                  <div><Tag color="#2db7f5">appFileSize</Tag>{basicInformation.appFileSize}</div>
-                  <div><Tag color="#2db7f5">minSdk</Tag>{basicInformation.minSdk}</div>
-                  <div><Tag color="#2db7f5">targetSdk</Tag>{basicInformation.targetSdk}</div>
-                </Col>
-                }{
-                basicInformation.fileType===2&&
-                <Col span={8} className="info-menu">
-                  <div><Tag color="#2db7f5">Identifier</Tag> {basicInformation.packageName}</div>
-                  <div><Tag color="#2db7f5">APP Name</Tag>{basicInformation.displayName}</div>
-                  <div><Tag color="#2db7f5">Version</Tag>{basicInformation.versionCode}</div>
-                  <div><Tag color="#2db7f5">APP Version</Tag>{basicInformation.versionName}</div>
-                  <div><Tag color="#2db7f5">appFileSize</Tag>{basicInformation.appFileSize}</div>
-                </Col>
+            <div className="select-container">
+              <Select defaultValue={currentTaskId} onChange={e => {this.onPipeLineChange(e)}} style={{minWidth:294}}>
+                {taskList.map((item,index)=><Option value={item.taskID} key={index}>{item.taskName}</Option>)}
+              </Select>
+              <Button type="primary" onClick={(e)=>{this.openUrl(basicInformation.sourceAppPath,0)}}>原包下载</Button>
+              {
+                basicInformation.reinforceAppPath && <Button onClick={(e)=>{this.openUrl(basicInformation.reinforceAppPath,1)}}>加固包下载</Button>
               }
-                <Col span={12}>
-                  <Row>
-                    <Col span={8}>
-                      <span className="data_title">代码总行数</span>
-                      <p className="data_num" style={{color:"#2db7f5"}}>{basicInformation.codeTotalRow||"-"}</p>
-                    </Col>
-                    <Col span={8} offset={1}>
-                      <span className="data_title">测试数</span>
-                      <p className="data_num" style={{color:"#2db7f5"}}>{basicInformation.testQuantity||"-"}</p>
-                    </Col>
-                    <Col span={8} >
-                      <span className="data_title">Bugs</span>
-                      <p className="data_num" style={{color:"#f50"}}>{basicInformation.bugQuantity||"-"}</p>
-                    </Col>
-                    <Col span={8}>
-                      <span className="data_title">漏洞</span>
-                      <p className="data_num" style={{color:"#f50"}}>{basicInformation.vulnerabilities||"-"}</p>
-                    </Col>
-                    <Col span={8}>
-                      <span className="data_title">坏味道</span>
-                      <p className="data_num" style={{color:"#f50"}}>{basicInformation.codeSmells||"-"}</p>
-                    </Col>
-                  </Row>
+            </div>
+            <div className="basic-info-container">
+              {
+                !basicInformation.fileType &&
+                  <p>暂无基本数据</p>
+              }
+              {basicInformation.fileType === 1 &&
+              <Row>
+                <Col span={8}>
+                  <p><span className="item-name">Identifier:</span>{basicInformation.packageName}</p>
                 </Col>
-                <Col span={4} className="btn-group">
-                  <p>
-                    <Button type="primary" onClick={(e)=>{this.openUrl(basicInformation.sourceAppPath,0)}}>原包下载</Button>
-                  </p>
-                  {
-                    basicInformation.reinforceAppPath && <Button type="primary" onClick={(e)=>{this.openUrl(basicInformation.reinforceAppPath,1)}}>加固包下载</Button>
-                  }
+                <Col span={8}>
+                  <p><span className="item-name">APP Name:</span>{basicInformation.displayName}</p>
+                </Col>
+                <Col span={8}>
+                  <p><span className="item-name">VersionCode:</span>{basicInformation.versionCode}</p>
+                </Col>
+                <Col span={8}>
+                  <p><span className="item-name">APP Version:</span>{basicInformation.versionName}</p>
+                </Col>
+                <Col span={8}>
+                  <p><span className="item-name">AppFileSize:</span>{basicInformation.appFileSize}</p>
+                </Col>
+                <Col span={8}>
+                  <p><span className="item-name">Min SDK:</span>{basicInformation.minSdk}</p>
+                </Col>
+                <Col span={8}>
+                  <p><span className="item-name">Target SDK:</span>{basicInformation.targetSdk}</p>
                 </Col>
               </Row>
-            </Card>
-            {
-              monitorData.pipelines&&monitorData.pipelines.length>0 &&
-              <Card  title="流水线监控分析" style={{marginTop: 30}}>
-                {/*<PipelineChart pipeLineData={monitorData.pipelines}></PipelineChart>*/}
-                <PipelineChart1 id={'kaka'} name={'kaka'} pipeLineData={monitorData.pipelines}></PipelineChart1>
-              </Card>
-            }
-            {
-              monitorData.unitTestMonitors&&monitorData.unitTestMonitors.length>0&&
-              <Card  title="单元测试监控分析" style={{marginTop: 30}}>
-                <UnitTestChart unitData={monitorData.unitTestMonitors}></UnitTestChart>
-              </Card>
-            }
-            {
-              monitorData.uiTestMonitors&& monitorData.uiTestMonitors.rows.length>0&&
-              <Card  title="UI测试监控分析" style={{marginTop: 30}}>
-                <UiTestChart uiData={monitorData.uiTestMonitors}></UiTestChart>
-              </Card>
-            }
-            {
-              ( (monitorData.cpuMemoryAnalysis&&monitorData.cpuMemoryAnalysis.length>0)||
-                  (monitorData.fluentColdStartTimeAnalysis&&monitorData.fluentColdStartTimeAnalysis.length>0)||
-                  (monitorData.packageBodyMonitors&&monitorData.packageBodyMonitors.length>0)) &&
-              <Card  title="深度性能分析" style={{marginTop: 30}}>
-                {
-                  monitorData.cpuMemoryAnalysis.length>0 &&
-                  <Card type="inner" title="CPU&内存分析">
-                    <CpuChart cpuData={monitorData.cpuMemoryAnalysis}></CpuChart>
-                  </Card>
-                }
-                {
-                  monitorData.fluentColdStartTimeAnalysis.length>0&&
-                  <Card type="inner" title="流畅度&冷启动时间分析" style={{marginTop: 18}}>
-                    <FluencyChart fluencyData={monitorData.fluentColdStartTimeAnalysis}></FluencyChart>
-                  </Card>
-                }
-                {
-                  monitorData.packageBodyMonitors.length>0&&
-                  <Card type="inner" title="包体监控分析" style={{marginTop: 18}}>
-                    <PackageChart packageData={monitorData.packageBodyMonitors}></PackageChart>
-                  </Card>
-                }
-              </Card>
-            }
+              }
+              {
+                basicInformation.fileType===2&&
+                <Row>
+                  <Col span={8}>
+                    <p><span className="item-name">Identifier:</span>{basicInformation.packageName}</p>
+                  </Col>
+                  <Col span={8}>
+                    <p><span className="item-name">APP Name:</span>{basicInformation.displayName}</p>
+                  </Col>
+                  <Col span={8}>
+                    <p><span className="item-name">Version:</span>{basicInformation.versionCode}</p>
+                  </Col>
+                  <Col span={8}>
+                    <p><span className="item-name">APP Version:</span>{basicInformation.versionName}</p>
+                  </Col>
+                  <Col span={8}>
+                    <p><span className="item-name">AppFileSize:</span>{basicInformation.appFileSize}</p>
+                  </Col>
+                </Row>
+              }
+            </div>
+            <div className="report-data">
+              <Row type="flex" justify="space-between">
+                <Col span={4}>
+                  <p className="data_title">代码总行数</p>
+                  <p className="data_num_black">{basicInformation.codeTotalRow||"-"}</p>
+                </Col>
+                <Col span={4}>
+                  <p className="data_title">测试数</p>
+                  <p className="data_num_black">{basicInformation.testQuantity||"-"}</p>
+                </Col>
+                <Col span={4}>
+                  <p className="data_title">Bugs</p>
+                  <p className="data_num_red">{basicInformation.bugQuantity||"-"}</p>
+                </Col>
+                <Col span={4}>
+                  <p className="data_title">漏洞</p>
+                  <p className="data_num_red">{basicInformation.vulnerabilities||"-"}</p>
+                </Col>
+                <Col span={4}>
+                  <p className="data_title">坏味道</p>
+                  <p className="data_num_red">{basicInformation.codeSmells||"-"}</p>
+                </Col>
+              </Row>
+            </div>
+            <div className="chart-container">
+              {
+                monitorData.pipelines&&monitorData.pipelines.length>0 &&
+                <Card  title="流水线监控分析">
+                  {/*<PipelineChart pipeLineData={monitorData.pipelines}></PipelineChart>*/}
+                  <PipelineChart1 id={'kaka'} name={'kaka'} pipeLineData={monitorData.pipelines}></PipelineChart1>
+                </Card>
+              }
+              {
+                monitorData.unitTestMonitors&&monitorData.unitTestMonitors.length>0&&
+                <Card  title="单元测试监控分析" style={{marginTop: 30}}>
+                  <UnitTestChart unitData={monitorData.unitTestMonitors}></UnitTestChart>
+                </Card>
+              }
+              {
+                monitorData.uiTestMonitors&& monitorData.uiTestMonitors.rows.length>0&&
+                <Card  title="UI测试监控分析" style={{marginTop: 30}}>
+                  <UiTestChart uiData={monitorData.uiTestMonitors}></UiTestChart>
+                </Card>
+              }
+              {
+                ( (monitorData.cpuMemoryAnalysis&&monitorData.cpuMemoryAnalysis.length>0)||
+                    (monitorData.fluentColdStartTimeAnalysis&&monitorData.fluentColdStartTimeAnalysis.length>0)||
+                    (monitorData.packageBodyMonitors&&monitorData.packageBodyMonitors.length>0)) &&
+                <Card  title="深度性能分析" style={{marginTop: 30}}>
+                  {
+                    monitorData.cpuMemoryAnalysis.length>0 &&
+                    <Card type="inner" title="CPU&内存分析">
+                      <CpuChart cpuData={monitorData.cpuMemoryAnalysis}></CpuChart>
+                    </Card>
+                  }
+                  {
+                    monitorData.fluentColdStartTimeAnalysis.length>0&&
+                    <Card type="inner" title="流畅度&冷启动时间分析" style={{marginTop: 18}}>
+                      <FluencyChart fluencyData={monitorData.fluentColdStartTimeAnalysis}></FluencyChart>
+                    </Card>
+                  }
+                  {
+                    monitorData.packageBodyMonitors.length>0&&
+                    <Card type="inner" title="包体监控分析" style={{marginTop: 18}}>
+                      <PackageChart packageData={monitorData.packageBodyMonitors}></PackageChart>
+                    </Card>
+                  }
+                </Card>
+              }
+            </div>
           </div>
           }
+
         </div>
     )
   }

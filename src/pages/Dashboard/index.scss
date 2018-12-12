@@ -6,18 +6,52 @@
   margin-top: 16px;
   font-weight: bold;
 }
-.data_title{
-  font-size: 18px;
-  font-weight: bold;
-}
-.data_num{
-  font-size: 24px;
-  font-weight: bold;
-  text-align: center;
-}
 .info-menu div{
   margin-bottom: 8px;
 }
 .btn-group{
   text-align: right;
+}
+.select-container{
+  padding: 0px 8px 0px 32px;
+  button{
+    float: right;
+    margin-right: 24px;
+  }
+}
+.basic-info-container{
+  padding: 20px 32px 10px 32px;
+  border-bottom: 1px #E8E8E8 solid;
+  p{
+    margin-bottom: 12px;
+    line-height: 22px;
+  }
+  line-height: 22px;
+  .item-name{
+    color: #262626;
+    padding-right: 8px;
+  }
+}
+.report-data{
+  padding: 24px 32px;
+  text-align: center;
+  .data_title{
+    color: #8c8c8c;
+  }
+  .data_num_black{
+    color: #262626;
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 0px;
+  }
+  .data_num_red{
+    font-size: 30px;
+    color: #f5222d;
+    font-weight: bold;
+    margin-bottom: 0px;
+  }
+}
+.chart-container{
+  background-color: #f0f2f5;
+  padding: 24px 24px 24px 24px;
 }
