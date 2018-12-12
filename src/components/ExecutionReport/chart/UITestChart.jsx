@@ -1,15 +1,8 @@
 import React from "react";
 import FanChart from './FanChart';
-import {Row, Col, Progress, Card} from 'antd';
+import {Row, Col, Card} from 'antd';
 
 class UITestChart extends React.Component {
-  constructor(props) {
-    super(props)
-    // this.initChart = this.initChart.bind(this)
-  }
-  componentDidMount() {
-    // this.initChart();
-  }
   render() {
     const { data } = this.props
     return (

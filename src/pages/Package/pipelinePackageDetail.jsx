@@ -109,7 +109,7 @@ class pipelinePackageDetail extends Component {
             taskID: this.state.taskID,
             recordNo: this.state.recordNo,
         }).then((res) => {
-            if (res.code == 0) {
+            if (res.code === 0) {
                 const {
                     buildor,
                     branchName,

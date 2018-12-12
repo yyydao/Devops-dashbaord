@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { reqPost, reqGet } from '@/api/api' ;
+import { reqGet } from '@/api/api' ;
 
 import { Breadcrumb, Card } from 'antd';
 const BreadcrumbItem = Breadcrumb.Item;
@@ -55,7 +55,7 @@ class Package extends Component {
                     <BreadcrumbItem><Link to="/home">首页</Link></BreadcrumbItem>
                     <BreadcrumbItem>安装包</BreadcrumbItem>
                 </Breadcrumb>
-                
+
                 <div className="config-card-list clear">
                 {
                     envList.map((item, index) => {
@@ -69,7 +69,7 @@ class Package extends Component {
                                 }} key={index}>
                                     <Card hoverable className="config-card">{item.name}</Card>
                                 </Link>
-                                
+
                     })
                 }
                 </div>

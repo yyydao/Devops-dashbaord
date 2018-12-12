@@ -6,8 +6,6 @@ import { reqPost, reqGet } from '@/api/api'
 import {
     Breadcrumb,
     Button,
-    Spin,
-    Icon,
     Skeleton,
     Modal,
     message,
@@ -81,7 +79,7 @@ class packageDetail extends Component {
         reqGet('/package/detail', {
             buildId: this.props.match.params.buildId
         }).then((res) => {
-            if (res.code == 0) {
+            if (res.code === 0) {
                 const {
                     version,
                     taskMaster,
@@ -149,7 +147,7 @@ class packageDetail extends Component {
             Modal.info({
                 title: '提示',
                 content: (
-                    <p>{res.code == 0 ? '已成功发起构建' : res.msg}</p>
+                    <p>{res.code === 0 ? '已成功发起构建' : res.msg}</p>
                 ),
                 onOk () {
                 }
@@ -175,7 +173,7 @@ class packageDetail extends Component {
             userName: formDataUser,
             password: formDataPassword
         }).then((res) => {
-            if (res.code == 0) {
+            if (res.code === 0) {
                 message.success(res.msg)
             } else {
                 message.error(res.msg)

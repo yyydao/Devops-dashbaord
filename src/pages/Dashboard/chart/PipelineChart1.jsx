@@ -89,23 +89,23 @@ class PipelineChart1 extends Component {
   }
 
   formatSeconds = (value) =>{
-    var theTime = parseInt(value);// 秒
-    var theTime1 = 0;// 分
-    var theTime2 = 0;// 小时
+    let theTime = parseInt(value, 0),// 秒
+    theTime1 = 0,// 分
+    theTime2 = 0// 小时
     if(theTime > 60) {
-      theTime1 = parseInt(theTime/60);
-      theTime = parseInt(theTime%60);
+      theTime1 = parseInt(theTime/60, 0)
+      theTime = parseInt(theTime%60, 0)
       if(theTime1 > 60) {
-        theTime2 = parseInt(theTime1/60);
-        theTime1 = parseInt(theTime1%60);
+        theTime2 = parseInt(theTime1/60, 0)
+        theTime1 = parseInt(theTime1%60, 0)
       }
     }
-    var result = ""+parseInt(theTime)+"s";
+    var result = ""+parseInt(theTime, 0)+"s";
     if(theTime1 > 0) {
-      result = ""+parseInt(theTime1)+"''"+result;
+      result = ""+parseInt(theTime1, 0)+"''"+result;
     }
     if(theTime2 > 0) {
-      result = ""+parseInt(theTime2)+"'"+result;
+      result = ""+parseInt(theTime2, 0)+"'"+result;
     }
     return result;
   }
@@ -128,10 +128,10 @@ class PipelineChart1 extends Component {
   initChart = () =>{
     const { pipeLineData } = this.props
     let myChart = echarts.init(this.refs.pieChart)
-    myChart.showLoading();
+    myChart.showLoading()
     let options = this.setOptions(pipeLineData)
     myChart.setOption(options,true)
-    myChart.hideLoading();
+    myChart.hideLoading()
   }
 
   setOptions=(data)=> {
@@ -139,7 +139,7 @@ class PipelineChart1 extends Component {
     let legend=[]
     let series=[]
     if(data){
-      data.map(item=>{
+      data.map(item => {
         legend.push(item.stepName);
         series.push({
           name:item.stepName,
@@ -148,6 +148,7 @@ class PipelineChart1 extends Component {
           areaStyle: {},
           data:item.data
         })
+        return item
       })
     }
     return {

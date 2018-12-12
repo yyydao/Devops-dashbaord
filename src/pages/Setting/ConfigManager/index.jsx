@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
-import {Breadcrumb, Modal, message, Tabs, Form, Input} from 'antd';
+import {Breadcrumb, Modal, message, Tabs, Input} from 'antd';
 
 import {reqPost, reqGet} from '@/api/api';
 import './index.scss';
@@ -9,7 +9,6 @@ import ConfigPanel from '@/pages/Setting/ConfigManager/ConfigPanel';
 
 const BreadcrumbItem = Breadcrumb.Item;
 const TabPane = Tabs.TabPane;
-const FormItem = Form.Item;
 const TextArea = Input.TextArea
 
 class ConfigManager extends Component {
@@ -36,9 +35,7 @@ class ConfigManager extends Component {
     reqGet('/env/list', {projectId}).then(res => {
       if (parseInt(res.code, 0) === 0) {
         this.setState({envList: res.data});
-        res.data.map((item, index) => {
-          this.getEnvDetail(item.id, index)
-        })
+        res.data.map((item, index) => this.getEnvDetail(item.id, index))
       } else {
         message.error(res.msg);
       }
@@ -81,7 +78,7 @@ class ConfigManager extends Component {
    */
   onCheck = (checkedScenes, index) => {
     let envData=this.state.envData
-    this.state.envData[index].checkedScenes=checkedScenes
+    envData[index].checkedScenes=checkedScenes
     this.setCheckedSenses(this.state.envData[index].scenes, checkedScenes)
     this.setState({envData})
   }
@@ -210,11 +207,12 @@ class ConfigManager extends Component {
       if (item.childrens) {
         this.setCheckedSenses(item.childrens, checkedKey)
       }
+      return item
     })
   }
 
   render() {
-    const {envData, visible, importJson, checkedScenes} = this.state;
+    const {envData, visible, importJson } = this.state;
     return (
         <div>
           <Breadcrumb className="devops-breadcrumb">

@@ -131,7 +131,6 @@ class ExecutionReport extends Component {
      */
     dealBarData = (data) => {
         if (data && Object.keys(data)) {
-            const {DataView} = DataSet
             const ds = new DataSet()
             const dv = ds.createView().source(data)
             dv.transform({

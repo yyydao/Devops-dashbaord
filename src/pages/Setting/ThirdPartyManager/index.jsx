@@ -2,13 +2,12 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Breadcrumb, Card, Form, Input, Button, message, Modal } from 'antd';
+import { Breadcrumb, Card, Form, Input, Button, message } from 'antd';
 
-import { reqPost, reqGet, checkPermission } from '@/api/api';
+import { reqPost, reqGet} from '@/api/api';
 
 const BreadcrumbItem = Breadcrumb.Item;
 const FormItem = Form.Item;
-const confirm = Modal.confirm;
 const TextArea = Input.TextArea;
 
 class ThirdPartyManager extends Component{

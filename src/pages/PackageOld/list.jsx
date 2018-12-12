@@ -4,12 +4,14 @@ import { Link } from 'react-router-dom';
 import { reqPost, reqGet } from '@/api/api';
 import './list.scss';
 import VersionPanel from './versionPanel';
+import favicon from '@/assets/favicon.ico';
 
-import { Breadcrumb, Icon, Button, Radio, Input, Collapse, Modal, Select, Pagination, Popconfirm, message } from 'antd';
+import { Breadcrumb, Icon, Button, Radio, Input, Collapse, Modal, Select, message } from 'antd';
 const BreadcrumbItem = Breadcrumb.Item;
 const Panel = Collapse.Panel;
 const { TextArea } = Input;
 const Option = Select.Option;
+
 
 
 class PackageTest extends Component {
@@ -164,7 +166,7 @@ class PackageTest extends Component {
         }).then((res) => {
             this.toggleBuildModal(false);
 
-            if (res.code == 0) {
+            if (res.code === 0) {
                 this.getBuildingList();
             } else {
                 Modal.info({
@@ -185,7 +187,7 @@ class PackageTest extends Component {
             type: 0,
             envId: envId
         }).then((res) => {
-            if (res.code != 0) {
+            if (res.code !== 0) {
                 Modal.info({
                     title: '提示',
                     content: (
@@ -270,7 +272,7 @@ class PackageTest extends Component {
 
     getBuildingList = (loadMore=0) => {
         console.log(`======= ${loadMore}`)
-        const { envId, buildingPage, buildingTotal, buildingList, timer, typeValue } = this.state;
+        const { envId, buildingPage, buildingTotal, timer, typeValue } = this.state;
 
         if (loadMore !== 0 && buildingPage > buildingTotal) return;
 
@@ -318,7 +320,7 @@ class PackageTest extends Component {
             if (envList) {
                 try {
                     const target = JSON.parse(envList).filter((item) => {
-                        return item.id == envId;
+                        return item.id === envId;
                     })
                     envName = target[0].name;
                     passwdBuild = target[0].passwdBuild;
@@ -365,7 +367,7 @@ class PackageTest extends Component {
     }
 
     render() {
-        const { breadcrumbPath, modalVisible, modalConfirmLoading, modalType, formDataName, formDataBranch, fromDataMail, formDataDesc, formDataWiki, formDataReDesc, formDataUser, formDataPassword, branchList, typeValue, typeList, envId, envName, passwdBuild, versionList, versionPage, versionTotal, buildingLoading, buildingList, failureLoading, failurePage, failureTotal, failureList } = this.state;
+        const { breadcrumbPath, modalVisible, modalConfirmLoading, modalType, formDataName, formDataBranch, fromDataMail, formDataDesc, formDataWiki, formDataReDesc, formDataUser, formDataPassword, branchList, typeValue, typeList, envId, passwdBuild, versionList, versionPage, versionTotal, buildingLoading, buildingList, failureLoading, failureList } = this.state;
 
         return (
             <div className="package">
@@ -489,7 +491,7 @@ class PackageTest extends Component {
                                 {
                                     buildingList.map((item, index) => {
                                         return <div className="package-item" key={index}>
-                                                    <img src={require('@/assets/favicon.ico')} />
+                                                    <img src={favicon} />
                                                     <h2>正在构建</h2>
                                                     <p>
                                                         <span title={item.buildId}><i>buildId:</i>{item.buildId}</span>
@@ -539,7 +541,7 @@ class PackageTest extends Component {
                                 {
                                     failureList.map((item, index) => {
                                         return <div className="package-item" key={index}>
-                                                    <img src={require('@/assets/favicon.ico')} />
+                                                    <img src={favicon} />
                                                     <h2>失败原因：{item.failedReason}</h2>
                                                     <p>
                                                         <span title={item.buildId}><i>buildId:</i>{item.buildId}</span>

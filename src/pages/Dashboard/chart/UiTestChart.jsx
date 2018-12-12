@@ -1,18 +1,10 @@
 import React from "react";
 import {
-  G2,
   Chart,
   Geom,
   Axis,
   Tooltip,
-  Coord,
-  Label,
-  Legend,
-  View,
-  Guide,
-  Shape,
-  Facet,
-  Util
+  Legend
 } from "bizcharts";
 
 class UiTestChart extends React.Component {

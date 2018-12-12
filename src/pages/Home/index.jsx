@@ -2,14 +2,13 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Input, Icon, Table, Modal, Form, Radio, message } from 'antd';
 
-import { reqPost, reqGet } from '@/api/api';
+import { reqPost } from '@/api/api';
 import './index.scss';
 
 const Search = Input.Search;
 const FormItem = Form.Item;
 const TextArea = Input.TextArea;
 const RadioGroup = Radio.Group;
-const QRCode = require('qrcode.react')
 
 class Home extends Component{
   constructor(){

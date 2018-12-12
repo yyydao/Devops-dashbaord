@@ -1,18 +1,10 @@
 import React from "react";
 import {
-  G2,
   Chart,
   Geom,
   Axis,
   Tooltip,
-  Coord,
-  Label,
-  Legend,
-  View,
-  Guide,
-  Shape,
-  Facet,
-  Util
+  Legend
 } from "bizcharts";
 
 class CpuChart extends React.Component {
@@ -56,6 +48,7 @@ class CpuChart extends React.Component {
                     if(item.name.indexOf('内存')>-1){
                       item.value=item.value+"MB"
                     }
+                    return item
                   })
                 }}>
             <Legend />

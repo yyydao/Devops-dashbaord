@@ -159,7 +159,8 @@ class PipelinePackage extends Component {
       const fileType = item.fileType
       const taskID = item.taskID
     dataList.map(item=>{
-      item.active=item.buildID===buildID?true:false
+      item.active = item.buildID === buildID ? true : false;
+      return item
     })
     this.setState({
         dataList,

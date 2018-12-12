@@ -3,7 +3,7 @@ import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {Breadcrumb, message, Button, Checkbox} from 'antd';
 
-import {reqPost, reqGet, checkPermission} from '@/api/api';
+import {reqPost, reqGet} from '@/api/api';
 import './index.scss'
 
 const BreadcrumbItem = Breadcrumb.Item;
@@ -57,28 +57,32 @@ class NoticeManager extends Component {
         //判断每个任务模板是否全选
         res.data.taskTemplate.noticeTemplates.map(item => {
           if (!item.remind) {
-            return
+            return item
           }
           let selectAll = true
           item.contentItems.map(item1 => {
             if (!item1.checked) {
               selectAll = false
             }
+            return item1
           })
           item.selectAll = selectAll
+          return item
         })
         //判断每个环境模板是否全选
         res.data.envTemplate.noticeTemplates.map(item => {
           if (!item.remind) {
-            return
+            return item
           }
           let selectAll1 = true
           item.contentItems.map(item1 => {
             if (!item1.checked) {
               selectAll1 = false
             }
+            return item1
           })
           item.selectAll = selectAll1
+          return item
         })
         this.setState({
           taskTemplate: res.data.taskTemplate.noticeTemplates,
@@ -188,6 +192,7 @@ class NoticeManager extends Component {
           if (!item.checked) {
             isAll = true
           }
+          return item
         })
         if (!isAll) {
           envTemplate[index].selectAll = true
@@ -207,6 +212,7 @@ class NoticeManager extends Component {
           if (!item.checked) {
             isAll = true
           }
+          return item
         })
         if (!isAll) {
           taskTemplate[index].selectAll = true
@@ -234,9 +240,11 @@ class NoticeManager extends Component {
         if (item1.checked) {
           contentItems.push(item1.code)
         }
+        return item1
       })
       item.contentItem = contentItems.join(',')
       delete item.contentItems
+      return item
     })
 
     let uploadObj={}
@@ -331,6 +339,8 @@ class NoticeManager extends Component {
                   {envPreviewData.contentItems.map((item, index) => {
                     if (item.checked) {
                       return <p key={index}>{item.name}：{envValue[item.code]}</p>
+                    }else{
+                      return false
                     }
                   })
                   }{
@@ -409,6 +419,8 @@ class NoticeManager extends Component {
                   {taskPreviewData.contentItems.map((item, index) => {
                     if (item.checked) {
                       return <p key={index}>{item.name}：{taskValue[item.code]}</p>
+                    }else{
+                      return false
                     }
                   })
                   }{

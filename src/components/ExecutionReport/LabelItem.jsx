@@ -1,12 +1,7 @@
 
 import React, { Component } from 'react';
-import { Input, Popconfirm, Button } from 'antd';
 
 export default class Edit extends Component{
-  constructor(){
-    super();
-  }
-
   render(){
     const {label,children} = this.props
     return(

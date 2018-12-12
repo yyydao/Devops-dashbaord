@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Breadcrumb, Row, Col, Tag, Button, message, Divider, Select, Card, Modal } from 'antd';
+import { Breadcrumb, Row, Col, Tag, Button, message, Select, Card } from 'antd';
 
-import PipelineChart from './chart/PipelineChart';
 import PipelineChart1 from './chart/PipelineChart1';
 import UnitTestChart from './chart/UnitTestChart';
 import UiTestChart from './chart/UiTestChart';
 import PackageChart from './chart/PackageChart';
 import FluencyChart from './chart/FluencyChart';
 import CpuChart from './chart/CpuChart';
-import { reqPost, reqGet} from '@/api/api';
+import { reqGet } from '@/api/api';
 import './index.scss';
 import DataSet from "@antv/data-set";
 import { setProjectId } from '@/store/action';
@@ -109,8 +108,12 @@ class Dashboard extends Component{
     }).then((res) => {
       if (res.code === 0) {
         res.data.unitTestMonitors.map(item=>item.sqaleValue=parseFloat(item.sqaleValue))
-        const type=[,'源码','加固','补丁']
-        res.data.packageBodyMonitors.map(item=>{item.appFileSize=parseFloat(item.appFileSize);item.name=type[item.packageType]})
+        const type=['','源码','加固','补丁']
+        res.data.packageBodyMonitors.map(item=>{
+          item.appFileSize=parseFloat(item.appFileSize)
+          item.name=type[item.packageType]
+          return item
+        })
         this.dealUiData(res.data)
       }
     })
@@ -138,22 +141,6 @@ class Dashboard extends Component{
    *  @param data 仪表盘数据
    */
   dealCpuData = (data) =>{
-    let dat=[
-      {
-        cpuAverage:'19.25%',
-        createTime:'2018-10-26 09:58:38.0',
-        memoryAverage:'227.43MB',
-        memoryMax:'309.0MB',
-        cpuMax:'36.2%'
-      },
-      {
-        cpuAverage:'39.25%',
-        createTime:'2018-10-24 09:58:38.0',
-        memoryAverage:'127.43MB',
-        memoryMax:'109.0MB',
-        cpuMax:'72.2%'
-      },
-    ]
     let cData=[]
     data.cpuMemoryAnalysis.map(item=>{
       for(let i in item){
@@ -190,6 +177,7 @@ class Dashboard extends Component{
           })
         }
       }
+      return item
     })
     data.cpuMemoryAnalysis = cData
     this.dealFluencyData(data)
@@ -199,20 +187,6 @@ class Dashboard extends Component{
    *  @param data 仪表盘数据
    */
   dealFluencyData = (data) =>{
-    let dat=[
-      {
-        smAverage:'58帧/s',
-        createTime:'2018-10-26 09:58:38.0',
-        coldStartTime:'0.847秒',
-        smMin:'9帧/s',
-      },
-      {
-        smAverage:'42帧/s',
-        createTime:'2018-10-27 09:58:38.0',
-        coldStartTime:'10秒',
-        smMin:'12帧/s',
-      }
-    ]
     let cData=[]
     data.fluentColdStartTimeAnalysis.map(item=>{
       for(let i in item){
@@ -238,6 +212,7 @@ class Dashboard extends Component{
           })
         }
       }
+      return item
     })
     data.fluentColdStartTimeAnalysis = cData
     this.setState({monitorData:data})
