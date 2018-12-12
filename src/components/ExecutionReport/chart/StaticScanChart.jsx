@@ -6,15 +6,6 @@ import FanChart from './FanChart'
 class StaticScanChart extends React.Component {
   render() {
     const { data } = this.props
-
-    const cols = {
-      percent: {
-        formatter: val => {
-          val = val * 100 + "%";
-          return val;
-        }
-      }
-    };
     return (
         <Card  title="静态扫描" style={{marginTop: 30}}>
           <Row>

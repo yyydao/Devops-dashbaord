@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Breadcrumb, Row, Col, Tag, Button, message, Divider, Select, Card, Modal } from 'antd';
+import { Breadcrumb, Row, Col, Tag, Button, message, Select, Card } from 'antd';
 
-import PipelineChart from './chart/PipelineChart';
 import PipelineChart1 from './chart/PipelineChart1';
 import UnitTestChart from './chart/UnitTestChart';
 import UiTestChart from './chart/UiTestChart';
 import PackageChart from './chart/PackageChart';
 import FluencyChart from './chart/FluencyChart';
 import CpuChart from './chart/CpuChart';
-import { reqPost, reqGet} from '@/api/api';
+import { reqGet } from '@/api/api';
 import './index.scss';
 import DataSet from "@antv/data-set";
 import { setProjectId } from '@/store/action';
@@ -110,7 +109,11 @@ class Dashboard extends Component{
       if (res.code === 0) {
         res.data.unitTestMonitors.map(item=>item.sqaleValue=parseFloat(item.sqaleValue))
         const type=[,'源码','加固','补丁']
-        res.data.packageBodyMonitors.map(item=>{item.appFileSize=parseFloat(item.appFileSize);item.name=type[item.packageType]})
+        res.data.packageBodyMonitors.map(item=>{
+          item.appFileSize=parseFloat(item.appFileSize)
+          item.name=type[item.packageType]
+          return item
+        })
         this.dealUiData(res.data)
       }
     })

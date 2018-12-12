@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { reqPost, reqGet } from '@/api/api';
 import './list.scss';
+import favicon from '@/assets/favicon.ico';
 
 import BuildTestPackageDetail from './detail'
 
@@ -89,7 +90,7 @@ class BuildTestPackage extends Component {
     reqGet('package/envselect', {projectID:projectId}).then(res => {
       if (res.code === 0) {
         let id=''
-        res.data.map(item=>{if(item.name==="测试环境"){id=item.id}})
+        res.data.map(item =>{if(item.name==="测试环境"){id=item.id} return item})
         this.setState({
           envList:res.data,
           envID:id//默认为测试环境
@@ -205,7 +206,8 @@ class BuildTestPackage extends Component {
   onListItemClick = (buildID) =>{
     let dataList = this.state.dataList
     dataList.map(item=>{
-      item.active=item.buildID===buildID?true:false
+      item.active = item.buildID===buildID?true:false
+      return item
     })
     this.setState({dataList,currentBuild:buildID})
   }
@@ -232,7 +234,7 @@ class BuildTestPackage extends Component {
       type: 0,
       envId: envID
     }).then((res) => {
-      if (res.code != 0) {
+      if (res.code !== 0) {
         Modal.info({
           title: '提示',
           content: (
@@ -257,8 +259,9 @@ class BuildTestPackage extends Component {
     }).then(res => {
       if (res.code === 0) {
         let mentionList=[]
-        res.data.map(item=>{
+        res.data.map(item =>{
           mentionList.push(item.name)
+          return item
         })
         this.setState({mentionList})
       } else {
@@ -325,6 +328,7 @@ class BuildTestPackage extends Component {
         if(item.id===e){
           newState['passwdBuild']=item.passwdBuild
         }
+        return item
       })
     }
     newState[name] = e;
@@ -332,7 +336,7 @@ class BuildTestPackage extends Component {
   }
 
   addBuild = () => {
-    const { formDataEnvID, passwdBuild, formDataName, formDataBranch, fromDataMail, formDataDesc, formDataWiki, formDataReDesc, formDataUser, formDataPassword,dingTalk} = this.state;
+    const { formDataEnvID, passwdBuild, formDataName, formDataBranch, formDataDesc, formDataWiki, formDataReDesc, formDataUser, formDataPassword,dingTalk} = this.state;
     const url = '/package/addSubmit'
 
     if(!formDataEnvID){
@@ -379,7 +383,7 @@ class BuildTestPackage extends Component {
     }).then((res) => {
       this.toggleBuildModal(false);
 
-      if (res.code == 0) {
+      if (res.code === 0) {
         message.success("新增提测成功")
         this.getPackageList();
       } else {
@@ -565,7 +569,7 @@ class BuildTestPackage extends Component {
                                   key={index}
                                   style={{background:item.active?"#eee":"#fff"}}
                                   onClick={()=>{this.onListItemClick(item.buildID)}}>
-                          <img src={item.iconPath||require('@/assets/favicon.ico')} />
+                          <img src={item.iconPath|| favicon } />
                           <p>
                             {fileName}
                             <span style={{paddingLeft:8}}>buildId：{item.buildID}</span><br/>

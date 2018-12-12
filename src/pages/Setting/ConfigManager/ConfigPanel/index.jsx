@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, Tree, Switch, Button, Checkbox} from 'antd';
+import { Card, Tree, Switch, Button} from 'antd';
 import Edit from '@/pages/Setting/ConfigManager/Edit';
 
 const TreeNode = Tree.TreeNode;

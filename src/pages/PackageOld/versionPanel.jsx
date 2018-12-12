@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import { reqPost, reqGet } from '@/api/api' ;
+import { reqGet } from '@/api/api' ;
 import PanelContent from './panelContent';
 
 import { Collapse, Icon } from 'antd';
