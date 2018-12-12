@@ -1,55 +1,85 @@
 
 
 .home-card{
-    position: absolute;
-    top: 64px;
-    left: 0;
-    right: 0;
-    margin: 40px auto 0;
-    width: 1200px;
+  position: absolute;
+  top: 64px;
+  left: 0;
+  right: 0;
+  margin: 48px auto;
+  width: 80%;
+  color:#595959;
 
-    .header{
-        margin-bottom: 20px;
+  .header{
+    margin-bottom: 40px;
 
-        .search{
-            float: left;
-        }
-
-        .actions{
-            float: right;
-            line-height: 32px;
-
-            a{
-                margin-left: 15px;
-                color: rgba(0, 0, 0, .65);
-                cursor: pointer;
-
-                &:hover{
-                    color: #1890ff;
-                }
-            }
-        }
+    .search{
+      float: left;
+      margin-bottom: 0;
     }
+
+    .actions{
+      float: right;
+      line-height: 32px;
+      margin-bottom: 0;
+      a{
+        margin-left: 48px;
+        color: rgba(0, 0, 0, .65);
+        cursor: pointer;
+      }
+    }
+  }
 }
 .qrCode-mask{
-    width: 170px;
-    height: 170px;
-    background: rgba(0,0,0,0.4);
-    position: absolute;
-    top:0px;
-    left: 0;
-    text-align: center;
-    padding-top: 75px;
-    span{
-        display: inline-block;
-        background: #ffffff;
-        height: 20px;
-        line-height: 20px;
-        padding: 0px 8px;
-    }
+  width: 170px;
+  height: 170px;
+  background: rgba(0,0,0,0.4);
+  position: absolute;
+  top:0;
+  left: 0;
+  text-align: center;
+  padding-top: 75px;
+  span{
+    display: inline-block;
+    background: #ffffff;
+    height: 20px;
+    line-height: 20px;
+    padding: 0 8px;
+  }
 }
 .appQRcodeContainer{
-    display: flex;
-    justify-content:center;
-    margin-top:200px;
+  display: flex;
+  justify-content:center;
+  margin-top:200px;
+}
+.person-icon{
+  display: inline-block;
+  height: 32px;
+  line-height: 32px;
+  padding-left: 20px;
+  background-image: url("./../../assets/img/home/index_icon_data.svg");
+  background-repeat: no-repeat;
+  background-size: 14px;
+  background-position: left center;
+}
+.jurisdiction-icon{
+  margin-left: 48px;
+  display: inline-block;
+  height: 32px;
+  line-height: 32px;
+  padding-left: 20px;
+  background-image: url("./../../assets/img/home/index_icon_jurisdiction.svg");
+  background-repeat: no-repeat;
+  background-size: 14px;
+  background-position: left center;
+}
+.user-icon{
+  margin-left: 48px;
+  display: inline-block;
+  height: 32px;
+  line-height: 32px;
+  padding-left: 20px;
+  background-image: url("./../../assets/img/home/index_icon_userset.svg");
+  background-repeat: no-repeat;
+  background-size: 14px;
+  background-position: left center;
 }

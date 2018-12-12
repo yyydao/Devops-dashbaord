@@ -1,21 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { reqPost, reqGet } from '@/api/api' ;
 
 import BuildTestPackage from './BuildTestPackage'
 import PipelinePackage from './PipelinePackage'
 
-import { Breadcrumb, Card, Tabs } from 'antd';
+import { Breadcrumb, Tabs } from 'antd';
 const BreadcrumbItem = Breadcrumb.Item;
 const TabPane = Tabs.TabPane;
 
 
 class Package extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   componentWillMount() {
     console.log(this.props.projectId)
     window.localStorage.setItem('oldProjectId', this.props.projectId);
