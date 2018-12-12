@@ -124,14 +124,14 @@ class SideBar extends Component {
         list.push(this.getMenuList(item.children))
         menuList.push(
           <SubMenu key={`sub${item.id}`}
-                   title={<span><Icon component={MenuIcon[item.name]}/><span>{item.name}</span></span>}>
+                   title={<span><Icon style={{fontSize: '16px'}} component={MenuIcon[item.name]}/><span>{item.name}</span></span>}>
             {list}
           </SubMenu>
         )
       } else {
         menuList.push(
           <MenuItem key={item.id}>
-            <Link to={item.urls}><Icon component={MenuIcon[item.name]}/>{item.name}</Link>
+            <Link to={item.urls}><Icon style={{fontSize: '16px'}}  component={MenuIcon[item.name]}/>{item.name}</Link>
           </MenuItem>
         )
       }
