@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { Button, Modal } from 'antd';
+import { Button } from 'antd';
 
 class panelContent extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            
+
         }
     }
 
@@ -20,20 +20,20 @@ class panelContent extends Component {
     render() {
         return (
             this.props.list.map((item, index) => {
-                let status;
-                switch (item.status) {
-                    case 0:
-                        status = '成功';
-                        break;
-                    case 1:
-                        status = '失败';
-                        break;
-                    case 2:
-                        status = '部分成功';
-                        break;
-                    default:
-                        status = '';
-                }
+                // let status;
+                // switch (item.status) {
+                //     case 0:
+                //         status = '成功';
+                //         break;
+                //     case 1:
+                //         status = '失败';
+                //         break;
+                //     case 2:
+                //         status = '部分成功';
+                //         break;
+                //     default:
+                //         status = '';
+                // }
 
                 return  <div className="package-item" key={index}>
                             <img src={require('@/assets/favicon.ico')} />
