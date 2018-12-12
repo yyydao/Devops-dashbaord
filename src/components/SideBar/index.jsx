@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Menu, Icon, Select, message } from 'antd';
+import { Menu, Icon, Select, message, } from 'antd';
 
 import { reqPost } from '@/api/api';
 import { setPermissionList, setProjectId } from '@/store/action';
@@ -12,8 +12,9 @@ const MenuItem = Menu.Item;
 const Option = Select.Option;
 
 class SideBar extends Component{
-    constructor(){
-        super();
+    constructor(props){
+      console.log(props)
+        super(props);
         this.state = {
             menuList: [],
             projectList: [],
