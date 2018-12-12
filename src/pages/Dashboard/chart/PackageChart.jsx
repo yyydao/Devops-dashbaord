@@ -8,12 +8,8 @@ import {
 } from "bizcharts";
 
 class packageChart extends React.Component {
-  constructor(props) {
-    super(props);
-  }
   render() {
     const { packageData } = this.props
-    const type=[,'源码','加固','补丁']
     const scale = {
       createTime: {
         type: "timeCat",

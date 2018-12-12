@@ -1,13 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
 import { reqPost, reqGet } from '@/api/api'
 
 import {
-  Breadcrumb,
   Button,
-  Spin,
-  Icon,
   Skeleton,
   Modal,
   message,
@@ -21,8 +17,6 @@ import {
 const { TextArea } = Input
 const { Meta } = Card
 const FormItem = Form.Item
-
-const QRCode = require('qrcode.react')
 
 class packageDetail extends Component {
   constructor (props) {
@@ -88,7 +82,7 @@ class packageDetail extends Component {
     reqGet('/package/detail', {
       buildId: this.state.buildId
     }).then((res) => {
-      if (res.code == 0) {
+      if (res.code === 0) {
         const {
           version,
           taskMaster,
@@ -166,7 +160,7 @@ class packageDetail extends Component {
       Modal.info({
         title: '提示',
         content: (
-          <p>{res.code == 0 ? '已成功发起构建' : res.msg}</p>
+          <p>{res.code === 0 ? '已成功发起构建' : res.msg}</p>
         ),
         onOk () {
         }
@@ -183,7 +177,7 @@ class packageDetail extends Component {
       type: 0,
       envId: envID
     }).then((res) => {
-      if (res.code != 0) {
+      if (res.code !== 0) {
         Modal.info({
           title: '提示',
           content: (

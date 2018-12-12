@@ -148,6 +148,7 @@ class PipelineChart1 extends Component {
           areaStyle: {},
           data:item.data
         })
+        return item
       })
     }
     return {

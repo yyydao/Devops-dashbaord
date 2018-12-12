@@ -64,6 +64,7 @@ class NoticeManager extends Component {
             if (!item1.checked) {
               selectAll = false
             }
+            return item1
           })
           item.selectAll = selectAll
           return item
@@ -78,6 +79,7 @@ class NoticeManager extends Component {
             if (!item1.checked) {
               selectAll1 = false
             }
+            return item1
           })
           item.selectAll = selectAll1
           return item
@@ -337,6 +339,8 @@ class NoticeManager extends Component {
                   {envPreviewData.contentItems.map((item, index) => {
                     if (item.checked) {
                       return <p key={index}>{item.name}：{envValue[item.code]}</p>
+                    }else{
+                      return false
                     }
                   })
                   }{
@@ -415,6 +419,8 @@ class NoticeManager extends Component {
                   {taskPreviewData.contentItems.map((item, index) => {
                     if (item.checked) {
                       return <p key={index}>{item.name}：{taskValue[item.code]}</p>
+                    }else{
+                      return false
                     }
                   })
                   }{

@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  G2,
   Chart,
   Geom,
   Axis,
@@ -8,11 +7,9 @@ import {
   Coord,
   Legend,
 } from "bizcharts";
-import DataSet from "@antv/data-set";
 
 class ScoreChart extends React.Component {
   render() {
-    const { DataView } = DataSet;
     const { data } = this.props
     const cols = {
       score: {

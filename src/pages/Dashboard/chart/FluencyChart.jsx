@@ -48,6 +48,7 @@ class FluencyChart extends React.Component {
                      }else{
                        item.value=item.value+"s"
                      }
+                     return item
                    })
                  }}>
             <Legend />

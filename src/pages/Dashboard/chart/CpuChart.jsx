@@ -48,6 +48,7 @@ class CpuChart extends React.Component {
                     if(item.name.indexOf('内存')>-1){
                       item.value=item.value+"MB"
                     }
+                    return item
                   })
                 }}>
             <Legend />
