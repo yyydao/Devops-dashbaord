@@ -41,11 +41,7 @@ class packageChart extends React.Component {
             <Axis name="createTime" title={titles} label={label}/>
             <Axis
                 name="appFileSize"
-                title={{
-                  autoRotate: false,
-                  position: 'end',
-                  offset: 50
-                }}
+                title
                 label={{autoRotate: false}}
             />
             <Tooltip

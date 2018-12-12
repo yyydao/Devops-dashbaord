@@ -1,20 +1,11 @@
 import React from "react";
 import {
-  G2,
   Chart,
   Geom,
   Axis,
   Tooltip,
-  Coord,
-  Label,
-  Legend,
-  View,
-  Guide,
-  Shape,
-  Facet,
-  Util
+  Legend
 } from "bizcharts";
-import DataSet from "@antv/data-set";
 
 class pipelineChart extends React.Component {
   constructor(props) {
@@ -54,11 +45,7 @@ class pipelineChart extends React.Component {
             <Axis name="createTime" title={titles} label={label}/>
             <Axis
                 name="execTime"
-                title={{
-                  autoRotate: false,
-                  position: 'end',
-                  offset: 70
-                }}
+                title
                 label={{autoRotate: false}}
             />
             <Tooltip

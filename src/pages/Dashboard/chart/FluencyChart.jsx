@@ -56,11 +56,7 @@ class FluencyChart extends React.Component {
                   label={{
                     autoRotate: false
                   }}
-                  title={{
-                    autoRotate: false,
-                    position: 'end',
-                    offset: 60
-                  }}
+                  title
             />
             <Axis
                 name="createTime"
