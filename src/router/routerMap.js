@@ -15,10 +15,10 @@ import pipelineTask from '@/pages/Pipeline/addTask'
 import pipelineTaskEdit from '@/pages/Pipeline/editTask'
 
 import Performance from '@/pages/Test/Performance';
-import Package from '@/pages/Package/';
-import Package1 from '@/pages/PackageNew';
-import PackageList from '@/pages/Package/list';
-import PackageDetail from '@/pages/Package/detail';
+import PackageOld from '@/pages/PackageOld/';
+import Package from '@/pages/Package';
+import PackageList from '@/pages/PackageOld/list';
+import PackageDetail from '@/pages/PackageOld/detail';
 import Dashboard from '@/pages/Dashboard'
 import ThirdParty from '@/pages/Setting/ThirdPartyManager'
 import NoticeManager from '@/pages/Setting/NoticeManager'
@@ -80,22 +80,22 @@ export default [
     component: Performance
   },
   {
+    path: '/packageold',
+    name: 'packageold',
+    component: PackageOld
+  },
+  {
     path: '/package',
     name: 'package',
     component: Package
   },
   {
-    path: '/package1',
-    name: 'package1',
-    component: Package1
-  },
-  {
-    path: '/package/:envId',
+    path: '/packageold/:envId',
     name: 'packageList',
     component: PackageList
   },
   {
-    path: '/package/detail/:buildId',
+    path: '/packageold/detail/:buildId',
     name: 'packageDetail',
     component: PackageDetail
   },

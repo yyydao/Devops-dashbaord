@@ -4,6 +4,8 @@ import { connect } from 'react-redux'
 import './index.scss'
 import { reqGet, reqPost } from '@/api/api'
 
+import { differenceArray,removeItemsByValue } from './arrayUtils'
+
 import {
     Breadcrumb,
     Icon,
@@ -15,6 +17,8 @@ import {
     Checkbox,
     message,
     TimePicker,
+    Row,
+    Col,
     Pagination,
     Popconfirm
 } from 'antd'
@@ -22,8 +26,8 @@ import PanelContent from './panelContent'
 
 const BreadcrumbItem = Breadcrumb.Item
 const Panel = Collapse.Panel
+const CheckboxGroup = Checkbox.group
 const Option = Select.Option
-const CheckboxGroup = Checkbox.Group
 
 class Performance extends Component {
     constructor (props) {
@@ -33,11 +37,25 @@ class Performance extends Component {
             addVisible: false,
             addConfirmLoading: false,
             branchList: [],
-            sceneList: [],
-            sceneIndeterminate: false,
+
+            //场景选择-变化选择框
+            changeParentSceneItem: [],
+            //场景选择-全体一级Option
+            parentsSceneList: [],
+            //场景选择-当前二级Option
+            currentChildrenSceneList: [],
+            // 场景选择-全选Indeterminate状态
+            checkAllSceneIndeterminate: false,
+            // 全选
             sceneCheckAll: false,
+            // 场景选择-当前一级id数组
+            currentParentsScene: [],
+            //  场景选择-当前二级id数组
+            currentChildScene: [],
+            // 所有选中子ID
+            chooseSceneID: [],
+
             formDataBranch: null,
-            formDataScene: [],
             formDataTime: '',
 
             taskListVisible: false,
@@ -92,12 +110,12 @@ class Performance extends Component {
 
     //新建构建任务
     addItem = () => {
-        const {typeValue, formDataBranch, formDataScene, formDataTime} = this.state
-
+        const {typeValue, formDataBranch, chooseSceneID, formDataTime} = this.state
+        console.log(chooseSceneID)
         if (!formDataBranch) {
             message.error('请选择“开发分支”')
             return
-        } else if (formDataScene.length < 1) {
+        } else if (chooseSceneID.length < 1) {
             message.error('请选择“执行场景”')
             return
         } else if (this.state.typeValue === 2 && !formDataTime) {
@@ -109,11 +127,12 @@ class Performance extends Component {
             addConfirmLoading: true
         })
 
+
         reqPost('/task/addSubmit', {
             projectId: Number(this.props.projectId),
             buildType: typeValue,
             branchName: formDataBranch,
-            sceneId: formDataScene.join(','),
+            sceneId: chooseSceneID.join(','),
             fixTime: formDataTime
         }).then(res => {
             this.hideModal()
@@ -148,10 +167,10 @@ class Performance extends Component {
         this.setState({
             addVisible: false,
             addConfirmLoading: false,
-            sceneIndeterminate: false,
+            checkAllSceneIndeterminate: false,
             sceneCheckAll: false,
             formDataBranch: null,
-            formDataScene: [],
+            currentParentsScene: [],
             formDataTime: ''
         })
     }
@@ -202,35 +221,284 @@ class Performance extends Component {
         reqGet('/testScene/list/' + this.props.projectId).then(res => {
             if (res.code == 0) {
                 this.setState({
-                    sceneList: res.data.map(item => {
+                    parentsSceneList: res.data.map(item => {
                         return {
-                            label: item.name,
-                            value: item.id
+                            name: item.name,
+                            id: item.id,
+                            indeterminate: false,
+                            checked: false
                         }
-                    })
+                    }),
+                    sceneData:res.data
+                }, () => {
+                    console.log(this.state.parentsSceneList)
                 })
             }
         })
     }
 
-    //修改选中场景
-    changeScene = (formDataScene) => {
-        this.setState({
-            formDataScene,
-            sceneIndeterminate: !!formDataScene.length && (formDataScene.length < this.state.sceneList.length),
-            sceneCheckAll: formDataScene.length === this.state.sceneList.length
-        })
+    getSceneByCheckAll = () => {
+        let tempArray = []
+        const sceneData = this.state.sceneData
+        for (let i = 0; i < sceneData.length; i++) {
+            const mockDatum = sceneData[i].children
+            for (let j = 0; j < mockDatum.length; j++) {
+                const mockDatumElement = mockDatum[j]
+                tempArray.push(mockDatumElement['id'])
+            }
+        }
+        return tempArray
     }
 
     //全选场景
-    checkAllScene = (e) => {
-        this.setState({
-            formDataScene: e.target.checked ? this.state.sceneList.map(item => {
-                return item.value
-            }) : [],
-            sceneIndeterminate: false,
-            sceneCheckAll: e.target.checked
+    checkAllSceneChange = (e) => {
+        console.log('choose all')
+        const oldList = this.state.parentsSceneList
+        const checked = e.target.checked
+        let resetParentIndeterminateList
+        let chosen
+
+        resetParentIndeterminateList = oldList && oldList.length > 0 && oldList.map(item => {
+            item.indeterminate = false
+            return item
         })
+        if (checked) {
+            chosen = this.getSceneByCheckAll()
+            resetParentIndeterminateList.map(item => {
+                item.checked = true
+                return item
+            })
+        } else {
+            resetParentIndeterminateList.map(item => {
+                item.checked = false
+                return item
+            })
+            chosen = []
+        }
+
+        this.setState({currentChildrenSceneList: []})
+
+        this.setState({
+            currentParentsScene: checked ? this.state.parentsSceneList.map(item => {
+                return item.id
+            }) : [],
+            checkAllSceneIndeterminate: false,
+            sceneCheckAll: e.target.checked,
+            parentsSceneList: resetParentIndeterminateList,
+            chooseSceneID: chosen
+        }, () => {
+            console.log(this.state.currentParentsScene)
+        })
+
+    }
+
+    //@todo:修复选择父级重置
+    //修改选父类中场景
+    changeParentsScene = (currentCheckedItem) => {
+        console.group('changeParentsScene')
+        const sceneData = this.state.sceneData
+        // console.log('choose parents')
+        // console.log(`currentCheckedItem ${currentCheckedItem}`)
+        const previousParentsScene = this.state.currentParentsScene
+        // console.log(`previousParentsScene ${previousParentsScene}`)
+        const previousParentsSceneList = this.state.parentsSceneList
+        const diff = differenceArray(currentCheckedItem, this.state.currentParentsScene)
+        // console.log(`diff ${diff}`)
+        // console.log(`previousParentsSceneList ${JSON.stringify(previousParentsSceneList)}`)
+        let previousChosen = this.state.chooseSceneID || []
+        console.log(`previousChosen ${previousChosen}`)
+
+        let childrenList = sceneData.find(x => x.id + '' === diff.toString())['children']
+        let previousIndeterminate = previousParentsSceneList.find(x => x.id + '' === diff.toString())['indeterminate']
+        // console.log(`previousIndeterminate ${previousIndeterminate}`)
+        let currentChildrenList
+
+        if (currentCheckedItem.length > previousParentsScene.length) {
+            console.log('新增或子项目改变了父项的indeterminate')
+            previousParentsSceneList.map(item => {
+                if (item.id + '' === diff.toString()) {
+                    item.checked = true
+                    item.indeterminate = false
+                }
+                return item
+            })
+            const getChild = childrenList.map(item => item.id)
+            // console.log(`after map previousParentsSceneList ${JSON.stringify(previousParentsSceneList)}`)
+            let finalChosen = previousChosen.concat(getChild)
+            this.setState({
+                parentsSceneList: previousParentsSceneList,
+                currentParentsScene: currentCheckedItem,
+                currentChildScene: getChild,
+                chooseSceneID: finalChosen
+            }, () => {
+                console.log(`chooseSceneID ${this.state.chooseSceneID}`)
+            })
+        } else {
+            console.log('取消indeterminate或者更新checked')
+
+            if (previousIndeterminate) {
+                console.log(`处于子项indeterminate`)
+                console.log(`重置回全选`)
+                previousParentsSceneList.map(item => {
+                    console.log(item.indeterminate)
+                    if (item.id + '' === diff.toString() && item.indeterminate == true) {
+                        item.indeterminate = false
+                        item.checked = true
+                    }
+                    return item
+                })
+                const getChild = childrenList.map(item => item.id)
+                let finalChosen = previousChosen.concat(getChild)
+                console.log(finalChosen)
+                let chosenSet = new Set(finalChosen)
+                console.log('chosenSet')
+                console.dir(chosenSet)
+                this.setState({
+                    parentsSceneList: previousParentsSceneList,
+                    // 父场景无变化
+                    currentParentsScene: previousParentsScene,
+                    currentChildScene: getChild,
+                    chooseSceneID: [...chosenSet]
+                }, () => {
+                    console.log(`chooseSceneID ${this.state.chooseSceneID}`)
+                })
+            } else {
+                console.log('取消diff checked')
+                console.log(`无indeterminate`)
+                previousParentsSceneList.map(item => {
+                    if (item.id + '' === diff.toString() && item.indeterminate !== true) {
+                        item.checked = false
+                    }
+                    return item
+                })
+                const shouldRemoveChild = childrenList.map(item => item.id)
+                console.log(shouldRemoveChild)
+                console.log(previousChosen)
+                const afterRemoveChoose = differenceArray(previousChosen, shouldRemoveChild)
+                console.log(afterRemoveChoose)
+                this.setState({
+                    parentsSceneList: previousParentsSceneList,
+                    currentParentsScene: currentCheckedItem,
+                    currentChildScene: [],
+                    chooseSceneID: afterRemoveChoose
+                }, () => {
+                    console.log(`chooseSceneID ${this.state.chooseSceneID}`)
+                })
+            }
+
+        }
+        let indeterminateList = [], hasIndeterminate, checkAllIndeterminateStatus
+        for (let i = 0; i < this.state.parentsSceneList.length; i++) {
+            const parentsSceneElement = this.state.parentsSceneList[i]
+            indeterminateList.push(parentsSceneElement.indeterminate)
+        }
+        // console.log(`indeterminateList ${indeterminateList}`)
+        hasIndeterminate = indeterminateList.includes(true)
+        if (currentCheckedItem.length === 0) {
+            checkAllIndeterminateStatus = false
+        } else {
+            checkAllIndeterminateStatus = hasIndeterminate || currentCheckedItem.length < this.state.parentsSceneList.length
+        }
+        this.setState({
+
+            checkAllSceneIndeterminate: checkAllIndeterminateStatus,
+            sceneCheckAll: !hasIndeterminate && currentCheckedItem.length === this.state.parentsSceneList.length,
+            changeParentSceneItem: diff,
+            currentChildrenSceneList: childrenList,
+
+        }, () => {
+
+            console.dir(this.state.parentsSceneList)
+            console.groupEnd()
+        })
+    }
+    //修改选中子类场景
+    childSceneChangeScene = (currentChildScene) => {
+        console.group('childSceneChangeScene')
+        console.log(`currentChildScene ${currentChildScene}`)
+        // 改变的父项 []
+        const changeParentSceneItem = this.state.changeParentSceneItem
+        //
+        const fullCurrentChildScene = this.state.currentChildrenSceneList.map(item => item.id)
+        console.log(`fullCurrentChildScene ${fullCurrentChildScene}`)
+        // 未选中子项
+        let notChooseChildScene
+        // 父项options
+        let parentSceneList = this.state.parentsSceneList
+        // 当前 Indeterminate
+        let currentIndeterminate = currentChildScene.length > 0 && (currentChildScene.length < this.state.currentChildrenSceneList.length)
+        // 旧选中子项ID
+        let previousChosen = this.state.chooseSceneID || []
+        let finalChangeChoose
+        // 缓存改变后父场景
+        let currentParentsScene = []
+        let indeterminateList = [], //父级indeterminate 查找表
+            parentsCheckList = [], // 父级 checked    查找表
+            hasIndeterminate,     // 父级是否存在 Indeterminate
+            parentsCheckListHasFalse // 父级是否存在 check 为false
+
+        //改变相应父级
+        parentSceneList.map(item => {
+            if (item.id + '' === changeParentSceneItem.toString()) {
+                item.indeterminate = currentIndeterminate
+                item.checked = currentChildScene.length === this.state.currentChildrenSceneList.length
+            }
+            return item
+        })
+
+        notChooseChildScene = differenceArray(currentChildScene, fullCurrentChildScene)
+        console.log(`未选中子项 ${notChooseChildScene}`)
+        console.log(`原有全部子项 ${previousChosen}`)
+        if (notChooseChildScene.length > 0) {
+            console.log('移除了子项')
+            if(previousChosen.length === 0){
+                console.log('原有全部子项为空')
+                finalChangeChoose = currentChildScene
+            }else{
+                finalChangeChoose = removeItemsByValue(previousChosen,notChooseChildScene )
+            }
+
+        } else {
+            console.log('新加了子项')
+            let finalChosen = previousChosen.concat(currentChildScene)
+            console.log(finalChosen)
+            let chosenSet = new Set(finalChosen)
+            console.log('chosenSet')
+            console.dir(chosenSet)
+            finalChangeChoose = [...chosenSet]
+        }
+        console.log(`修改后全部子项 ${finalChangeChoose}`)
+        for (let i = 0; i < parentSceneList.length; i++) {
+            const parentSceneListElement = parentSceneList[i]
+            if (parentSceneListElement.checked || parentSceneListElement.indeterminate) {
+                currentParentsScene.push(parentSceneListElement['id'])
+            }
+        }
+
+        for (let i = 0; i < this.state.parentsSceneList.length; i++) {
+            const parentsSceneElement = this.state.parentsSceneList[i]
+            indeterminateList.push(parentsSceneElement.indeterminate)
+            parentsCheckList.push(parentsSceneElement.checked)
+        }
+        // console.log(`indeterminateList ${indeterminateList}`)
+        // console.log(`currentParentsScene ${currentParentsScene}`)
+        hasIndeterminate = indeterminateList.includes(true)
+        parentsCheckListHasFalse = parentsCheckList.includes(false)
+
+        this.setState({
+            checkAllSceneIndeterminate: hasIndeterminate || (currentParentsScene.length > 0 && currentParentsScene.length < this.state.parentsSceneList.length),
+            currentParentsScene: currentParentsScene,
+            parentsSceneList: parentSceneList,
+            currentChildScene: currentChildScene,
+            childSceneIndeterminate: !!currentChildScene && (currentChildScene.length < this.state.currentChildrenSceneList.length),
+            sceneCheckAll: !parentsCheckListHasFalse,
+            chooseSceneID: finalChangeChoose
+        }, () => {
+            console.log(`final chose ${this.state.chooseSceneID}`)
+            console.dir(this.state.parentsSceneList)
+            console.groupEnd()
+        })
+
     }
 
     //修改新建定时时间
@@ -402,7 +670,6 @@ class Performance extends Component {
         this.getList('successList')
         this.getList('failureList')
         this.getList('buildingList')
-
         this.setState({
             timerStart: new Date().getTime()
         })
@@ -413,12 +680,116 @@ class Performance extends Component {
     }
 
     render () {
-        const {addVisible, addConfirmLoading, branchList, typeValue, sceneIndeterminate, sceneCheckAll, sceneList, formDataScene, taskListVisible, taskList, taskListTotalCount, typeList, buildingList, successList, failureList, formDataBranch} = this.state
+        const {
+            branchList,
+            addVisible,
+            addConfirmLoading,
+            typeValue,
+            checkAllSceneIndeterminate,
+            sceneCheckAll,
+            parentsSceneList,
+            currentParentsScene,
+            currentChildScene,
+            taskListVisible,
+            taskList,
+            taskListTotalCount,
+            typeList, buildingList, successList, failureList, formDataBranch
+        } = this.state
 
         return (
             <div className="performance">
                 <Modal title="新增提测性能测试"
                        visible={addVisible}
+                       centered
+                       onOk={this.addItem}
+                       confirmLoading={addConfirmLoading}
+                       onCancel={this.hideModal}
+                       maskClosable={false}
+                       destroyOnClose={true}
+                       width={720}
+                >
+                    <div className="performance-modal-item">
+                        <label className="performance-modal-item-label">开发分支：</label>
+                        <div className="performance-modal-item-content">
+                            <Select placeholder="开发分支"
+                                    onChange={this.changeBranch}
+                                    style={{width: 300}}
+                                    showSearch
+                                    value={formDataBranch}
+                                    onSearch={this.getBranchList}
+                                    onChange={this.changeBranch}>
+                                {
+                                    branchList.map((item) => {
+                                        return <Option value={item.name} key={item.id}
+                                                       title={item.name}>{item.name}</Option>
+                                    })
+                                }
+                            </Select>
+                        </div>
+                    </div>
+
+                    {
+                        typeValue === 2 && <div className="performance-modal-item">
+                            <label className="performance-modal-item-label">定时时间：</label>
+                            <div className="performance-modal-item-content">
+                                {
+                                    addVisible && <TimePicker onChange={this.changeTime}/>
+                                }
+                            </div>
+                        </div>
+                    }
+
+                    <div className="performance-modal-item">
+                        <label className="performance-modal-item-label">执行场景：</label>
+                        <br/>
+                        <Checkbox
+                            indeterminate={checkAllSceneIndeterminate}
+                            onChange={this.checkAllSceneChange}
+                            checked={sceneCheckAll}
+                        >
+                            全部
+                        </Checkbox>
+                        <Checkbox.Group
+                            // options={parentsSceneList}
+                            style={{width: '100%'}}
+                            value={currentParentsScene} onChange={this.changeParentsScene}>
+
+                            <Row>
+                                {
+                                    parentsSceneList.map((item, index) => {
+                                        return <Col key={index} span={8}> <Checkbox
+                                            indeterminate={item.indeterminate}
+                                            key={index}
+                                            value={item.id}
+                                        >
+                                            {item.name}</Checkbox></Col>
+                                    })
+                                }
+                            </Row>
+                        </Checkbox.Group>
+                        <Checkbox.Group
+                            style={{width: '100%', background: '#eee'}}
+                            value={currentChildScene}
+                            onChange={this.childSceneChangeScene}
+                        >
+                            <Row>
+                                {
+                                    this.state.currentChildrenSceneList.map((item, index) => {
+                                        return <Col style={{padding: '20px'}}
+                                                    key={index}
+                                                    span={8}><Checkbox
+                                            value={item.id}
+                                        >
+                                            {item.name}</Checkbox></Col>
+                                    })
+                                }
+                            </Row>
+                        </Checkbox.Group>
+                    </div>
+                </Modal>
+
+                <Modal title="新增提测性能测试"
+                       visible={false}
                        onOk={this.addItem}
                        confirmLoading={addConfirmLoading}
                        onCancel={this.hideModal}
@@ -460,13 +831,14 @@ class Performance extends Component {
                         <label className="performance-modal-item-label">执行场景：</label>
                         <div className="performance-modal-item-content performance-modal-checkbox-group">
                             <Checkbox
-                                indeterminate={sceneIndeterminate}
-                                onChange={this.checkAllScene}
+                                indeterminate={checkAllSceneIndeterminate}
+                                onChange={this.checkAllSceneChange}
                                 checked={sceneCheckAll}
                             >
                                 全部
                             </Checkbox>
-                            <CheckboxGroup options={sceneList} value={formDataScene} onChange={this.changeScene}/>
+                            {/*<CheckboxGroup options={parentsSceneList} value={currentParentsScene}*/}
+                            {/*onChange={this.changeParentsScene}/>*/}
                         </div>
                     </div>
                 </Modal>
