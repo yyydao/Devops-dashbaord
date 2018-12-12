@@ -60,15 +60,6 @@ function composeSingless (dataSource) {
     }
     singleRules[stepCategoryID](dataSource)
     return data
-    // if(oldFinalStep[0][0] === "1"){
-    //     oldFinalStep.splice(1,0,["2",[]],["3",[]])
-    // }else if(oldFinalStep[0][0] === "2"){
-    //     oldFinalStep.splice(0,0,["1",[]])
-    //     oldFinalStep.splice(2,0,["3",[]])
-    // }else if(oldFinalStep[0][0] === "3"){
-    //     oldFinalStep.splice(1,0,["2",[]])
-    //     oldFinalStep.splice(2,0,["3",[]])
-    // }
 }
 
 function composePair (dataSource) {
@@ -77,6 +68,7 @@ function composePair (dataSource) {
         const oldFinalStepElement = dataSource[i]
         tempSum += oldFinalStepElement[0] * 1
     }
+    /*eslint-disable default-case*/
     switch (tempSum) {
         case 3:
             dataSource.splice(2, 0, ['3', []])
@@ -97,38 +89,6 @@ function composePair (dataSource) {
  * @returns {Array} [[stepCategory,[...stepItem]],[]]
  */
 export function composeCompleteStep ( incompleteDDA) {
-    // if (oldFinalStep.length === 0) {
-    //     oldFinalStep = [['1', []],
-    //         ['2', []],
-    //         ['3', []]]
-    // } else if (oldFinalStep.length === 1) {
-    //     if (oldFinalStep[0][0] === '1') {
-    //         oldFinalStep.splice(1, 0, ['2', []], ['3', []])
-    //     } else if (oldFinalStep[0][0] === '2') {
-    //         oldFinalStep.splice(0, 0, ['1', []])
-    //         oldFinalStep.splice(2, 0, ['3', []])
-    //     } else if (oldFinalStep[0][0] === '3') {
-    //         oldFinalStep.splice(1, 0, ['2', []])
-    //         oldFinalStep.splice(2, 0, ['3', []])
-    //     }
-    // } else if (oldFinalStep.length === 2) {
-    //     let tempSum = 0
-    //     for (let i = 0; i < oldFinalStep.length; i++) {
-    //         const oldFinalStepElement = oldFinalStep[i]
-    //         tempSum += oldFinalStepElement[0] * 1
-    //     }
-    //     switch (tempSum) {
-    //         case 3:
-    //             oldFinalStep.splice(2, 0, ['3', []])
-    //             break
-    //         case 4:
-    //             oldFinalStep.splice(1, 0, ['2', []])
-    //             break
-    //         case 5:
-    //             oldFinalStep.splice(0, 0, ['1', []])
-    //             break
-    //     }
-    // }
     const stepLength = incompleteDDA.length
     return composeRules[stepLength](incompleteDDA)
 }

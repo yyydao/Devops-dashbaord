@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@antv/data-set": "^0.9.1",
+    "@svgr/webpack": "^4.1.0",
     "antd": "^3.11.0",
     "autoprefixer": "7.1.6",
     "axios": "^0.18.0",

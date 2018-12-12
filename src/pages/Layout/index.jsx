@@ -82,7 +82,7 @@ class Layout extends Component{
 
         return(
             <div className="layout">
-                <Header userInfo={this.state.userInfo} />
+                <Header userInfo={this.state.userInfo} showSideBar={sideBarShow} />
 
                 { sideBarShow && <SideBar projectIdChange={this.projectIdChange} pathName={this.props.location.pathname} /> }
 
