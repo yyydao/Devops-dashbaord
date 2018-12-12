@@ -17,72 +17,6 @@ class PipelineChart1 extends Component {
   }
   componentDidMount() {
     this.initChart();
-    // const {id,pipeLineData}=this.props
-    // console.log(pipeLineData)
-    // 基于准备好的dom，初始化echarts实例
-
-    // var chart = echarts.init(document.getElementById(id));
-    // chart.clear();
-    // let option ={
-    //   tooltip : {
-    //     trigger: 'axis',
-    //     axisPointer: {
-    //       type: 'cross',
-    //       label: {
-    //         backgroundColor: '#6a7985'
-    //       }
-    //     },
-    //     formatter: function (params) {
-    //       console.log(params)
-    //       let res=`<div><p>${params[0].data[0]}</p></div>`
-    //       for(var i=0;i<params.length;i++){
-    //         res+=`<p>${params[i].seriesName}(${type[params[i].data[2]]}):<span style="padding-left: 16px">${params[i].data[1]}s</span></p>`
-    //       }
-    //       return res;
-    //     }
-    //   },
-    //   legend: {
-    //     data:[]
-    //   },
-    //   grid: {
-    //     left: '3%',
-    //     right: '4%',
-    //     bottom: '3%',
-    //     containLabel: true
-    //   },
-    //   xAxis : [
-    //     {
-    //       type : 'time',
-    //       boundaryGap : false
-    //     }
-    //   ],
-    //   yAxis : [
-    //     {
-    //       type : 'value'
-    //     }
-    //   ],
-    //   series : [
-    //     {
-    //       name:'代码拉取',
-    //       type:'line',
-    //       stack: '总量',
-    //       areaStyle: {},
-    //       data:[
-    //           ["2018-11-15 17:46:33.0",20,1],["2018-11-15 17:47:33.0",200,2],["2018-11-15 17:49:33.0",20,3],["2018-11-15 17:50:33.0",20,4]
-    //       ]
-    //     },
-    //     {
-    //       name:'联盟广告',
-    //       type:'line',
-    //       stack: '总量',
-    //       areaStyle: {},
-    //       data:[
-    //         ["2018-11-15 17:46:33.0",50,1],["2018-11-15 17:47:33.0",10,2],["2018-11-15 17:49:33.0",202,3],["2018-11-15 17:50:33.0",120,4]
-    //       ]
-    //     }
-    //   ]
-    // }
-    // chart.setOption(option);
   }
   componentDidUpdate() {
     this.initChart();
@@ -100,7 +34,7 @@ class PipelineChart1 extends Component {
         theTime1 = parseInt(theTime1%60, 0)
       }
     }
-    var result = ""+parseInt(theTime, 0)+"s";
+    let result = ""+parseInt(theTime, 0)+"s";
     if(theTime1 > 0) {
       result = ""+parseInt(theTime1, 0)+"''"+result;
     }
@@ -110,19 +44,13 @@ class PipelineChart1 extends Component {
     return result;
   }
   zeroize = (value, length) =>{
-
     if (!length) length = 2;
-
     value = String(value);
-
-    for (var i = 0, zeros = ''; i < (length - value.length); i++) {
-
+    let zeros = ''
+    for (let i = 0; i < (length - value.length); i++) {
       zeros += '0';
-
     }
-
     return zeros + value;
-
   }
 
   initChart = () =>{
@@ -146,7 +74,10 @@ class PipelineChart1 extends Component {
           type:'line',
           stack: '总量',
           areaStyle: {},
-          data:item.data
+          data:item.data,
+          markPoint:{
+            symbolSize:5
+          }
         })
         return item
       })
@@ -154,16 +85,23 @@ class PipelineChart1 extends Component {
     return {
       tooltip : {
         trigger: 'axis',
-        axisPointer: {
-          type:'cross',
-          label: {
-            backgroundColor: '#6a7985'
-          }
+        backgroundColor:'rgba(255,255,255, 0.95)',
+        extraCssText: 'box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);',
+        textStyle:{
+          color:"#595959"
         },
+        // axisPointer: {
+        //   type:'cross',
+        //   label: {
+        //     backgroundColor: '#6a7985'
+        //   }
+        // },
         formatter: (params) =>{
-          let res=`<div><p style="font-size: 12px">${params[0].data[0]}</p></div>`
+          let res=`<div><p style="font-size: 12px;margin-bottom: 4px">${params[0].data[0]}</p></div>`
           for(let i=0;i<params.length;i++){
-            res+=`<p style="width: 180px;font-size: 12px">${params[i].marker}${params[i].seriesName}(${type[params[i].data[2]]}):<span style="float:right;padding-right: 8px">${this.formatSeconds(params[i].data[1])}</span></p>`
+            let marker=params[i].marker.split(":10")
+            let markerString=marker.join(":6")
+            res+=`<p style="width: 180px;font-size: 12px;margin-bottom: 0px">${markerString}${params[i].seriesName}(${type[params[i].data[2]]}):<span style="float:right;padding-right: 8px">${this.formatSeconds(params[i].data[1])}</span></p>`
           }
           return res;
         }
@@ -186,13 +124,30 @@ class PipelineChart1 extends Component {
               var date = new Date(value);
               return `${this.zeroize(date.getMonth() + 1)}-${this.zeroize(date.getDate())}\n${this.zeroize(date.getHours())}:${this.zeroize(date.getMinutes())}`;
             }
+          },
+          axisLine:{
+            lineStyle:{
+              color:"#ccc",
+              width:2
+            }
           }
-          // boundaryGap : false
         }
       ],
       yAxis : [
         {
-          type : 'value'
+          type : 'value',
+          axisLine:{
+            show:false,
+          },
+          axisTick:{
+            show:false
+          },
+          splitLine:{
+            lineStyle:{
+              type:"dashed",
+              opacity:0.5
+            }
+          }
         }
       ],
       series : series
