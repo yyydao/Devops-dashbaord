@@ -24,11 +24,12 @@ class Header extends Component{
                 </p>
                 <p className="userinfo">
                     {
-                        userInfo && <span>{userInfo.name}</span>
+                        userInfo &&  <Dropdown overlay={menu}>
+                          {/*<Icon type="bars" style={{fontSize: 18}} />*/}
+                          <span>{userInfo.name}</span>
+                        </Dropdown>
                     }
-                    <Dropdown overlay={menu}>
-                        <Icon type="bars" style={{fontSize: 18}} />
-                    </Dropdown>
+
                 </p>
             </div>
         )
