@@ -71,11 +71,7 @@ class FluencyChart extends React.Component {
                   label={{
                     autoRotate: false
                   }}
-                  title={{
-                    autoRotate: false,
-                    position: 'end',
-                    offset: 70
-                  }}
+                  title
             />
             <Tooltip
                 crosshairs={{
