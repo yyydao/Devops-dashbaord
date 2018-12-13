@@ -513,33 +513,32 @@ class BuildTestPackage extends Component {
         </Modal>
         <div className="package-title">
           <Button type="primary" onClick={() => {this.toggleBuildModal(true)}}>新增提测</Button>
-          <span style={{ paddingRight: 8, paddingLeft: 24 }}>环境</span>
+          <span style={{ paddingRight: 0, paddingLeft: 40 }}>环境：</span>
           <Select value={envID}
-                  style={{ width: 150, marginRight: 24 }}
+                  style={{ width: 150, marginRight: 40 }}
                   onChange={(e) => {this.filterChange(e, 'envID')}}>
             {envList.length > 0 && envList.map((item, index) => {
               return <Option value={item.id} key={index}>{item.name}</Option>
             })}
           </Select>
-          <span style={{ paddingRight: 8 }}>版本</span>
+          <span style={{ paddingRight: 0 }}>版本：</span>
           <Select value={version}
-                  style={{ width: 150, marginRight: 24 }}
+                  style={{ width: 150, marginRight: 40 }}
                   onChange={(e) => {this.filterChange(e, 'version')}}
                   disabled={selectDisabled}>
             {versionList.length > 0 && versionList.map((item, index) => {
               return <Option value={item.buildVersion} key={index}>{item.appVersion}</Option>
             })}
           </Select>
-          <span style={{ paddingRight: 8 }}>类型</span>
+          <span style={{ paddingRight: 0 }}>类型：</span>
           <Select value={status}
-                  style={{ width: 150, marginRight: 24 }}
+                  style={{ width: 150, marginRight: 40 }}
                   onChange={(e) => {this.filterChange(e, 'status')}}>
             <Option value={0}>成功</Option>
             <Option value={3}>失败</Option>
             <Option value={99}>构建中</Option>
           </Select>
-          <span style={{ color: '#6DD200', paddingRight: 8 }}>Tips:</span>
-          <span>{buildingNum}个任务正在构建...</span>
+          <span style={{ color: '#389E0D', paddingRight: 8 }}>Tips：{buildingNum}个任务正在构建...</span>
         </div>
         <div className="package-content">
           {
@@ -551,24 +550,29 @@ class BuildTestPackage extends Component {
                     {dataList.map((item, index) => {
                       let fileName = '', button = ''
                       if (item.jenkinsStatus === 0) {
-                        fileName = <span style={{ color: '#39A1EE' }}>{item.fileName}</span>
+                        fileName = <span className="fileName">{item.fileName}</span>
                         button = <Button
+                          size="small"
                           type="primary"
-                          style={{ marginRight: 'auto' }}
+                          style={{ marginRight: '24px' }}
                           onClick={(e) => {this.onDownloadClick(e, item.buildID)}}>下载</Button>
                       }
                       if (item.jenkinsStatus > 0 && item.jenkinsStatus < 3) {
-                        fileName = <span style={{ color: '#39A1EE' }}>{statusList[item.jenkinsStatus]}</span>
+                        fileName = <span className="fileName"
+                                         style={{ color: '#1890FF' }}>{statusList[item.jenkinsStatus]}...</span>
                         button = <Button
+                          size="small"
                           type="primary"
-                          style={{ marginRight: 'auto' }}
+                          style={{ marginRight: '24px' }}
                           onClick={(e) => {this.onCancleClick(e, item.buildID, item.envID)}}>取消</Button>
                       }
                       if (item.jenkinsStatus > 2 && item.jenkinsStatus < 4) {
-                        fileName = <span style={{ color: '#FF0000' }}>{statusList[item.jenkinsStatus]}</span>
+                        fileName = <span className="fileName"
+                                         style={{ color: '#F5222D' }}>{statusList[item.jenkinsStatus]}</span>
                         button = <Button
+                          size="small"
                           type="primary"
-                          style={{ marginRight: 'auto' }}>查看</Button>
+                          style={{ marginRight: '24px' }}>查看</Button>
                       }
                       return <Row type="flex" justify="space-between" align="middle"
                                   className="package-list-item"
@@ -606,12 +610,15 @@ class BuildTestPackage extends Component {
                     })
                     }
                   </div>
-                  <Pagination onChange={(e) => {this.onPaginationChange(e)}}
-                              total={totalCount}
-                              showTotal={total => `共 ${totalCount} 条`}
-                              pageSize={10}
-                              current={curPage}
-                              style={{ marginTop: 16, cssFloat: 'right' }}/>
+                  <div className="package-pager-wrapper">
+                    <Pagination size="small"
+                                onChange={(e) => {this.onPaginationChange(e)}}
+                                total={totalCount}
+                                showTotal={total => `共 ${totalCount} 条`}
+                                pageSize={10}
+                                current={curPage}
+                                style={{cssFloat: 'right' }}/>
+                  </div>
                 </div>
               </Col>
               <Col span={12}>
