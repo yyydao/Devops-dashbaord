@@ -543,8 +543,8 @@ class BuildTestPackage extends Component {
         <div className="package-content">
           {
             dataList.length > 0 &&
-            <Row>
-              <Col span={12}>
+            <Row className="package-content-wrapper">
+              <Col span={12} className="package-content-col">
                 <div className="package-content-left">
                   <div className="package-list">
                     {dataList.map((item, index) => {
@@ -621,7 +621,7 @@ class BuildTestPackage extends Component {
                   </div>
                 </div>
               </Col>
-              <Col span={12}>
+              <Col span={12} className="package-content-col">
                 {!!this.state.currentBuild &&
                 <BuildTestPackageDetail buildId={this.state.currentBuild} onCancleSuccess={this.onCancleClick}/>
                 }

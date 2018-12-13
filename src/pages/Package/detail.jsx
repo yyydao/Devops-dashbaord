@@ -279,6 +279,7 @@ class packageDetail extends Component {
     let rebuildButton
     let downloadButton
     let actionArray = []
+    let actionELement = <div className="detail-action">{actionArray}</div>
     let cardTitle = <span color='#1890ff'>正在构建...</span>
 
     if (status === 0) {
@@ -314,7 +315,7 @@ class packageDetail extends Component {
     }
 
     return (
-      <div className="pkgdetail">
+      <div className="packagedetail">
         <Modal title="版本回归"
                visible={regressModalVisible}
                onOk={this.versionRegress}
@@ -388,14 +389,16 @@ class packageDetail extends Component {
         <Skeleton loading={this.state.skeletonLoading}>
 
           <Card
+            className='detail-card'
             // cover={<img alt="example" src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png" />}
-            actions={actionArray}
+            // actions= {actionELement}
           >
             <Meta
               // avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
               title={cardTitle}
               description={
-                <div>
+                <div class="detail-meta">
+                  <div className="detail-meta-content">
                   <Row>
                     <Col span={12}>
                       <Row>
@@ -423,16 +426,18 @@ class packageDetail extends Component {
                     <p>提测分支：{codeBranch}</p>
                     <p>提测详情：{submitDetails}</p>
                     <p>提测概要：</p>
-                    <p className="pkgdetail-info-desc">{submitContent}</p>
+                    <p className="packagedetail-info-desc">{submitContent}</p>
                     {
                       rebuildContent &&
                       <div>
                         <p>回归内容：</p>
-                        <p className="pkgdetail-info-desc">{rebuildContent}</p>
+                        <p className="packagedetail-info-desc">{rebuildContent}</p>
                       </div>
                     }
 
                   </Row>
+                  </div>
+                  <div className="detail-action">{actionArray}</div>
                 </div>
               }
             />
