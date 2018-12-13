@@ -82,7 +82,7 @@ class packageDetail extends Component {
     reqGet('/package/detail', {
       buildId: this.state.buildId
     }).then((res) => {
-      if (res.code === 0) {
+      if (res.code === 0 || res.code === '0') {
         const {
           version,
           taskMaster,
@@ -388,7 +388,6 @@ class packageDetail extends Component {
         <Skeleton loading={this.state.skeletonLoading}>
 
           <Card
-            style={{ width: 560 }}
             // cover={<img alt="example" src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png" />}
             actions={actionArray}
           >
