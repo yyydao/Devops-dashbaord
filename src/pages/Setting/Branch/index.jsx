@@ -60,13 +60,13 @@ class Branch extends Component{
             loading: false,
             data: [],
             pagination: {
-                pageSize: 10,
+                pageSize: 8,
                 total: 0,
                 showTotal: null
             },
             params: {
                 branchName: '',
-                pageSize: 10,
+                pageSize: 8,
                 pageNum: 1
             },
             hasRefreshBtn: false,
@@ -84,7 +84,7 @@ class Branch extends Component{
         this.setState({ hasRefreshBtn });
     }
 
-    handlePackageChange = (value, record) => {       
+    handlePackageChange = (value, record) => {
         confirm({
             title: '提示',
             content: '确认更新包管理默认分支吗？',
@@ -166,7 +166,7 @@ class Branch extends Component{
     handleTableChange = (pagination, filters, sorter) => {
         const params = { ...this.state.params };
         params.pageNum = pagination.current;
-        this.setState({ params }, this.getBranchList);       
+        this.setState({ params }, this.getBranchList);
     }
 
     onSearch = (value) => {
@@ -196,13 +196,17 @@ class Branch extends Component{
                     <BreadcrumbItem><Link to="/home">首页</Link></BreadcrumbItem>
                     <BreadcrumbItem>分支列表</BreadcrumbItem>
                 </Breadcrumb>
-                <div className="mb10 clear">
-                    <p className="fl">项目远程分支：<Search onSearch={this.onSearch} placeholder="输入并按回车搜索" style={{width: 180}} /></p>
-                    { 
-                        hasRefreshBtn && <Button type="primary" disabled={disabled} className="fr" icon="reload" onClick={this.refreshBranch}>拉取分支</Button>
+              <div className="content-container">
+                <div style={{backgroundColor:"#fff",padding:"40px 32px"}}>
+                  <div className="mb10 clear">
+                    <p className="fl" style={{marginBottom:40}}>项目远程分支：<Search onSearch={this.onSearch} placeholder="输入并按回车搜索" style={{width: 180}} /></p>
+                    {
+                      hasRefreshBtn && <Button type="primary" disabled={disabled} className="fr" icon="reload" onClick={this.refreshBranch}>拉取分支</Button>
                     }
+                  </div>
+                  <Table columns={this.columns} dataSource={data} loading={loading} pagination={pagination} rowKey={record => record.id} onChange={this.handleTableChange}></Table>
                 </div>
-                <Table columns={this.columns} dataSource={data} loading={loading} pagination={pagination} rowKey={record => record.id} onChange={this.handleTableChange}></Table>
+              </div>
             </div>
         )
     }

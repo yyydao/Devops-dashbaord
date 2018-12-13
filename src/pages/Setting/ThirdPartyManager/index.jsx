@@ -214,7 +214,8 @@ class ThirdPartyManager extends Component{
             <BreadcrumbItem><Link to="/home">首页</Link></BreadcrumbItem>
             <BreadcrumbItem>第三方配置</BreadcrumbItem>
           </Breadcrumb>
-          <Card  title="Jenkins配置" style={{marginTop: 30}}>
+          <div className="content-container">
+          <Card  title="Jenkins配置">
             <Form style={{width: 500}} onSubmit={this.jenkinsSubmit}>
               <FormItem {...fromItemLayout} label="服务地址">
                 {
@@ -396,6 +397,7 @@ class ThirdPartyManager extends Component{
               </FormItem>
             </Form>
           </Card>
+          </div>
         </div>
     )
   }

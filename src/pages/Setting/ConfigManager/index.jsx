@@ -219,26 +219,28 @@ class ConfigManager extends Component {
             <BreadcrumbItem><Link to="/home">首页</Link></BreadcrumbItem>
             <BreadcrumbItem>配置管理</BreadcrumbItem>
           </Breadcrumb>
-          <Tabs type="card">
-            {envData &&
-            envData.map((item, index) =>
+          <div className="content-container">
+            <Tabs style={{backgroundColor:"#fff"}}>
+              {envData &&
+              envData.map((item, index) =>
                 <TabPane tab={item.name} key={index} style={{padding: 16}}>
                   <ConfigPanel
-                      isCheckAll={''}
-                      envData={item}
-                      panelIndex={index}
-                      treeCheck={this.onCheck}
-                      treeSelect={this.onSelect}
-                      changeEdit={this.changeEdit}
-                      changeSwitch={this.changeSwitch}
-                      onButtonClick={this.onButtonClick}
-                      onImportJson={this.onImportJson}
+                    isCheckAll={''}
+                    envData={item}
+                    panelIndex={index}
+                    treeCheck={this.onCheck}
+                    treeSelect={this.onSelect}
+                    changeEdit={this.changeEdit}
+                    changeSwitch={this.changeSwitch}
+                    onButtonClick={this.onButtonClick}
+                    onImportJson={this.onImportJson}
                   >
                   </ConfigPanel>
                 </TabPane>
-            )
-            }
-          </Tabs>
+              )
+              }
+            </Tabs>
+          </div>
           <Modal
               title="请输入JSON"
               visible={visible}

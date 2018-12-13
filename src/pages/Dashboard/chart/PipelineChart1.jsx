@@ -124,7 +124,8 @@ class PipelineChart1 extends Component {
               // 格式化成月/日，只在第一个刻度显示年份
               var date = new Date(value);
               return `${this.zeroize(date.getMonth() + 1)}-${this.zeroize(date.getDate())}\n${this.zeroize(date.getHours())}:${this.zeroize(date.getMinutes())}`;
-            }
+            },
+            color:(val) => "#000000",
           },
           axisLine:{
             lineStyle:{

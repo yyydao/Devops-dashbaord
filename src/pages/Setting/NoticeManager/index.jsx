@@ -269,16 +269,17 @@ class NoticeManager extends Component {
             <BreadcrumbItem><Link to="/home">首页</Link></BreadcrumbItem>
             <BreadcrumbItem>通知管理</BreadcrumbItem>
           </Breadcrumb>
-          {envTemplate &&
-          <div className="nm-container">
-            <p className="nm-title">【提测】-- 钉钉消息</p>
-            <div className="nm-item">
-              <span className="nm-key">access_token：</span>
-              <input className="nm-input" value={envToken} onChange={(e)=>{this.setState({envToken:e.target.value})}}/>
-            </div>
-            <div className="nm-item">
-              <div className="nm-item-left">
-                {envTemplate.map((item, index) =>
+          <div className="content-container">
+            {envTemplate &&
+            <div className="nm-container">
+              <p className="nm-title">【提测】-- 钉钉消息</p>
+              <div className="nm-item">
+                <span className="nm-key">access_token：</span>
+                <input className="nm-input" value={envToken} onChange={(e)=>{this.setState({envToken:e.target.value})}}/>
+              </div>
+              <div className="nm-item">
+                <div className="nm-item-left">
+                  {envTemplate.map((item, index) =>
                     <div className="nm-list" key={index}>
                       <div className="nm-list-lf">
                         <div style={{marginBottom: 8}}>{item.templateName}模板：</div>
@@ -302,13 +303,13 @@ class NoticeManager extends Component {
                             全选</Checkbox>
                         </div>
                         {item.contentItems.map((contentItem, contentIndex) =>
-                            <div className="nm-list-item" key={contentIndex}>
-                              <Checkbox checked={contentItem.checked}
-                                        onChange={(e) => {
-                                          this.contentItemChecked(e.target.checked, index, contentIndex, 'envTemplate')
-                                        }}>
-                                {contentItem.name}</Checkbox>
-                            </div>
+                          <div className="nm-list-item" key={contentIndex}>
+                            <Checkbox checked={contentItem.checked}
+                                      onChange={(e) => {
+                                        this.contentItemChecked(e.target.checked, index, contentIndex, 'envTemplate')
+                                      }}>
+                              {contentItem.name}</Checkbox>
+                          </div>
                         )}
                         <div className="nm-list-item">
                           <Checkbox checked={item.remind}
@@ -319,49 +320,49 @@ class NoticeManager extends Component {
                         </div>
                       </div>
                     </div>
-                )}
-                <div className="btn-group">
-                  <Button type="primary" className="btn-group-item" onClick={() => {
-                    this.saveData('envTemplate')
-                  }}>保存</Button>
-                  <Button type="primary" onClick={() => {
-                    this.setState({
-                      envTemplate: JSON.parse(JSON.stringify(oldEnvTemplate.noticeTemplates)),
-                      envToken:oldEnvTemplate.accessToken
+                  )}
+                  <div className="btn-group">
+                    <Button type="primary" className="btn-group-item" onClick={() => {
+                      this.saveData('envTemplate')
+                    }}>保存</Button>
+                    <Button type="primary" onClick={() => {
+                      this.setState({
+                        envTemplate: JSON.parse(JSON.stringify(oldEnvTemplate.noticeTemplates)),
+                        envToken:oldEnvTemplate.accessToken
+                      })
+                    }}>重置</Button>
+                  </div>
+                </div>
+                {envPreviewData &&envPreviewData.contentItems&&
+                <div className="nm-item-right">
+                  <p>预览：<span>({envPreviewData.templateName && envPreviewData.templateName})</span></p>
+                  <div className="nm-preview">
+                    {envPreviewData.contentItems.map((item, index) => {
+                      if (item.checked) {
+                        return <p key={index}>{item.name}：{envValue[item.code]}</p>
+                      }else{
+                        return false
+                      }
                     })
-                  }}>重置</Button>
+                    }{
+                    envPreviewData.remind && <p>@莫栋鸿@黎锡坚@何浩东</p>
+                  }
+                  </div>
                 </div>
-              </div>
-              {envPreviewData &&envPreviewData.contentItems&&
-              <div className="nm-item-right">
-                <p>预览：<span>({envPreviewData.templateName && envPreviewData.templateName})</span></p>
-                <div className="nm-preview">
-                  {envPreviewData.contentItems.map((item, index) => {
-                    if (item.checked) {
-                      return <p key={index}>{item.name}：{envValue[item.code]}</p>
-                    }else{
-                      return false
-                    }
-                  })
-                  }{
-                  envPreviewData.remind && <p>@莫栋鸿@黎锡坚@何浩东</p>
                 }
-                </div>
               </div>
-              }
             </div>
-          </div>
-          }
-          {taskTemplate &&
-          <div className="nm-container">
-            <p className="nm-title">【流水线】-- 钉钉消息</p>
-            <div className="nm-item">
-              <span className="nm-key">access_token：</span>
-              <input className="nm-input" value={taskToken}  onChange={(e)=>{this.setState({taskToken:e.target.value})}}/>
-            </div>
-            <div className="nm-item">
-              <div className="nm-item-left">
-                {taskTemplate.map((item, index) =>
+            }
+            {taskTemplate &&
+            <div className="nm-container">
+              <p className="nm-title">【流水线】-- 钉钉消息</p>
+              <div className="nm-item">
+                <span className="nm-key">access_token：</span>
+                <input className="nm-input" value={taskToken}  onChange={(e)=>{this.setState({taskToken:e.target.value})}}/>
+              </div>
+              <div className="nm-item">
+                <div className="nm-item-left">
+                  {taskTemplate.map((item, index) =>
                     <div className="nm-list" key={index}>
                       <div className="nm-list-lf">
                         <p style={{marginBottom: 8}}>【{item.templateName}】模板：</p>
@@ -385,13 +386,13 @@ class NoticeManager extends Component {
                             全选</Checkbox>
                         </div>
                         {item.contentItems.map((contentItem, contentIndex) =>
-                            <div className="nm-list-item" key={contentIndex}>
-                              <Checkbox checked={contentItem.checked}
-                                        onChange={(e) => {
-                                          this.contentItemChecked(e.target.checked, index, contentIndex, 'taskTemplate')
-                                        }}>
-                                {contentItem.name}</Checkbox>
-                            </div>
+                          <div className="nm-list-item" key={contentIndex}>
+                            <Checkbox checked={contentItem.checked}
+                                      onChange={(e) => {
+                                        this.contentItemChecked(e.target.checked, index, contentIndex, 'taskTemplate')
+                                      }}>
+                              {contentItem.name}</Checkbox>
+                          </div>
                         )}
                         <div className="nm-list-item">
                           <Checkbox checked={item.remind}
@@ -401,37 +402,38 @@ class NoticeManager extends Component {
                         </div>
                       </div>
                     </div>
-                )}
-                <div className="btn-group">
-                  <Button type="primary" className="btn-group-item" onClick={() => {
-                    this.saveData('taskTemplate')
-                  }}>保存</Button>
-                  <Button type="primary" onClick={() => {this.setState({
-                    taskTemplate: JSON.parse(JSON.stringify(oldTaskTemplate)),
-                    taskToken:oldTaskTemplate.accessToken})
-                  }}>重置</Button>
+                  )}
+                  <div className="btn-group">
+                    <Button type="primary" className="btn-group-item" onClick={() => {
+                      this.saveData('taskTemplate')
+                    }}>保存</Button>
+                    <Button type="primary" onClick={() => {this.setState({
+                      taskTemplate: JSON.parse(JSON.stringify(oldTaskTemplate)),
+                      taskToken:oldTaskTemplate.accessToken})
+                    }}>重置</Button>
+                  </div>
                 </div>
-              </div>
-              {taskPreviewData && taskPreviewData.contentItems &&
-              <div className="nm-item-right">
-                <p>预览：<span>({taskPreviewData.templateName && taskPreviewData.templateName})</span></p>
-                <div className="nm-preview">
-                  {taskPreviewData.contentItems.map((item, index) => {
-                    if (item.checked) {
-                      return <p key={index}>{item.name}：{taskValue[item.code]}</p>
-                    }else{
-                      return false
-                    }
-                  })
-                  }{
-                  taskPreviewData.remind && <p>@所有人</p>
+                {taskPreviewData && taskPreviewData.contentItems &&
+                <div className="nm-item-right">
+                  <p>预览：<span>({taskPreviewData.templateName && taskPreviewData.templateName})</span></p>
+                  <div className="nm-preview">
+                    {taskPreviewData.contentItems.map((item, index) => {
+                      if (item.checked) {
+                        return <p key={index}>{item.name}：{taskValue[item.code]}</p>
+                      }else{
+                        return false
+                      }
+                    })
+                    }{
+                    taskPreviewData.remind && <p>@所有人</p>
+                  }
+                  </div>
+                </div>
                 }
-                </div>
               </div>
-              }
             </div>
+            }
           </div>
-          }
         </div>
     )
   }
