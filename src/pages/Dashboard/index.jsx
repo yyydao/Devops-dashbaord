@@ -327,7 +327,7 @@ class Dashboard extends Component{
                 </Col>
               </Row>
             </div>
-            <div className="chart-container">
+            <div className="content-container">
               {
                 monitorData.pipelines&&monitorData.pipelines.length>0 &&
                 <Card  title="流水线监控分析">

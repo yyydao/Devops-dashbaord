@@ -1,13 +1,50 @@
 /* 公共样式 */
 
-*, body { margin: 0; padding: 0; font-family: sans-serif; }
-ul, li { list-style: none; }
-.fr { float: right; }
-.fl { float: left; }
-.mb10 { margin-bottom: 10px; }
-.container { position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%; min-width: 1200px; }
-.container .main-container { position: absolute; left: 240px; right: 0; top: 64px;}
-.container .devops-breadcrumb { padding: 16px 32px; }
+*, body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+ul, li {
+  list-style: none;
+}
+
+.fr {
+  float: right;
+}
+
+.fl {
+  float: left;
+}
+
+.mb10 {
+  margin-bottom: 10px;
+}
+
+.container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  min-width: 1200px;
+  background-color: #f0f2f5;
+}
+
+.container .main-container {
+  position: absolute;
+  left: 240px;
+  right: 0;
+  top: 64px;
+}
+
+.container .devops-breadcrumb {
+  padding: 16px 32px;
+  background-color: #fff;
+}
+
 .container .devops-main-wrapper {
   width: 100%;
   background: #eee;
@@ -16,7 +53,35 @@ ul, li { list-style: none; }
   border-radius: 2px;
   padding: 24px;
 }
-.clear:after { visibility: hidden; display: block; font-size: 0; content: '.'; clear: both; height: 0; }
-::-webkit-scrollbar { width: 10px; height: 10px; }
-::-webkit-scrollbar-thumb { display: block; width: 8px; border-radius: 5px; background-color: rgba(193, 193, 193, .6); }
-::-webkit-scrollbar-track { background-color: rgb(241, 241, 241); }
+
+.clear:after {
+  visibility: hidden;
+  display: block;
+  font-size: 0;
+  content: '.';
+  clear: both;
+  height: 0;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  display: block;
+  width: 8px;
+  border-radius: 5px;
+  background-color: rgba(193, 193, 193, .6);
+}
+
+::-webkit-scrollbar-track {
+  background-color: rgb(241, 241, 241);
+}
+
+.content-container {
+  background-color: #f0f2f5;
+  min-height: 100%;
+  padding: 24px;
+}
+

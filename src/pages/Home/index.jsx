@@ -4,6 +4,9 @@ import { Input, Icon, Table, Modal, Form, Radio, message, Button } from 'antd';
 
 import { reqPost,reqGet } from '@/api/api';
 import './index.scss';
+//SVG ICON
+import DataSvg from '@/assets/svg/index_icon_data.svg'
+
 
 const Search = Input.Search;
 const FormItem = Form.Item;
@@ -165,22 +168,6 @@ class Home extends Component{
         sm: { span: 18 }
       }
     };
-    let appQRcode = (type) =>{
-      return <div style={{width:170,margin:"0px 75px",position:"relative"}}>
-        {
-          type==='iOS'&& <img src={`${window.location.origin}/version/getQRCode?platform=2`} style={{width:170,height:170,display:'block'}} alt=""/>
-        }
-        {
-          type==='Android'&& <img src={`${window.location.origin}/version/getQRCode?platform=1`} style={{width:170,height:170,display:'block'}} alt=""/>
-        }
-        {!type&&
-        <div className="qrCode-mask">
-          <span>即将开放</span>
-        </div>
-        }
-        <p style={{textAlign:"center",marginTop:8,color:"#000"}}>【DevOps】{type}下载</p>
-      </div>
-    }
     return(
       <div className="home-card">
         <div className="header clear">
@@ -189,16 +176,12 @@ class Home extends Component{
             {
               this.state.hasPermission && <Button type="primary" onClick={()=>{this.showModal()}}>新建项目</Button>
             }
-            <span className="jurisdiction-icon">权限管理</span>
-            <span className="user-icon" >用户管理</span>
-            <Link to="/personal" className="person-icon" >个人信息</Link>
+            <span className="jurisdiction-icon"><Icon style={{fontSize: '14px',paddingRight:4}} component={() => <DataSvg/>}/>权限管理</span>
+            {/*<span className="user-icon" >用户管理</span>*/}
+            {/*<Link to="/personal" className="person-icon" >个人信息</Link>*/}
           </p>
         </div>
         <Table columns={this.state.columns} rowKey={record => record.id} dataSource={this.state.data} pagination={this.state.pagination} loading={this.state.loading} onChange={this.handleTableChange}/>
-        <div className="appQRcodeContainer">
-          {appQRcode('iOS')}
-          {appQRcode('Android')}
-        </div>
         { /* 新建项目弹窗 */ }
         <Modal title="新建项目" visible={this.state.proModalVisible} onOk={this.handleOk} onCancel={this.handleCancel} okText="确认" cancelText="取消">
           <Form style={{paddingRight:40}}>
