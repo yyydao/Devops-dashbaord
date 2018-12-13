@@ -95,7 +95,7 @@ module.exports = {
     // for React Native Web.
     extensions: ['.web.js', '.mjs', '.js', '.json', '.web.jsx', '.jsx'],
     alias: {
-      
+
       // Support React Native Web
       // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
       'react-native': 'react-native-web',
@@ -127,7 +127,7 @@ module.exports = {
             options: {
               formatter: eslintFormatter,
               eslintPath: require.resolve('eslint'),
-              
+
             },
             loader: require.resolve('eslint-loader'),
           },
@@ -160,6 +160,21 @@ module.exports = {
               ],
               compact: true,
             },
+          },
+          {
+            test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+            use: [
+              {
+                loader: 'babel-loader',
+              },
+              {
+                loader: '@svgr/webpack',
+                options: {
+                  babel: false,
+                  icon: true,
+                },
+              },
+            ],
           },
           // The notation here is somewhat confusing.
           // "postcss" loader applies autoprefixer to our CSS.
