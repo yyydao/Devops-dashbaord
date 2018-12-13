@@ -1,0 +1,11 @@
+.formlist{
+  input,textarea{
+    width: 62.5%;
+  }
+  textarea{
+    min-height: 120px;
+  }
+  .readonly{
+    border: none;
+  }
+}

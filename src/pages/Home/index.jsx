@@ -169,59 +169,61 @@ class Home extends Component{
       }
     };
     return(
-      <div className="home-card">
-        <div className="header clear">
-          <p className="search">我参与的项目：<Search placeholder="请输入并按回车搜索" onSearch={this.SearchEvent} style={{width: 180}} /></p>
-          <p className="actions">
-            {
-              this.state.hasPermission && <Button type="primary" onClick={()=>{this.showModal()}}>新建项目</Button>
-            }
-            <span className="jurisdiction-icon"><Icon style={{fontSize: '14px',paddingRight:4}} component={() => <DataSvg/>}/>权限管理</span>
-            {/*<span className="user-icon" >用户管理</span>*/}
-            {/*<Link to="/personal" className="person-icon" >个人信息</Link>*/}
-          </p>
+      <div style={{width:"100%",height:"100%",backgroundColor:"#fff"}}>
+        <div className="home-card">
+          <div className="header clear">
+            <p className="search">我参与的项目：<Search placeholder="请输入并按回车搜索" onSearch={this.SearchEvent} style={{width: 180}} /></p>
+            <p className="actions">
+              {
+                this.state.hasPermission && <Button type="primary" onClick={()=>{this.showModal()}}>新建项目</Button>
+              }
+              <span className="jurisdiction-icon"><Icon style={{fontSize: '14px',paddingRight:4}} component={() => <DataSvg/>}/>权限管理</span>
+              {/*<span className="user-icon" >用户管理</span>*/}
+              {/*<Link to="/personal" className="person-icon" >个人信息</Link>*/}
+            </p>
+          </div>
+          <Table columns={this.state.columns} rowKey={record => record.id} dataSource={this.state.data} pagination={this.state.pagination} loading={this.state.loading} onChange={this.handleTableChange}/>
+          { /* 新建项目弹窗 */ }
+          <Modal title="新建项目" visible={this.state.proModalVisible} onOk={this.handleOk} onCancel={this.handleCancel} okText="确认" cancelText="取消">
+            <Form style={{paddingRight:40}}>
+              <FormItem {...fromItemLayout} label="项目名称">
+                {getFieldDecorator('name', {
+                  rules: [{ required: true, message: '必填项' }]
+                })(
+                  <Input />
+                )}
+              </FormItem>
+              <FormItem {...fromItemLayout} label="项目描述">
+                {getFieldDecorator('description', {
+                  rules: [{ required: true, message: '必填项' }]
+                })(
+                  <TextArea />
+                )}
+              </FormItem>
+              <FormItem {...fromItemLayout} label="GitHub地址">
+                {getFieldDecorator('gitUrl', {
+                  rules: [{ required: true, message: '必填项' }]
+                })(
+                  <Input />
+                )}
+              </FormItem>
+              <FormItem {...fromItemLayout} label="平台">
+                {getFieldDecorator('platform', {
+                  rules: [{ required: true }],
+                  initialValue: 1
+                })(
+                  <RadioGroup>
+                    {
+                      this.state.platformList.map((item, index) => {
+                        return <Radio key={index} value={item.id}>{item.name}</Radio>
+                      })
+                    }
+                  </RadioGroup>
+                )}
+              </FormItem>
+            </Form>
+          </Modal>
         </div>
-        <Table columns={this.state.columns} rowKey={record => record.id} dataSource={this.state.data} pagination={this.state.pagination} loading={this.state.loading} onChange={this.handleTableChange}/>
-        { /* 新建项目弹窗 */ }
-        <Modal title="新建项目" visible={this.state.proModalVisible} onOk={this.handleOk} onCancel={this.handleCancel} okText="确认" cancelText="取消">
-          <Form style={{paddingRight:40}}>
-            <FormItem {...fromItemLayout} label="项目名称">
-              {getFieldDecorator('name', {
-                rules: [{ required: true, message: '必填项' }]
-              })(
-                <Input />
-              )}
-            </FormItem>
-            <FormItem {...fromItemLayout} label="项目描述">
-              {getFieldDecorator('description', {
-                rules: [{ required: true, message: '必填项' }]
-              })(
-                <TextArea />
-              )}
-            </FormItem>
-            <FormItem {...fromItemLayout} label="GitHub地址">
-              {getFieldDecorator('gitUrl', {
-                rules: [{ required: true, message: '必填项' }]
-              })(
-                <Input />
-              )}
-            </FormItem>
-            <FormItem {...fromItemLayout} label="平台">
-              {getFieldDecorator('platform', {
-                rules: [{ required: true }],
-                initialValue: 1
-              })(
-                <RadioGroup>
-                  {
-                    this.state.platformList.map((item, index) => {
-                      return <Radio key={index} value={item.id}>{item.name}</Radio>
-                    })
-                  }
-                </RadioGroup>
-              )}
-            </FormItem>
-          </Form>
-        </Modal>
       </div>
     )
   }

@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Breadcrumb, Button, Table, message, Modal, Checkbox, Row, Col, Divider } from 'antd';
+import { Breadcrumb, Button, Table, message, Modal, Checkbox, Row, Col, Divider, Card } from 'antd';
 
 import { reqPost, checkPermission } from '@/api/api';
+import './index.scss'
 
 const BreadcrumbItem = Breadcrumb.Item;
 const confirm = Modal.confirm;
@@ -82,7 +83,7 @@ class MemberManager extends Component{
         this.setState({ loading: true });
         reqPost('/project/listUser', { projectId: projectId }).then(res => {
             if(parseInt(res.code, 0) === 0){
-                this.setState({ 
+                this.setState({
                     loading: false,
                     data: res.data
                 })
@@ -113,7 +114,7 @@ class MemberManager extends Component{
                     }
                 })
             }
-        })       
+        })
     }
 
     selectUser(){
@@ -184,12 +185,15 @@ class MemberManager extends Component{
                     <BreadcrumbItem><Link to="/home">首页</Link></BreadcrumbItem>
                     <BreadcrumbItem>成员管理</BreadcrumbItem>
                 </Breadcrumb>
-                <div className="mb10 clear">
+                <div className="content-container">
+                  <Card title="成员管理">
                     {
-                        this.state.hasAddUserBtn && <Button type="primary" className="fr" onClick={this.showModal}>添加用户</Button>
+                      this.state.hasAddUserBtn && <p className="addMember" onClick={this.showModal}>+ 新增成员</p>
                     }
+                    <Table columns={this.columns} dataSource={this.state.data} rowKey={record => record.userId} pagination={false} loading={this.state.loading}></Table>
+                  </Card>
                 </div>
-                <Table columns={this.columns} dataSource={this.state.data} rowKey={record => record.userId} pagination={false} loading={this.state.loading}></Table>
+
 
             { /* 添加用户弹窗 */ }
             <Modal title="新增项目成员" visible={this.state.modalVisible} onOk={this.handleOk} onCancel={this.handleCancel} okText="确认" cancelText="取消">
