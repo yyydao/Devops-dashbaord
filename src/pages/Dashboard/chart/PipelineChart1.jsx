@@ -24,8 +24,8 @@ class PipelineChart1 extends Component {
 
   formatSeconds = (value) =>{
     let theTime = parseInt(value, 0),// 秒
-    theTime1 = 0,// 分
-    theTime2 = 0// 小时
+      theTime1 = 0,// 分
+      theTime2 = 0// 小时
     if(theTime > 60) {
       theTime1 = parseInt(theTime/60, 0)
       theTime = parseInt(theTime%60, 0)
@@ -109,6 +109,7 @@ class PipelineChart1 extends Component {
       legend: {
         data:legend
       },
+      color:["#2ec7c9", "#b6a2de", "#5ab1ef", "#ffb980", "#d87a80", "#8d98b3", "#e5cf0d", "#97b552", "#95706d", "#dc69aa", "#07a2a4", "#9a7fd1", "#588dd5", "#f5994e", "#c05050", "#59678c", "#c9ab00", "#7eb00a", "#6f5553", "#c14089",'#1890ff','#2fc25b','#facc14','#f5222d','#8543e0','#13c2c2','#ad4e00','#919191'],
       grid: {
         left: '3%',
         right: '4%',
@@ -136,6 +137,9 @@ class PipelineChart1 extends Component {
       yAxis : [
         {
           type : 'value',
+          name : '执行耗时（s）',
+          nameLocation:'center',
+          nameGap:55,
           axisLine:{
             show:false,
           },
@@ -155,7 +159,7 @@ class PipelineChart1 extends Component {
   }
   render() {
     return (
-        <div ref="pieChart" style={{ width:'100%', height: 400,float:'left' }}></div>
+      <div ref="pieChart" style={{ width:'100%', height: 400,float:'left' }}></div>
     );
   }
 }
