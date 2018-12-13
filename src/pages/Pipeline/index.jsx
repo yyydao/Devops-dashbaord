@@ -160,61 +160,63 @@ class Pipeline extends Component {
           <BreadcrumbItem>流水线</BreadcrumbItem>
         </Breadcrumb>
 
-        <div className="pipeline-menu">
-          <Button type="primary" onClick={this.jumpToAddPipeline}>新增流水线</Button>
-          {/*<AuthButton hasAuth={hasAddAuth} buttonText={authButtonText} to={addPathTo}/>*/}
-        </div>
-        <section className="pipeline-box">
-          <section className="pipeline-main">
-            {
-              pipelineList.map((item, index) => {
-                return <div className="pipeline-item" key={index}>
 
-                  <div className="pipeline-item-header" onClick={() => this.jumpToDetail(item)} style={{cursor:'pointer',height:'45px'}}>
-                    <Row type="flex" justify="space-between">
-                      <Col span={12}>
-                        <h2>{item.taskName}
-                          <span>（ID：{item.taskCode}）</span></h2>
-                      </Col>
-                      <Col span={12}>
-                        <div className="pipeline-item-user">
-                        </div>
-                      </Col>
-                    </Row>
-                  </div>
-                  <div className="pipeline-item-content">
-                    <Row>
-                      <Col span={20}>
-                        <div className="pipeline-item-main">
-                          <p className="pipeline-item-timemeta">
-                            <span><i>最近执行时间：</i>{item.distanceTime}</span>
-                            <span><i>执行分支：</i>{item.branchName}</span>
-                            <span><i>最近执行时长：</i>{item.execTimeStr}</span>
-                          </p>
-                          <Steps size="small" status={this.pipelineStepStatus(item.taskStatus, item.taskResult)}
-                                 current={item.taskStatus === 2 ? 5 : 1}>
-                            {steps.map((item, index) => <Step key={index}
-                                                              title={item.title}/>)}
-                          </Steps>
-                        </div>
-                      </Col>
-                      <Col span={4}>
-                        <div className="pipeline-item-ctrl">
-                          <div className="status">
-                            <span>最近执行状态：</span>{this.pipelineRunStatusText(item.taskStatus, item.taskResult)}</div>
-                          <Button type="primary" disabled={item.taskStatus === 1 || item.taskStatus === 3}
-                                  onClick={() => this.runTask(item)}>{enumButtonText[item.taskStatus]}</Button>
-                        </div>
-                      </Col>
-                    </Row>
-                  </div>
+          <div className="pipeline-menu">
+            <Button type="primary" onClick={this.jumpToAddPipeline}>新增流水线</Button>
+            {/*<AuthButton hasAuth={hasAddAuth} buttonText={authButtonText} to={addPathTo}/>*/}
+          </div>
+          <section className="pipeline-box">
+            <section className="pipeline-main">
+              {
+                pipelineList.map((item, index) => {
+                  return <div className="pipeline-item" key={index}>
 
-                </div>
-              })
-            }
+                    <div className="pipeline-item-header" onClick={() => this.jumpToDetail(item)}
+                         style={{ cursor: 'pointer', height: '45px' }}>
+                      <Row type="flex" justify="space-between">
+                        <Col span={12}>
+                          <h2>{item.taskName}
+                            <span>（ID：{item.taskCode}）</span></h2>
+                        </Col>
+                        <Col span={12}>
+                          <div className="pipeline-item-user">
+                          </div>
+                        </Col>
+                      </Row>
+                    </div>
+                    <div className="pipeline-item-content">
+                      <Row>
+                        <Col span={20}>
+                          <div className="pipeline-item-main">
+                            <p className="pipeline-item-timemeta">
+                              <span><i>最近执行时间：</i>{item.distanceTime}</span>
+                              <span><i>执行分支：</i>{item.branchName}</span>
+                              <span><i>最近执行时长：</i>{item.execTimeStr}</span>
+                            </p>
+                            <Steps size="small" status={this.pipelineStepStatus(item.taskStatus, item.taskResult)}
+                                   current={item.taskStatus === 2 ? 5 : 1}>
+                              {steps.map((item, index) => <Step key={index}
+                                                                title={item.title}/>)}
+                            </Steps>
+                          </div>
+                        </Col>
+                        <Col span={4}>
+                          <div className="pipeline-item-ctrl">
+                            <div className="status">
+                              <span>最近执行状态：</span>{this.pipelineRunStatusText(item.taskStatus, item.taskResult)}</div>
+                            <Button type="primary" disabled={item.taskStatus === 1 || item.taskStatus === 3}
+                                    onClick={() => this.runTask(item)}>{enumButtonText[item.taskStatus]}</Button>
+                          </div>
+                        </Col>
+                      </Row>
+                    </div>
+
+                  </div>
+                })
+              }
+            </section>
           </section>
-        </section>
-      </div>
+        </div>
     )
   }
 }

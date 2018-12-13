@@ -1,30 +1,32 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
+import './index.scss'
 
 import BuildTestPackage from './BuildTestPackage'
 import PipelinePackage from './PipelinePackage'
 
-import { Breadcrumb, Tabs } from 'antd';
-const BreadcrumbItem = Breadcrumb.Item;
-const TabPane = Tabs.TabPane;
+import { Breadcrumb, Tabs } from 'antd'
 
+const BreadcrumbItem = Breadcrumb.Item
+const TabPane = Tabs.TabPane
 
 class Package extends Component {
-  componentWillMount() {
+  componentWillMount () {
     console.log(this.props.projectId)
-    window.localStorage.setItem('oldProjectId', this.props.projectId);
+    window.localStorage.setItem('oldProjectId', this.props.projectId)
   }
 
-  render() {
+  render () {
     return (
-        <div>
-          <Breadcrumb className="devops-breadcrumb">
-            <BreadcrumbItem><Link to="/home">首页</Link></BreadcrumbItem>
-            <BreadcrumbItem>安装包</BreadcrumbItem>
-          </Breadcrumb>
+      <div>
+        <Breadcrumb className="devops-breadcrumb">
+          <BreadcrumbItem><Link to="/home">首页</Link></BreadcrumbItem>
+          <BreadcrumbItem>安装包</BreadcrumbItem>
+        </Breadcrumb>
 
-          <Tabs type="card">
+        <div className="devops-main-wrapper">
+          <Tabs className="package-tab">
             <TabPane tab=" 提测包 " key="1">
               <BuildTestPackage projectId={this.props.projectId}></BuildTestPackage>
             </TabPane>
@@ -33,6 +35,7 @@ class Package extends Component {
             </TabPane>
           </Tabs>
         </div>
+      </div>
     )
   }
 }
@@ -41,6 +44,6 @@ Package = connect((state) => {
   return {
     projectId: state.projectId
   }
-})(Package);
+})(Package)
 
-export default Package;
+export default Package
