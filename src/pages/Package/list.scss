@@ -153,25 +153,42 @@
 .packagedetail {
   //background: #eeeeee;
   display: flex;
-  flex:1;
+  flex: 1;
   height: 100%;
-  .detail-card{
+  padding: 24px;
+
+  .detail-title {
+    font-size: 24px;
+  }
+
+  .detail-card {
     width: 100%;
     height: 100%;
   }
-  .detail-meta{
+
+  .detail-meta {
     //display: flex;
     //flex:1;
   }
-  .detail-meta-content{
+
+  .detail-meta-content {
     margin-bottom: 80px;
+    p {
+      color: rgba(0, 0, 0, 0.65);
+      margin-bottom: 1em;
+      span {
+        color: rgba(0, 0, 0, 0.8);
+      }
+    }
   }
-  .detail-action{
+
+  .detail-action {
     //width: 100%;
     position: absolute;
-    bottom: 80px;
+    bottom: 56px;
     right: 24px;
   }
+
   &-info {
     dt {
       margin-bottom: 20px;
@@ -248,9 +265,14 @@
 }
 
 .package-list {
-  border: 1px solid #eeeeee;
+  //border: 1px solid #eeeeee;
   border-top: 0;
   margin-bottom: 70px;
+
+  span {
+    font-size: 14px;
+    line-height: 22px;
+  }
 }
 
 .package-list::-webkit-scrollbar {
@@ -262,18 +284,24 @@
   .ant-layout {
     background: #ffffff;
   }
-  .package-content-wrapper{
+
+  .package-content-wrapper {
     display: flex;
   }
-  .package-content-col{
-    flex:1
+
+  .package-content-col {
+    &.col-left{
+      border-right: 1px solid #eeeeee;
+    }
+    flex: 1
   }
-  .package-pager-wrapper{
+
+  .package-pager-wrapper {
     position: absolute;
-    bottom:0;
-    width:100%;
+    bottom: 0;
+    width: 100%;
     height: 70px;
-    border-right: 1px solid #eee;
+    //border-right: 1px solid #eee;
     padding: 24px 10px;
   }
 }
@@ -289,9 +317,8 @@
 
   p {
     color: rgba(0, 0, 0, 0.45);
-    //width: 400px;
     align-items: center;
-    margin-bottom: 0px;
+    margin-bottom: 4px;
     padding-left: 16px;
   }
 
@@ -301,10 +328,10 @@
     height: 40px;
   }
 
-  .fileName{
+  .fileName {
     font-size: 14px;
     line-height: 22px;
-    color: rgba(0,0,0,0.65);
+    color: rgba(0, 0, 0, 0.65);
   }
 
 

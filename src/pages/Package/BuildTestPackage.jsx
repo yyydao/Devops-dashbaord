@@ -157,7 +157,7 @@ class BuildTestPackage extends Component {
     this.setState({ currentBuild: '' })//隐藏详情
 
     reqGet('package/packagelist', {
-      projectID: projectId, envID, status, version, page: curPage, limit: 10
+      projectID: projectId, envID, status, version, page: curPage, limit: 6
     }).then(res => {
       if (res.code === 0) {
         this.setState({
@@ -447,18 +447,20 @@ class BuildTestPackage extends Component {
                visible={modalVisible}
                onOk={this.addBuild}
                confirmLoading={modalConfirmLoading}
+               okText='确定'
+               cancelText='取消'
                onCancel={() => {this.toggleBuildModal(false)}}
                maskClosable={false}
                destroyOnClose={true}
-               width={650}>
+               width={600}>
           <div className="package-modal-item">
-            <Input placeholder="提测人" style={{ width: 100, marginRight: 20 }} value={formDataName} onChange={(e) => {
+            <Input placeholder="提测人" style={{ width: 120, marginRight: 24 }} value={formDataName} onChange={(e) => {
               this.bindInput(e, 'formDataName')
             }}/>
             <Select placeholder="环境"
                     value={formDataEnvID || undefined}
                     onChange={(e) => this.changeNewBuildSelect(e, 'formDataEnvID')}
-                    style={{ width: 150, marginRight: 20 }}>
+                    style={{ width: 120, marginRight: 24 }}>
               {envList.map((item, index) => {
                 return <Option value={item.id} key={index}>{item.name}</Option>
               })}
@@ -468,7 +470,7 @@ class BuildTestPackage extends Component {
                     value={formDataBranch || undefined}
                     onSearch={this.getBranchList}
                     onChange={(e) => this.changeNewBuildSelect(e, 'formDataBranch')}
-                    style={{ width: 300 }}>
+                    style={{ width: 264 }}>
               {branchList.map((item, index) => {
                 return <Option value={item.name} key={index}>{item.name}</Option>
               })}
@@ -476,7 +478,7 @@ class BuildTestPackage extends Component {
           </div>
           <div className="package-modal-item">
             <Mention
-              style={{ width: '100%', height: 100 }}
+              style={{ width: '100%', minHeight: 88 }}
               value={dingTalk}
               suggestions={mentionList}
               onChange={(e) => {this.onMentionChange(e)}}
@@ -485,7 +487,8 @@ class BuildTestPackage extends Component {
           </div>
           <div className="package-modal-item">
               <TextArea
-                rows={6}
+                style={{ width: '100%', minHeight: 88 }}
+                rows={4}
                 placeholder="提测概要（多行，请按实际情况填写）"
                 value={formDataDesc}
                 onChange={(e) => {this.bindInput(e, 'formDataDesc')}}/>
@@ -544,7 +547,7 @@ class BuildTestPackage extends Component {
           {
             dataList.length > 0 &&
             <Row className="package-content-wrapper">
-              <Col span={12} className="package-content-col">
+              <Col span={12} className="package-content-col col-left">
                 <div className="package-content-left">
                   <div className="package-list">
                     {dataList.map((item, index) => {
@@ -586,12 +589,11 @@ class BuildTestPackage extends Component {
                             </Col>
                             <Col>
                               <p>
-                                {fileName}
-                                <span style={{ paddingLeft: 8 }}>buildId：{item.buildID}</span>
+                                {fileName}<span style={{ paddingLeft: '15px' }}>buildId：{item.buildID}</span>
                               </p>
                               <p>
                                 <span>{item.createTime}</span>
-                                <span>提测人：{item.developer}</span>
+                                <span style={{ paddingLeft: '27px' }}>提测人：{item.developer}</span>
                               </p>
                             </Col>
                           </Row>
@@ -615,7 +617,7 @@ class BuildTestPackage extends Component {
                                 onChange={(e) => {this.onPaginationChange(e)}}
                                 total={totalCount}
                                 showTotal={total => `共 ${totalCount} 条`}
-                                pageSize={10}
+                                pageSize={6}
                                 current={curPage}
                                 style={{cssFloat: 'right' }}/>
                   </div>

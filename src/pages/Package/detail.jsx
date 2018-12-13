@@ -61,7 +61,7 @@ class packageDetail extends Component {
       taskId: '',
       envId: '',
       appUrl: '',
-      ipaPath:'',
+      ipaPath: '',
       apkBuildId: '',
       dingTalk: '',
       jenkinsStatus: '',
@@ -247,7 +247,7 @@ class packageDetail extends Component {
     this.getDetail()
     this.setState({
       appUrl: `${window.location.origin}/package/download?buildId=${this.state.buildId}&token=${this.props.token ? this.props.token : ''}`,
-      ipaPath:this.state.ipaPath,
+      ipaPath: this.state.ipaPath,
       // passwdBuild: passwdBuild
     }, () => {
     })
@@ -257,7 +257,7 @@ class packageDetail extends Component {
     this.setState({
       buildId: nextProps.buildId,
       appUrl: `${window.location.origin}/package/download?buildId=${nextProps.buildId}&token=${this.props.token ? this.props.token : ''}`,
-      ipaPath:nextProps.ipaPath,
+      ipaPath: nextProps.ipaPath,
     }, () => {
       this.getDetail()
     })
@@ -271,7 +271,7 @@ class packageDetail extends Component {
     const {
       regressModalVisible, addConfirmLoading, dingTalk,
       status, apkBuildId, fileName, version, fileSize, buildTime, taskMaster, codeBranch, submitDetails,
-      submitContent, rebuildContent, appUrl,ipaPath, openTesting,imageUrl,
+      submitContent, rebuildContent, appUrl, ipaPath, openTesting, imageUrl,
       formDataUser, regressDesc, formDataPassword, passwdBuild, jenkinsStatus, buildId, envId
     } = this.state
     const { onCancleSuccess } = this.props
@@ -280,7 +280,7 @@ class packageDetail extends Component {
     let downloadButton
     let actionArray = []
     let actionELement = <div className="detail-action">{actionArray}</div>
-    let cardTitle = <span color='#1890ff'>正在构建...</span>
+    let cardTitle = <span style={{ color: '#1890FF' }}>正在构建...</span>
 
     if (status === 0) {
       cardTitle = fileName
@@ -289,7 +289,7 @@ class packageDetail extends Component {
       actionArray.push(downloadButton)
     }
     if (status === 1 || status === 2) {
-      cardTitle = <span color='#f5222d'>failure</span>
+      cardTitle = <span style={{ color: '#F5222D' }}>失败</span>
       rebuildButton = <Button ghost type="primary" icon="redo" onClick={this.rebuild}>重新提交</Button>
       actionArray.push(rebuildButton)
     }
@@ -387,61 +387,46 @@ class packageDetail extends Component {
           </Form>
         </Modal>
         <Skeleton loading={this.state.skeletonLoading}>
+          <div className='detail-card'>
 
-          <Card
-            className='detail-card'
-            // cover={<img alt="example" src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png" />}
-            // actions= {actionELement}
-          >
-            <Meta
-              // avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
-              title={cardTitle}
-              description={
-                <div class="detail-meta">
-                  <div className="detail-meta-content">
-                  <Row>
-                    <Col span={12}>
-                      <Row>
-                        {status === 0 &&
-                        <Col>版本：{version}</Col>}
-                        {status === 0 && this.state.apkBuildId && this.state.apkBuildId.length > 0 &&
-                        <Col>Code:{apkBuildId}</Col>}
-                        {status === 0 && <Col>大小：{fileSize}</Col>}
-                        <Col>时间：{buildTime}</Col>
-                      </Row>
-                    </Col>
-                    <Col span={12}>
-                      {status === 0 &&
-                      <div style={{ width: 170 }}>
-                        {/*{ipaPath && <QRCode value={ipaPath} size={170}/>}*/}
-                        <img src={imageUrl}/>
-                        <p style={{ textAlign: 'center', color: '#000' }}>【钉钉】扫码安装</p>
-                      </div>
-                      }
-                    </Col>
-
-                  </Row>
-                  <Row>
-                    <p>提测人：{taskMaster}</p>
-                    <p>提测分支：{codeBranch}</p>
-                    <p>提测详情：{submitDetails}</p>
-                    <p>提测概要：</p>
-                    <p className="packagedetail-info-desc">{submitContent}</p>
-                    {
-                      rebuildContent &&
-                      <div>
-                        <p>回归内容：</p>
-                        <p className="packagedetail-info-desc">{rebuildContent}</p>
-                      </div>
+            <div className="detail-meta">
+              <div className="detail-meta-content">
+                <Row>
+                  <Col span={18} className="detail-main">
+                    <h3 className='detail-title'>{cardTitle}</h3>
+                    {status === 0 &&
+                    <p><span>版本：</span>{version}</p>}
+                    {status === 0 && this.state.apkBuildId && this.state.apkBuildId.length > 0 &&
+                    <p><span>Code：</span>{apkBuildId}</p>}
+                    {status === 0 && <p><span>大小：</span>{fileSize}</p>}
+                    <p><span>时间：</span>{buildTime}</p>
+                    <p><span>提测人：</span>{taskMaster}</p>
+                    <p><span>提测分支：</span>{codeBranch}</p>
+                    <p><span>提测详情：</span>{submitDetails}</p>
+                  </Col>
+                  <Col span={6}>
+                    {status === 0 &&
+                    <div style={{ width: 120 }}>
+                      {/*{ipaPath && <QRCode value={ipaPath} size={170}/>}*/}
+                      <img width='140' src={imageUrl}/>
+                      <p style={{ textAlign: 'center', color: '#000' }}>【钉钉】扫码安装</p>
+                    </div>
                     }
-
-                  </Row>
+                  </Col>
+                </Row>
+                <p><span>提测概要：</span></p>
+                <p className="packagedetail-info-desc">{submitContent}</p>
+                {
+                  rebuildContent &&
+                  <div>
+                    <p><span>回归内容：</span></p>
+                    <p className="packagedetail-info-desc">{rebuildContent}</p>
                   </div>
-                  <div className="detail-action">{actionArray}</div>
-                </div>
-              }
-            />
-          </Card>
+                }
+              </div>
+              <div className="detail-action">{actionArray}</div>
+            </div>
+          </div>
         </Skeleton>
       </div>
     )
