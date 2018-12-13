@@ -197,17 +197,20 @@ class MemberManager extends Component{
 
             { /* 添加用户弹窗 */ }
             <Modal title="新增项目成员" visible={this.state.modalVisible} onOk={this.handleOk} onCancel={this.handleCancel} okText="确认" cancelText="取消">
-                <Checkbox indeterminate={this.state.indeterminate} checked={this.state.checkAll} onChange={this.onCheckAllChange}>全选</Checkbox>
-                <Divider />
-                <CheckboxGroup value={this.state.checkedList} onChange={this.onChange}>
-                    <Row>
+                <div className="checkbox-container">
+                  <Checkbox indeterminate={this.state.indeterminate} checked={this.state.checkAll} onChange={this.onCheckAllChange}>全选</Checkbox>
+                  <div style={{marginTop:24}}>
+                    <CheckboxGroup value={this.state.checkedList} onChange={this.onChange}>
+                      <Row>
                         {
-                            this.state.selectUserList.map((item, index) => {
-                                return <Col key={index}><Checkbox value={item.userId}>{item.name}</Checkbox></Col>
-                            })
+                          this.state.selectUserList.map((item, index) => {
+                            return <Col key={index} style={{marginBottom:24}}><Checkbox value={item.userId}>{item.name}</Checkbox></Col>
+                          })
                         }
-                    </Row>
-                </CheckboxGroup>
+                      </Row>
+                    </CheckboxGroup>
+                  </div>
+                </div>
             </Modal>
             </div>
         )

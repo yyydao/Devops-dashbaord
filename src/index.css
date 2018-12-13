@@ -85,3 +85,13 @@ ul, li {
   padding: 24px;
 }
 
+.index-container{
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background-color: #fff;
+}
+.layout{
+  width: 100%;
+  height: 100%;
+}

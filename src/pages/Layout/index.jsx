@@ -87,7 +87,7 @@ class Layout extends Component{
                 { sideBarShow && <SideBar projectIdChange={this.projectIdChange} pathName={this.props.location.pathname} /> }
 
                 {
-                    this.state.isRender && <div className={sideBarShow ? 'main-container' : ''}>
+                    this.state.isRender && <div className={sideBarShow ? 'main-container' : 'index-container'}>
                                                 <Switch>
                                                     { this.state.routeList }
                                                 </Switch>
