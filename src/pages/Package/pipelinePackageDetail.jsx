@@ -209,45 +209,45 @@ class pipelinePackageDetail extends Component {
                 </Modal>
 
                 <Skeleton loading={this.state.skeletonLoading}>
+                  <div className='detail-card'>
 
-                    <Card
-                        style={{width: 560}}
-                        actions={actionArray}
-                    >
-                        <Meta
-                            description={
-                                <div className="detail-info">
-                                    {packageList && packageList.map((item, index) => {
-                                        return <Row type="flex" justify="space-around" align="middle" key={index} className='detail-row'>
-                                            <Col span={12}>
-                                                <Row>
-                                                    <Col>{packageType[item.packageType]}</Col>
-                                                    <Col>大小：{item.appFileSize}</Col>
-                                                </Row>
-                                            </Col>
-                                            < Col span={12}>
-                                                <Icon style={{'cursor':'pointer',fontSize:24,verticalAlign:"middle"}} type='qrcode'  onClick={() => this.showQR(item)}/>
-                                                <a style={{'paddingLeft':'14px',verticalAlign:"middle"}}  target="_blank" href={item.filePath}>点我下载</a>
-                                            </Col>
-                                        </Row>
-                                    })}
-                                    <Row type="flex" justify="space-around" align="bottom" className='detail-row build-info'>
-                                        <Col  span={12}>
-                                            <p>触发人：{buildor}</p>
-                                            <p>触发类型：{enumBuildType[buildType]}</p>
-                                            <p>构建分支：{branchName}</p>
-                                            <p>时间：{buildTime}</p>
-                                        </Col>
-                                        <Col  span={12}>
-                                            <Button
-                                                style={{marginBottom:'12px'}}
-                                                onClick={() => this.jumpToPipelineDetail(taskID, recordNo)}>查看报告</Button>
-                                        </Col>
-                                    </Row>
-                                </div>
-                            }
-                        />
-                    </Card>
+                    <div className="detail-meta">
+                      <div className="detail-meta-content">
+
+                        <div className="detail-info detail-main">
+                          {packageList && packageList.map((item, index) => {
+                            return <Row type="flex" justify="space-between" align="middle" key={index} className='detail-row'>
+                              <Col span={18}>
+                                <Row>
+                                  <Col><h3>{packageType[item.packageType]}</h3></Col>
+                                  <Col>大小：{item.appFileSize}</Col>
+                                </Row>
+                              </Col>
+                              < Col span={6} className="align-right">
+                                <Icon style={{'cursor':'pointer',fontSize:24,verticalAlign:"middle"}} type='qrcode'  onClick={() => this.showQR(item)}/>
+                                <Button type='primary' size="small" style={{marginLeft:'18px',verticalAlign:"middle"}}><a href={item.filePath} target="_blank">下载</a></Button>
+                              </Col>
+                            </Row>
+                          })}
+                          <Row type="flex" justify="space-between" align="bottom" className='detail-row build-info'>
+                            <Col  span={20}>
+                              <p>触发人：{buildor}</p>
+                              <p>触发类型：{enumBuildType[buildType]}</p>
+                              <p>构建分支：{branchName}</p>
+                              <p>时间：{buildTime}</p>
+                            </Col>
+                            <Col  span={4} className="align-right">
+                              <Button
+                                style={{marginBottom:'12px'}}
+                                onClick={() => this.jumpToPipelineDetail(taskID, recordNo)}>查看报告</Button>
+                            </Col>
+                          </Row>
+                        </div>
+
+                      </div>
+                      <div className="detail-action">{actionArray}</div>
+                    </div>
+                  </div>
                 </Skeleton>
 
             </div>

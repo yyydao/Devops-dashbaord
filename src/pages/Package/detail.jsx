@@ -391,6 +391,7 @@ class packageDetail extends Component {
 
             <div className="detail-meta">
               <div className="detail-meta-content">
+
                 <Row>
                   <Col span={18} className="detail-main">
                     <h3 className='detail-title'>{cardTitle}</h3>

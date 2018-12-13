@@ -547,8 +547,11 @@ class BuildTestPackage extends Component {
           {
             dataList.length > 0 &&
             <Row className="package-content-wrapper">
+
               <Col span={12} className="package-content-col col-left">
+
                 <div className="package-content-left">
+
                   <div className="package-list">
                     {dataList.map((item, index) => {
                       let fileName = '', button = ''
@@ -612,6 +615,7 @@ class BuildTestPackage extends Component {
                     })
                     }
                   </div>
+
                   <div className="package-pager-wrapper">
                     <Pagination size="small"
                                 onChange={(e) => {this.onPaginationChange(e)}}
@@ -623,11 +627,13 @@ class BuildTestPackage extends Component {
                   </div>
                 </div>
               </Col>
+
               <Col span={12} className="package-content-col">
                 {!!this.state.currentBuild &&
                 <BuildTestPackageDetail buildId={this.state.currentBuild} onCancleSuccess={this.onCancleClick}/>
                 }
               </Col>
+
             </Row>
 
           }
