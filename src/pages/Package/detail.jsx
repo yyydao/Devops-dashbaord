@@ -285,16 +285,16 @@ class packageDetail extends Component {
     if (status === 0) {
       cardTitle = fileName
       downloadButton =
-        <Button ghost type="primary" icon="download"><a href={appUrl} target="_blank">下载</a></Button>
+        <Button key={1} ghost type="primary" icon="download"><a href={appUrl} target="_blank">下载</a></Button>
       actionArray.push(downloadButton)
     }
     if (status === 1 || status === 2) {
       cardTitle = <span style={{ color: '#F5222D' }}>失败</span>
-      rebuildButton = <Button ghost type="primary" icon="redo" onClick={this.rebuild}>重新提交</Button>
+      rebuildButton = <Button key={2} ghost type="primary" icon="redo" onClick={this.rebuild}>重新提交</Button>
       actionArray.push(rebuildButton)
     }
     if (jenkinsStatus === 1 || jenkinsStatus === 2) {
-      cancleButton = <Button ghost type="primary" icon="redo"
+      cancleButton = <Button key={3} ghost type="primary" icon="redo"
                              onClick={(e) => {onCancleSuccess(null, buildId, envId)}}>取消构建</Button>
       actionArray.push(cancleButton)
     }

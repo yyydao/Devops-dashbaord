@@ -6,13 +6,13 @@ import { reqGet } from '@/api/api'
 import './list.scss';
 
 import {
-    Button,
-    Skeleton,
-    Modal,
-    Icon,
-    Row,
-    Col,
-    Card,
+  Button,
+  Skeleton,
+  Modal,
+  Icon,
+  Row,
+  Col,
+  Card, Popover,
 } from 'antd'
 
 const {Meta} = Card
@@ -75,7 +75,7 @@ class pipelinePackageDetail extends Component {
             content:
                 <div>
                     <Row type="flex" align='middle' justify='center'>
-                        <QRCode value={ipaPath} />
+
                     </Row>
                     <Row type="flex" align='middle' justify='center' style={{'paddingTop':'16px'}}>
                         <Button><a href={appUrl} target="_blank">点击下载</a></Button>
@@ -224,7 +224,10 @@ class pipelinePackageDetail extends Component {
                                 </Row>
                               </Col>
                               < Col span={6} className="align-right">
-                                <Icon style={{'cursor':'pointer',fontSize:24,verticalAlign:"middle"}} type='qrcode'  onClick={() => this.showQR(item)}/>
+                                <Popover style={{width:'198px'}} placement="bottomRight" trigger="click" content={<QRCode value={item.ipaPath} />}>
+                                  <Icon style={{'cursor':'pointer',fontSize:24,verticalAlign:"middle"}} type='qrcode'/>
+                                </Popover>
+
                                 <Button type='primary' size="small" style={{marginLeft:'18px',verticalAlign:"middle"}}><a href={item.filePath} target="_blank">下载</a></Button>
                               </Col>
                             </Row>

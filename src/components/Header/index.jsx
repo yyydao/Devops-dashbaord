@@ -9,25 +9,25 @@ class Header extends Component {
 
   render () {
     let { userInfo, showSideBar } = this.props
-    let appQRcode = (type) => {
-      return <div style={{ width: 170, margin: '0px 75px', position: 'relative' }}>
-        {
-          type === 'iOS' && <img src={`${window.location.origin}/version/getQRCode?platform=2`}
-                                 style={{ width: 110, height: 110, display: 'inline-box' }} alt=""/>
-        }
-        {
-          type === 'Android' && <img src={`${window.location.origin}/version/getQRCode?platform=1`}
-                                     style={{ width: 110, height: 110, display: 'inline-box' }} alt=""/>
-        }
-        {!type &&
-        <div className="qrCode-mask">
-          <span>即将开放</span>
-        </div>
-        }
-        <p style={{ textAlign: 'center', marginTop: 8, color: '#000' }}>【DevOps】{type}下载</p>
-      </div>
-    }
-    console.log(this.props)
+    let host = window.location.origin.indexOf('localhost') > -1 ? 'http://10.100.14.54:8090/' : window.location.origin
+    let appQRcode = <div>
+      <Row type="flex" style={{ width: '268px' }} align='middle' justify='center'>
+        <Col span={12} style={{ verticalAlign: 'middle', textAlign: 'center' }}>
+          <img src={`${host}/version/getQRCode?platform=2`}
+               style={{ width: 110, height: 110, display: 'inline-box' }} alt=""/>
+          <p style={{ textAlign: 'center', marginTop: 8, color: '#000' }}>iOS下载</p>
+        </Col>
+        <Col span={12} style={{ verticalAlign: 'middle', textAlign: 'center' }}>
+          <img src={`${host}/version/getQRCode?platform=1`}
+               style={{ width: 110, height: 110, display: 'inline-box' }} alt=""/>
+
+          <p style={{ textAlign: 'center', marginTop: 8, color: '#000' }}>Android下载</p>
+
+        </Col>
+      </Row>
+
+    </div>
+
     const menu = <Menu>
       <MenuItem key="account"><Link to="/personal"><Icon type="user" style={{
         minWidth: 12,
@@ -51,13 +51,13 @@ class Header extends Component {
 
             <div className="userinfo">
               {showSideBar === false &&
-              <Popover placement="bottom" trigger="hover" content={<div>{appQRcode('iOS')}{appQRcode('Android')}</div>}>
+              <Popover placement="bottom" trigger="hover" content={appQRcode}>
                 <Icon type="mobile"/> <span className='userName'>手机APP</span>
               </Popover>
 
               }
               {showSideBar === false &&
-              <Divider style={{margin: '0 24px'}} type="vertical"/>
+              <Divider style={{ margin: '0 24px' }} type="vertical"/>
               }
 
               <Avatar size={24} icon="user" className='headerAvatar'/>
