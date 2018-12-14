@@ -220,10 +220,10 @@ class ConfigManager extends Component {
             <BreadcrumbItem>配置管理</BreadcrumbItem>
           </Breadcrumb>
           <div className="content-container">
-            <Tabs style={{backgroundColor:"#fff"}}>
+            <Tabs className="package-tab">
               {envData &&
               envData.map((item, index) =>
-                <TabPane tab={item.name} key={index} style={{padding: 16}}>
+                <TabPane tab={item.name} key={index} style={{padding: "8px 24px 24px 24px"}}>
                   <ConfigPanel
                     isCheckAll={''}
                     envData={item}

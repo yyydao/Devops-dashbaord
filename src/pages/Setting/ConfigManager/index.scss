@@ -10,8 +10,20 @@
         font-weight:bold;
     }
 }
-
-
+.package-tab{
+  background: #fff;
+  .ant-tabs-bar {
+    padding: 0 16px;
+  }
+  .ant-tabs-nav-container{
+    font-size: 16px;
+    line-height: 24px;
+  }
+}
+.jsonInput .ant-card-extra{
+  padding:13px 0px;
+}
+.jsonInput{margin-top: 24px}
     .config-project-item{
         margin-bottom: 10px;
 

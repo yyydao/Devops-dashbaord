@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Card, Tree, Switch, Button} from 'antd';
 import Edit from '@/pages/Setting/ConfigManager/Edit';
-
 const TreeNode = Tree.TreeNode;
 
 export default class ConfigPanel extends Component{
@@ -41,7 +40,7 @@ export default class ConfigPanel extends Component{
               <Switch checked={envData.passwdBuild === 0 ? false : true} onChange={(e)=>{changeSwitch(e,panelIndex,'passwdBuild')}}/>
             </div>
           </Card>
-          <Card title="性能测试配置" style={{marginTop:16}}>
+          <Card title="性能测试配置" style={{marginTop:24}}>
             <div className="config-project-item">
               <span className="name">常规任务Job名称：</span>
               <Edit name='routineTaskName' panelIndex={panelIndex} defaultValue={envData.routineTaskName} handleConfirm={changeEdit}/>
@@ -55,8 +54,10 @@ export default class ConfigPanel extends Component{
               <Edit name='submitTestTaskName' panelIndex={panelIndex} defaultValue={envData.submitTestTaskName} handleConfirm={changeEdit}/>
             </div>
           </Card>
-          <Card title="场景管理" style={{marginTop:16}}>
-            <Button type="primary" style={{marginBottom:16}} onClick={()=>{onImportJson(panelIndex)}}>JSON导入</Button>
+          <Card title="场景管理"
+                className="jsonInput"
+                extra={<button style={{padding:"4px 16px",color: "#fff",backgroundColor:"#1890ff",border:"none",borderRadius:4,cursor:"pointer"}}
+                               onClick={()=>{onImportJson(panelIndex)}}>JSON导入</button>}>
             <Tree
                 checkable
                 onCheck={(checkedKeys)=>{treeCheck(checkedKeys,panelIndex)}}
