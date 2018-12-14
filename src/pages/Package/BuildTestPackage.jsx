@@ -8,10 +8,9 @@ import BuildTestPackageDetail from './detail'
 
 import {
   Icon, Button, Input, Modal, Select, Pagination,
-  Mention, Layout, message, Row, Col
+  Mention, message, Row, Col
 } from 'antd'
 
-const { Content, Sider } = Layout
 const { TextArea } = Input
 const Option = Select.Option
 const { toContentState, getMentions } = Mention

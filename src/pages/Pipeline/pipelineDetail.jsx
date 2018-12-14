@@ -44,12 +44,6 @@ const enumStepsText = [{
   content: 'Last-content',
 }]
 
-const enumStatus = {
-  0: 'wait',
-  1: 'process',
-  2: 'finish',
-  3: 'error'
-}
 const enumStatusText = {
   0: '未开始',
   1: '执行中',
@@ -119,6 +113,7 @@ class pipelineDetail extends Component {
       const currentSteps = this.state.stepsList
       const taskStatus = this.state.taskStatus
 
+      /*eslint-disable default-case*/
       switch (taskStatus) {
         case 1:
           for (let i = 0; i < currentSteps.length; i++) {
@@ -293,6 +288,7 @@ class pipelineDetail extends Component {
         let taskList = res.task
         // console.log(statusList)
         let temparray = []
+        /*eslint-disable array-callback-return*/
         statusList.map((statusItem) => {
           temparray.push(statusItem)
         })
@@ -361,10 +357,9 @@ class pipelineDetail extends Component {
       if (res.code === 0) {
 
         let statusList = res.list
-        // console.log(statusList)
         let temparray = []
+        /*eslint-disable array-callback-return*/
         statusList.map((statusItem) => {
-          // temparray.push(Object.assign({},stepsList.find((finalStepItem)=>finalStepItem.stepCode===statusItem.stepCode),statusItem))
           temparray.push(statusItem)
         })
         this.makeStepCard(temparray)
@@ -633,11 +628,6 @@ class pipelineDetail extends Component {
     } = this.state
     return (
       <div className="pipeline">
-        <Breadcrumb className="devops-breadcrumb">
-          <BreadcrumbItem><Link to="/home">首页</Link></BreadcrumbItem>
-          <BreadcrumbItem><Link to="/pipeline">流水线</Link></BreadcrumbItem>
-          <BreadcrumbItem>详情</BreadcrumbItem>
-        </Breadcrumb>
         <Modal title="删除流水线"
                visible={delModalVisible}
                onOk={this.handleDeletePipeline}
@@ -647,166 +637,182 @@ class pipelineDetail extends Component {
         >
           <p>是否删除该流水线 ？</p>
         </Modal>
-        <section className="pipeline-box">
-          <div className="pipeline-header">
-            <Row gutter={16} type="flex" justify="space-between" align="middle">
-              <Col>
-                <Row gutter={16} type="flex" justify="space-between" align="middle">
-                  <Col>
-                    <h2>流水线详情</h2>
-                  </Col>
-                  <Col><Button onClick={() => {this.showModal()}} ghost type="danger" shape="circle" icon="delete"/>
-                  </Col>
-                </Row>
-              </Col>
-              <Col>
-                <Row gutter={16} type="flex" justify="space-between" align="middle">
-                  <Col>
-                    <span>Tips: 有{waitCount}个任务正在等待</span>
-                  </Col>
-                  <Col>
-                    <Button disabled={taskStatus === 1 || taskStatus === 3}
-                            type="primary" onClick={() => {
-                      this.gotoEditPipeline()
-                    }}>编辑</Button>
-                  </Col>
-                  <Col>
 
-                    <Select placeholder="请选择构建历史"
-                            onChange={this.changeHistory}
-                            style={{ width: 300 }}>
-                      {
-                        this.state.historyBranch.map((item, key) => {
-                          return <Option
-                            title={item.recordNo + ''}
-                            value={item.recordNo}
-                            key={key}
-                          >{item.updateTime}</Option>
-                        })
-                      }
-                    </Select>
-                  </Col>
-                </Row>
+        <Breadcrumb className="devops-breadcrumb">
+          <BreadcrumbItem><Link to="/home">首页</Link></BreadcrumbItem>
+          <BreadcrumbItem><Link to="/pipeline">流水线</Link></BreadcrumbItem>
+          <BreadcrumbItem>详情</BreadcrumbItem>
+        </Breadcrumb>
+        <div className="pipeline-header">
+          <Row gutter={16} type="flex" justify="space-between" align="middle">
+            <Col>
+              <Row gutter={16} type="flex" justify="space-between" align="middle">
+                <Col>
+                  <h2>流水线详情</h2>
+                </Col>
+                <Col><Button onClick={() => {this.showModal()}} ghost type="danger" shape="circle" icon="delete"/>
+                </Col>
+              </Row>
+            </Col>
+            <Col>
+              <Row gutter={16} type="flex" justify="space-between" align="middle">
+                <Col>
+                  <span>Tips: 有{waitCount}个任务正在等待</span>
+                </Col>
+                <Col>
+                  <Button disabled={taskStatus === 1 || taskStatus === 3}
+                          type="primary" onClick={() => {
+                    this.gotoEditPipeline()
+                  }}>编辑</Button>
+                </Col>
+                <Col>
 
-              </Col>
-            </Row>
-          </div>
-          <section className="pipeline-main">
-            <div className="pipeline-item">
-
-              <div className="pipeline-item-header">
-                <Row type="flex" justify="space-between">
-                  <Col span={12}>
-                    <h2>{taskName} <span>（ID：{taskCode}）{!showHistory && taskStatus === 1 &&
-                    <Icon type="loading"/>}</span></h2>
-                  </Col>
-                  <Col span={12}>
-                    <div className="pipeline-item-user">
-                      {/*gitlab push by liaoshengjian*/}
-                    </div>
-                  </Col>
-                </Row>
-              </div>
-              <div className="pipeline-item-content">
-                <Row>
-                  <Col span={20}>
-                    <div className="pipeline-item-main">
-                      {
-                        !showHistory && <p className="pipeline-item-timemeta">
-                          <span><i>最近执行时间：</i>{distanceTime}</span>
-                          <span><i>执行分支：</i>{branchName}</span>
-                          <span><i>最近执行时长：</i>{execTimeStr}</span>
-                        </p>
-                      }
-                      {showHistory && <p className="pipeline-item-timemeta">
-                        <span><i>执行时间：</i>{distanceTime}</span>
-                        <span><i>执行分支：</i>{branchName}</span>
-                        <span><i>执行时长：</i>{execTimeStr}</span>
-                      </p>}
-                    </div>
-                  </Col>
-                  <Col span={4}>
-                    <div className="pipeline-item-ctrl">
-
-                      <Row gutter={16} type="flex" justify="space-between" align="middle">
-                        <Col>
-                          <span>最近执行状态：</span>{this.pipelineRunStatusText(taskStatus, taskResult)}
-                        </Col>
-                        <Col>
-                          <Button disabled={taskStatus === 1 || taskStatus === 3} type="primary"
-                                  onClick={() => this.runTask()}>{enumButtonText[taskStatus]}</Button>
-                        </Col>
-                      </Row>
-                    </div>
-                  </Col>
-                </Row>
-                <Steps size="small"
-                       status={this.pipelineStepStatus(taskStatus, taskResult)}
-                       labelPlacement="vertical"
-                       current={this.pipelineStepCurrent()}
-                >
-                  <Step title="开始"></Step>
-
-                  {!showHistory && finalStep && finalStep.map((item, index) => {
-                    return <Step title={enumStepsText[item[0]].title} key={index}
-                                 icon={this.setStepStatusIcon(item)}
-                                 description={
-                                   item[1].map((item, index) => {
-
-                                     return <Card
-                                       style={{ width: 150, marginLeft: '-18%', background: this.setStepStatus(item) }}
-                                       title={item.stepName}
-                                       className={taskStatus === 1 ? (item.stepStatus === 1 ? 'step-status-running' : '') : ''}
-                                       key={item.stepID}
-                                     >
-                                       <p>{item.stepDesc}</p>
-
-                                     </Card>
-                                   })
-
-                                 }>
-
-                    </Step>
-                  })}
-                  {showHistory && historyStep && historyStep.map((item, index) => {
-                    return <Step title={enumStepsText[item[0]].title} key={index} description={
-                      item[1].map((item, index) => {
-
-                        return <Card
-                          style={{
-                            width: 150,
-                            marginLeft: '-18%',
-                            background: enumPipelineResultColor[item.historyResult]
-                          }}
-                          title={item.stepName}
-                          key={index}
-                        >
-                          <p>{item.stepDesc}</p>
-
-                        </Card>
+                  <Select placeholder="请选择构建历史"
+                          onChange={this.changeHistory}
+                          style={{ width: 300 }}>
+                    {
+                      this.state.historyBranch.map((item, key) => {
+                        return <Option
+                          title={item.recordNo + ''}
+                          value={item.recordNo}
+                          key={key}
+                        >{item.updateTime}</Option>
                       })
+                    }
+                  </Select>
+                </Col>
+              </Row>
 
-                    }>
+            </Col>
+          </Row>
+        </div>
 
-                    </Step>
-                  })}
-                  <Step title="完成" description={<div></div>}></Step>
-                </Steps>
+        <div className="pipeline-box-wrapper">
+          <section className="pipeline-box">
+
+            <section className="pipeline-main">
+              <div className="pipeline-detail">
+
+                <div className="pipeline-detail-header">
+                  <Row type="flex" justify="space-between">
+                    <Col span={12}>
+                      <h2>{taskName} <span>（ID：{taskCode}）{!showHistory && taskStatus === 1 &&
+                      <Icon type="loading"/>}</span></h2>
+                    </Col>
+                    <Col span={12} className="pipeline-detail-controButton">
+                      <div className="pipeline-detail-user">
+                        {/*gitlab push by liaoshengjian*/}
+                      </div>
+                      <Button disabled={taskStatus === 1 || taskStatus === 3} type="primary"
+                              onClick={() => this.runTask()}>{enumButtonText[taskStatus]}</Button>
+                    </Col>
+                  </Row>
+                </div>
+                <div className="pipeline-detail-content">
+                  <Row className="pipeline-detail-info">
+                    <Col span={20}>
+                      <div className="pipeline-detail-main">
+                        <div className="pipeline-detail-timemeta">
+                          {
+                            !showHistory && <Row>
+                              <Col span={8}><span><i>最近执行时间：</i>{distanceTime}</span></Col>
+                              <Col span={8}><span><i>执行分支：</i>{branchName}</span></Col>
+                              <Col span={8}><span><i>最近执行时长：</i>{execTimeStr}</span></Col>
+                            </Row>
+                          }
+                          {showHistory && <Row>
+                            <Col span={8}><span><i>执行时间：</i>{distanceTime}</span></Col>
+                            <Col span={8}><span><i>执行分支：</i>{branchName}</span></Col>
+                            <Col span={8}><span><i>执行时长：</i>{execTimeStr}</span></Col>
+                          </Row>
+                          }
+                        </div>
+                      </div>
+                    </Col>
+                    <Col span={4}>
+                      <div className="pipeline-detail-ctrl">
+                        <Row gutter={16} type="flex" justify="space-between" align="middle">
+                          <Col>
+                            <span><i>最近执行状态：</i>{this.pipelineRunStatusText(taskStatus, taskResult)}</span>
+                          </Col>
+                        </Row>
+                      </div>
+                    </Col>
+                  </Row>
+                  <Steps size="small"
+                         status={this.pipelineStepStatus(taskStatus, taskResult)}
+                         labelPlacement="vertical"
+                         current={this.pipelineStepCurrent()}
+                  >
+                    <Step title="开始"></Step>
+
+                    {!showHistory && finalStep && finalStep.map((item, index) => {
+                      return <Step title={enumStepsText[item[0]].title} key={index}
+                                   icon={this.setStepStatusIcon(item)}
+                                   description={
+                                     item[1].map((item, index) => {
+
+                                       return <div
+                                         style={{
+                                           width: 180,
+                                           marginLeft: '-18%',
+                                           background: this.setStepStatus(item),
+                                           border: '1px solid #F8F8F8'
+                                         }}
+                                         className={taskStatus === 1 ? (item.stepStatus === 1 ? 'step-status-running' : 'step-status-default') : 'step-status-default'}
+                                         key={index}
+                                       >
+                                         <p>{item.stepName}</p>
+                                         <p>{item.stepDesc}</p>
+
+                                       </div>
+                                     })
+
+                                   }>
+
+                      </Step>
+                    })}
+                    {showHistory && historyStep && historyStep.map((item, index) => {
+                      return <Step title={enumStepsText[item[0]].title} key={index} description={
+                        item[1].map((item, index) => {
+
+                          return <div
+                            style={{
+                              width: 180,
+                              marginLeft: '-18%',
+                              background: enumPipelineResultColor[item.historyResult],
+                              border: '1px solid #F8F8F8'
+                            }}
+                            key={index}
+                          >
+                            <p>{item.stepName}</p>
+                            <p>{item.stepDesc}</p>
+
+                          </div>
+                        })
+
+                      }>
+
+                      </Step>
+                    })}
+                    <Step title="完成" description={<div></div>}></Step>
+                  </Steps>
+                </div>
+
               </div>
-
-            </div>
+            </section>
           </section>
-        </section>
-        {
-          buildNum !== '0' && !showHistory &&
-          <ExecutionReport className="pipeline-box" taskID={taskID} buildNum={buildNum} platform={platform}/>
-        }
-        {
-          showHistory &&
-          <ExecutionReport className="pipeline-box" taskID={taskID} buildNum={this.state.historyBuildNum}
-                           platform={platform}/>
-        }
+          {
+            buildNum !== '0' && !showHistory &&
+            <ExecutionReport className="pipeline-box" taskID={taskID} buildNum={buildNum} platform={platform}/>
+          }
+          {
+            showHistory &&
+            <ExecutionReport className="pipeline-box" taskID={taskID} buildNum={this.state.historyBuildNum}
+                             platform={platform}/>
+          }
 
+        </div>
       </div>
     )
   }

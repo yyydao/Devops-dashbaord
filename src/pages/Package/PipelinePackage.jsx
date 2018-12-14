@@ -3,11 +3,10 @@ import { connect } from 'react-redux'
 import { reqGet } from '@/api/api'
 import './list.scss'
 
-import { Icon, Button, Modal, Select, Pagination, Layout, message, Row, Col } from 'antd'
+import { Icon, Button, Modal, Select, Pagination, message, Row, Col } from 'antd'
 import PipelinePackageDetail from './pipelinePackageDetail'
 
 const Option = Select.Option
-const { Content, Sider } = Layout
 
 class PipelinePackage extends Component {
   constructor (props) {
@@ -244,7 +243,7 @@ class PipelinePackage extends Component {
                       <Col span={20}>
                         <Row type="flex" justify="start" align="middle">
                           <Col>
-                            <img src={require('@/assets/favicon.ico')}/>
+                            <img alt="icon" src={require('@/assets/favicon.ico')}/>
                           </Col>
                           <Col>
                             <p>

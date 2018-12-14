@@ -5,7 +5,6 @@ import './index.scss'
 import { reqGet, reqPostURLEncode } from '@/api/api'
 import { formatTime, checkPermission } from '@/utils/utils'
 import { Steps, Breadcrumb, Button, Row, Col, message } from 'antd'
-import AuthButton from '@/components/AuthButton'
 
 const BreadcrumbItem = Breadcrumb.Item
 const Step = Steps.Step
@@ -45,6 +44,21 @@ const enumPipelineResult = {
 
 }
 
+const enumPipelineColorList = {
+  0: 'rgba(0,0,0,0.65)',
+  1: '#389E0D',
+  2: '#F5222D',
+  3: 'rgba(0,0,0,0.65)',
+  4: 'rgba(0,0,0,0.65)',
+}
+
+const enumStatusColorList = {
+  0: 'rgba(0,0,0,0.65)',
+  1: 'rgba(0,0,0,0.65)',
+  2: '#389E0D',
+  3: 'rgba(0,0,0,0.65)',
+}
+
 class Pipeline extends Component {
   constructor (props) {
     super(props)
@@ -58,8 +72,12 @@ class Pipeline extends Component {
   pipelineRunStatusText = (taskStatus, taskResult) => {
     return (taskStatus === 2 || taskStatus === '2') ? enumPipelineResult[taskResult] : enumStatusText[taskStatus]
   }
+
   pipelineStepStatus = (taskStatus, taskResult) => {
     return (taskStatus === 2 || taskStatus === '2') ? enumPipelineResult[taskResult] : enumStatusText[taskStatus]
+  }
+  pipelineStepStatusColor = (taskStatus, taskResult) => {
+    return (taskStatus === 2 || taskStatus === '2') ? enumPipelineColorList[taskResult] : enumStatusColorList[taskStatus]
   }
 
   getPipelineList = () => {
@@ -151,7 +169,7 @@ class Pipeline extends Component {
 
   render () {
 
-    const { pipelineList, hasAddAuth, authButtonText, addPathTo } = this.state
+    const { pipelineList } = this.state
 
     return (
       <div>
@@ -160,10 +178,9 @@ class Pipeline extends Component {
           <BreadcrumbItem>流水线</BreadcrumbItem>
         </Breadcrumb>
 
-
+        <div className="devops-main-wrapper">
           <div className="pipeline-menu">
             <Button type="primary" onClick={this.jumpToAddPipeline}>新增流水线</Button>
-            {/*<AuthButton hasAuth={hasAddAuth} buttonText={authButtonText} to={addPathTo}/>*/}
           </div>
           <section className="pipeline-box">
             <section className="pipeline-main">
@@ -172,7 +189,7 @@ class Pipeline extends Component {
                   return <div className="pipeline-item" key={index}>
 
                     <div className="pipeline-item-header" onClick={() => this.jumpToDetail(item)}
-                         style={{ cursor: 'pointer', height: '45px' }}>
+                         style={{ cursor: 'pointer' }}>
                       <Row type="flex" justify="space-between">
                         <Col span={12}>
                           <h2>{item.taskName}
@@ -185,27 +202,36 @@ class Pipeline extends Component {
                       </Row>
                     </div>
                     <div className="pipeline-item-content">
-                      <Row>
+
+                      <Row type="flex" justify="space-between" align="middle">
                         <Col span={20}>
                           <div className="pipeline-item-main">
-                            <p className="pipeline-item-timemeta">
-                              <span><i>最近执行时间：</i>{item.distanceTime}</span>
-                              <span><i>执行分支：</i>{item.branchName}</span>
-                              <span><i>最近执行时长：</i>{item.execTimeStr}</span>
-                            </p>
-                            <Steps size="small" status={this.pipelineStepStatus(item.taskStatus, item.taskResult)}
-                                   current={item.taskStatus === 2 ? 5 : 1}>
-                              {steps.map((item, index) => <Step key={index}
-                                                                title={item.title}/>)}
-                            </Steps>
+                            <div className="pipeline-item-timemeta">
+                              <Row>
+                                <Col span={8}><span><i>最近执行时间：</i>{item.distanceTime}</span></Col>
+                                <Col span={8}><span><i>执行分支：</i>{item.branchName}</span></Col>
+                                <Col span={8}><span><i>最近执行时长：</i>{item.execTimeStr}</span></Col>
+
+                              </Row>
+                            </div>
+                            <div className="bottom-wrapper">
+                              <Steps size="small" status={this.pipelineStepStatus(item.taskStatus, item.taskResult)}
+                                     current={item.taskStatus === 2 ? 5 : 1}>
+                                {steps.map((item, index) => <Step key={index}
+                                                                  title={item.title}/>)}
+                              </Steps>
+                            </div>
                           </div>
                         </Col>
                         <Col span={4}>
                           <div className="pipeline-item-ctrl">
-                            <div className="status">
-                              <span>最近执行状态：</span>{this.pipelineRunStatusText(item.taskStatus, item.taskResult)}</div>
-                            <Button type="primary" disabled={item.taskStatus === 1 || item.taskStatus === 3}
-                                    onClick={() => this.runTask(item)}>{enumButtonText[item.taskStatus]}</Button>
+                            <div className="pipeline-item-timemeta">
+                              <span style={{ color: this.pipelineStepStatusColor(item.taskStatus, item.taskResult) }}><i>最近执行状态：</i>{this.pipelineRunStatusText(item.taskStatus, item.taskResult)}</span>
+                            </div>
+                            <div className="bottom-wrapper">
+                              <Button type="primary" disabled={item.taskStatus === 1 || item.taskStatus === 3}
+                                      onClick={() => this.runTask(item)}>{enumButtonText[item.taskStatus]}</Button>
+                            </div>
                           </div>
                         </Col>
                       </Row>
@@ -217,6 +243,7 @@ class Pipeline extends Component {
             </section>
           </section>
         </div>
+      </div>
     )
   }
 }

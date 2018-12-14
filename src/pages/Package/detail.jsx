@@ -11,11 +11,9 @@ import {
   Col,
   Input,
   Form,
-  Card,
 } from 'antd'
 
 const { TextArea } = Input
-const { Meta } = Card
 const FormItem = Form.Item
 
 class packageDetail extends Component {
@@ -271,15 +269,14 @@ class packageDetail extends Component {
     const {
       regressModalVisible, addConfirmLoading, dingTalk,
       status, apkBuildId, fileName, version, fileSize, buildTime, taskMaster, codeBranch, submitDetails,
-      submitContent, rebuildContent, appUrl, ipaPath, openTesting, imageUrl,
+      submitContent, rebuildContent, appUrl, imageUrl,
       formDataUser, regressDesc, formDataPassword, passwdBuild, jenkinsStatus, buildId, envId
     } = this.state
     const { onCancleSuccess } = this.props
-    let regressButton, cancleButton
+    let cancleButton
     let rebuildButton
     let downloadButton
     let actionArray = []
-    let actionELement = <div className="detail-action">{actionArray}</div>
     let cardTitle = <span style={{ color: '#1890FF' }}>正在构建...</span>
 
     if (status === 0) {
@@ -298,10 +295,7 @@ class packageDetail extends Component {
                              onClick={(e) => {onCancleSuccess(null, buildId, envId)}}>取消构建</Button>
       actionArray.push(cancleButton)
     }
-    // if (openTesting) {
-    //     regressButton = <Button ghost type="primary" icon="sync" onClick={this.showRegressModal}>版本回归</Button>
-    //     actionArray.push(regressButton)
-    // }
+
 
     const formItemLayout = {
       labelCol: {
@@ -408,8 +402,7 @@ class packageDetail extends Component {
                   <Col span={6}>
                     {status === 0 &&
                     <div style={{ width: 120 }}>
-                      {/*{ipaPath && <QRCode value={ipaPath} size={170}/>}*/}
-                      <img width='140' src={imageUrl}/>
+                      <img width='140' src={imageUrl} alt="下载二维码"/>
                       <p style={{ textAlign: 'center', color: '#000' }}>【钉钉】扫码安装</p>
                     </div>
                     }
