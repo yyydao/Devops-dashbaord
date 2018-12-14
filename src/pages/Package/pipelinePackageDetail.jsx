@@ -12,10 +12,9 @@ import {
   Icon,
   Row,
   Col,
-  Card, Popover,
+  Popover,
 } from 'antd'
 
-const {Meta} = Card
 const QRCode = require('qrcode.react')
 
 
@@ -68,7 +67,6 @@ class pipelinePackageDetail extends Component {
     showQR = (item) => {
         console.log(item)
         const appUrl = item.filePath
-        const ipaPath = item.ipaPath
         Modal.info({
             iconType: 'download',
             title: '扫码下载',

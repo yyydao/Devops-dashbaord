@@ -1,9 +1,19 @@
 .pipeline {
+  &-wrapper{
+    background: #fff;
+  }
   &-header {
-    padding: 42px 24px 10px;
+    padding: 16px 32px;
+    background-color: #fff;
+    box-shadow:0 2px 4px rgba(0,21,41,0.12);
+    //padding: 42px 24px 10px;
     h2 {
       margin-bottom: 0;
     }
+  }
+  &-box-wrapper {
+    width: 100%;
+    padding: 24px;
   }
   &-menu {
     margin-bottom: 20px;
@@ -152,14 +162,15 @@
 
   &-main {
     border-bottom: 1px solid #ebedf0;
-    padding: 42px 24px 50px;
+    //padding: 42px 24px 50px;
     color: rgba(0, 0, 0, 0.65);
   }
 
   &-item {
     margin-bottom: 14px;
-    padding: 16px 0 16px 0;
+    padding: 16px 32px 22px;
     font-size: 12px;
+    background: #ffffff;
     border-bottom: 1px solid #e8e8e8;
 
     img {
@@ -173,25 +184,31 @@
 
     h2 {
       height: 22px;
-      line-height: 22px;
+      line-height: 24px;
       margin-bottom: 0;
-      font-size: 14px;
+      color: rgba(0, 0, 0, 0.85);
+      font-size: 16px;
     }
 
-    p {
-      //font-size: 0;
-      white-space: nowrap;
-      overflow: hidden;
+    &-header {
+      margin-bottom: 16px;
 
+    }
+    &-user {
+      text-align: right;
+    }
+    &-main {
+      display: block;
+      flex: 1
+    }
+
+
+    &-timemeta {
+      margin-bottom: 36px;
       span {
-        position: relative;
-        display: inline-block;
-        max-width: 30%;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        margin-right: 7px;
-        padding-right: 7px;
-        font-size: 12px;
+        font-size: 14px;
+        line-height: 22px;
+        color: rgba(0, 0, 0, 0.65);
 
         &:not(:last-of-type):after {
           content: '';
@@ -204,25 +221,11 @@
         }
 
         i {
-          color: #000;
+          color: rgba(0, 0, 0, 0.85);
+
           font-style: normal;
         }
       }
-    }
-    &-header {
-      //margin-bottom: 20px;
-
-    }
-    &-user {
-      text-align: right;
-    }
-
-    &-main {
-      display: block;
-      flex: 1
-    }
-    &-timemeta {
-      margin-bottom: 20px;
     }
 
     &-ctrl {
@@ -245,6 +248,8 @@
     }
   }
 
+
+
   .ant-card-head {
     border-bottom: 0;
     min-height: 40px;
@@ -262,7 +267,64 @@
     }
   }
 
+  //detail
+  &-detail{
+    background-color: #fff;
+
+    &-header {
+      margin-bottom: 16px;
+      padding: 24px;
+    }
+    &-info{
+      padding: 24px;
+    }
+    &-user {
+      text-align: right;
+    }
+    &-main {
+      display: block;
+      flex: 1
+    }
+
+    &-controButton{
+      text-align: right;
+    }
+
+    &-timemeta {
+      margin-bottom: 36px;
+      span {
+        font-size: 14px;
+        line-height: 22px;
+        color: rgba(0, 0, 0, 0.65);
+
+        &:not(:last-of-type):after {
+          content: '';
+          position: absolute;
+          top: 25%;
+          right: 0;
+          width: 1px;
+          height: 50%;
+          background-color: #ddd;
+        }
+
+        i {
+          color: rgba(0, 0, 0, 0.85);
+
+          font-style: normal;
+        }
+      }
+    }
+    &-content {
+      padding-bottom: 26px;
+    }
+
+  }
+
+  //animate
   .step-status {
+    &-default{
+      background-color: #F8F8F8;
+    }
     &-running {
       transition: all .4s cubic-bezier(.08, .82, .17, 1) 0s;
     }
