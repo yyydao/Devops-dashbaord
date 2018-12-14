@@ -36,7 +36,6 @@
   padding: 12px 24px;
   .nm-key{
     display: inline-block;
-    width: 140px;
     vertical-align: middle;
     height: 32px;
     line-height: 32px;
@@ -46,7 +45,7 @@
     border: 1px solid #eeeeee;
     border-radius: 2px;
     display: inline-block;
-    width: 800px;
+    width: 500px;
     height: 32px;
     line-height: 32px;
     vertical-align: middle;
@@ -78,6 +77,29 @@
     padding: 0px 20px;
   }
 }
+.nofootModal .ant-modal-footer{
+  display: none;
+}
 .btn-group-item{
-  margin: 15px 24px 15px 140px;
+  margin: 0px 24px 15px 0px;
+}
+.ant-card-type-inner .ant-card-extra{
+  padding: 11px 0px;
+}
+.token-container{
+  margin-bottom: 24px;
+  span{
+    vertical-align: middle;
+  }
+  input{
+    outline: none;
+    border: 1px solid #eeeeee;
+    border-radius: 4px;
+    display: inline-block;
+    width: 600px;
+    height: 32px;
+    line-height: 32px;
+    vertical-align: middle;
+    padding-left: 16px;
+  }
 }

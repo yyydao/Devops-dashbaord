@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
-import {Breadcrumb, message, Button, Checkbox} from 'antd';
+import {Breadcrumb, message, Button, Checkbox, Card, Row, Col, Modal} from 'antd';
 
 import {reqPost, reqGet} from '@/api/api';
 import './index.scss'
@@ -16,8 +16,9 @@ class NoticeManager extends Component {
       oldTaskTemplate: [],
       envTemplate: [],
       oldEnvTemplate: [],
-      envPreviewData: {},
-      taskPreviewData: {},
+      reviewData: {},
+      reviewValue:{},
+      modalVisible:false,
       envValue: {
         notice_env_project: "团贷网-Android",
         notice_env_task:"【提测】",
@@ -260,9 +261,18 @@ class NoticeManager extends Component {
     })
   }
 
-  render() {
-    const {taskTemplate, envTemplate, envPreviewData, envValue, taskPreviewData, taskValue, envToken, taskToken, oldTaskTemplate, oldEnvTemplate} = this.state
+  /**
+   * @desc 预览
+   * @param data object 预览数据
+   * @param type string task流水线/env提测
+   */
+  previewData = (data, type) =>{
+    this.setState({reviewData:data,reviewValue:type==='env'?this.state.envValue:this.state.taskValue},()=>{this.setState({modalVisible:true})})
 
+  }
+
+  render() {
+    const {taskTemplate, envTemplate, reviewData, reviewValue, modalVisible, envToken, taskToken, oldTaskTemplate, oldEnvTemplate} = this.state
     return (
         <div>
           <Breadcrumb className="devops-breadcrumb">
@@ -270,171 +280,152 @@ class NoticeManager extends Component {
             <BreadcrumbItem>通知管理</BreadcrumbItem>
           </Breadcrumb>
           <div className="content-container">
-            {envTemplate &&
-            <div className="nm-container">
-              <p className="nm-title">【提测】-- 钉钉消息</p>
-              <div className="nm-item">
-                <span className="nm-key">access_token：</span>
-                <input className="nm-input" value={envToken} onChange={(e)=>{this.setState({envToken:e.target.value})}}/>
+            {envTemplate && envTemplate.length>0 &&
+            <Card title="[提测]--钉钉消息">
+              <div className="token-container">
+                <span>access_token：</span>
+                <input value={envToken} onChange={(e)=>{this.setState({envToken:e.target.value})}}/>
               </div>
-              <div className="nm-item">
-                <div className="nm-item-left">
-                  {envTemplate.map((item, index) =>
-                    <div className="nm-list" key={index}>
-                      <div className="nm-list-lf">
-                        <div style={{marginBottom: 8}}>{item.templateName}模板：</div>
-                        <Checkbox style={{marginBottom: 8}}
-                                  checked={item.startNotice}
-                                  onChange={(e) => {
-                                    this.startNoticeChange(e.target.checked, index, 'envTemplate')
-                                  }}>
-                          开启通知
-                        </Checkbox>
-                        <Button type="primary" onClick={() => {
-                          this.setState({envPreviewData: item})
-                        }}>预览</Button>
-                      </div>
-                      <div className="nm-list-rt">
-                        <div className="nm-list-item">
-                          <Checkbox checked={item.selectAll}
-                                    onChange={(e) => {
-                                      this.selectAllChecked(e.target.checked, index, 'envTemplate')
-                                    }}>
-                            全选</Checkbox>
-                        </div>
-                        {item.contentItems.map((contentItem, contentIndex) =>
-                          <div className="nm-list-item" key={contentIndex}>
-                            <Checkbox checked={contentItem.checked}
-                                      onChange={(e) => {
-                                        this.contentItemChecked(e.target.checked, index, contentIndex, 'envTemplate')
-                                      }}>
-                              {contentItem.name}</Checkbox>
-                          </div>
-                        )}
-                        <div className="nm-list-item">
-                          <Checkbox checked={item.remind}
-                                    onChange={(e) => {
-                                      this.remindChecked(e.target.checked, index, 'envTemplate')
-                                    }}>
-                            @提醒（在【发起提测】页面配置）</Checkbox>
-                        </div>
-                      </div>
+              {envTemplate.map((item, index) =>
+                <Card
+                  type="inner"
+                  title={item.templateName+"模板："}
+                  key={index}
+                  style={{marginBottom:24}}
+                  extra={
+                    <div>
+                      <Checkbox
+                        style={{marginRight:24}}
+                        checked={item.startNotice}
+                        onChange={(e) => {
+                          this.startNoticeChange(e.target.checked, index, 'envTemplate')
+                        }}>
+                        开启通知
+                      </Checkbox>
+                      <button style={{padding:"2px 16px",color: "#fff",backgroundColor:"#1890ff",border:"none",borderRadius:4,cursor:"pointer"}}
+                              onClick={() => {this.previewData(item,'env')}}>预览</button>
+                    </div>}>
+                  <div className="nm-list-rt">
+                    <div className="nm-list-item">
+                      <Checkbox checked={item.selectAll}
+                                 onChange={(e) => {
+                                   this.selectAllChecked(e.target.checked, index, 'envTemplate')
+                                 }}>全选</Checkbox>
                     </div>
-                  )}
-                  <div className="btn-group">
-                    <Button type="primary" className="btn-group-item" onClick={() => {
-                      this.saveData('envTemplate')
-                    }}>保存</Button>
-                    <Button type="primary" onClick={() => {
-                      this.setState({
-                        envTemplate: JSON.parse(JSON.stringify(oldEnvTemplate.noticeTemplates)),
-                        envToken:oldEnvTemplate.accessToken
-                      })
-                    }}>重置</Button>
+                    <Row>
+                    {item.contentItems.map((contentItem, contentIndex) =>
+                      <Col span={4} style={{marginTop:14}} key={contentIndex}>
+                        <Checkbox checked={contentItem.checked}
+                                  onChange={(e) => {
+                                    this.contentItemChecked(e.target.checked, index, contentIndex, 'envTemplate')
+                                   }}>{contentItem.name}</Checkbox>
+                      </Col>
+                    )}
+                    <Col span={8} style={{marginTop:14}}>
+                      <Checkbox checked={item.remind}
+                                onChange={(e) => {
+                                  this.remindChecked(e.target.checked, index, 'envTemplate')
+                                }}>@提醒（在【发起提测】页面配置）</Checkbox>
+                    </Col>
+                    </Row>
                   </div>
-                </div>
-                {envPreviewData &&envPreviewData.contentItems&&
-                <div className="nm-item-right">
-                  <p>预览：<span>({envPreviewData.templateName && envPreviewData.templateName})</span></p>
-                  <div className="nm-preview">
-                    {envPreviewData.contentItems.map((item, index) => {
-                      if (item.checked) {
-                        return <p key={index}>{item.name}：{envValue[item.code]}</p>
-                      }else{
-                        return false
-                      }
-                    })
-                    }{
-                    envPreviewData.remind && <p>@莫栋鸿@黎锡坚@何浩东</p>
-                  }
-                  </div>
-                </div>
-                }
-              </div>
-            </div>
+                </Card>
+              )}
+               <div className="btn-group">
+                 <Button type="primary" className="btn-group-item" onClick={() => {
+                   this.saveData('envTemplate')
+                 }}>保存</Button>
+                 <Button onClick={() => {
+                   this.setState({
+                     envTemplate: JSON.parse(JSON.stringify(oldEnvTemplate.noticeTemplates)),
+                     envToken:oldEnvTemplate.accessToken
+                   })
+                 }}>重置</Button>
+               </div>
+            </Card>
             }
-            {taskTemplate &&
-            <div className="nm-container">
-              <p className="nm-title">【流水线】-- 钉钉消息</p>
-              <div className="nm-item">
-                <span className="nm-key">access_token：</span>
-                <input className="nm-input" value={taskToken}  onChange={(e)=>{this.setState({taskToken:e.target.value})}}/>
+            {taskTemplate && taskTemplate.length>0 &&
+            <Card title="[流水线]--钉钉消息" style={{marginTop:24}}>
+              <div className="token-container">
+                <span>access_token：</span>
+                <input value={taskToken} onChange={(e)=>{this.setState({taskToken:e.target.value})}}/>
               </div>
-              <div className="nm-item">
-                <div className="nm-item-left">
-                  {taskTemplate.map((item, index) =>
-                    <div className="nm-list" key={index}>
-                      <div className="nm-list-lf">
-                        <p style={{marginBottom: 8}}>【{item.templateName}】模板：</p>
-                        <Checkbox style={{marginBottom: 8}}
-                                  checked={item.startNotice}
-                                  onChange={(e) => {
-                                    this.startNoticeChange(e.target.checked, index, 'taskTemplate')
-                                  }}>
-                          开启通知
-                        </Checkbox>
-                        <Button type="primary" onClick={() => {
-                          this.setState({taskPreviewData: item})
-                        }}>预览</Button>
-                      </div>
-                      <div className="nm-list-rt">
-                        <div className="nm-list-item">
-                          <Checkbox checked={item.selectAll}
-                                    onChange={(e) => {
-                                      this.selectAllChecked(e.target.checked, index, 'taskTemplate')
-                                    }}>
-                            全选</Checkbox>
-                        </div>
-                        {item.contentItems.map((contentItem, contentIndex) =>
-                          <div className="nm-list-item" key={contentIndex}>
-                            <Checkbox checked={contentItem.checked}
-                                      onChange={(e) => {
-                                        this.contentItemChecked(e.target.checked, index, contentIndex, 'taskTemplate')
-                                      }}>
-                              {contentItem.name}</Checkbox>
-                          </div>
-                        )}
-                        <div className="nm-list-item">
-                          <Checkbox checked={item.remind}
-                                    onChange={(e) => {
-                                      this.remindChecked(e.target.checked, index, 'taskTemplate')
-                                    }}>@提醒所有人</Checkbox>
-                        </div>
-                      </div>
+              {taskTemplate.map((item, index) =>
+                <Card
+                  type="inner"
+                  title={"["+item.templateName+"]模板："}
+                  key={index}
+                  style={{marginBottom:24}}
+                  extra={
+                    <div>
+                      <Checkbox
+                        style={{marginRight:24}}
+                        checked={item.startNotice}
+                        onChange={(e) => {
+                          this.startNoticeChange(e.target.checked, index, 'taskTemplate')
+                        }}>
+                        开启通知
+                      </Checkbox>
+                      <button style={{padding:"2px 16px",color: "#fff",backgroundColor:"#1890ff",border:"none",borderRadius:4,cursor:"pointer"}}
+                              onClick={() => {this.previewData(item,'task')}}>预览</button>
+                    </div>}>
+                  <div className="nm-list-rt">
+                    <div className="nm-list-item">
+                      <Checkbox checked={item.selectAll}
+                                onChange={(e) => {
+                                  this.selectAllChecked(e.target.checked, index, 'taskTemplate')
+                                }}>全选</Checkbox>
                     </div>
-                  )}
-                  <div className="btn-group">
-                    <Button type="primary" className="btn-group-item" onClick={() => {
-                      this.saveData('taskTemplate')
-                    }}>保存</Button>
-                    <Button type="primary" onClick={() => {this.setState({
-                      taskTemplate: JSON.parse(JSON.stringify(oldTaskTemplate)),
-                      taskToken:oldTaskTemplate.accessToken})
-                    }}>重置</Button>
+                    <Row>
+                      {item.contentItems.map((contentItem, contentIndex) =>
+                        <Col span={4} style={{marginTop:14}} key={contentIndex}>
+                          <Checkbox checked={contentItem.checked}
+                                    onChange={(e) => {
+                                      this.contentItemChecked(e.target.checked, index, contentIndex, 'taskTemplate')
+                                    }}>{contentItem.name}</Checkbox>
+                        </Col>
+                      )}
+                      <Col span={8} style={{marginTop:14}}>
+                        <Checkbox checked={item.remind}
+                                  onChange={(e) => {
+                                    this.remindChecked(e.target.checked, index, 'taskTemplate')
+                                  }}>@提醒所有人</Checkbox>
+                      </Col>
+                    </Row>
                   </div>
-                </div>
-                {taskPreviewData && taskPreviewData.contentItems &&
-                <div className="nm-item-right">
-                  <p>预览：<span>({taskPreviewData.templateName && taskPreviewData.templateName})</span></p>
-                  <div className="nm-preview">
-                    {taskPreviewData.contentItems.map((item, index) => {
-                      if (item.checked) {
-                        return <p key={index}>{item.name}：{taskValue[item.code]}</p>
-                      }else{
-                        return false
-                      }
-                    })
-                    }{
-                    taskPreviewData.remind && <p>@所有人</p>
-                  }
-                  </div>
-                </div>
-                }
+                </Card>
+              )}
+              <div className="btn-group">
+                <Button type="primary" className="btn-group-item" onClick={() => {
+                  this.saveData('taskTemplate')
+                }}>保存</Button>
+                <Button onClick={() => {this.setState({
+                  taskTemplate: JSON.parse(JSON.stringify(oldTaskTemplate)),
+                  taskToken:oldTaskTemplate.accessToken})
+                }}>重置</Button>
               </div>
-            </div>
+            </Card>
             }
           </div>
+          <Modal
+            title={`预览-${reviewData.templateName}`}
+            visible={modalVisible}
+            onCancel={()=>{this.setState({modalVisible:false})}}
+            className="nofootModal"
+          >
+            {reviewData.templateName && reviewData.contentItems.map((item, index) => {
+              if (item.checked) {
+                return <Row key={index} style={{padding:"0px 24px 0px 48px",marginBottom:18}}><Col span={6}>{item.name}：</Col><Col span={18}>{reviewValue[item.code]}</Col></Row>
+              } else {
+                return false
+              }
+              })
+            }
+            { reviewData.remind &&  <Row style={{padding:"0px 24px 0px 48px",marginBottom:18}}><Col span={6}/><Col span={18}>@所有人</Col></Row>
+            }
+          </Modal>
         </div>
+
     )
   }
 }
