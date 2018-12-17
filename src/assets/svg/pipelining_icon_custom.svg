@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="26px" height="28px" viewBox="0 0 26 28" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.5 (67469) - http://www.bohemiancoding.com/sketch -->
+    <title>自定义任务icon</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.65">
+        <g id="Desktop-HD" transform="translate(-74.000000, -451.000000)" fill="#000000">
+            <g id="自定义任务icon" transform="translate(71.000000, 449.000000)">
+                <rect id="矩形" opacity="0" x="0" y="0" width="32" height="32"></rect>
+                <path d="M28,11.427 C27.4477153,11.427 27,11.8747153 27,12.427 L27,27 C27,27.5522847 26.5522847,28 26,28 L6,28 C5.44771525,28 5,27.5522847 5,27 L5,5 C5,4.44771525 5.44771525,4 6,4 L17.425,4 C17.9772847,4 18.425,3.55228475 18.425,3 C18.425,2.44771525 17.9772847,2 17.425,2 L6,2 C4.34314575,2 3,3.34314575 3,5 L3,27 C3,28.6568542 4.34314575,30 6,30 L26,30 C27.6568542,30 29,28.6568542 29,27 L29,12.427 C29,11.8747153 28.5522847,11.427 28,11.427 Z" id="路径"></path>
+                <rect id="矩形" transform="translate(19.689438, 11.174241) rotate(-45.000000) translate(-19.689438, -11.174241) " x="7.68943772" y="10.1742414" width="24" height="2" rx="1"></rect>
+            </g>
+        </g>
+    </g>
+</svg>

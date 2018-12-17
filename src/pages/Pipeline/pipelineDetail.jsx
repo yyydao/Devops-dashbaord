@@ -777,7 +777,7 @@ class pipelineDetail extends Component {
                                          // className={taskStatus === 1 ? (item.stepStatus === 1 ? 'step-status-running' : 'step-status-default') : 'step-status-default'}
                                          key={index}
                                        >
-                                         <p style={{marginBottom:'0em'}}><span style={{width:'30px',height:'24px',display:'inline-block'}}>{this.setStepStatus(item)}</span>
+                                         <p style={{marginBottom:'0em'}}><span style={{width:'30px',height:'24px',display:'inline-block',textAlign:'center'}}>{this.setStepStatus(item)}</span>
                                            <span style={{color: 'rgba(0,0,0,0.65)',fontSize:'14px',}}>{item.stepName}</span></p>
                                          <p style={{color: 'rgba(0,0,0,0.45)',fontSize:'12px',margin:'0 0 0 30px '}}>{item.stepDesc}</p>
                                        </div>
@@ -804,7 +804,7 @@ class pipelineDetail extends Component {
                             // className={taskStatus === 1 ? (item.stepStatus === 1 ? 'step-status-running' : 'step-status-default') : 'step-status-default'}
                             key={index}
                           >
-                            <p style={{marginBottom:'0em'}}><span style={{width:'30px',height:'24px',display:'inline-block'}}>{this.setStepStatus(item)}</span>
+                            <p style={{marginBottom:'0em'}}><span style={{width:'30px',height:'24px',display:'inline-block',textAlign:'center'}}>{this.setStepStatus(item)}</span>
                               <span style={{color: 'rgba(0,0,0,0.65)',fontSize:'14px',}}>{item.stepName}</span></p>
                             <p style={{color: 'rgba(0,0,0,0.45)',fontSize:'12px',margin:'0 0 0 30px '}}>{item.stepDesc}</p>
                           </div>
