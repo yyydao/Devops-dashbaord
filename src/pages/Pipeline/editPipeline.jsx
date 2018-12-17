@@ -2,26 +2,40 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link,withRouter } from 'react-router-dom'
 import './index.scss'
-import { reqPost, reqGet, reqDelete } from '@/api/api'
+import { reqPost, reqGet,reqDelete } from '@/api/api'
+
+import Acode from '@/assets/svg/pipelining_icon_acode.svg'
+import StaticScanning from '@/assets/svg/pipelining_icon_static_scanning.svg'
+import UT from '@/assets/svg/pipelining_icon_unit_testing.svg'
+import Compile from '@/assets/svg/pipelining_icon_compile.svg'
+import Security from '@/assets/svg/pipelining_icon_app_scanning.svg'
+import UIT from '@/assets/svg/pipelining_icon_ui_test.svg'
+import PerformanceTest from '@/assets/svg/pipelining_icon_performance.svg'
+import Reinforce from '@/assets/svg/pipelining_icon_reinforce.svg'
+import Patching from '@/assets/svg/pipelining_icon_patching.svg'
+import Package from '@/assets/svg/pipelining_icon_package.svg'
+import Custom from '@/assets/svg/pipelining_icon_custom.svg'
 
 import { setStep,removeSteps,setSteps } from '@/store/action'
 import {stepParamstoArray, stepParamstoObject } from '@/utils/utils.js'
 import {constructStepCard, composeCompleteStep,composeCompleteStepAfterRemove } from './constructSteps'
 
 import {
-    Steps,
-    Form,
-    Input,
-    Breadcrumb,
-    Switch,
-    Card,
-    Button,
-    Icon,
-    Select,
-    Modal,
-    message,
-    Dropdown,
-    Menu
+  Steps,
+  Form,
+  Input,
+  Breadcrumb,
+  Switch,
+  Card,
+  Button,
+  Icon,
+  Select,
+  Modal,
+  message,
+  Dropdown,
+  Menu,
+  Row,
+  Col,
 } from 'antd'
 import qs from 'qs'
 import uniq from 'lodash.uniq'
@@ -50,17 +64,17 @@ const enumStepsText = [{
 }]
 
 const pipelineID = [
-    {id: 0, name: '代码拉取',stepCode: 0},
-    {id: 1, name: '单元测试',stepCode: 1},
-    {id: 2, name: '静态扫描',stepCode: 2},
-    {id: 3, name: '编译打包',stepCode: 3},
-    {id: 4, name: '安全扫描',stepCode: 4},
-    {id: 5, name: 'UI测试',stepCode: 5},
-    {id: 6, name: '性能测试',stepCode: 6},
-    {id: 7, name: '加固',stepCode: 7},
-    {id: 8, name: '补丁',stepCode: 8},
-    {id: 9, name: '包管理',stepCode: 9},
-    {id: -1, name: '自定义',stepCode: -1},
+  { id: 0, name: '代码拉取', stepCode: 0, component: () => (<Acode/>) },
+  { id: 1, name: '单元测试', stepCode: 1, component: () => (<UT/>) },
+  { id: 2, name: '静态扫描', stepCode: 2, component: () => (<StaticScanning/>) },
+  { id: 3, name: '编译打包', stepCode: 3, component: () => (<Compile/>) },
+  { id: 4, name: '安全扫描', stepCode: 4, component: () => (<Security/>) },
+  { id: 5, name: 'UI测试', stepCode: 5, component: () => (<UIT/>) },
+  { id: 6, name: '性能测试', stepCode: 6, component: () => (<PerformanceTest/>) },
+  { id: 7, name: '加固', stepCode: 7, component: () => (<Reinforce/>) },
+  { id: 8, name: '补丁', stepCode: 8, component: () => (<Patching/>) },
+  { id: 9, name: '包管理', stepCode: 9, component: () => (<Package/>) },
+  { id: -1, name: '自定义', stepCode: -1, component: () => (<Custom/>) },
 ]
 
 class Edit extends Component {
@@ -402,50 +416,68 @@ class Edit extends Component {
             stepsList
         } = this.state
 
-        const formItemLayout = {
-            labelCol: {
-                xs: {span: 24},
-                sm: {span: 8},
-            },
-            wrapperCol: {
-                xs: {span: 24},
-                sm: {span: 16},
-            },
-        }
-        const tailFormItemLayout = {
-            wrapperCol: {
-                xs: {
-                    span: 24,
-                    offset: 0,
-                },
-                sm: {
-                    span: 16,
-                    offset: 8,
-                },
-            },
-        }
+    const formItemLayout = {
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 8 },
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 16 },
+      },
+    }
+    const tailFormItemLayout = {
+      wrapperCol: {
+        xs: {
+          span: 24,
+          offset: 0,
+        },
+        sm: {
+          span: 16,
+          offset: 0,
+        },
+      },
+    }
 
-        const gridStyle = {
-            width: '25%',
-            textAlign: 'center',
-        }
+    const gridStyle = {
+      border: '1px solid rgba(0,0,0,0.15)',
+      borderRadius: '8px',
+      width: 110,
+      height: 80,
+      textAlign: 'center',
+      marginTop:32,
+    }
 
-        return (
-            <div id="pipeline-add">
-                <Modal title="创建任务"
-                       visible={addVisible}
-                       onOk={this.addItem}
-                       confirmLoading={addConfirmLoading}
-                       onCancel={this.hideModal}
-                       maskClosable={false}
-                       destroyOnClose={true}
-                >
-                    <Card>
-                        {pipelineID.map((item, index) => {
-                            return (
-                                <Card.Grid key={index} style={gridStyle} onClick={()=>this.handleAddNewTask(item)}>{item.name}</Card.Grid>
-                            )
-                        })}
+    return (
+      <div id="pipeline-add">
+        <Modal title="创建任务"
+               visible={addVisible}
+               confirmLoading={addConfirmLoading}
+               onCancel={this.hideModal}
+               maskClosable={false}
+               destroyOnClose={true}
+               width={600}
+               className='pipeline-task-modal'
+        >
+
+          <Card>
+            <Row type="flex"  justify="start">
+            {pipelineID.map((item, index) => {
+              return (
+
+
+                  <Col  key={index}  span={6}>
+                    <Card.Grid style={gridStyle}
+                               onClick={() => this.handleAddNewTask(item)}>
+                      <p><Icon component={item.component} style={{ fontSize: '32px' }}></Icon></p>
+                      <p><span className={'taskName'}>{item.name}</span></p>
+                    </Card.Grid>
+                  </Col>
+
+              )
+            })}
+            </Row>
+
 
                     </Card>
 
@@ -456,8 +488,9 @@ class Edit extends Component {
                     <BreadcrumbItem><Link to="/pipeline">流水线</Link></BreadcrumbItem>
                     <BreadcrumbItem>编辑</BreadcrumbItem>
                 </Breadcrumb>
-                <section className="pipeline-box">
-                    <Form onSubmit={this.handleSubmit}>
+                <section className="pipeline-box pipeline-modify" >
+                  <Card title="编辑流水线" style={{ margin: 24 }}>
+                    <Form onSubmit={this.handleSubmit} style={{ width: 386 }}>
                         <FormItem
                             {...formItemLayout}
                             label="流水线名称"
@@ -480,7 +513,6 @@ class Edit extends Component {
                                         labelInValue
                                         onSearch={this.getBranchList}
                                         onChange={this.changeBranch}
-                                        style={{width: 300}}
                                 >
                                     {
                                         this.state.branchList.map((item) => {
@@ -510,11 +542,17 @@ class Edit extends Component {
                             )}
                         </FormItem>
                         <FormItem
+                          style={{
+                            marginTop: 40,
+                            fontSize: 14,
+                            color: 'rgba(0,0,0,0.85)',
+                            lineHeight: 22
+                          }}
                             {...formItemLayout}
                             label="选择流水线节点"
                         >
                         </FormItem>
-
+                    </Form>
                         <div className="pipeline-item-content">
 
 
@@ -526,7 +564,15 @@ class Edit extends Component {
                                             {item[1].map((item, index) => {
                                                 // console.log(item)
                                                 return <Card
-                                                    style={{width: 150, marginLeft: '-18%'}}
+                                                  style={{
+                                                    width: 180,
+                                                    background: '#F8F8F8',
+                                                    border: '1px solid #F8F8F8',
+                                                    textAlign: 'left',
+                                                    padding: '4px',
+                                                    margin: '8px 0',
+                                                    marginLeft: '-37%',
+                                                  }}
                                                     title={item.stepName}
                                                     extra={<Dropdown overlay={ <Menu>
                                                         <Menu.Item>
@@ -547,9 +593,23 @@ class Edit extends Component {
                                                     <p>{item.stepDesc}</p>
                                                 </Card>
                                             })}
-                                            <Button icon="plus" type="default" onClick={() => {
-                                                this.showModal(item[0])
-                                            }}>添加任务</Button>
+                                          <Button style={{
+                                            width: 180,
+
+                                            background: '#F8F8F8',
+                                            border: '1px solid #F8F8F8',
+                                            textAlign: 'center',
+                                            padding: '4px',
+                                            height: '48px',
+                                            color: '#1890ff',
+                                            fontSize: '14px',
+                                            lineHeight: '24px',
+                                            marginTop: '8px',
+                                            marginLeft: '-37%',
+                                          }}
+                                                  icon="plus" type="default" onClick={() => {
+                                            this.showModal(item[0])
+                                          }}>添加任务</Button>
                                         </div>
                                         }>
                                         </Step>
@@ -559,13 +619,10 @@ class Edit extends Component {
                             </Steps>
                         </div>
                         <FormItem {...tailFormItemLayout}>
-                            <Button type="primary" htmlType="submit">保存</Button>
+                            <Button style={{ marginTop: 40 }} type="primary" htmlType="submit">保存</Button>
                         </FormItem>
-                    </Form>
-                    <section className="pipeline-main">
-                        <div className="pipeline-item">
-                        </div>
-                    </section>
+
+                  </Card>
                 </section>
             </div>
         )
