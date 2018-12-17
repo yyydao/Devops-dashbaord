@@ -47,7 +47,7 @@ class Dashbroad extends Component {
   render() {
     const {id}=this.props
     return (
-        <div id={id} style={{ width:'25%',minWidth:300, height: 300,float:'left' }}></div>
+        <div id={id} style={{ width:'25%',minWidth:230, height: 300,float:'left' }}></div>
     );
   }
 }

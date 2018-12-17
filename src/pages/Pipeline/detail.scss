@@ -1,5 +1,5 @@
+@import "~spinkit/scss/spinners/7-three-bounce";
 .pipeline {
-  //common
   &-wrapper{
     background: #fff;
   }
@@ -11,21 +11,6 @@
     h2 {
       margin-bottom: 0;
     }
-  }
-  &-menu {
-    margin-bottom: 20px;
-    overflow: hidden;
-
-    button {
-      margin-right: 10px;
-    }
-  }
-
-
-  &-main {
-    border-bottom: 1px solid #ebedf0;
-    //padding: 42px 24px 50px;
-    color: rgba(0, 0, 0, 0.65);
   }
 
   &-box {
@@ -46,34 +31,24 @@
     }
   }
 
-  // list
-  &-item {
-    margin-bottom: 14px;
-    padding: 16px 32px 22px;
-    font-size: 12px;
-    background: #ffffff;
-    border-bottom: 1px solid #e8e8e8;
 
-    img {
-      position: absolute;
-      top: 50%;
-      left: 0;
-      width: 30px;
-      height: 30px;
-      margin-top: -15px;
-    }
+  &-main {
+    border-bottom: 1px solid #ebedf0;
+    //padding: 42px 24px 50px;
+    color: rgba(0, 0, 0, 0.65);
+  }
 
-    h2 {
-      height: 22px;
-      line-height: 24px;
-      margin-bottom: 0;
-      color: rgba(0, 0, 0, 0.85);
-      font-size: 16px;
-    }
+
+  //detail
+  &-detail{
+    background-color: #fff;
 
     &-header {
       margin-bottom: 16px;
-
+      padding: 24px;
+    }
+    &-info{
+      padding: 24px;
     }
     &-user {
       text-align: right;
@@ -83,6 +58,9 @@
       flex: 1
     }
 
+    &-controButton{
+      text-align: right;
+    }
 
     &-timemeta {
       margin-bottom: 36px;
@@ -108,25 +86,10 @@
         }
       }
     }
-
-    &-ctrl {
-      text-align: right;
-      .status {
-        font-size: 14px;
-        margin-bottom: 20px;
-        span {
-          font-weight: bold;
-          margin-right: 4px;
-        }
-      }
-      button {
-        vertical-align: middle;
-
-        &:not(:last-of-type) {
-          margin-right: 5px;
-        }
-      }
+    &-content {
+      padding-bottom: 26px;
     }
+
   }
 
   //animate

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import qs from 'qs'
-import './index.scss'
+import './detail.scss'
 import { formatTime, constructStepCard, checkPermission } from '@/utils/utils'
 import { reqGet, reqDelete, reqPostURLEncode } from '@/api/api'
 import { setStep, removeSteps, setSteps } from '@/store/action'
@@ -13,7 +13,6 @@ import { track } from 'bizcharts'
 import {
   Steps,
   Breadcrumb,
-  Card,
   Button,
   Icon,
   Row,
@@ -371,17 +370,30 @@ class pipelineDetail extends Component {
 
   setStepStatus = (item) => {
     let stepStatus = item.stepStatus
+    const enumPipelineResultIcon = {
+      // `#fff`
+      0: <Icon type="clock-circle" style={{fontSize: '18px'}} />,
+      // `#52c41a`
+      1: <Icon type="check-circle" style={{color:'#1890ff',fontSize: '18px'}} />,
+      // `#f5222d`
+      2:<Icon type="close-circle"  style={{color:'#f5222d',fontSize: '18px'}}/>,
+      // `#faad14`
+      3: <Icon type="exclamation-circle" style={{color:'#faad14',fontSize: '18px'}} />,
+      // `#1890ff`
+      4: <div className='sk-three-bounce'><div className='sk-child sk-bounce1 '></div><div className='sk-child '></div><div className='sk-child sk-bounce2'></div></div>,
+
+    }
     switch (stepStatus) {
       case 0:
-        return `#ffffff`
+        return <Icon type="clock-circle"  style={{fontSize: '18px'}} />
       case 1:
-        return `#1890ff`
+        return <div className='sk-three-bounce'><div className='sk-child '></div><div className='sk-child sk-bounce1'></div><div className='sk-child sk-bounce2'></div></div>
       case 2:
-        return enumPipelineResultColor[item.stepResult]
+        return enumPipelineResultIcon[item.stepResult]
       case 3:
-        return `#ffffff`
+        return <Icon type="clock-circle"   style={{fontSize: '18px'}}  />
       default:
-        return `#ffffff`
+        return <Icon type="clock-circle"   style={{fontSize: '18px'}} />
     }
   }
 
@@ -755,16 +767,19 @@ class pipelineDetail extends Component {
                                        return <div
                                          style={{
                                            width: 180,
-                                           marginLeft: '-18%',
-                                           background: this.setStepStatus(item),
-                                           border: '1px solid #F8F8F8'
+                                           marginLeft: '-37%',
+                                           background: '#F8F8F8',
+                                           border: '1px solid #F8F8F8',
+                                           textAlign:'left',
+                                           padding: '4px',
+                                           margin:'8px 0',
                                          }}
-                                         className={taskStatus === 1 ? (item.stepStatus === 1 ? 'step-status-running' : 'step-status-default') : 'step-status-default'}
+                                         // className={taskStatus === 1 ? (item.stepStatus === 1 ? 'step-status-running' : 'step-status-default') : 'step-status-default'}
                                          key={index}
                                        >
-                                         <p>{item.stepName}</p>
-                                         <p>{item.stepDesc}</p>
-
+                                         <p style={{marginBottom:'0em'}}><span style={{width:'30px',height:'24px',display:'inline-block'}}>{this.setStepStatus(item)}</span>
+                                           <span style={{color: 'rgba(0,0,0,0.65)',fontSize:'14px',}}>{item.stepName}</span></p>
+                                         <p style={{color: 'rgba(0,0,0,0.45)',fontSize:'12px',margin:'0 0 0 30px '}}>{item.stepDesc}</p>
                                        </div>
                                      })
 
@@ -779,15 +794,19 @@ class pipelineDetail extends Component {
                           return <div
                             style={{
                               width: 180,
-                              marginLeft: '-18%',
-                              background: enumPipelineResultColor[item.historyResult],
-                              border: '1px solid #F8F8F8'
+                              marginLeft: '-37%',
+                              background: '#F8F8F8',
+                              border: '1px solid #F8F8F8',
+                              textAlign:'left',
+                              padding: '4px',
+                              margin:'8px 0',
                             }}
+                            // className={taskStatus === 1 ? (item.stepStatus === 1 ? 'step-status-running' : 'step-status-default') : 'step-status-default'}
                             key={index}
                           >
-                            <p>{item.stepName}</p>
-                            <p>{item.stepDesc}</p>
-
+                            <p style={{marginBottom:'0em'}}><span style={{width:'30px',height:'24px',display:'inline-block'}}>{this.setStepStatus(item)}</span>
+                              <span style={{color: 'rgba(0,0,0,0.65)',fontSize:'14px',}}>{item.stepName}</span></p>
+                            <p style={{color: 'rgba(0,0,0,0.45)',fontSize:'12px',margin:'0 0 0 30px '}}>{item.stepDesc}</p>
                           </div>
                         })
 

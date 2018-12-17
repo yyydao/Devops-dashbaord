@@ -6,10 +6,10 @@ class UITestChart extends React.Component {
   render() {
     const { data } = this.props
     return (
-        <Card  title="UI测试" style={{marginTop: 30}}>
+        <Card  title="UI测试" style={{marginTop: 16}}>
           <Row gutter={16}>
             {data.setps && data.setps.rows.length!== 0 &&
-            <Col span={12} style={{minWidth:550}}>
+            <Col span={12} style={{minWidth:520,marginTop:16}}>
               <Card
                   type="inner"
                   title="Setps："
@@ -19,7 +19,7 @@ class UITestChart extends React.Component {
             </Col>
             }
             {data.scenarios && data.scenarios.rows.length!== 0 &&
-            <Col span={12} style={{minWidth:550}}>
+            <Col span={12} style={{minWidth:520,marginTop:16}}>
               <Card
                   type="inner"
                   title="Scenarios："
@@ -29,7 +29,7 @@ class UITestChart extends React.Component {
             </Col>
             }
             {data.features && data.features.rows.length!== 0 &&
-            <Col span={12}  style={{minWidth:550,marginTop:16}}>
+            <Col span={12}  style={{minWidth:520,marginTop:16}}>
               <Card
                   type="inner"
                   title="Features："
