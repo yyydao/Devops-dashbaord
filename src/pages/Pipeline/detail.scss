@@ -1,8 +1,6 @@
 @import "~spinkit/scss/spinners/7-three-bounce";
 .pipeline {
-  &-wrapper{
-    background: #fff;
-  }
+
   &-header {
     padding: 16px 32px;
     background-color: #fff;
@@ -25,6 +23,7 @@
     &-wrapper {
       width: 100%;
       padding: 24px;
+      background-color: #f0f2f5;
     }
     .ant-form:not(.ant-form-inline):not(.ant-form-vertical) {
       max-width: 800px;
