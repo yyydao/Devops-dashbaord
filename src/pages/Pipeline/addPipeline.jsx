@@ -360,7 +360,7 @@ class AddPipeline extends Component {
       width: 110,
       height: 80,
       textAlign: 'center',
-      marginTop:32,
+      marginTop: 32,
     }
 
     return (
@@ -376,12 +376,11 @@ class AddPipeline extends Component {
         >
 
           <Card>
-            <Row type="flex"  justify="start">
-            {pipelineID.map((item, index) => {
-              return (
+            <Row type="flex" justify="start">
+              {pipelineID.map((item, index) => {
+                return (
 
-
-                  <Col  key={index}  span={6}>
+                  <Col key={index} span={6}>
                     <Card.Grid style={gridStyle}
                                onClick={() => this.handleAddNewTask(item)}>
                       <p><Icon component={item.component} style={{ fontSize: '32px' }}></Icon></p>
@@ -389,8 +388,8 @@ class AddPipeline extends Component {
                     </Card.Grid>
                   </Col>
 
-              )
-            })}
+                )
+              })}
             </Row>
 
 
