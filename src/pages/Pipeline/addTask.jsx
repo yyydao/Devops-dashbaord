@@ -4,32 +4,22 @@ import { Link,withRouter } from 'react-router-dom'
 import './index.scss'
 import { reqPost, reqGet } from '@/api/api'
 import { setStep,setSteps } from '@/store/action';
-import {transLocalStorage, isJsonString,stepParamstoArray, stepParamstoObject} from '@/utils/utils'
+import { isJsonString,stepParamstoArray, stepParamstoObject} from '@/utils/utils'
 
 import {
-    Steps,
-    Form,
-    Input,
-    Radio,
-    AutoComplete,
-    Breadcrumb,
-    Button,
-    Collapse,
-    Select,
-    Table,
-    Popconfirm,
-    Modal, message
+  Form,
+  Input,
+  Breadcrumb,
+  Button,
+  Table,
+  Popconfirm,
+  Modal, message, Card
 } from 'antd'
 
 
 const {TextArea} = Input;
-const AutoCompleteOption = AutoComplete.Option
 const BreadcrumbItem = Breadcrumb.Item
-const Step = Steps.Step
-const Panel = Collapse.Panel
-const Option = Select.Option
 const FormItem = Form.Item
-const RadioGroup = Radio.Group
 const confirm = Modal.confirm;
 
 const EditableContext = React.createContext();
@@ -491,28 +481,29 @@ class taskAdd extends Component {
             importJSON
         } = this.state
 
-        const formItemLayout = {
-            labelCol: {
-                xs: {span: 24},
-                sm: {span: 8},
-            },
-            wrapperCol: {
-                xs: {span: 24},
-                sm: {span: 16},
-            },
-        }
-        const tailFormItemLayout = {
-            wrapperCol: {
-                xs: {
-                    span: 24,
-                    offset: 0,
-                },
-                sm: {
-                    span: 16,
-                    offset: 8,
-                },
-            },
-        }
+
+      const formItemLayout = {
+        labelCol: {
+          xs: { span: 24 },
+          sm: { span: 8 },
+        },
+        wrapperCol: {
+          xs: { span: 24 },
+          sm: { span: 16 },
+        },
+      }
+      const tailFormItemLayout = {
+        wrapperCol: {
+          xs: {
+            span: 24,
+            offset: 0,
+          },
+          sm: {
+            span: 16,
+            offset: 0,
+          },
+        },
+      }
         const components = {
             body: {
                 row: EditableFormRow,
@@ -557,8 +548,9 @@ class taskAdd extends Component {
                     }}/>
 
                 </Modal>
-                <section className="pipeline-box">
-                    <Form onSubmit={this.handleSubmit}>
+                <section className="pipeline-box pipeline-modify">
+                  <Card title="编辑任务" style={{ margin: 24 }}>
+                    <Form onSubmit={this.handleSubmit}  style={{ width: 386 }}>
                         <FormItem
                             {...formItemLayout}
                             label="任务名称"
@@ -594,31 +586,33 @@ class taskAdd extends Component {
                             label="运行参数"
                         >
                             <div>
-                                <Button onClick={this.showModal} type="primary" style={{ marginBottom: 16 }}>
+                                <Button size={'small'} onClick={this.showModal} type="primary" style={{ marginBottom: 16 }}>
                                     JSON导入
                                 </Button>
-                                <Button onClick={this.importAutomation} type="primary" style={{ marginBottom: 16 }}>
+                                <Button size={'small'} onClick={this.importAutomation} type="basic" style={{ marginBottom: 16 }}>
                                     自动导入
                                 </Button>
-                                <Table
-                                    components={components}
-                                    rowClassName={() => 'editable-row'}
-                                    bordered
-                                    dataSource={paramsDatasource}
-                                    columns={columns}
-                                    onChange={this.paramsTableChange}
-                                />
-                                <Button onClick={this.handleAdd} type="primary" style={{ marginBottom: 16 }}>
-                                    增加一行
-                                </Button>
+
 
                             </div>
                         </FormItem>
-
+                    </Form>
+                    <Table
+                      components={components}
+                      rowClassName={() => 'editable-row'}
+                      bordered
+                      dataSource={paramsDatasource}
+                      columns={columns}
+                      onChange={this.paramsTableChange}
+                    />
+                    <Button onClick={this.handleAdd} type="primary" style={{ marginBottom: 16 }}>
+                      增加一行
+                    </Button>
                         <FormItem {...tailFormItemLayout}>
                             <Button type="primary" htmlType="submit">保存</Button>
                         </FormItem>
-                    </Form>
+
+                  </Card>
                 </section>
             </div>
         )
