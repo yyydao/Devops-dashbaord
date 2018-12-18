@@ -44,6 +44,7 @@ class AddGrayscale extends Component{
       }
     }
   }
+
   /**
    * @desc 下一步操作(保存信息)
    */
@@ -84,13 +85,6 @@ class AddGrayscale extends Component{
     })
 
   }
-  /**
-   * @desc 上一步操作
-   */
-  prev = () => {
-    const current = this.state.current - 1;
-    this.setState({ current });
-  }
 
   /**
    * @desc 拖拽文件的改变事件
@@ -99,7 +93,6 @@ class AddGrayscale extends Component{
     const status = info.file.status;
     let fileList = info.fileList;
     if (status === 'done') {
-      console.log(info)
       if(info.file.response.code===0){
         this.setState({
           packageID:info.file.response.package,
@@ -113,10 +106,28 @@ class AddGrayscale extends Component{
         message.error(info.file.response.msg)
       }
     } else if (status === 'error') {
+      fileList=[]
       message.error(`${info.file.name}  文件上传失败`)
+    }else{
+      fileList=[]
     }
     this.setState({fileList})
   }
+
+  /**
+   * @desc ipa上传之前的操作
+   */
+  beforeUpload = (file, fileList)=>{
+    if(fileList.length!==1){
+      message.error("只支持上传一个文件")
+      return false
+    }
+    if(file.type!=="application/x-itunes-ipa"){
+      message.error("只支持上传ipa文件")
+      return false
+    }
+  }
+
   /**
   * @desc 获取包详情
   */
@@ -169,6 +180,8 @@ class AddGrayscale extends Component{
     str=minutes===0?str+'1分钟前':str+"分钟前 "
     return str
   }
+
+
   render () {
     const {current,steps,fileList,versionInfo,packageInfo} = this.state
     const fromItemLayout = {
@@ -200,6 +213,7 @@ class AddGrayscale extends Component{
                        action='/api/deploy/upload'
                        data={{projectID:this.props.projectId,envID:62,token:this.props.token}}
                        onChange={(info)=>{this.onDraggerChange(info) }}
+                       beforeUpload={(file, fileList)=>this.beforeUpload(file, fileList)}
                        fileList={fileList}>
                 <Button type="primary" size="large"><Icon type="upload" />立即上传</Button>
                 <p style={{fontSize:16,color:"#262626",paddingTop:20,marginBottom:4}}>点击按钮选择应用的安装包，或拖拽文件到此区域</p>

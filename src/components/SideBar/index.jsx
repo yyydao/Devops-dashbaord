@@ -14,6 +14,7 @@ import PackagekSvg from '@/assets/svg/nav_icon_package_default.svg'
 import SettingSvg from '@/assets/svg/nav_icon_set_default.svg'
 import iOSSvg from '@/assets/svg/nav_icon_ios.svg'
 import AndroidSvg from '@/assets/svg/nav_icon_android.svg'
+import ReleaseSvg from '@/assets/svg/release_icon.svg'
 
 import './index.scss'
 
@@ -26,7 +27,8 @@ const MenuIcon = {
   '流水线': () => <PipelineSvg/>,
   '测试': () => <TestSvg/>,
   '安装包': () => <PackagekSvg/>,
-  '项目设置': () => <SettingSvg/>
+  '项目设置': () => <SettingSvg/>,
+  '发布': () => <ReleaseSvg/>
 }
 
 const ProjectTypeIcon = {
