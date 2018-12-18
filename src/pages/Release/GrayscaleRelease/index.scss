@@ -1,0 +1,71 @@
+.button-container{
+  padding: 0px 8px 24px 32px;
+  background-color: #fff;
+  span{
+    vertical-align: middle;
+    font-size: 20px;
+    font-weight: bold;
+  }
+  button{
+    float: right;
+    margin-right: 24px;
+  }
+  button span{
+    font-size: 14px;
+    font-weight: normal;
+  }
+  span.item-name{
+    font-size: 14px;
+    vertical-align: middle;
+  }
+  .item-value{
+    font-size: 14px;
+    vertical-align: middle;
+    font-weight: normal;
+  }
+}
+.button-container:after{
+  display:block;
+  clear:both;
+  content:"";
+  visibility:hidden;
+  height:0
+}
+.addgray-container{
+  background-color:#fff;
+  padding:48px 200px;
+  .steps-content{
+    padding: 40px 8px;
+  }
+  .ant-form-item-label label:after{
+    content: "";
+    margin: 0 8px 0 2px;
+    position: relative;
+    top: -0.5px;
+  }
+  .upload-ipa{
+    border: 1px dashed rgba(0,0,0,0.15);
+    border-radius: 4px;
+    background-color: rgba(0,0,0,0.02);
+    padding: 42px 0px;
+    text-align: center;
+  }
+}
+.steps-action{
+  text-align: center;
+}
+.version-info{
+  span{
+    padding-right: 24px;
+    color: rgba(0,0,0,0.45);
+  }
+}
+.version-content{
+  border: 1px solid rgba(0,0,0,0.15);
+  border-radius: 4px;
+  min-height: 100px;
+  padding:8px 16px;
+  word-wrap:break-word;
+  line-height: 22px;
+  margin-bottom: 0px;
+}

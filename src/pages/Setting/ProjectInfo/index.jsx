@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Breadcrumb, Card, Form, Input, Button, message, Modal } from 'antd';
+import { Breadcrumb, Form, Input, Button, message, Modal } from 'antd';
 
 import { reqPost, checkPermission } from '@/api/api';
 import './index.scss'

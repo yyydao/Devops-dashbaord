@@ -24,6 +24,9 @@ import ThirdParty from '@/pages/Setting/ThirdPartyManager'
 import NoticeManager from '@/pages/Setting/NoticeManager'
 // import ExecutionReport from '@/pages/Setting/ExecutionReport'
 
+import GrayscaleRelease from '@/pages/Release/GrayscaleRelease'
+import AddGrayscale from '@/pages/Release/GrayscaleRelease/AddGrayscale'
+
 
 export default [
   {
@@ -148,4 +151,14 @@ export default [
     name: 'thirdparty',
     component: ThirdParty
   },
+  {
+    path: '/grayscale',
+    name: 'grayscale',
+    component:GrayscaleRelease
+  },
+  {
+    path: '/addGrayscale',
+    name: 'addGrayscale',
+    component:AddGrayscale
+  }
 ]
