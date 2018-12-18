@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { Button, Modal } from 'antd'
+import { Button, Modal, Row, Col, Divider } from 'antd'
 
 class panelContent extends Component {
   // constructor (props) {
@@ -55,33 +55,44 @@ class panelContent extends Component {
                 break
             }
 
-            return <div className="performance-item" key={index}>
-              <img src={require('@/assets/favicon.ico')} alt={'icon'}/>
-              <h2>{status}</h2>
-              <p>
-                <span title={item.buildId}><i>buildId:</i>{item.buildId}</span>
-                <span title={item.scene}><i>场景:</i>{item.scene}</span>
-                <span title={item.timeStamp}><i>时间:</i>{item.timeStamp}</span>
-              </p>
-              <div className="performance-item-ctrl">
-                {this.props.showDetail && <Button type="primary" onClick={
-                  () => {
-                    this.props.handlerToDetail && this.props.handlerToDetail(item.buildId)
-                  }
-                }>提测详情</Button>}
-                {(item.status === 1 || item.status === 2) && <Button type="primary" onClick={() => {
-                  this.props.handlerTaskCancel && this.props.handlerTaskCancel(item.buildId)
-                }}>取消</Button>}
-                {(!this.props.showDetail && item.status === 0) && <Button type="primary"><a
-                  href={`/performance/download/${item.buildId}?token=${token}`}>app下载</a></Button>}
-                {item.status === 0 &&
-                <Button type="primary"><a href={`/performance/report/${item.buildId}?token=${token}`}
-                                          target="_blank">性能报告</a></Button>}
-                {(item.status === 3 || item.status === 4) && <Button type="primary" onClick={() => {
-                  this.showLog(status)
-                }}>日志</Button>}
-              </div>
-            </div>
+            return <Row className="performance-item" key={index} type="flex" justify="space-between" align="middle">
+              <Col span={20}>
+                <Row type="flex" justify="start" align="middle">
+                  <Col>
+                    <img src={require('@/assets/favicon.ico')} alt={'icon'}/>
+                  </Col>
+                  <Col>
+                    <h2>{status}</h2>
+                    <p>
+                      <span title={item.buildId}><i>buildId：</i>{item.buildId}</span>
+                      <span title={item.scene}><i>场景：</i>{item.scene}</span>
+                      <span title={item.timeStamp}><i>时间：</i>{item.timeStamp}</span>
+                    </p>
+                  </Col>
+                </Row>
+              </Col>
+              <Col span={4}>
+                <div className="performance-item-ctrl">
+                  {this.props.showDetail && <a onClick={
+                    () => {
+                      this.props.handlerToDetail && this.props.handlerToDetail(item.buildId)
+                    }
+                  }>提测详情<Divider type="vertical"/></a>}
+                  {(item.status === 1 || item.status === 2) && <a onClick={() => {
+                    this.props.handlerTaskCancel && this.props.handlerTaskCancel(item.buildId)
+                  }}>取消</a>}
+                  {(!this.props.showDetail && item.status === 0) && <a
+                    href={`/performance/download/${item.buildId}?token=${token}`}>app下载</a>}
+                  {item.status === 0 &&
+                  <a href={`/performance/report/${item.buildId}?token=${token}`}
+                     target="_blank"><Divider type="vertical"/>性能报告</a>}
+                  {(item.status === 3 || item.status === 4) && <a onClick={() => {
+                    this.showLog(status)
+                  }}>日志</a>}
+                </div>
+              </Col>
+            </Row>
+
           })
         }
       </div>
