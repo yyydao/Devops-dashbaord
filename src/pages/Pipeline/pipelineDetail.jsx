@@ -387,7 +387,7 @@ class pipelineDetail extends Component {
       case 0:
         return <Icon type="clock-circle"  style={{fontSize: '18px'}} />
       case 1:
-        return <div className='sk-three-bounce'><div className='sk-child '></div><div className='sk-child sk-bounce1'></div><div className='sk-child sk-bounce2'></div></div>
+        return <ul className='sk-three-bounce'><li className='sk-child '></li><li className='sk-child sk-bounce1'></li><li className='sk-child sk-bounce2'></li></ul>
       case 2:
         return enumPipelineResultIcon[item.stepResult]
       case 3:
@@ -777,9 +777,9 @@ class pipelineDetail extends Component {
                                          // className={taskStatus === 1 ? (item.stepStatus === 1 ? 'step-status-running' : 'step-status-default') : 'step-status-default'}
                                          key={index}
                                        >
-                                         <p style={{marginBottom:'0em'}}><span style={{width:'30px',height:'24px',display:'inline-block',textAlign:'center'}}>{this.setStepStatus(item)}</span>
-                                           <span style={{color: 'rgba(0,0,0,0.65)',fontSize:'14px',}}>{item.stepName}</span></p>
-                                         <p style={{color: 'rgba(0,0,0,0.45)',fontSize:'12px',margin:'0 0 0 30px '}}>{item.stepDesc}</p>
+                                         <div style={{marginBottom:'0em'}}><span style={{width:'30px',height:'24px',display:'inline-block',textAlign:'center'}}>{this.setStepStatus(item)}</span>
+                                           <span style={{color: 'rgba(0,0,0,0.65)',fontSize:'14px',}}>{item.stepName}</span></div>
+                                         <div style={{color: 'rgba(0,0,0,0.45)',fontSize:'12px',margin:'0 0 0 30px '}}>{item.stepDesc}</div>
                                        </div>
                                      })
 
@@ -804,9 +804,9 @@ class pipelineDetail extends Component {
                             // className={taskStatus === 1 ? (item.stepStatus === 1 ? 'step-status-running' : 'step-status-default') : 'step-status-default'}
                             key={index}
                           >
-                            <p style={{marginBottom:'0em'}}><span style={{width:'30px',height:'24px',display:'inline-block',textAlign:'center'}}>{this.setStepStatus(item)}</span>
-                              <span style={{color: 'rgba(0,0,0,0.65)',fontSize:'14px',}}>{item.stepName}</span></p>
-                            <p style={{color: 'rgba(0,0,0,0.45)',fontSize:'12px',margin:'0 0 0 30px '}}>{item.stepDesc}</p>
+                            <div style={{marginBottom:'0em'}}><span style={{width:'30px',height:'24px',display:'inline-block',textAlign:'center'}}>{this.setStepStatus(item)}</span>
+                              <span style={{color: 'rgba(0,0,0,0.65)',fontSize:'14px',}}>{item.stepName}</span></div>
+                            <div style={{color: 'rgba(0,0,0,0.45)',fontSize:'12px',margin:'0 0 0 30px '}}>{item.stepDesc}</div>
                           </div>
                         })
 

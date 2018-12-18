@@ -373,6 +373,8 @@ class AddPipeline extends Component {
                destroyOnClose={true}
                width={600}
                className='pipeline-task-modal'
+               okText={'确定'}
+               cancelText={'取消'}
         >
 
           <Card>
@@ -477,37 +479,32 @@ class AddPipeline extends Component {
                     return <Step title={enumStepsText[item[0]].title} key={index} description={<div>
                       {item[1].map((item, index) => {
                         // console.log(item)
-                        return <Card
-                          style={{
-                            width: 180,
-                            marginLeft: '-37%',
-                            background: '#F8F8F8',
-                            border: '1px solid #F8F8F8',
-                            textAlign: 'left',
-                            padding: '4px',
-                            margin: '8px 0',
-                          }}
-                          title={item.stepName}
-                          extra={<Dropdown overlay={<Menu>
-                            <Menu.Item>
-                              <a target="_blank" rel="noopener noreferrer" onClick={() => {
-                                this.handleEditTask(item)
-                              }
-                              }>编辑任务</a>
-                            </Menu.Item>
-                            <Menu.Item>
-                              <a target="_blank" rel="noopener noreferrer" onClick={() => {
-                                this.handleDeleteTask(item)
-                              }
-                              }>删除任务</a>
-                            </Menu.Item>
-                          </Menu>} placement="bottomCenter">
-                            <Icon type="setting" theme="outlined"/>
-                          </Dropdown>}
-                          key={index}
-                        >
-                          <p>{item.stepDesc}</p>
-                        </Card>
+                        return <div className='task-item' key={index}>
+                          <Row type='flex' align='space-around' justify='middle' className='task-item-row'>
+                            <Col span={20}>
+                              <p className='item-info step-name' >{item.stepName}</p>
+                              <p className='item-info step-desc'>{item.stepDesc}</p>
+                            </Col>
+                            <Col span={4} className='item-control-col'>
+                              <Dropdown overlay={<Menu>
+                                <Menu.Item>
+                                  <a target="_blank" rel="noopener noreferrer" onClick={() => {
+                                    this.handleEditTask(item)
+                                  }
+                                  }>编辑任务</a>
+                                </Menu.Item>
+                                <Menu.Item>
+                                  <a target="_blank" rel="noopener noreferrer" onClick={() => {
+                                    this.handleDeleteTask(item)
+                                  }
+                                  }>删除任务</a>
+                                </Menu.Item>
+                              </Menu>} placement="bottomCenter">
+                                <Icon type="setting" theme="outlined"/>
+                              </Dropdown>
+                            </Col>
+                          </Row>
+                        </div>
                       })}
                       <Button style={{
                         width: 180,
