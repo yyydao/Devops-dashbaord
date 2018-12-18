@@ -92,6 +92,7 @@ class AddGrayscale extends Component{
   onDraggerChange= (info) =>{
     const status = info.file.status;
     let fileList = info.fileList;
+    console.log(info)
     if (status === 'done') {
       if(info.file.response.code===0){
         this.setState({
@@ -108,7 +109,7 @@ class AddGrayscale extends Component{
     } else if (status === 'error') {
       fileList=[]
       message.error(`${info.file.name}  文件上传失败`)
-    }else{
+    }else if (!status){
       fileList=[]
     }
     this.setState({fileList})
@@ -175,9 +176,9 @@ class AddGrayscale extends Component{
     let leave2=leave1%(3600*1000)    //计算小时数后剩余的毫秒数
     let minutes=Math.floor(leave2/(60*1000))//计算相差分钟数
     let str=""
-    str=dayDiff===0?str+'':str+"天 "
-    str=hours===0?str+'':str+"小时 "
-    str=minutes===0?str+'1分钟前':str+"分钟前 "
+    str=dayDiff===0?str+'':str+dayDiff+"天 "
+    str=hours===0?str+'':str+hours+"小时 "
+    str=minutes===0?str+'1分钟前':str+minutes+"分钟前 "
     return str
   }
 

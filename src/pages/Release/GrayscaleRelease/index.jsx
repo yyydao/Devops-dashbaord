@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { reqPost, reqGet } from '@/api/api'
-import { Button, Breadcrumb, Row, Col, Card, Table, message } from 'antd'
+import { Button, Breadcrumb, Row, Col, Card, Table, message, Icon } from 'antd'
+import Edit from '@/pages/Setting/ConfigManager/Edit';
 import './index.scss'
 
 
@@ -46,6 +47,30 @@ class GrayscaleRelease extends Component{
           render: (text, record) => <div><Link to={{pathname:'/addGrayscale', query:{packageID:record.packageID,versionID:record.id}}}>编辑</Link><span style={{color:"#eee"}}> | </span><a href={`${record.filePath}`}>下载</a></div>
         }
       ],
+      androidColumns:[
+        {
+          title: '特征Key',
+          dataIndex: 'featureName',
+          key: 'featureName',
+          // render: (text, record) => <Link to={`/dashboard/${record.id}`}>{ text }</Link>
+        },
+        {
+          title: '特征描述',
+          dataIndex: 'detail',
+          key: 'detail',
+          // render: (text, record) => <Edit name='detail'panelIndex ={record.key} defaultValue={record.detail} handleConfirm={this.changeEdit}/>
+        },
+        {
+          title: '选取值',
+          dataIndex: 'featureValue',
+          key: 'featureValue',
+          // render: (text, record) => <Link to={`/dashboard/${record.id}`}>{ text }</Link>
+        },
+        {
+          title: '操作',
+          render: (text, record) => <a>删除</a>
+        }
+      ],
       listData: [],
       pagination: {
         pageSize: 7,
@@ -58,7 +83,29 @@ class GrayscaleRelease extends Component{
         page: 1,
         bundleID: 'com.tuandai.client'
       },
-      downloadPath:''
+      downloadPath:'',
+      androidData:{
+        "id": 1,
+        "projectId": 63,
+        "version": "5.4.2",
+        "expectQuantitty": 3000,
+        "actualQuantity": 1500,
+        "expression": "^1[0-1]",
+        "featureItems": [
+          {
+            "featureName": "T-G1-Device",
+            "featureValue": "cdfd23afc2a-3f",
+            "checked": false,
+            "detail": "设备唯一编码"
+          },
+          {
+            "featureName": "T-G1-Device",
+            "featureValue": "cdfd23afc2a-3f",
+            "checked": false,
+            "detail": "设备唯一编码"
+          }
+        ]
+      }
     }
   }
   componentWillMount(){
@@ -77,6 +124,10 @@ class GrayscaleRelease extends Component{
         this.setState({
           platform:res.data.platform,
           projectName:res.data.description
+        },()=>{
+          if(res.data.platform===1){
+            this.getAndroidGrayScaleData()
+          }
         })
       }
     })
@@ -120,14 +171,68 @@ class GrayscaleRelease extends Component{
       }
     })
   }
+
+  /**
+   * @desc 文本编辑事件
+   * @param value string 文本编辑内容
+   * @param key string 文本编辑字段
+   * @param index num 环境下标
+   */
+  changeEdit = (value, index, key) => {
+    if(key==="version"){
+      let androidData = this.state.androidData
+      androidData[key] = value
+      this.setState({androidData})
+    }else{
+      console.log(index)
+      // let androidData = this.state.androidData
+      // androidData.featureItems[index][key] = value
+      // this.setState({androidData})
+    }
+  }
+
+  /**
+   * @desc 获取android灰度发布主页数据
+   */
+  getAndroidGrayScaleData = () =>{
+    reqGet('/distribute/queryInformationt', {projectId:this.props.projectId}).then(res => {
+      if(res.code === 0){
+
+      }else{
+
+      }
+    })
+  }
   render () {
-    const {platform, projectName, listData, columns, pagination, loading, params, downloadPath} = this.state
+    const {platform, projectName, listData, columns, androidColumns, pagination, loading, params, downloadPath, androidData} = this.state
     return (
       <div>
         <Breadcrumb className="devops-breadcrumb">
           <BreadcrumbItem><Link to="/home">首页</Link></BreadcrumbItem>
           <BreadcrumbItem>灰度发布</BreadcrumbItem>
         </Breadcrumb>
+        {platform===1&&
+          <div>
+            <div className="button-container">
+              <span>{projectName}</span>
+            </div>
+            <div className="content-container">
+              <Card title="分布情况">
+                <div className="config-project-item">
+                  <span>分发版本：</span>
+                  <Edit name='version'  defaultValue={androidData.version} handleConfirm={this.changeEdit}/>
+                </div>
+                <p><span style={{paddingRight:8,marginBottom:0}}>实际分发数/预计分发数：</span>{androidData.actualQuantity}/{androidData.expectQuantitty}</p>
+              </Card>
+              <Card
+                title="灰度特征及策略管理"
+                className="gray-feature"
+                extra={<Button type="primary"><Icon type="plus"/>新增特征</Button>}>
+                <Table columns={androidColumns} rowKey={record => record.id} dataSource={androidData.featureItems} pagination={false}/>
+              </Card>
+            </div>
+          </div>
+        }
         {platform===2&&
           <div>
             <div className="button-container">
