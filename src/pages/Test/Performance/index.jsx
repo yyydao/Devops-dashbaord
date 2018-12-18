@@ -20,13 +20,14 @@ import {
   Row,
   Col,
   Pagination,
-  Popconfirm
+  Popconfirm, Tabs
 } from 'antd'
 import PanelContent from './panelContent'
 
 const BreadcrumbItem = Breadcrumb.Item
 const Panel = Collapse.Panel
 const Option = Select.Option
+const TabPane = Tabs.TabPane
 
 class Performance extends Component {
   constructor (props) {
@@ -536,10 +537,11 @@ class Performance extends Component {
 
   //修改类型
   changeType = (e) => {
+    let typeValue = e * 1 + 1
     clearTimeout(this.state.timer)
 
     this.setState({
-      typeValue: e.target.value,
+      typeValue: typeValue,
       buildingList: {
         ...this.state.buildingList,
         list: []
@@ -878,61 +880,81 @@ class Performance extends Component {
         </Breadcrumb>
 
 
-        <div className="performance-menu">
-          {typeValue < 3 && <Button type="primary" onClick={this.showModal}>新增测试</Button>}
-          {typeValue === 2 && <Button type="primary" onClick={this.showTaskList}>定时任务列表</Button>}
+        {/*<div className="performance-menu">*/}
+        {/*{typeValue < 3 && <Button type="primary" onClick={this.showModal}>新增测试</Button>}*/}
+        {/*{typeValue === 2 && <Button type="primary" onClick={this.showTaskList}>定时任务列表</Button>}*/}
 
-          <Radio.Group value={typeValue} onChange={this.changeType} className="fr">
+        {/*<Radio.Group value={typeValue} onChange={this.changeType} className="fr">*/}
+        {/*{*/}
+        {/*typeList.map((item, index) => {*/}
+        {/*return <Radio.Button value={item.value} key={index}>{item.name}</Radio.Button>*/}
+        {/*})*/}
+        {/*}*/}
+        {/*</Radio.Group>*/}
+        {/*</div>*/}
+
+        <div className="devops-main-wrapper">
+          <Tabs className="package-tab" onChange={this.changeType} tabBarExtraContent={<div>{typeValue < 3 &&
+          <Button type="primary" onClick={this.showModal}>新增测试</Button>}
+            {typeValue === 2 && <Button type="primary" onClick={this.showTaskList}>定时任务列表</Button>}</div>}>
             {
               typeList.map((item, index) => {
-                return <Radio.Button value={item.value} key={index}>{item.name}</Radio.Button>
+                return <TabPane tab={item.name} key={index}></TabPane>
               })
             }
-          </Radio.Group>
+
+          </Tabs>
+          <div className="performance-main">
+            <Collapse defaultActiveKey={['0', '1', '2']}>
+
+              {/*正在构建*/}
+              <Panel header={buildingList.title} key="0" className="performance-container">
+
+                <PanelContent list={buildingList.list} handlerTaskCancel={this.cancelTask}
+                              handlerToDetail={this.toDetail} showDetail={typeValue === 3}/>
+                <div className={`performance-container-load ${buildingList.loading ? 'act' : ''}`} onClick={
+                  () => {
+                    this.getList('buildingList', 1)
+                  }
+                }>{buildingList.loading ? <Icon type="loading" theme="outlined"/> : <Icon type="reload"
+                                                                                          theme="outlined"/>} 加载更多
+                </div>
+              </Panel>
+            </Collapse>
+            <Collapse defaultActiveKey={['0', '1', '2']}>
+              {/*构建成功*/}
+              <Panel header={successList.title} key="1" className="performance-container">
+
+                <PanelContent list={successList.list} handlerToDetail={this.toDetail}
+                              showDetail={typeValue === 3}/>
+                <div className={`performance-container-load ${successList.loading ? 'act' : ''}`} onClick={
+                  () => {
+                    this.getList('successList', 1)
+                  }
+                }>{successList.loading ? <Icon type="loading" theme="outlined"/> : <Icon type="reload"
+                                                                                         theme="outlined"/>} 加载更多
+                </div>
+              </Panel>
+            </Collapse>
+            <Collapse defaultActiveKey={['0', '1', '2']}>
+              {/*构建失败*/}
+              <Panel header={failureList.title} key="2" className="performance-container">
+
+                <PanelContent list={failureList.list} handlerToDetail={this.toDetail}
+                              showDetail={typeValue === 3}/>
+                <div className={`performance-container-load ${failureList.loading ? 'act' : ''}`} onClick={
+                  () => {
+                    this.getList('failureList', 1)
+                  }
+                }>{failureList.loading ? <Icon type="loading" theme="outlined"/> : <Icon type="reload"
+                                                                                         theme="outlined"/>} 加载更多
+                </div>
+              </Panel>
+            </Collapse>
+          </div>
         </div>
 
 
-        <div className="performance-main">
-          <Collapse defaultActiveKey={['0', '1', '2']}>
-
-            {/*正在构建*/}
-            <Panel header={buildingList.title} key="0" className="performance-container">
-              <div className={`performance-container-load ${buildingList.loading ? 'act' : ''}`} onClick={
-                () => {
-                  this.getList('buildingList', 1)
-                }
-              }>{buildingList.loading && <Icon type="loading" theme="outlined"/>} 加载更多
-              </div>
-              <PanelContent list={buildingList.list} handlerTaskCancel={this.cancelTask}
-                            handlerToDetail={this.toDetail} showDetail={typeValue === 3}/>
-            </Panel>
-
-            {/*构建成功*/}
-            <Panel header={successList.title} key="1" className="performance-container">
-              <div className={`performance-container-load ${successList.loading ? 'act' : ''}`} onClick={
-                () => {
-                  this.getList('successList', 1)
-                }
-              }>{successList.loading && <Icon type="loading" theme="outlined"/>} 加载更多
-              </div>
-              <PanelContent list={successList.list} handlerToDetail={this.toDetail}
-                            showDetail={typeValue === 3}/>
-            </Panel>
-
-            {/*构建失败*/}
-            <Panel header={failureList.title} key="2" className="performance-container">
-              <div className={`performance-container-load ${failureList.loading ? 'act' : ''}`} onClick={
-                () => {
-                  this.getList('failureList', 1)
-                }
-              }>{failureList.loading && <Icon type="loading" theme="outlined"/>} 加载更多
-              </div>
-              <PanelContent list={failureList.list} handlerToDetail={this.toDetail}
-                            showDetail={typeValue === 3}/>
-            </Panel>
-
-          </Collapse>
-        </div>
       </div>
     )
   }

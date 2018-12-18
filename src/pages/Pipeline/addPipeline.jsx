@@ -390,7 +390,7 @@ class AddPipeline extends Component {
         <Breadcrumb className="devops-breadcrumb">
           <BreadcrumbItem><Link to="/home">首页</Link></BreadcrumbItem>
           <BreadcrumbItem><Link to="/pipeline">流水线</Link></BreadcrumbItem>
-          <BreadcrumbItem>新增</BreadcrumbItem>
+          <BreadcrumbItem>新增流水线</BreadcrumbItem>
         </Breadcrumb>
         <section className="pipeline-box pipeline-modify">
           <Card title="新增流水线" style={{ margin: 24 }}>
