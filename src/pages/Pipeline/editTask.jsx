@@ -515,7 +515,7 @@ class taskEdit extends Component {
                 },
                 sm: {
                     span: 16,
-                    offset: 8,
+                    offset: 0,
                 },
             },
         }
@@ -548,7 +548,7 @@ class taskEdit extends Component {
                 <Breadcrumb className="devops-breadcrumb">
                     <BreadcrumbItem><Link to="/home">首页</Link></BreadcrumbItem>
                     <BreadcrumbItem><Link to="/pipeline">流水线</Link></BreadcrumbItem>
-                    <BreadcrumbItem>新增</BreadcrumbItem>
+                    <BreadcrumbItem>编辑</BreadcrumbItem>
                 </Breadcrumb>
                 <Modal title="JSON"
                        visible={addVisible}
@@ -619,14 +619,14 @@ class taskEdit extends Component {
                     <Table
                       components={components}
                       rowClassName={() => 'editable-row'}
-                      bordered
                       dataSource={paramsDatasource}
                       columns={columns}
+                      pagination={false}
                       onChange={this.paramsTableChange}
                     />
-                    <Button onClick={this.handleAdd} type="primary" style={{ marginBottom: 16 }}>
-                      增加一行
-                    </Button>
+                    <div className={'table-add-row'} onClick={this.handleAdd} type="primary" style={{ marginBottom: 16 }}>
+                      <p>+ 添加</p>
+                    </div>
                       <FormItem {...tailFormItemLayout} style={{ width: 386 }}>
                         <Button type="primary" htmlType="submit">保存</Button>
                       </FormItem>

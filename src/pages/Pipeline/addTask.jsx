@@ -602,14 +602,14 @@ class taskAdd extends Component {
                     <Table
                       components={components}
                       rowClassName={() => 'editable-row'}
-                      bordered
                       dataSource={paramsDatasource}
                       columns={columns}
+                      pagination={false}
                       onChange={this.paramsTableChange}
                     />
-                    <Button onClick={this.handleAdd} type="primary" style={{ marginBottom: 16 }}>
-                      增加一行
-                    </Button>
+                    <div className={'table-add-row'} onClick={this.handleAdd} type="primary" style={{ marginBottom: 16 }}>
+                      <p>+ 添加</p>
+                    </div>
                         <FormItem {...tailFormItemLayout} style={{ width: 386 }}>
                             <Button type="primary" htmlType="submit">保存</Button>
                         </FormItem>

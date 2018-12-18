@@ -300,7 +300,24 @@
   .ant-col-sm-8 {
     text-align: left;
   }
-
+  .table-add-row{
+    cursor: pointer;
+    margin-top: 24px;
+    vertical-align: middle;
+    width: 100%;
+    text-align: center;
+    border:1px dashed #eeeeee;
+    height: 54px;
+    line-height: 54px;
+    p{
+      font-size: 14px;
+      color: rgba(0,0,0,0.65);
+      letter-spacing: 0;
+      height: 54px;
+      line-height: 54px;
+      margin: 0;
+    }
+  }
 }
 
 .pipeline-task-modal {
