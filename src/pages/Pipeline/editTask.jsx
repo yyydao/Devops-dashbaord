@@ -7,28 +7,18 @@ import { setStep,setSteps } from '@/store/action';
 import {stepParamstoArray, stepParamstoObject,transLocalStorage, isJsonString } from '@/utils/utils'
 
 import {
-    Steps,
-    Form,
-    Input,
-    Radio,
-    AutoComplete,
-    Breadcrumb,
-    Button,
-    Collapse,
-    Select,
-    Table,
-    Popconfirm,
-    Modal, message
+  Form,
+  Input,
+  Breadcrumb,
+  Button,
+  Table,
+  Popconfirm,
+  Modal, message, Card
 } from 'antd'
 
 const {TextArea} = Input;
-const AutoCompleteOption = AutoComplete.Option
 const BreadcrumbItem = Breadcrumb.Item
-const Step = Steps.Step
-const Panel = Collapse.Panel
-const Option = Select.Option
 const FormItem = Form.Item
-const RadioGroup = Radio.Group
 const EditableContext = React.createContext();
 const confirm = Modal.confirm;
 
@@ -487,47 +477,6 @@ class taskEdit extends Component {
             })
         }
 
-        // if(this.props.location.state && this.props.location.state.existPipeline){
-        //     reqGet(`/pipeline/stepdetail/`,{stepID:this.props.location.state.stepID}).then(res=>{
-        //         if(res.code === 0){
-        //             let d = res.step.stepParams
-        //             let paramsArray = [],source = JSON.parse(d),keyIndex = 1
-        //
-        //
-        //             // for (let prop in source) {
-        //             //     paramsArray.push({key:keyIndex,json_jsonParams:prop,json_jsonValue:source[prop]})
-        //             //     keyIndex++
-        //             // }
-        //                                      console.log(paramsArray)
-        //                                      console.log(d)
-        //             this.setState({ paramsDatasource: stepParamstoArray(d) });
-        //
-        //             this.props.form.setFieldsValue({
-        //                 stepName: res.step.stepName,
-        //                 stepDesc: res.step.stepDesc
-        //             })
-        //         }
-        //     })
-        // }else{
-        //     let existStep  = JSON.parse(localStorage.getItem('steps'))
-        //     let stepListByCategory = existStep && existStep.find((item) => item[0] === stepCategory)
-        //     if(stepListByCategory){
-        //         for (let i = 0; i < stepListByCategory[1].length; i++) {
-        //             const stepFilterByCode = stepListByCategory[1][i]
-        //             if(stepFilterByCode.stepCode === stepCode && stepCode !== -1){
-        //                 stepName = stepFilterByCode.stepName
-        //                 stepDesc = stepFilterByCode.stepDesc
-        //                 paramsDatasource = stepParamstoArray(stepFilterByCode.stepParams)
-        //             }
-        //         }
-        //     }
-        //
-        //     this.props.form.setFieldsValue({
-        //         stepName: stepName,
-        //         stepDesc:stepDesc
-        //     })
-        // }
-
 
         if (this.props.editable) {
             document.addEventListener('click', this.handleClickOutside, true);
@@ -566,7 +515,7 @@ class taskEdit extends Component {
                 },
                 sm: {
                     span: 16,
-                    offset: 8,
+                    offset: 0,
                 },
             },
         }
@@ -599,7 +548,7 @@ class taskEdit extends Component {
                 <Breadcrumb className="devops-breadcrumb">
                     <BreadcrumbItem><Link to="/home">首页</Link></BreadcrumbItem>
                     <BreadcrumbItem><Link to="/pipeline">流水线</Link></BreadcrumbItem>
-                    <BreadcrumbItem>新增</BreadcrumbItem>
+                    <BreadcrumbItem>编辑</BreadcrumbItem>
                 </Breadcrumb>
                 <Modal title="JSON"
                        visible={addVisible}
@@ -615,66 +564,75 @@ class taskEdit extends Component {
 
                 </Modal>
                 <section className="pipeline-box">
-                    <Form onSubmit={this.handleSubmit}>
-                        <FormItem
-                            {...formItemLayout}
-                            label="任务名称"
-                        >
-                            {getFieldDecorator('stepName', {
-                                rules: [{required: true, message: '请输入'}]
-                            })(
-                                <Input disabled={disabled}/>
-                            )}
-                        </FormItem>
-                        <FormItem
-                            {...formItemLayout}
-                            label="任务描述"
-                        >
-                            {getFieldDecorator('stepDesc', {
-                                rules: [{required: true, message: '请输入'}]
-                            })(
-                                <Input disabled={disabled}/>
-                            )}
-                        </FormItem>
-                        <FormItem
-                            {...formItemLayout}
-                            label="webHook"
-                        >
-                            {getFieldDecorator('webHook', {
-                                rules: [{required: false, message: '请输入'}]
-                            })(
-                                <Input/>
-                            )}
-                        </FormItem>
-                        <FormItem
-                            {...formItemLayout}
-                            label="运行参数"
-                        >
-                            <div>
-                                <Button onClick={this.showModal} type="primary" style={{ marginBottom: 16 }}>
-                                    JSON导入
-                                </Button>
-                                <Button onClick={this.importAutomation} type="primary" style={{ marginBottom: 16 }}>
-                                    自动导入
-                                </Button>
-                                <Table
-                                    components={components}
-                                    rowClassName={() => 'editable-row'}
-                                    bordered
-                                    dataSource={paramsDatasource}
-                                    columns={columns}
-                                    onChange={this.paramsTableChange}
-                                />
-                                <Button onClick={this.handleAdd} type="primary" style={{ marginBottom: 16 }}>
-                                    增加一行
-                                </Button>
-                            </div>
-                        </FormItem>
+                  <Card title="编辑任务" style={{ margin: 24 }}>
+                    <Form onSubmit={this.handleSubmit} className={'pipeline-task-from'}>
+                      <FormItem
+                        style={{ width: 386 }}
+                        {...formItemLayout}
+                        label="任务名称"
+                      >
+                        {getFieldDecorator('stepName', {
+                          rules: [{required: true, message: '请输入'}]
+                        })(
+                          <Input disabled={disabled}/>
+                        )}
+                      </FormItem>
+                      <FormItem
+                        style={{ width: 386 }}
+                        {...formItemLayout}
+                        label="任务描述"
+                      >
+                        {getFieldDecorator('stepDesc', {
+                          rules: [{required: true, message: '请输入'}]
+                        })(
+                          <Input disabled={disabled}/>
+                        )}
+                      </FormItem>
+                      <FormItem
+                        style={{ width: 386 }}
+                        {...formItemLayout}
+                        label="webHook"
+                      >
+                        {getFieldDecorator('webHook', {
+                          rules: [{required: false, message: '请输入'}]
+                        })(
+                          <Input/>
+                        )}
+                      </FormItem>
+                      <FormItem
+                        style={{ width: 386 }}
+                        {...formItemLayout}
+                        label="运行参数"
+                      >
+                        <div>
+                          <Button size={'small'} onClick={this.showModal} type="primary" style={{ margin:'0 8px 16px 0' }}>
+                            JSON导入
+                          </Button>
+                          <Button size={'small'} onClick={this.importAutomation} type="basic" style={{ marginBottom: 16 }}>
+                            自动导入
+                          </Button>
 
-                        <FormItem {...tailFormItemLayout}>
-                            <Button type="primary" htmlType="submit">保存</Button>
-                        </FormItem>
+                        </div>
+                      </FormItem>
+
+
+                    <Table
+                      components={components}
+                      rowClassName={() => 'editable-row'}
+                      dataSource={paramsDatasource}
+                      columns={columns}
+                      pagination={false}
+                      onChange={this.paramsTableChange}
+                    />
+                    <div className={'table-add-row'} onClick={this.handleAdd} type="primary" style={{ marginBottom: 16 }}>
+                      <p>+ 添加</p>
+                    </div>
+                      <FormItem {...tailFormItemLayout} style={{ width: 386 }}>
+                        <Button type="primary" htmlType="submit">保存</Button>
+                      </FormItem>
                     </Form>
+                  </Card>
+
                 </section>
             </div>
         )

@@ -45,7 +45,7 @@ class SecurityScanChart extends React.Component {
           }
           <Row style={{marginTop: 30}} gutter={16}>
             {data.safetyProblem && data.safetyProblem.rows.length!== 0 &&
-            <Col span={12} style={{minWidth:600}}>
+            <Col span={12} style={{minWidth:520}}>
               <Card
                   type="inner"
                   title="安全问题："
@@ -55,7 +55,7 @@ class SecurityScanChart extends React.Component {
             </Col>
             }
             {data.sensitiveInfo && data.sensitiveInfo.rows.length!== 0 &&
-            <Col span={12} style={{minWidth:600}}>
+            <Col span={12} style={{minWidth:520}}>
               <Card
                   type="inner"
                   title="敏感信息："

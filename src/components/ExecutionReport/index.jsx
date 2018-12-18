@@ -157,29 +157,29 @@ class ExecutionReport extends Component {
   render () {
         const {basicInfo, scoreStandard, staticScan, appSecurityScan, unitTest, uiTest, performanceTest, host} = this.state
         return (
-            <div>
-                <Card title="基本信息" style={{marginTop: 30}}>
+            <div className='piplineDetail-report'>
+                <Card title="基本信息" style={{marginTop: 30}} className='piplineDetail-basic-info'>
                     <Row>
                         {basicInfo && this.checkNullObj(basicInfo) && <Col span={12}>
 
-                            <LabelItem label={'Identifier：'}>{basicInfo.packageName || '-'}</LabelItem>
-                            <LabelItem label={'Target SDK：'}>{basicInfo.targetSdk || '-'}</LabelItem>
-                            <LabelItem label={'Min SDK：'}>{basicInfo.minSdk || '-'}</LabelItem>
-                            <LabelItem label={'Version Code：'}>{basicInfo.versionCode || '-'}</LabelItem>
-                            <LabelItem label={'Version Name：'}>{basicInfo.versionName || '-'}</LabelItem>
-                            <LabelItem label={'Size：'}>{basicInfo.appFileSize || '-'}</LabelItem>
+                            <LabelItem  style={{color: 'rgba(0,0,0,0.85)'}}  label={'Identifier：'}>{basicInfo.packageName || '-'}</LabelItem>
+                            <LabelItem  style={{color: 'rgba(0,0,0,0.85)'}} label={'Target SDK：'}>{basicInfo.targetSdk || '-'}</LabelItem>
+                            <LabelItem  style={{color: 'rgba(0,0,0,0.85)'}} label={'Min SDK：'}>{basicInfo.minSdk || '-'}</LabelItem>
+                            <LabelItem  style={{color: 'rgba(0,0,0,0.85)'}} label={'Version Code：'}>{basicInfo.versionCode || '-'}</LabelItem>
+                            <LabelItem  style={{color: 'rgba(0,0,0,0.85)'}} label={'Version Name：'}>{basicInfo.versionName || '-'}</LabelItem>
+                            <LabelItem  style={{color: 'rgba(0,0,0,0.85)'}} label={'Size：'}>{basicInfo.appFileSize || '-'}</LabelItem>
                             {basicInfo.sourcePackagePath&&
-                            <LabelItem label={'源包下载：'}>
+                            <LabelItem  style={{color: 'rgba(0,0,0,0.85)'}} label={'源包下载：'}>
                               <a href={`http://${host}/download/downloadApk?filePath=${basicInfo.sourcePackagePath}`}>点击下载</a>
                             </LabelItem>
                             }
                             {basicInfo.reinforcePackagePath&&
-                            <LabelItem label={'加固包下载：'}>
+                            <LabelItem  style={{color: 'rgba(0,0,0,0.85)'}} label={'加固包下载：'}>
                                 <a href={`http://${host}/download/downloadApk?filePath=${basicInfo.reinforcePackagePath}`}>点击下载</a>
                             </LabelItem>
                             }
                             {basicInfo.patchPackagePath &&
-                            <LabelItem label={'补丁包下载：'}>
+                            <LabelItem  style={{color: 'rgba(0,0,0,0.85)'}} label={'补丁包下载：'}>
                               <a href={`http://${host}/download/downloadApk?filePath=${basicInfo.patchPackagePath}`}>点击下载</a>
                             </LabelItem>
                             }
@@ -192,7 +192,7 @@ class ExecutionReport extends Component {
                         {scoreStandard && scoreStandard.compositeScore &&
                         <Col span={4}>
                             <p>综合评分:</p>
-                            <p style={{fontSize: 80, fontWeight: 'bold'}}>{scoreStandard.compositeScore}</p>
+                            <p style={{fontSize: 48, color: 'rgba(0,0,0,0.85)'}}>{scoreStandard.compositeScore}</p>
                         </Col>
                         }
                     </Row>

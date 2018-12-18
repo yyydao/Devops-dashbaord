@@ -4,32 +4,22 @@ import { Link,withRouter } from 'react-router-dom'
 import './index.scss'
 import { reqPost, reqGet } from '@/api/api'
 import { setStep,setSteps } from '@/store/action';
-import {transLocalStorage, isJsonString,stepParamstoArray, stepParamstoObject} from '@/utils/utils'
+import { isJsonString,stepParamstoArray, stepParamstoObject} from '@/utils/utils'
 
 import {
-    Steps,
-    Form,
-    Input,
-    Radio,
-    AutoComplete,
-    Breadcrumb,
-    Button,
-    Collapse,
-    Select,
-    Table,
-    Popconfirm,
-    Modal, message
+  Form,
+  Input,
+  Breadcrumb,
+  Button,
+  Table,
+  Popconfirm,
+  Modal, message, Card
 } from 'antd'
 
 
 const {TextArea} = Input;
-const AutoCompleteOption = AutoComplete.Option
 const BreadcrumbItem = Breadcrumb.Item
-const Step = Steps.Step
-const Panel = Collapse.Panel
-const Option = Select.Option
 const FormItem = Form.Item
-const RadioGroup = Radio.Group
 const confirm = Modal.confirm;
 
 const EditableContext = React.createContext();
@@ -483,36 +473,35 @@ class taskAdd extends Component {
         const {getFieldDecorator} = this.props.form
         const {
             paramsDatasource,
-            loading,
-            stepCode,
             disabled,
             addVisible,
             addConfirmLoading,
             importJSON
         } = this.state
 
-        const formItemLayout = {
-            labelCol: {
-                xs: {span: 24},
-                sm: {span: 8},
-            },
-            wrapperCol: {
-                xs: {span: 24},
-                sm: {span: 16},
-            },
-        }
-        const tailFormItemLayout = {
-            wrapperCol: {
-                xs: {
-                    span: 24,
-                    offset: 0,
-                },
-                sm: {
-                    span: 16,
-                    offset: 8,
-                },
-            },
-        }
+
+      const formItemLayout = {
+        labelCol: {
+          xs: { span: 24 },
+          sm: { span: 8 },
+        },
+        wrapperCol: {
+          xs: { span: 24 },
+          sm: { span: 16 },
+        },
+      }
+      const tailFormItemLayout = {
+        wrapperCol: {
+          xs: {
+            span: 24,
+            offset: 0,
+          },
+          sm: {
+            span: 16,
+            offset: 0,
+          },
+        },
+      }
         const components = {
             body: {
                 row: EditableFormRow,
@@ -557,9 +546,11 @@ class taskAdd extends Component {
                     }}/>
 
                 </Modal>
-                <section className="pipeline-box">
-                    <Form onSubmit={this.handleSubmit}>
+                <section className="pipeline-box pipeline-modify">
+                  <Card title="新增任务" style={{ margin: 24 }}>
+                    <Form onSubmit={this.handleSubmit} className={'pipeline-task-from'}>
                         <FormItem
+                          style={{ width: 386 }}
                             {...formItemLayout}
                             label="任务名称"
                         >
@@ -570,6 +561,7 @@ class taskAdd extends Component {
                             )}
                         </FormItem>
                         <FormItem
+                          style={{ width: 386 }}
                             {...formItemLayout}
                             label="任务描述"
                         >
@@ -580,6 +572,7 @@ class taskAdd extends Component {
                             )}
                         </FormItem>
                         <FormItem
+                          style={{ width: 386 }}
                             {...formItemLayout}
                             label="webHook"
                         >
@@ -590,35 +583,39 @@ class taskAdd extends Component {
                             )}
                         </FormItem>
                         <FormItem
+                          style={{ width: 386 }}
                             {...formItemLayout}
                             label="运行参数"
                         >
                             <div>
-                                <Button onClick={this.showModal} type="primary" style={{ marginBottom: 16 }}>
+                                <Button size={'small'} onClick={this.showModal} type="primary" style={{ margin:'0 8px 16px 0' }}>
                                     JSON导入
                                 </Button>
-                                <Button onClick={this.importAutomation} type="primary" style={{ marginBottom: 16 }}>
+                                <Button size={'small'} onClick={this.importAutomation} type="basic" style={{ marginBottom: 16 }}>
                                     自动导入
                                 </Button>
-                                <Table
-                                    components={components}
-                                    rowClassName={() => 'editable-row'}
-                                    bordered
-                                    dataSource={paramsDatasource}
-                                    columns={columns}
-                                    onChange={this.paramsTableChange}
-                                />
-                                <Button onClick={this.handleAdd} type="primary" style={{ marginBottom: 16 }}>
-                                    增加一行
-                                </Button>
+
 
                             </div>
                         </FormItem>
 
-                        <FormItem {...tailFormItemLayout}>
+                    <Table
+                      components={components}
+                      rowClassName={() => 'editable-row'}
+                      dataSource={paramsDatasource}
+                      columns={columns}
+                      pagination={false}
+                      onChange={this.paramsTableChange}
+                    />
+                    <div className={'table-add-row'} onClick={this.handleAdd} type="primary" style={{ marginBottom: 16 }}>
+                      <p>+ 添加</p>
+                    </div>
+                        <FormItem {...tailFormItemLayout} style={{ width: 386 }}>
                             <Button type="primary" htmlType="submit">保存</Button>
                         </FormItem>
                     </Form>
+
+                  </Card>
                 </section>
             </div>
         )

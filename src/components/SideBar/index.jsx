@@ -150,8 +150,8 @@ class SideBar extends Component {
         let list = []
         for (let item of res.data) {
           let icon = ''
-          if (item.id === 62) {icon = <Icon style={{paddingRight: '10px'}} component={iOSSvg}/> }
-          if (item.id === 63) {icon = <Icon style={{paddingRight: '10px',fontSize:'18px'}} component={AndroidSvg}/> }
+          if (item.platform === 2) {icon = <Icon style={{paddingRight: '10px'}} component={iOSSvg}/> }
+          if (item.platform === 1) {icon = <Icon style={{paddingRight: '10px',fontSize:'18px'}} component={AndroidSvg}/> }
           list.push({
             icon: icon,
             id: item.id,

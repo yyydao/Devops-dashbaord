@@ -1,33 +1,13 @@
 .pipeline {
-  //common
-  &-wrapper {
-    background: #fff;
-  }
 
   &-header {
     padding: 16px 32px;
     background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0, 21, 41, 0.12);
+    box-shadow:0 2px 4px rgba(0,21,41,0.12);
     //padding: 42px 24px 10px;
     h2 {
       margin-bottom: 0;
     }
-  }
-
-  &-menu {
-    margin-bottom: 20px;
-    overflow: hidden;
-
-    button {
-      margin-right: 10px;
-    }
-  }
-
-
-  &-main {
-    border-bottom: 1px solid #ebedf0;
-    //padding: 42px 24px 50px;
-    color: rgba(0, 0, 0, 0.65);
   }
 
   &-box {
@@ -39,60 +19,49 @@
     margin: 0 0 16px;
     -webkit-transition: all .2s;
     transition: all .2s;
-
     &-wrapper {
       width: 100%;
       padding: 24px;
+      background-color: #f0f2f5;
     }
-
     .ant-form:not(.ant-form-inline):not(.ant-form-vertical) {
       //max-width: 800px;
     }
   }
 
-  // list
-  &-item {
-    margin-bottom: 14px;
-    padding: 16px 32px 22px;
-    font-size: 12px;
-    background: #ffffff;
-    border-bottom: 1px solid #e8e8e8;
 
-    img {
-      position: absolute;
-      top: 50%;
-      left: 0;
-      width: 30px;
-      height: 30px;
-      margin-top: -15px;
-    }
+  &-main {
+    border-bottom: 1px solid #ebedf0;
+    //padding: 42px 24px 50px;
+    color: rgba(0, 0, 0, 0.65);
+  }
 
-    h2 {
-      height: 22px;
-      line-height: 24px;
-      margin-bottom: 0;
-      color: rgba(0, 0, 0, 0.85);
-      font-size: 16px;
-    }
+
+  //detail
+  &-detail{
+    background-color: #fff;
 
     &-header {
       margin-bottom: 16px;
-
+      padding: 24px;
     }
-
+    &-info{
+      padding: 24px;
+    }
     &-user {
       text-align: right;
     }
-
     &-main {
       display: block;
       flex: 1
     }
 
+    &-controButton{
+      text-align: right;
+    }
 
     &-timemeta {
       margin-bottom: 36px;
-
       span {
         font-size: 14px;
         line-height: 22px;
@@ -115,40 +84,20 @@
         }
       }
     }
-
-    &-ctrl {
-      text-align: right;
-
-      .status {
-        font-size: 14px;
-        margin-bottom: 20px;
-
-        span {
-          font-weight: bold;
-          margin-right: 4px;
-        }
-      }
-
-      button {
-        vertical-align: middle;
-
-        &:not(:last-of-type) {
-          margin-right: 5px;
-        }
-      }
+    &-content {
+      padding-bottom: 26px;
     }
+
   }
 
   //animate
   .step-status {
-    &-default {
+    &-default{
       background-color: #F8F8F8;
     }
-
     &-running {
       transition: all .4s cubic-bezier(.08, .82, .17, 1) 0s;
     }
-
     &-running:before {
       content: "";
       opacity: 0;
@@ -162,7 +111,6 @@
       -webkit-animation: ant-progress-active 2.4s cubic-bezier(.23, 1, .32, 1) infinite;
       animation: ant-progress-active 2.4s cubic-bezier(.23, 1, .32, 1) infinite
     }
-
     @-webkit-keyframes ant-progress-active {
       0% {
         opacity: 0.1;
@@ -192,13 +140,11 @@
       }
     }
   }
-
   .sk-three-bounce {
     display: inline-block;
     margin: 3px auto;
     width: 24px;
     text-align: center;
-
     .sk-child {
       width: 4px;
       height: 4px;
@@ -208,143 +154,30 @@
       -webkit-animation: sk-three-bounce 1.4s ease-in-out 0s infinite both;
       animation: sk-three-bounce 1.4s ease-in-out 0s infinite both;
     }
-
     .sk-bounce1 {
       -webkit-animation-delay: -0.32s;
       animation-delay: -0.32s;
     }
-
     .sk-bounce2 {
       -webkit-animation-delay: -0.16s;
-      animation-delay: -0.16s;
-    }
+      animation-delay: -0.16s; }
   }
 
   @-webkit-keyframes sk-three-bounce {
     0%, 80%, 100% {
       -webkit-transform: scale(0);
-      transform: scale(0);
-    }
+      transform: scale(0); }
     40% {
       -webkit-transform: scale(1);
-      transform: scale(1);
-    }
-  }
+      transform: scale(1); } }
 
   @keyframes sk-three-bounce {
     0%, 80%, 100% {
       -webkit-transform: scale(0);
-      transform: scale(0);
-    }
+      transform: scale(0); }
     40% {
       -webkit-transform: scale(1);
-      transform: scale(1);
-    }
-  }
-}
-
-
-//pipeline add && pipeline edit
-.pipeline-modify {
-  .ant-card-head {
-    padding: 0 32px;
-  }
-
-  .ant-card-body {
-    padding: 32px;
-  }
-
-  .ant-col-sm-8 {
-    text-align: left;
-  }
-
-  .pipeline-item-content {
-    margin-left: -32px;
-  }
-
-  .task-item {
-    width: 180px;
-    background: #F8F8F8;
-    border: 1px solid #F8F8F8;
-    textAlign: left;
-    padding: 4px 16px;
-    margin: 8px 0 0 -37%;
-
-    &-row {
-      .item-info {
-        margin:0;
-        text-align: left;
-        line-height: 24px;
-
-        &.step-name {
-          color: rgba(0, 0, 0, 0.65);
-          font-size: 14px;
-        }
-
-        &.step-desc {
-          color: rgba(0, 0, 0, 0.45);
-          font-size: 12px;
-        }
-      }
-
-      .item-control-col {
-        text-align: right;
-      }
-    }
-  }
-}
-
-//taskform
-.pipeline-task-from{
-
-  .ant-col-sm-8 {
-    text-align: left;
-  }
-  .table-add-row{
-    cursor: pointer;
-    margin-top: 24px;
-    vertical-align: middle;
-    width: 100%;
-    text-align: center;
-    border:1px dashed #eeeeee;
-    height: 54px;
-    line-height: 54px;
-    p{
-      font-size: 14px;
-      color: rgba(0,0,0,0.65);
-      letter-spacing: 0;
-      height: 54px;
-      line-height: 54px;
-      margin: 0;
-    }
-  }
-}
-
-.pipeline-task-modal {
-  .ant-modal-body {
-    padding-top: 0;
-  }
-
-  p {
-    margin-bottom: 8px;
-  }
-
-  .taskName {
-    font-size: 14px;
-    color: rgba(0, 0, 0, 0.85);
-  }
-
-  .ant-card-grid {
-    padding: 12px;
-  }
-
-  .ant-card-body {
-    padding: 0;
-  }
-
-  .ant-card-bordered {
-    border: 0
-  }
+      transform: scale(1); } }
 }
 
 
