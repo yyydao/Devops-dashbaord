@@ -191,11 +191,11 @@ class Pipeline extends Component {
                     <div className="pipeline-item-header" onClick={() => this.jumpToDetail(item)}
                          style={{ cursor: 'pointer' }}>
                       <Row type="flex" justify="space-between">
-                        <Col span={12}>
+                        <Col span={20}>
                           <h2>{item.taskName}
                             <span>（ID：{item.taskCode}）</span></h2>
                         </Col>
-                        <Col span={12}>
+                        <Col span={4}>
                           <div className="pipeline-item-user">
                           </div>
                         </Col>

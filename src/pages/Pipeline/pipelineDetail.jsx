@@ -368,8 +368,15 @@ class pipelineDetail extends Component {
     })
   }
 
-  setStepStatus = (item) => {
-    let stepStatus = item.stepStatus
+  setStepStatus = (item,type) => {
+    console.log(item)
+    let stepStatus
+    if(type === 'current'){
+      stepStatus = item.stepStatus
+    }
+    if(type==='history'){
+      stepStatus = item.historyStatus
+    }
     const enumPipelineResultIcon = {
       // `#fff`
       0: <Icon type="clock-circle" style={{fontSize: '18px'}} />,
@@ -389,7 +396,8 @@ class pipelineDetail extends Component {
       case 1:
         return <ul className='sk-three-bounce'><li className='sk-child '></li><li className='sk-child sk-bounce1'></li><li className='sk-child sk-bounce2'></li></ul>
       case 2:
-        return enumPipelineResultIcon[item.stepResult]
+
+        return type === 'current' ? enumPipelineResultIcon[item.stepResult]: enumPipelineResultIcon[item.historyResult]
       case 3:
         return <Icon type="clock-circle"   style={{fontSize: '18px'}}  />
       default:
@@ -707,11 +715,11 @@ class pipelineDetail extends Component {
 
                 <div className="pipeline-detail-header">
                   <Row type="flex" justify="space-between">
-                    <Col span={12}>
+                    <Col span={20}>
                       <h2>{taskName} <span>（ID：{taskCode}）{!showHistory && taskStatus === 1 &&
                       <Icon type="loading"/>}</span></h2>
                     </Col>
-                    <Col span={12} className="pipeline-detail-controButton">
+                    <Col span={4} className="pipeline-detail-controButton">
                       <div className="pipeline-detail-user">
                         {/*gitlab push by liaoshengjian*/}
                       </div>
@@ -743,7 +751,7 @@ class pipelineDetail extends Component {
                     </Col>
                     <Col span={4}>
                       <div className="pipeline-detail-ctrl">
-                        <Row gutter={16} type="flex" justify="space-between" align="middle">
+                        <Row gutter={16} type="flex" justify="space-between" align="middle" className={'pipeline-detail-timemeta'}>
                           <Col>
                             <span><i>最近执行状态：</i>{this.pipelineRunStatusText(taskStatus, taskResult)}</span>
                           </Col>
@@ -776,7 +784,7 @@ class pipelineDetail extends Component {
                                          // className={taskStatus === 1 ? (item.stepStatus === 1 ? 'step-status-running' : 'step-status-default') : 'step-status-default'}
                                          key={index}
                                        >
-                                         <div style={{marginBottom:'0em'}}><span style={{width:'30px',height:'24px',display:'inline-block',textAlign:'center'}}>{this.setStepStatus(item)}</span>
+                                         <div style={{marginBottom:'0em'}}><span style={{width:'30px',height:'24px',display:'inline-block',textAlign:'center'}}>{this.setStepStatus(item,'current')}</span>
                                            <span style={{color: 'rgba(0,0,0,0.65)',fontSize:'14px',}}>{item.stepName}</span></div>
                                          <div style={{color: 'rgba(0,0,0,0.45)',fontSize:'12px',margin:'0 0 0 30px '}}>{item.stepDesc}</div>
                                        </div>
@@ -803,7 +811,7 @@ class pipelineDetail extends Component {
                             // className={taskStatus === 1 ? (item.stepStatus === 1 ? 'step-status-running' : 'step-status-default') : 'step-status-default'}
                             key={index}
                           >
-                            <div style={{marginBottom:'0em'}}><span style={{width:'30px',height:'24px',display:'inline-block',textAlign:'center'}}>{this.setStepStatus(item)}</span>
+                            <div style={{marginBottom:'0em'}}><span style={{width:'30px',height:'24px',display:'inline-block',textAlign:'center'}}>{this.setStepStatus(item,'history')}</span>
                               <span style={{color: 'rgba(0,0,0,0.65)',fontSize:'14px',}}>{item.stepName}</span></div>
                             <div style={{color: 'rgba(0,0,0,0.45)',fontSize:'12px',margin:'0 0 0 30px '}}>{item.stepDesc}</div>
                           </div>
