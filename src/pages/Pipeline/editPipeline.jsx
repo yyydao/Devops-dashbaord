@@ -487,8 +487,9 @@ class Edit extends Component {
         </Breadcrumb>
         <section className="pipeline-box pipeline-modify">
           <Card title="编辑流水线" style={{ margin: 24 }}>
-            <Form onSubmit={this.handleSubmit} style={{ width: 386 }}>
+            <Form onSubmit={this.handleSubmit}>
               <FormItem
+                style={{ width: 386 }}
                 {...formItemLayout}
                 label="流水线名称"
               >
@@ -499,6 +500,7 @@ class Edit extends Component {
                 )}
               </FormItem>
               <FormItem
+                style={{ width: 386 }}
                 {...formItemLayout}
                 label="执行分支"
               >
@@ -521,6 +523,7 @@ class Edit extends Component {
                 )}
               </FormItem>
               <FormItem
+                style={{ width: 386 }}
                 {...formItemLayout}
                 label="Jenkins Job"
               >
@@ -531,6 +534,7 @@ class Edit extends Component {
                 )}
               </FormItem>
               <FormItem
+                style={{ width: 386 }}
                 {...formItemLayout}
                 label="钉钉消息："
               >
@@ -540,6 +544,7 @@ class Edit extends Component {
               </FormItem>
               <FormItem
                 style={{
+                  width: 386,
                   marginTop: 40,
                   fontSize: 14,
                   color: 'rgba(0,0,0,0.85)',
@@ -549,7 +554,7 @@ class Edit extends Component {
                 label="选择流水线节点"
               >
               </FormItem>
-            </Form>
+
             <div className="pipeline-item-content">
 
 
@@ -612,10 +617,12 @@ class Edit extends Component {
                 <Step title="完成" description={<div></div>}></Step>
               </Steps>
             </div>
-            <FormItem {...tailFormItemLayout}>
+            <FormItem
+              style={{ width: 386 }}
+              {...tailFormItemLayout}>
               <Button style={{ marginTop: 40 }} type="primary" htmlType="submit">保存</Button>
             </FormItem>
-
+            </Form>
           </Card>
         </section>
       </div>

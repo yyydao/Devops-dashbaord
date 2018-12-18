@@ -767,12 +767,11 @@ class pipelineDetail extends Component {
                                        return <div
                                          style={{
                                            width: 180,
-                                           marginLeft: '-37%',
                                            background: '#F8F8F8',
                                            border: '1px solid #F8F8F8',
                                            textAlign:'left',
                                            padding: '4px',
-                                           margin:'8px 0',
+                                           margin:'8px 0 8px -37%',
                                          }}
                                          // className={taskStatus === 1 ? (item.stepStatus === 1 ? 'step-status-running' : 'step-status-default') : 'step-status-default'}
                                          key={index}

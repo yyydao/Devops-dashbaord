@@ -473,8 +473,6 @@ class taskAdd extends Component {
         const {getFieldDecorator} = this.props.form
         const {
             paramsDatasource,
-            loading,
-            stepCode,
             disabled,
             addVisible,
             addConfirmLoading,
@@ -549,9 +547,10 @@ class taskAdd extends Component {
 
                 </Modal>
                 <section className="pipeline-box pipeline-modify">
-                  <Card title="编辑任务" style={{ margin: 24 }}>
-                    <Form onSubmit={this.handleSubmit}  style={{ width: 386 }}>
+                  <Card title="新增任务" style={{ margin: 24 }}>
+                    <Form onSubmit={this.handleSubmit} className={'pipeline-task-from'}>
                         <FormItem
+                          style={{ width: 386 }}
                             {...formItemLayout}
                             label="任务名称"
                         >
@@ -562,6 +561,7 @@ class taskAdd extends Component {
                             )}
                         </FormItem>
                         <FormItem
+                          style={{ width: 386 }}
                             {...formItemLayout}
                             label="任务描述"
                         >
@@ -572,6 +572,7 @@ class taskAdd extends Component {
                             )}
                         </FormItem>
                         <FormItem
+                          style={{ width: 386 }}
                             {...formItemLayout}
                             label="webHook"
                         >
@@ -582,11 +583,12 @@ class taskAdd extends Component {
                             )}
                         </FormItem>
                         <FormItem
+                          style={{ width: 386 }}
                             {...formItemLayout}
                             label="运行参数"
                         >
                             <div>
-                                <Button size={'small'} onClick={this.showModal} type="primary" style={{ marginBottom: 16 }}>
+                                <Button size={'small'} onClick={this.showModal} type="primary" style={{ margin:'0 8px 16px 0' }}>
                                     JSON导入
                                 </Button>
                                 <Button size={'small'} onClick={this.importAutomation} type="basic" style={{ marginBottom: 16 }}>
@@ -596,7 +598,7 @@ class taskAdd extends Component {
 
                             </div>
                         </FormItem>
-                    </Form>
+
                     <Table
                       components={components}
                       rowClassName={() => 'editable-row'}
@@ -608,9 +610,10 @@ class taskAdd extends Component {
                     <Button onClick={this.handleAdd} type="primary" style={{ marginBottom: 16 }}>
                       增加一行
                     </Button>
-                        <FormItem {...tailFormItemLayout}>
+                        <FormItem {...tailFormItemLayout} style={{ width: 386 }}>
                             <Button type="primary" htmlType="submit">保存</Button>
                         </FormItem>
+                    </Form>
 
                   </Card>
                 </section>
