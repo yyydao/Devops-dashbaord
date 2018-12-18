@@ -3,6 +3,7 @@ import {
     makeHistoryStepCard,
     constructStepCard,
     composeEditFinalStep,
+  isJsonString,
     checkPermission
 } from './utils'
 
@@ -290,5 +291,16 @@ describe('utils', () => {
         expect(checkPermission('/pipeline/edit', permissionList)).toBeTruthy()
 
     })
+
+  it('check json',() =>{
+    const text = {"msg":"success","code":0,"step":{"taskID":"a5da99ff49eb4d30b838b2a31618997e0064Z4","stepCategory":1,"stepCode":4,"stepName":"安全扫描","stepDesc":"MobSF 安全检测","stepParams":"{\"stageId\":4,\"safe_server\":\"http://10.100.12.52:8000/\",\"safe_token\":\"2dc06726e9562f1713b81f07d53e7b926825cddc2aa37ee529a1f2b8f09ec252\",\"safe_gitserver\":\"http://git.tuandai888.com/MPD-DevOps/SecurityAnalysis.git\"}","execTime":186000,"createTime":"2018-12-07 09:26:26.0","updateTime":"2018-12-17 15:00:06.0","remark":"结束"}}
+    expect(isJsonString(text).toBeTruthy)
+  })
+
+  it('check json text',() =>{
+    const text = "{\"stageId\":4,\"safe_server\":\"http://10.100.12.52:8000/\",\"safe_token\":\"2dc06726e9562f1713b81f07d53e7b926825cddc2aa37ee529a1f2b8f09ec252\",\"safe_gitserver\":\"http://git.tuandai888.com/MPD-DevOps/SecurityAnalysis.git\"}"
+    expect(isJsonString(text).toBeTruthy)
+  })
+
 
 })
