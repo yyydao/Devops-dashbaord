@@ -17,7 +17,6 @@ import Package from '@/assets/svg/pipelining_icon_package.svg'
 import Custom from '@/assets/svg/pipelining_icon_custom.svg'
 
 import { setStep, removeSteps, setSteps } from '@/store/action'
-import { stepParamstoArray, stepParamstoObject } from '@/utils/utils.js'
 import { constructStepCard, composeCompleteStep, composeCompleteStepAfterRemove } from './constructSteps'
 
 import {
@@ -38,8 +37,6 @@ import {
   Col,
 } from 'antd'
 import qs from 'qs'
-import uniq from 'lodash.uniq'
-import toPairs from 'lodash.topairs'
 
 const BreadcrumbItem = Breadcrumb.Item
 const Step = Steps.Step
@@ -103,36 +100,6 @@ class Edit extends Component {
       addVisible: false
     })
   }
-
-  isJsonString = (str) => {
-    try {
-      if (typeof JSON.parse(str) == 'object') {
-        return true
-      }
-    } catch (e) {
-    }
-    return false
-  }
-
-  // transLocalStorage =(notParsed) => {
-  //     let paredStepList = notParsed
-  //     if(Array.isArray(notParsed) ){
-  //         for (let i = 0; i < notParsed.length; i++) {
-  //
-  //             const stepElement = notParsed[i][1]
-  //             if(stepElement){
-  //                 for (let j = 0; j < stepElement.length; j++) {
-  //                     const stepElementElement = stepElement[j]
-  //                     if(this.isJsonString(stepElementElement.stepParams)){
-  //                         paredStepList[i][1][j].stepParams = JSON.parse(stepElementElement.stepParams)
-  //                     }
-  //                 }
-  //             }
-  //
-  //         }
-  //     }
-  //     return paredStepList
-  // }
 
   handleSubmit = (e) => {
     e.preventDefault()
@@ -407,9 +374,7 @@ class Edit extends Component {
       addVisible,
       addConfirmLoading,
       taskStatus,
-      stepCategory,
       completeFullSteps,
-      stepsList
     } = this.state
 
     const formItemLayout = {

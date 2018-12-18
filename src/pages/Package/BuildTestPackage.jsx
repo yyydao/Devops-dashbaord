@@ -587,7 +587,7 @@ class BuildTestPackage extends Component {
                         <Col span={20}>
                           <Row type="flex" justify="start" align="middle">
                             <Col>
-                              <img src={item.iconPath || favicon}/>
+                              <img src={item.iconPath || favicon} alt='icon'/>
                             </Col>
                             <Col>
                               <p>
@@ -622,7 +622,7 @@ class BuildTestPackage extends Component {
                                 showTotal={total => `共 ${totalCount} 条`}
                                 pageSize={6}
                                 current={curPage}
-                                style={{cssFloat: 'right' }}/>
+                                style={{ cssFloat: 'right' }}/>
                   </div>
                 </div>
               </Col>

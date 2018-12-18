@@ -59,15 +59,6 @@ const enumPipelineResult = {
 
 }
 
-const enumPipelineResultColor = {
-  0: `#fff`,
-  1: `#52c41a`,
-  2: `#f5222d`,
-  3: `#faad14`,
-  4: `#1890ff`,
-
-}
-
 const enumButtonText = {
   0: '开始执行',
   1: '执行中',
@@ -305,33 +296,6 @@ class pipelineDetail extends Component {
         timer: null
       })
     })
-
-    // reqGet('/pipeline/taskinfo', {
-    //     taskID: this.props.match.params.taskID,
-    // }).then((res) => {
-    //     if (res.code === 0) {
-    //         const taskList = res.task
-    //         if(!taskList){
-    //             message.error('数据不完整，无任务信息')
-    //             return
-    //         }
-    //         const stepsList = res.steps
-    //         this.checkTaskList(taskList)
-    //         this.getPipelineRunStatus(stepsList)
-    //
-    //         this.setState({
-    //             timer: taskList &&  taskList.taskStatus !== 2 && (new Date().getTime() - this.state.timerStart < 3600000) ? setTimeout(this.refreshTaskDetail, 10e3) : null
-    //         })
-    //
-    //     }else{
-    //         message.error(res.msg)
-    //     }
-    // }).catch((e)=>{
-    //     message.error(e)
-    //     this.setState({
-    //         timer: null
-    //     });
-    // })
   }
 
   makeStepCard = (stepsList) => {
@@ -368,40 +332,48 @@ class pipelineDetail extends Component {
     })
   }
 
-  setStepStatus = (item,type) => {
+  setStepStatus = (item, type) => {
     console.log(item)
     let stepStatus
-    if(type === 'current'){
+    if (type === 'current') {
       stepStatus = item.stepStatus
     }
-    if(type==='history'){
+    if (type === 'history') {
       stepStatus = item.historyStatus
     }
     const enumPipelineResultIcon = {
       // `#fff`
-      0: <Icon type="clock-circle" style={{fontSize: '18px'}} />,
+      0: <Icon type="clock-circle" style={{ fontSize: '18px' }}/>,
       // `#52c41a`
-      1: <Icon type="check-circle" style={{color:'#1890ff',fontSize: '18px'}} />,
+      1: <Icon type="check-circle" style={{ color: '#1890ff', fontSize: '18px' }}/>,
       // `#f5222d`
-      2:<Icon type="close-circle"  style={{color:'#f5222d',fontSize: '18px'}}/>,
+      2: <Icon type="close-circle" style={{ color: '#f5222d', fontSize: '18px' }}/>,
       // `#faad14`
-      3: <Icon type="exclamation-circle" style={{color:'#faad14',fontSize: '18px'}} />,
+      3: <Icon type="exclamation-circle" style={{ color: '#faad14', fontSize: '18px' }}/>,
       // `#1890ff`
-      4: <div className='sk-three-bounce'><div className='sk-child sk-bounce1 '></div><div className='sk-child '></div><div className='sk-child sk-bounce2'></div></div>,
+      4: <div className='sk-three-bounce'>
+        <div className='sk-child sk-bounce1 '></div>
+        <div className='sk-child '></div>
+        <div className='sk-child sk-bounce2'></div>
+      </div>,
 
     }
     switch (stepStatus) {
       case 0:
-        return <Icon type="clock-circle"  style={{fontSize: '18px'}} />
+        return <Icon type="clock-circle" style={{ fontSize: '18px' }}/>
       case 1:
-        return <ul className='sk-three-bounce'><li className='sk-child '></li><li className='sk-child sk-bounce1'></li><li className='sk-child sk-bounce2'></li></ul>
+        return <ul className='sk-three-bounce'>
+          <li className='sk-child '></li>
+          <li className='sk-child sk-bounce1'></li>
+          <li className='sk-child sk-bounce2'></li>
+        </ul>
       case 2:
 
-        return type === 'current' ? enumPipelineResultIcon[item.stepResult]: enumPipelineResultIcon[item.historyResult]
+        return type === 'current' ? enumPipelineResultIcon[item.stepResult] : enumPipelineResultIcon[item.historyResult]
       case 3:
-        return <Icon type="clock-circle"   style={{fontSize: '18px'}}  />
+        return <Icon type="clock-circle" style={{ fontSize: '18px' }}/>
       default:
-        return <Icon type="clock-circle"   style={{fontSize: '18px'}} />
+        return <Icon type="clock-circle" style={{ fontSize: '18px' }}/>
     }
   }
 
@@ -751,7 +723,8 @@ class pipelineDetail extends Component {
                     </Col>
                     <Col span={4}>
                       <div className="pipeline-detail-ctrl">
-                        <Row gutter={16} type="flex" justify="space-between" align="middle" className={'pipeline-detail-timemeta'}>
+                        <Row gutter={16} type="flex" justify="space-between" align="middle"
+                             className={'pipeline-detail-timemeta'}>
                           <Col>
                             <span><i>最近执行状态：</i>{this.pipelineRunStatusText(taskStatus, taskResult)}</span>
                           </Col>
@@ -764,7 +737,7 @@ class pipelineDetail extends Component {
                          labelPlacement="vertical"
                          current={this.pipelineStepCurrent()}
                   >
-                    <Step title="开始"></Step>
+                    <Step title="开始"/>
 
                     {!showHistory && finalStep && finalStep.map((item, index) => {
                       return <Step title={enumStepsText[item[0]].title} key={index}
@@ -777,16 +750,28 @@ class pipelineDetail extends Component {
                                            width: 180,
                                            background: '#F8F8F8',
                                            border: '1px solid #F8F8F8',
-                                           textAlign:'left',
+                                           textAlign: 'left',
                                            padding: '4px',
-                                           margin:'8px 0 8px -37%',
+                                           margin: '8px 0 8px -37%',
                                          }}
                                          // className={taskStatus === 1 ? (item.stepStatus === 1 ? 'step-status-running' : 'step-status-default') : 'step-status-default'}
                                          key={index}
                                        >
-                                         <div style={{marginBottom:'0em'}}><span style={{width:'30px',height:'24px',display:'inline-block',textAlign:'center'}}>{this.setStepStatus(item,'current')}</span>
-                                           <span style={{color: 'rgba(0,0,0,0.65)',fontSize:'14px',}}>{item.stepName}</span></div>
-                                         <div style={{color: 'rgba(0,0,0,0.45)',fontSize:'12px',margin:'0 0 0 30px '}}>{item.stepDesc}</div>
+                                         <div style={{ marginBottom: '0em' }}><span style={{
+                                           width: '30px',
+                                           height: '24px',
+                                           display: 'inline-block',
+                                           textAlign: 'center'
+                                         }}>{this.setStepStatus(item, 'current')}</span>
+                                           <span style={{
+                                             color: 'rgba(0,0,0,0.65)',
+                                             fontSize: '14px',
+                                           }}>{item.stepName}</span></div>
+                                         <div style={{
+                                           color: 'rgba(0,0,0,0.45)',
+                                           fontSize: '12px',
+                                           margin: '0 0 0 30px '
+                                         }}>{item.stepDesc}</div>
                                        </div>
                                      })
 
@@ -804,16 +789,26 @@ class pipelineDetail extends Component {
                               marginLeft: '-37%',
                               background: '#F8F8F8',
                               border: '1px solid #F8F8F8',
-                              textAlign:'left',
+                              textAlign: 'left',
                               padding: '4px',
-                              margin:'8px 0',
+                              margin: '8px 0',
                             }}
                             // className={taskStatus === 1 ? (item.stepStatus === 1 ? 'step-status-running' : 'step-status-default') : 'step-status-default'}
                             key={index}
                           >
-                            <div style={{marginBottom:'0em'}}><span style={{width:'30px',height:'24px',display:'inline-block',textAlign:'center'}}>{this.setStepStatus(item,'history')}</span>
-                              <span style={{color: 'rgba(0,0,0,0.65)',fontSize:'14px',}}>{item.stepName}</span></div>
-                            <div style={{color: 'rgba(0,0,0,0.45)',fontSize:'12px',margin:'0 0 0 30px '}}>{item.stepDesc}</div>
+                            <div style={{ marginBottom: '0em' }}><span style={{
+                              width: '30px',
+                              height: '24px',
+                              display: 'inline-block',
+                              textAlign: 'center'
+                            }}>{this.setStepStatus(item, 'history')}</span>
+                              <span style={{ color: 'rgba(0,0,0,0.65)', fontSize: '14px', }}>{item.stepName}</span>
+                            </div>
+                            <div style={{
+                              color: 'rgba(0,0,0,0.45)',
+                              fontSize: '12px',
+                              margin: '0 0 0 30px '
+                            }}>{item.stepDesc}</div>
                           </div>
                         })
 
@@ -821,7 +816,7 @@ class pipelineDetail extends Component {
 
                       </Step>
                     })}
-                    <Step title="完成" description={<div></div>}></Step>
+                    <Step title="完成"/>
                   </Steps>
                 </div>
 

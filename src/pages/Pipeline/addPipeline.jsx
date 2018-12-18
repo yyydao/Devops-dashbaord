@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link, withRouter } from 'react-router-dom'
 import './index.scss'
-import { reqPost, reqGet } from '@/api/api'
+import { reqPost } from '@/api/api'
+import { isJsonString } from '@/utils/utils'
 
 import Acode from '@/assets/svg/pipelining_icon_acode.svg'
 import StaticScanning from '@/assets/svg/pipelining_icon_static_scanning.svg'
@@ -261,15 +262,7 @@ class AddPipeline extends Component {
     this.setState({ branchName: branchObject.label })
   }
 
-  isJsonString = (str) => {
-    try {
-      if (typeof JSON.parse(str) == 'object') {
-        return true
-      }
-    } catch (e) {
-    }
-    return false
-  }
+
   transLocalStorage = (notParsed) => {
     let paredStepList = notParsed
     if (Array.isArray(notParsed)) {
@@ -278,7 +271,7 @@ class AddPipeline extends Component {
         if (stepElement) {
           for (let j = 0; j < stepElement.length; j++) {
             const stepElementElement = stepElement[j]
-            if (this.isJsonString(stepElementElement.stepParams)) {
+            if (isJsonString(stepElementElement.stepParams)) {
               paredStepList[i][1][j].stepParams = JSON.parse(stepElementElement.stepParams)
             }
           }
@@ -287,10 +280,6 @@ class AddPipeline extends Component {
       }
     }
     return paredStepList
-  }
-
-  componentWillMount () {
-
   }
 
   componentDidMount () {
@@ -327,7 +316,6 @@ class AddPipeline extends Component {
       addVisible,
       addConfirmLoading,
       taskStatus,
-      stepCategory,
       stepsList
     } = this.state
 
