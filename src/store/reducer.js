@@ -37,6 +37,7 @@ export default function (state, action) {
 
     const nextState = deepClone(state)
 
+  /*eslint-disable default-case*/
     switch (action.type) {
         case types.SET_TOKEN:
             localStorage.setItem('token', action.data)

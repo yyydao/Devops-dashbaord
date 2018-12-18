@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Input, Icon, Table, Modal, Form, Radio, message, Button } from 'antd';
 
-import { reqPost,reqGet } from '@/api/api';
+import { reqPost } from '@/api/api';
 import './index.scss';
 //SVG ICON
 import DataSvg from '@/assets/svg/index_icon_data.svg'

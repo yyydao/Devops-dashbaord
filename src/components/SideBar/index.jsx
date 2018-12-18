@@ -29,11 +29,6 @@ const MenuIcon = {
   '项目设置': () => <SettingSvg/>
 }
 
-const ProjectTypeIcon = {
-  'iOS': () => <iOSSvg/>,
-  'android': () => <AndroidSvg/>
-}
-
 class SideBar extends Component {
   constructor (props) {
     super(props)
