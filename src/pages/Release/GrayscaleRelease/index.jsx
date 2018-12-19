@@ -2,12 +2,16 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { reqPost, reqGet } from '@/api/api'
-import { Button, Breadcrumb, Row, Col, Card, Table, message, Icon } from 'antd'
+import { Button, Breadcrumb, Row, Col, Card, Table, message, Icon, Modal, Checkbox, Input, Form, Radio} from 'antd'
 import Edit from '@/pages/Setting/ConfigManager/Edit';
 import './index.scss'
 
-
 const BreadcrumbItem = Breadcrumb.Item;
+const CheckboxGroup = Checkbox.Group
+const FormItem = Form.Item;
+const TextArea = Input.TextArea;
+const RadioGroup = Radio.Group;
+
 class GrayscaleRelease extends Component{
   constructor(){
     super();
@@ -52,23 +56,38 @@ class GrayscaleRelease extends Component{
           title: '特征Key',
           dataIndex: 'featureName',
           key: 'featureName',
+          width:160,
           // render: (text, record) => <Link to={`/dashboard/${record.id}`}>{ text }</Link>
         },
         {
           title: '特征描述',
           dataIndex: 'detail',
           key: 'detail',
-          // render: (text, record) => <Edit name='detail'panelIndex ={record.key} defaultValue={record.detail} handleConfirm={this.changeEdit}/>
+          render: (text, record,index) => <div className="config-project-item"><Edit name='detail'panelIndex ={index} defaultValue={record.detail} handleConfirm={this.changeEdit}/></div>
         },
         {
           title: '选取值',
           dataIndex: 'featureValue',
           key: 'featureValue',
-          // render: (text, record) => <Link to={`/dashboard/${record.id}`}>{ text }</Link>
+          render: (text, record,index) => <div style={{display:"flex",alignItems:"center"}}>
+            <p style={{marginBottom:0,paddingRight:24}}>{text}</p>
+            <Button
+              icon="edit"
+              type="primary"
+              size="small"
+              onClick={()=>{this.editFeatureValue(record.featureName,text,index)}}/>
+          </div>
         },
         {
           title: '操作',
-          render: (text, record) => <a>删除</a>
+          width:100,
+          render: (text, record,index) => {
+            if(record.featureName==="T-G2-Flow"||record.featureName==="T-G1-Area"){
+              return
+            }else {
+              return <a onClick={e=>{this.deleteFeature(e,index)}}>删除</a>
+            }
+          }
         }
       ],
       listData: [],
@@ -84,33 +103,38 @@ class GrayscaleRelease extends Component{
         bundleID: 'com.tuandai.client'
       },
       downloadPath:'',
-      androidData:{
-        "id": 1,
-        "projectId": 63,
-        "version": "5.4.2",
-        "expectQuantitty": 3000,
-        "actualQuantity": 1500,
-        "expression": "^1[0-1]",
-        "featureItems": [
-          {
-            "featureName": "T-G1-Device",
-            "featureValue": "cdfd23afc2a-3f",
-            "checked": false,
-            "detail": "设备唯一编码"
-          },
-          {
-            "featureName": "T-G1-Device",
-            "featureValue": "cdfd23afc2a-3f",
-            "checked": false,
-            "detail": "设备唯一编码"
-          }
-        ]
-      }
+      androidData:{},
+      selectedRowKeys:[],
+      modalVisible:false,
+      modalTitle:'',
+      modelValue:'',
+      areaList:[],
+      areaCheckedList:[],
+      checkAllArea:false,
+      editRowIndex:0,
+
+      //新增特征
+      newFeatures:{
+        featureName:'',
+        detail:'',
+        checked:false,
+        featureValue:''
+      },
+      flowExpression:[
+        '[0-1](.{35})',
+        '[0-3](.{35})',
+        '[0-5](.{35})',
+        '[0-6](.{35})',
+        '[0-7](.{35})',
+        '[0-9](.{35})',
+        '[0-c](.{35})',
+        '[0-d](.{35})',
+        '[0-e](.{35})',
+        '[0-f](.{35})']
     }
   }
   componentWillMount(){
     this.getPlatForm()
-    this.getTableData()
   }
   /**
   * @desc 获取项目详情为了获取platform，区分是ios,还是Android
@@ -128,6 +152,9 @@ class GrayscaleRelease extends Component{
           if(res.data.platform===1){
             this.getAndroidGrayScaleData()
           }
+          if(res.data.platform===2){
+            this.getTableData()
+          }
         })
       }
     })
@@ -143,7 +170,7 @@ class GrayscaleRelease extends Component{
   }
 
   /**
-   * @desc 获取表格数据
+   * @desc 获取ios表格数据
    */
   getTableData = () => {
     this.setState({ loading: true });
@@ -182,29 +209,289 @@ class GrayscaleRelease extends Component{
     if(key==="version"){
       let androidData = this.state.androidData
       androidData[key] = value
-      this.setState({androidData})
+      this.setState({androidData},()=>{
+        this.saveAndroidGrayScaleData(true)
+      })
     }else{
-      console.log(index)
-      // let androidData = this.state.androidData
-      // androidData.featureItems[index][key] = value
-      // this.setState({androidData})
+      let androidData = this.state.androidData
+      androidData.featureItems[index][key] = value
+      this.setState({androidData})
     }
   }
 
   /**
+   * @desc 新增特征值改变事件
+   */
+  onNewFeaturesChange=(e,key)=>{
+    let newFeatures=this.state.newFeatures
+    newFeatures[key]=e
+    this.setState({newFeatures})
+  }
+  /**
    * @desc 获取android灰度发布主页数据
    */
   getAndroidGrayScaleData = () =>{
-    reqGet('/distribute/queryInformationt', {projectId:this.props.projectId}).then(res => {
+    reqGet('/distribute/queryInformation', {projectId:this.props.projectId}).then(res => {
       if(res.code === 0){
-
+        let selectedRowKeys=[]
+        res.data.featureItems.map((item,index)=>{
+          if(item.checked){
+            selectedRowKeys.push(index)
+          }
+        })
+        this.setState({androidData:res.data,selectedRowKeys})
       }else{
-
+        message.error(res.msg)
       }
     })
   }
+
+  /**
+   * @desc 删除特征
+   */
+  deleteFeature = (e,index) =>{
+    let androidData = this.state.androidData
+    androidData.featureItems.splice(index,1)
+    this.setState({androidData})
+  }
+  /**
+   * @desc 获取地区信息
+   */
+  getAreaInfo = (value) =>{
+    this.setState({areaCheckedList:value.split(',')},()=>{
+      reqGet('/distribute/queryArea',{projectId:this.props.projectId}).then(res => {
+        if(res.code === 0){
+          this.setState({areaList:res.data},()=>{
+            this.isCheckedAllArea()
+            this.setState({modalVisible:true})
+          })
+        }else{
+          message.error(res.msg)
+        }
+      })
+    })
+  }
+  /**
+   * @desc 判断地区是否全选
+   */
+  isCheckedAllArea = () =>{
+    let checkAllArea=true
+    let areaList =JSON.parse(JSON.stringify(this.state.areaList))
+    let areaCheckedList =JSON.parse(JSON.stringify(this.state.areaCheckedList))
+    areaList.map(item=>{
+      if(areaCheckedList.indexOf(item.name) === -1){
+        checkAllArea=false
+      }
+      return item
+    })
+    this.setState({checkAllArea})
+  }
+
+  /**
+   * @desc modal数据改变事件
+   */
+  modalValueChange = (e) =>{
+    this.setState({modelValue:e})
+  }
+
+  /**
+   * @desc 表格选择栏改变事件
+   */
+  onSelectedRowKeys = (selectedRowKeys) =>{
+    console.log(selectedRowKeys)
+    let androidData = this.state.androidData
+    androidData.featureItems.map((item,index)=>{
+      if(selectedRowKeys.indexOf(index) === -1){
+        item.checked=false
+      }else{
+        item.checked=true
+      }
+      return item
+    })
+    this.setState({androidData,selectedRowKeys:selectedRowKeys})
+  }
+
+  /**
+   * @desc 编辑android灰度发布的选取值
+   */
+  editFeatureValue = (key,value,index) =>{
+    this.setState({modalTitle:key,editRowIndex:index},()=>{
+      if(key==="T-G1-Area"){
+        this.getAreaInfo(value)
+      }else{
+        this.setState({modelValue:value},()=>{this.setState({modalVisible:true})})
+      }
+    })
+  }
+  /**
+   * @desc
+   */
+  addFeatures = () => {
+    this.setState({modalTitle:"新增特征",modalVisible:true,newFeatures:{}})
+  }
+
+  /**
+   * @desc modal框确定事件
+   */
+  handleOk = () =>{
+    const {modalTitle,editRowIndex} = this.state
+    let androidData = this.state.androidData
+    if(modalTitle==="T-G1-Area"){
+      androidData.featureItems[editRowIndex].featureValue=this.state.areaCheckedList.join(',')
+    } else if(modalTitle==="新增特征"){
+      let newFeatures=JSON.parse(JSON.stringify(this.state.newFeatures))
+      let isExistKey=false
+      if(this.state.androidData.featureItems&&this.state.androidData.featureItems.length>0){
+        this.state.androidData.featureItems.map(item=>{
+          if(item.featureName===newFeatures.featureName){
+            isExistKey=true
+          }
+        })
+      }
+      if(isExistKey){
+        message.error("该特征已经存在~")
+        return
+      }
+      if(!newFeatures.featureName){
+        message.error("请填写特征key")
+        return
+      }
+      if(!newFeatures.detail){
+        message.error("请填写特征描述")
+        return
+      }
+      newFeatures.checked=false
+      newFeatures.featureValue=''
+      androidData.featureItems.push(newFeatures)
+    } else {
+      androidData.featureItems[editRowIndex].featureValue=this.state.modelValue
+    }
+    this.setState({androidData,modalVisible:false})
+  }
+
+
+  /**
+   * @desc 保存Android灰度发布信息
+   */
+  saveAndroidGrayScaleData = (isVersion) => {
+    let params={}
+    if(isVersion){
+      params={
+        projectId:this.props.projectId,
+        expression:this.state.androidData.expression,
+        featureItems:this.state.androidData.featureItems
+      }
+    }else{
+      params={
+        projectId:this.props.projectId,
+        version:this.state.androidData.version,
+      }
+    }
+    reqPost('/distribute/saveDistribute', params).then(res => {
+      if(res.code === 0){
+        message.success("保存成功")
+      }else{
+        message.error(res.msg)
+      }
+    })
+  }
+  /**
+   * @desc 生成表达式
+   */
+  getExpression = () =>{
+    let androidData = this.state.androidData
+    let featureItems=this.state.androidData.featureItems
+    let area="",flow="",device='',expression=''
+    featureItems.map(item=>{
+      if(item.checked===true){
+        if(item.featureName==="T-G1-Device"){
+          device=item.featureValue
+        }
+        if(item.featureName==="T-G1-Area"&&item.featureValue){
+          let featureValue=item.featureValue.split(',')
+          featureValue.map((item,index)=>{
+            if(index===0){
+              area+="("+encodeURI(item)+")"
+            }else{
+              area+="|("+encodeURI(item)+")"
+            }
+            return item
+          })
+        }
+        if(item.featureName==="T-G2-Flow"&&item.featureValue){
+          let featureValue=parseInt(item.featureValue)/10
+          flow=this.state.flowExpression[featureValue-1]
+        }
+      }
+    })
+    if(device){
+      androidData.expression="^"+device+"$"
+      this.setState({androidData})
+      return
+    }
+    console.log(device,area,flow)
+    androidData.expression="^"+area+flow+"$"
+    this.setState({androidData})
+  }
+  /**
+   * @desc Android表达式改变
+   */
+  onExpressionChange = (value) => {
+    let androidData = this.state.androidData
+    androidData.expression= value
+    this.setState({androidData})
+  }
+  /**
+   * @desc 全选事件
+   */
+  onCheckAllChange = (e) =>{
+    console.log(e)
+    let areaCheckedList=[]
+    if(e===true){
+      this.state.areaList.map(item=>{
+        areaCheckedList.push(item.name)
+      })
+    }
+    this.setState({areaCheckedList,checkAllArea:e})
+  }
+
   render () {
-    const {platform, projectName, listData, columns, androidColumns, pagination, loading, params, downloadPath, androidData} = this.state
+    const {platform,
+      projectName,
+      listData,
+      columns,
+      androidColumns,
+      pagination,
+      loading,
+      params,
+      downloadPath,
+      androidData,
+      selectedRowKeys,
+      modalTitle,
+      areaList,
+      areaCheckedList,
+      modalVisible,
+      checkAllArea,
+      newFeatures,
+      modelValue} = this.state
+    const fromItemLayout = {
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 4 }
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 20 }
+      }
+    };
+    let flowList = ()=> {
+      let list=[]
+      for(let i=1;i<11;i++){
+        list.push(<Col key={i} style={{ marginBottom: 24 }}><Radio
+          value={i*10+"%"}>{i*10+"%"}</Radio></Col>)
+      }
+      return list
+    }
     return (
       <div>
         <Breadcrumb className="devops-breadcrumb">
@@ -222,13 +509,29 @@ class GrayscaleRelease extends Component{
                   <span>分发版本：</span>
                   <Edit name='version'  defaultValue={androidData.version} handleConfirm={this.changeEdit}/>
                 </div>
-                <p><span style={{paddingRight:8,marginBottom:0}}>实际分发数/预计分发数：</span>{androidData.actualQuantity}/{androidData.expectQuantitty}</p>
+                <p><span style={{paddingRight:8,marginBottom:0}}>实际分发数/预计分发数：(昨天)</span>{androidData.beforeActualQuantity}/{androidData.beforeExpectQuantitty}</p>
+                <p><span style={{paddingRight:8,marginBottom:0}}>实际分发数/预计分发数：(今天)</span>{androidData.actualQuantity}/{androidData.expectQuantitty}</p>
               </Card>
               <Card
                 title="灰度特征及策略管理"
                 className="gray-feature"
-                extra={<Button type="primary"><Icon type="plus"/>新增特征</Button>}>
-                <Table columns={androidColumns} rowKey={record => record.id} dataSource={androidData.featureItems} pagination={false}/>
+                extra={<Button type="primary" onClick={()=>{this.addFeatures()}}><Icon type="plus"/>新增特征</Button>}>
+                <Table
+                  rowSelection={{
+                    selectedRowKeys,
+                    onChange: this.onSelectedRowKeys
+                  }}
+                  columns={androidColumns}
+                  rowKey={(record,index)=> index}
+                  dataSource={androidData.featureItems}
+                  pagination={false}/>
+                {androidData.expression&&
+                  <TextArea value={androidData.expression} style={{minHeight:100,marginTop:24}} onChange={(e)=>{this.onExpressionChange(e.target.value)}}/>
+                }
+                <div style={{marginTop:24}}>
+                  <Button style={{marginRight:8}} type="primary" onClick={()=>{this.getExpression()}}>生成表达式</Button>
+                  <Button type="primary" onClick={()=>{this.saveAndroidGrayScaleData()}}>保存</Button>
+                </div>
               </Card>
             </div>
           </div>
@@ -251,6 +554,49 @@ class GrayscaleRelease extends Component{
             </div>
           </div>
         }
+        <Modal title={modalTitle} visible={modalVisible} onOk={this.handleOk} onCancel={()=>{this.setState({modalVisible:false})}}
+               okText="确认" cancelText="取消">
+          {modalTitle==="T-G1-Area"&&
+          <div className="checkbox-container">
+            <Checkbox checked={checkAllArea} onChange={e=>this.onCheckAllChange(e.target.checked)}>全部</Checkbox>
+            <div style={{ marginTop: 24 }}>
+              <CheckboxGroup value={areaCheckedList} onChange={(e)=>{this.setState({areaCheckedList:e},()=>{this.isCheckedAllArea()})}}>
+                <Row>
+                  {
+                    areaList.map((item, index) => {
+                      return <Col key={index} style={{ marginBottom: 24 }}><Checkbox
+                        value={item.name}>{item.name}</Checkbox></Col>
+                    })
+                  }
+                </Row>
+              </CheckboxGroup>
+            </div>
+          </div>
+          }
+          {modalTitle==="新增特征"&&
+            <Form>
+              <FormItem {...fromItemLayout} label="特征key：">
+                <Input value={newFeatures.featureName} onChange={(e)=>{this.onNewFeaturesChange(e.target.value,'featureName')}}/>
+              </FormItem>
+              <FormItem {...fromItemLayout} label="特征描述：">
+                <Input value={newFeatures.detail} onChange={(e)=>{this.onNewFeaturesChange(e.target.value,'detail')}}/>
+              </FormItem>
+            </Form>
+          }
+          {modalTitle==="T-G2-Flow"&&
+          <div className="checkbox-container">
+          <RadioGroup onChange={e=>{this.modalValueChange(e)}} value={modelValue}>
+            <Row>
+            {flowList()}
+            </Row>
+          </RadioGroup>
+          </div>
+          }
+          {
+            modalTitle!=="T-G1-Area"&&modalTitle!=="新增特征"&&modalTitle!=="T-G2-Flow"&&
+            <TextArea onChange={e=>{this.modalValueChange(e.target.value)}} value={modelValue}/>
+          }
+        </Modal>
       </div>
     )
   }

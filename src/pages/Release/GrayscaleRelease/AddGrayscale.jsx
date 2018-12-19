@@ -123,10 +123,6 @@ class AddGrayscale extends Component{
       message.error("只支持上传一个文件")
       return false
     }
-    if(file.type!=="application/x-itunes-ipa"){
-      message.error("只支持上传ipa文件")
-      return false
-    }
   }
 
   /**
@@ -215,6 +211,7 @@ class AddGrayscale extends Component{
                        data={{projectID:this.props.projectId,envID:62,token:this.props.token}}
                        onChange={(info)=>{this.onDraggerChange(info) }}
                        beforeUpload={(file, fileList)=>this.beforeUpload(file, fileList)}
+                       accept=".ipa"
                        fileList={fileList}>
                 <Button type="primary" size="large"><Icon type="upload" />立即上传</Button>
                 <p style={{fontSize:16,color:"#262626",paddingTop:20,marginBottom:4}}>点击按钮选择应用的安装包，或拖拽文件到此区域</p>

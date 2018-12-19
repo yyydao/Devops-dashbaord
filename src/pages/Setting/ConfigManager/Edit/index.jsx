@@ -25,7 +25,7 @@ export default class Edit extends Component{
                         </span>
                     ) : (
                         <span>
-                            <span style={{paddingRight: 40}}>{defaultValue}</span>
+                            <span style={{paddingRight: 24}}>{defaultValue}</span>
                             <Button icon="edit" type="primary" size="small" onClick={()=>{this.setState({editing: true})}}></Button>
                         </span>
                     )
