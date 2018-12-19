@@ -61,7 +61,7 @@ class panelContent extends Component {
                   <Col>
                     <img src={require('@/assets/favicon.ico')} alt={'icon'}/>
                   </Col>
-                  <Col>
+                  <Col className='performance-item-info'>
                     <h2>{status}</h2>
                     <p>
                       <span title={item.buildId}><i>buildId：</i>{item.buildId}</span>
