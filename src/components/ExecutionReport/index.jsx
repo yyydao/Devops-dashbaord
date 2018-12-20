@@ -30,7 +30,11 @@ class ExecutionReport extends Component {
             unitTest: {},
             uiTest: {},
             performanceTest: {},
-            host:window.location.host
+            host:window.location.host,
+            sonarUrl:'',
+            mobSFUrl:'',
+            cucumberUrl:'',
+            prismUrl:''
         }
     }
 
@@ -66,6 +70,11 @@ class ExecutionReport extends Component {
                 let basicInfo = res.data.basicInfo
                 let scoreStandard = res.data.scoreStandard
                 let performanceTest = res.data.performanceTest
+                //报告链接
+                let sonarUrl = res.data.sonarUrl||""
+                let mobSFUrl = res.data.mobSFUrl||""
+                let cucumberUrl = res.data.cucumberUrl||""
+                let prismUrl = res.data.prismUrl||""
                 //静态扫描数据处理
                 let staticScan = res.data.staticScan
                 staticScan.basicDataStatistics = this.dealFanData(res.data.staticScan.basicDataStatistics)
@@ -98,7 +107,11 @@ class ExecutionReport extends Component {
                     appSecurityScan,
                     unitTest,
                     uiTest,
-                  performanceTest
+                    performanceTest,
+                    sonarUrl,
+                    mobSFUrl,
+                    cucumberUrl,
+                    prismUrl
                 })
             } else {
                 message.error(res.msg)
@@ -155,7 +168,7 @@ class ExecutionReport extends Component {
   }
 
   render () {
-        const {basicInfo, scoreStandard, staticScan, appSecurityScan, unitTest, uiTest, performanceTest, host} = this.state
+        const {basicInfo, scoreStandard, staticScan, appSecurityScan, unitTest, uiTest, performanceTest, host, sonarUrl, mobSFUrl, cucumberUrl, prismUrl} = this.state
         return (
             <div className='piplineDetail-report'>
                 <Card title="基本信息" style={{marginTop: 30}} className='piplineDetail-basic-info'>
@@ -198,18 +211,18 @@ class ExecutionReport extends Component {
                     </Row>
                 </Card>
                 {staticScan &&  this.checkNullObj(staticScan) &&
-                    <StaticScanChart data={staticScan}/>
+                    <StaticScanChart data={staticScan} detailUrl={sonarUrl}/>
                 }
-                {appSecurityScan && appSecurityScan.appType === 1 && <SecurityScanChart data={appSecurityScan}/>}
-                {appSecurityScan && appSecurityScan.appType === 2 && <IosSecurityScanChart data={appSecurityScan}/>}
+                {appSecurityScan && appSecurityScan.appType === 1 && <SecurityScanChart data={appSecurityScan} detailUrl={mobSFUrl}/>}
+                {appSecurityScan && appSecurityScan.appType === 2 && <IosSecurityScanChart data={appSecurityScan} detailUrl={mobSFUrl}/>}
                 {unitTest && this.checkNullObj(unitTest) &&
-                    <UnitTestChart data={unitTest}/>
+                    <UnitTestChart data={unitTest} detailUrl={sonarUrl}/>
                 }
                 {   uiTest && this.checkNullObj(uiTest) &&
-                    <UITestChart data={uiTest}/>
+                    <UITestChart data={uiTest} detailUrl={cucumberUrl}/>
                 }
                 {   performanceTest && this.checkNullObj(performanceTest) &&
-                    <PerformanceTestChart data={performanceTest}/>
+                    <PerformanceTestChart data={performanceTest} detailUrl={prismUrl}/>
                 }
             </div>
         )

@@ -1,12 +1,12 @@
 import React from "react";
 import FanChart from './FanChart';
-import {Row, Col, Card} from 'antd';
+import {Row, Col, Card, Button} from 'antd';
 
 class UITestChart extends React.Component {
   render() {
-    const { data } = this.props
+    const { data, detailUrl } = this.props
     return (
-        <Card  title="UI测试" style={{marginTop: 16}}>
+        <Card  title="UI测试" style={{marginTop: 16}} extra={<Button type="primary"><a href={detailUrl} target="_blank">查看详情</a></Button>}>
           <Row gutter={16}>
             {data.setps && data.setps.rows.length!== 0 &&
             <Col span={12} style={{minWidth:520,marginTop:16}}>

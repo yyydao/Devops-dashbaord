@@ -6,14 +6,14 @@ import {
   Tooltip,
   Legend
 } from "bizcharts";
-import {Row, Col, Card} from 'antd';
+import {Row, Col, Card, Button} from 'antd';
 import FanChart from './FanChart';
 class SecurityScanChart extends React.Component {
 
   render() {
-    const { data } = this.props
+    const { data, detailUrl } = this.props
     return (
-        <Card  title="APP安全扫描" style={{marginTop: 30}}>
+        <Card  title="APP安全扫描" style={{marginTop: 30}} extra={<Button type="primary"><a href={detailUrl} target="_blank">查看详情</a></Button>}>
           {
             data.fourComponents&&data.fourComponents.rows.length!== 0&&
             <Card

@@ -1,13 +1,13 @@
 import React from "react";
 
-import { Card} from 'antd';
+import { Card, Button} from 'antd';
 
 import Dashbroad from './Dashbroad'
 class PerformanceTestChart extends React.Component {
   render() {
-    const { data } = this.props
+    const { data, detailUrl } = this.props
     return (
-        <Card  title="性能测试" style={{marginTop: 30}}>
+        <Card  title="性能测试" style={{marginTop: 30}} extra={<Button type="primary"><a href={detailUrl} target="_blank">查看详情</a></Button>}>
           <div>
             {
               data.averageCpuRatio&&
