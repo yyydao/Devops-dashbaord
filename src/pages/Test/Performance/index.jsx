@@ -218,7 +218,7 @@ class Performance extends Component {
   //获取场景列表
   getSceneList = () => {
     reqGet('/testScene/list/' + this.props.projectId).then(res => {
-      if (res.code === 0) {
+      if (res.code*1 === 0) {
         this.setState({
           parentsSceneList: res.data.map(item => {
             return {
