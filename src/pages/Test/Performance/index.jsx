@@ -291,7 +291,6 @@ class Performance extends Component {
 
   }
 
-  //@todo:修复选择父级重置
   //修改选父类中场景
   changeParentsScene = (currentCheckedItem) => {
     console.group('changeParentsScene')
@@ -786,61 +785,6 @@ class Performance extends Component {
           </div>
         </Modal>
 
-        <Modal title="新增提测性能测试"
-               visible={false}
-               onOk={this.addItem}
-               confirmLoading={addConfirmLoading}
-               onCancel={this.hideModal}
-               maskClosable={false}
-               destroyOnClose={true}
-        >
-          <div className="performance-modal-item">
-            <label className="performance-modal-item-label">开发分支：</label>
-            <div className="performance-modal-item-content">
-              <Select placeholder="开发分支"
-                      style={{ width: 300 }}
-                      showSearch
-                      value={formDataBranch}
-                      onSearch={this.getBranchList}
-                      onChange={this.changeBranch}>
-                {
-                  branchList.map((item) => {
-                    return <Option value={item.name} key={item.id}
-                                   title={item.name}>{item.name}</Option>
-                  })
-                }
-              </Select>
-            </div>
-          </div>
-
-          {
-            typeValue === 2 && <div className="performance-modal-item">
-              <label className="performance-modal-item-label">定时时间：</label>
-              <div className="performance-modal-item-content">
-                {
-                  addVisible && <TimePicker onChange={this.changeTime}/>
-                }
-              </div>
-            </div>
-          }
-
-          <div className="performance-modal-item">
-            <label className="performance-modal-item-label">执行场景：</label>
-            <div className="performance-modal-item-content performance-modal-checkbox-group">
-              <Checkbox
-                indeterminate={checkAllSceneIndeterminate}
-                onChange={this.checkAllSceneChange}
-                checked={sceneCheckAll}
-              >
-                全部
-              </Checkbox>
-              {/*<CheckboxGroup options={parentsSceneList} value={currentParentsScene}*/}
-              {/*onChange={this.changeParentsScene}/>*/}
-            </div>
-          </div>
-        </Modal>
-
-
         <Modal
           title="定时任务列表"
           visible={taskListVisible}
@@ -878,20 +822,6 @@ class Performance extends Component {
           <BreadcrumbItem><Link to="/home">首页</Link></BreadcrumbItem>
           <BreadcrumbItem>性能测试管理</BreadcrumbItem>
         </Breadcrumb>
-
-
-        {/*<div className="performance-menu">*/}
-        {/*{typeValue < 3 && <Button type="primary" onClick={this.showModal}>新增测试</Button>}*/}
-        {/*{typeValue === 2 && <Button type="primary" onClick={this.showTaskList}>定时任务列表</Button>}*/}
-
-        {/*<Radio.Group value={typeValue} onChange={this.changeType} className="fr">*/}
-        {/*{*/}
-        {/*typeList.map((item, index) => {*/}
-        {/*return <Radio.Button value={item.value} key={index}>{item.name}</Radio.Button>*/}
-        {/*})*/}
-        {/*}*/}
-        {/*</Radio.Group>*/}
-        {/*</div>*/}
 
         <div className="devops-main-wrapper">
           <Tabs className="package-tab" onChange={this.changeType} tabBarExtraContent={<div>{typeValue < 3 &&
