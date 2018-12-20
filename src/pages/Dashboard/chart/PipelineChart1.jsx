@@ -132,7 +132,7 @@ class PipelineChart1 extends Component {
       yAxis : [
         {
           type : 'value',
-          name : '执行耗时（分钟）',
+          name : '执行耗时',
           nameGap:40,
           nameLocation:'center',
           axisLine:{
@@ -143,7 +143,7 @@ class PipelineChart1 extends Component {
           },
           axisLabel:{
             formatter:(value, index)=>{
-              return parseInt(value/60)
+              return parseInt(value/60)===0?value+"s":parseInt(value/60)+"'"+value%60+"s"
             }
           },
           splitLine:{

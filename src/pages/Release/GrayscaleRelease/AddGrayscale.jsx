@@ -207,7 +207,7 @@ class AddGrayscale extends Component{
               {current===0&&
               <Dragger style={{padding:"40px 0px"}}
                        name='file'
-                       action='/api/deploy/upload'
+                       action='/deploy/upload'
                        data={{projectID:this.props.projectId,envID:62}}
                        onChange={(info)=>{this.onDraggerChange(info) }}
                        beforeUpload={(file, fileList)=>this.beforeUpload(file, fileList)}
