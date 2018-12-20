@@ -378,13 +378,13 @@ class GrayscaleRelease extends Component{
     if(isVersion){
       params={
         projectId:this.props.projectId,
-        expression:this.state.androidData.expression,
-        featureItems:this.state.androidData.featureItems
+        version:this.state.androidData.version,
       }
     }else{
       params={
         projectId:this.props.projectId,
-        version:this.state.androidData.version,
+        expression:this.state.androidData.expression,
+        featureItems:this.state.androidData.featureItems
       }
     }
     reqPost('/distribute/saveDistribute', params).then(res => {
@@ -504,6 +504,7 @@ class GrayscaleRelease extends Component{
               <span>{projectName}</span>
             </div>
             <div className="content-container">
+              {JSON.stringify(androidData) !== "{}"&&
               <Card title="分布情况">
                 <div className="config-project-item">
                   <span>分发版本：</span>
@@ -512,27 +513,38 @@ class GrayscaleRelease extends Component{
                 <p><span style={{paddingRight:8,marginBottom:0}}>实际分发数/预计分发数：(昨天)</span>{androidData.beforeActualQuantity}/{androidData.beforeExpectQuantitty}</p>
                 <p><span style={{paddingRight:8,marginBottom:0}}>实际分发数/预计分发数：(今天)</span>{androidData.actualQuantity}/{androidData.expectQuantitty}</p>
               </Card>
+              }
+              {JSON.stringify(androidData) !== "{}" &&
               <Card
                 title="灰度特征及策略管理"
                 className="gray-feature"
-                extra={<Button type="primary" onClick={()=>{this.addFeatures()}}><Icon type="plus"/>新增特征</Button>}>
+                extra={<Button type="primary" onClick={() => {
+                  this.addFeatures()
+                }}><Icon type="plus"/>新增特征</Button>}>
                 <Table
                   rowSelection={{
                     selectedRowKeys,
                     onChange: this.onSelectedRowKeys
                   }}
                   columns={androidColumns}
-                  rowKey={(record,index)=> index}
+                  rowKey={(record, index) => index}
                   dataSource={androidData.featureItems}
                   pagination={false}/>
-                {androidData.expression&&
-                  <TextArea value={androidData.expression} style={{minHeight:100,marginTop:24}} onChange={(e)=>{this.onExpressionChange(e.target.value)}}/>
+                {androidData.expression &&
+                <TextArea value={androidData.expression} style={{minHeight: 100, marginTop: 24}} onChange={(e) => {
+                  this.onExpressionChange(e.target.value)
+                }}/>
                 }
-                <div style={{marginTop:24}}>
-                  <Button style={{marginRight:8}} type="primary" onClick={()=>{this.getExpression()}}>生成表达式</Button>
-                  <Button type="primary" onClick={()=>{this.saveAndroidGrayScaleData()}}>保存</Button>
+                <div style={{marginTop: 24}}>
+                  <Button style={{marginRight: 8}} type="primary" onClick={() => {
+                    this.getExpression()
+                  }}>生成表达式</Button>
+                  <Button type="primary" onClick={() => {
+                    this.saveAndroidGrayScaleData()
+                  }}>保存</Button>
                 </div>
               </Card>
+              }
             </div>
           </div>
         }
@@ -585,7 +597,7 @@ class GrayscaleRelease extends Component{
           }
           {modalTitle==="T-G2-Flow"&&
           <div className="checkbox-container">
-          <RadioGroup onChange={e=>{this.modalValueChange(e)}} value={modelValue}>
+          <RadioGroup onChange={e=>{this.modalValueChange(e.target.value)}} value={modelValue}>
             <Row>
             {flowList()}
             </Row>
