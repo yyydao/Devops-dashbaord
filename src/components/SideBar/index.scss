@@ -58,3 +58,16 @@
     }
   }
 }
+.ant-select-dropdown-menu-item.sideBar-option{
+  background: #324c69;
+  padding: 8px 8px;
+}
+.ant-select-dropdown-menu-item.sideBar-option.ant-select-dropdown-menu-item-selected{
+  background: #1890ff;
+}
+.ant-select-dropdown-menu-item.sideBar-option:hover{
+  background: #63b2fb;
+}
+.project{
+  color:#fff
+}

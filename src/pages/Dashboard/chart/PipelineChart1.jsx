@@ -90,12 +90,6 @@ class PipelineChart1 extends Component {
         textStyle:{
           color:"#595959"
         },
-        // axisPointer: {
-        //   type:'cross',
-        //   label: {
-        //     backgroundColor: '#6a7985'
-        //   }
-        // },
         formatter: (params) =>{
           let res=`<div><p style="font-size: 12px;margin-bottom: 4px">${params[0].data[0]}</p></div>`
           for(let i=0;i<params.length;i++){
@@ -138,14 +132,19 @@ class PipelineChart1 extends Component {
       yAxis : [
         {
           type : 'value',
-          name : '执行耗时（s）',
+          name : '执行耗时（分钟）',
+          nameGap:40,
           nameLocation:'center',
-          nameGap:55,
           axisLine:{
             show:false,
           },
           axisTick:{
             show:false
+          },
+          axisLabel:{
+            formatter:(value, index)=>{
+              return parseInt(value/60)
+            }
           },
           splitLine:{
             lineStyle:{
