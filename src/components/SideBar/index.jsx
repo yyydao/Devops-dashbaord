@@ -147,8 +147,8 @@ class SideBar extends Component {
         let list = []
         for (let item of res.data) {
           let icon = ''
-          if (item.platform === 2) {icon = <Icon style={{paddingRight: '10px'}} component={iOSSvg}/> }
-          if (item.platform === 1) {icon = <Icon style={{paddingRight: '10px',fontSize:'18px'}} component={AndroidSvg}/> }
+          if (item.platform === 2) {icon = <Icon type="apple" theme="filled" style={{paddingRight: '10px',fontSize:'18px',color:"#002140"}}/> }
+          if (item.platform === 1) {icon =<Icon type="android" theme="filled" style={{paddingRight: '10px',fontSize:'18px',color:"#002140"}}/>}
           list.push({
             icon: icon,
             id: item.id,
@@ -172,7 +172,7 @@ class SideBar extends Component {
             <Select defaultValue={projectId} className="dropdown-select" onChange={this.selectChange}>
               {
                 projectList.map((item) => {
-                  return <Option key={item.id}><span className="icon">{item.icon}</span><span className="project">{item.name}</span></Option>
+                  return <Option key={item.id} class="hahaaha"><span className="icon">{item.icon}</span><span className="project">{item.name}</span></Option>
                 })
               }
             </Select>

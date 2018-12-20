@@ -208,11 +208,12 @@ class AddGrayscale extends Component{
               <Dragger style={{padding:"40px 0px"}}
                        name='file'
                        action='/api/deploy/upload'
-                       data={{projectID:this.props.projectId,envID:62,token:this.props.token}}
+                       data={{projectID:this.props.projectId,envID:62}}
                        onChange={(info)=>{this.onDraggerChange(info) }}
                        beforeUpload={(file, fileList)=>this.beforeUpload(file, fileList)}
                        accept=".ipa"
-                       fileList={fileList}>
+                       fileList={fileList}
+                       headers={{token:this.props.token}}>
                 <Button type="primary" size="large"><Icon type="upload" />立即上传</Button>
                 <p style={{fontSize:16,color:"#262626",paddingTop:20,marginBottom:4}}>点击按钮选择应用的安装包，或拖拽文件到此区域</p>
                 <span style={{color:"#d9d9d9"}}>支持ipa文件</span>
