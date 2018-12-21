@@ -20,7 +20,7 @@ export default class Edit extends Component{
                     editing ? (
                         <span>
                             <Input className="config-project-input" defaultValue={defaultValue} onChange={(e)=>{this.setState({newValue:e.target.value})}} />
-                            <a onClick={()=>{this.setState({editing: false});handleConfirm(newValue,panelIndex,name)}}>保存</a>
+                            <a onClick={()=>{this.setState({editing: false});handleConfirm(newValue||defaultValue,panelIndex,name)}}>保存</a>
                             <a onClick={()=>{this.setState({editing: false})}}>取消</a>
                         </span>
                     ) : (
