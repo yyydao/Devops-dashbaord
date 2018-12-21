@@ -112,14 +112,14 @@ class FluencyChart extends React.Component {
                 type="line"
                 position="createTime*coldStartTimeValue"
                 size={2}
-                color={["coldStartTime", ['#ff0000', '#FFA500']]}
+                color={["coldStartTime1", ['#ff0000', '#FFA500']]}
             />
             <Geom
                 type="point"
                 position="createTime*coldStartTimeValue"
                 size={4}
                 shape={"circle"}
-                color={["coldStartTime", ['#ff0000', '#FFA500']]}
+                color={["coldStartTime1", ['#ff0000', '#FFA500']]}
                 style={{
                   stroke: "#fff",
                   lineWidth: 1

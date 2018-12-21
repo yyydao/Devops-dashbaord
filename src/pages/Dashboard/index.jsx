@@ -186,7 +186,7 @@ class Dashboard extends Component {
           item.smValue= parseFloat(item[i])
         }
         if (i.indexOf('coldStartTime') !== -1) {
-          item.coldStartTime= '冷启动时间'
+          item.coldStartTime1= '冷启动时间'
           item.coldStartTimeValue= parseFloat(item[i])
         }
         cData.push(JSON.parse(JSON.stringify(item)))
