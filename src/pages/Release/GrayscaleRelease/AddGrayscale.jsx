@@ -258,6 +258,7 @@ class AddGrayscale extends Component{
                             hideDisabledOptions: true,
                             defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('11:59:59', 'HH:mm:ss')],
                           }}
+                          allowClear={false}
                           value={[moment(versionInfo.beginExpiryDate, "YYYY-MM-DD HH:mm:ss"), moment(versionInfo.endExpiryDate, "YYYY-MM-DD HH:mm:ss")]}
                           format="YYYY-MM-DD HH:mm:ss"
                           onChange={(date, dateString)=>{
