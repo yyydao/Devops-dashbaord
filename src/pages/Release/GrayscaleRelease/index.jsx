@@ -71,11 +71,7 @@ class GrayscaleRelease extends Component{
           key: 'featureValue',
           render: (text, record,index) => <div style={{display:"flex",alignItems:"center"}}>
             <p style={{marginBottom:0,paddingRight:24}}>{text}</p>
-            <Button
-              icon="edit"
-              type="primary"
-              size="small"
-              onClick={()=>{this.editFeatureValue(record.featureName,text,index)}}/>
+            <Icon type="form" style={{fontSize:14,color:"#1890ff",cursor:"pointer",padding:8}} onClick={()=>{this.editFeatureValue(record.featureName,text,index)}}/>
           </div>
         },
         {

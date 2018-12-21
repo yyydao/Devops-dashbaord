@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import { Input, Popconfirm, Button } from 'antd';
+import { Input, Icon } from 'antd';
 
 export default class Edit extends Component{
   constructor(){
@@ -26,7 +26,7 @@ export default class Edit extends Component{
                     ) : (
                         <span>
                             <span style={{paddingRight: 24}}>{defaultValue}</span>
-                            <Button icon="edit" type="primary" size="small" onClick={()=>{this.setState({editing: true})}}></Button>
+                            <Icon type="form" style={{fontSize:14,color:"#1890ff",cursor:"pointer",padding:8}} onClick={()=>{this.setState({editing: true})}}/>
                         </span>
                     )
                 }
