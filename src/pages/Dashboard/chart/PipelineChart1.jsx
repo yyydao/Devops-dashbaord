@@ -73,7 +73,29 @@ class PipelineChart1 extends Component {
     });
     myChart.hideLoading()
   }
-
+  formatSeconds =(value)=> {
+    var theTime = parseInt(value,10);// 秒
+    var theTime1 = 0;// 分
+    var theTime2 = 0;// 小时
+// alert(theTime);
+    if(theTime > 60) {
+      theTime1 = parseInt(theTime/60,10);
+      theTime = parseInt(theTime%60,10);
+// alert(theTime1+"-"+theTime);
+      if(theTime1 > 60) {
+        theTime2 = parseInt(theTime1/60,10);
+        theTime1 = parseInt(theTime1%60,10);
+      }
+    }
+    var result = ""+parseInt(theTime,10)+"s";
+    if(theTime1 > 0) {
+      result = ""+parseInt(theTime1,10)+"''"+result;
+    }
+    if(theTime2 > 0) {
+      result = ""+parseInt(theTime2,10)+"'"+result;
+    }
+    return result;
+  }
   setOptions=(data)=> {
     const type=['开始','构建','测试','部署','完成','无']
     let legend=[]
@@ -155,7 +177,7 @@ class PipelineChart1 extends Component {
           },
           axisLabel:{
             formatter:(value, index)=>{
-              return parseInt(value/60,10)===0?value+"s":parseInt(value/60,10)+"'"+value%60+"s"
+              return this.formatSeconds(value)
             }
           },
           splitLine:{
