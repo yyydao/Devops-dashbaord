@@ -61,7 +61,7 @@ class PipelineChart1 extends Component {
     let options = this.setOptions(pipeLineData)
     myChart.setOption(options,true)
     myChart.on('click', params => {
-      if(params.data[4]!==-1){
+      if(params.data[4]&&params.data[4]!==-1){
         this.props.history.push({
           pathname: `/pipeline/detail/${params.data[3]}`,
           search: `?buildNumber=${params.data[4]}&curRecordNo=${params.data[6]}&platform=${params.data[5]}`,
