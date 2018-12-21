@@ -398,11 +398,12 @@ class GrayscaleRelease extends Component{
   getExpression = () =>{
     let androidData = this.state.androidData
     let featureItems=this.state.androidData.featureItems
-    let area="",flow="",device=''
+    let area="",flow="",device='',isDevice=false
     featureItems.map(item=>{
       if(item.checked===true){
         if(item.featureName==="T-G3-Device"){
           device=item.featureValue
+          isDevice=true
         }
         if(item.featureName==="T-G1-Area"&&item.featureValue){
           let featureValue=item.featureValue.split(',')
@@ -427,8 +428,13 @@ class GrayscaleRelease extends Component{
       this.setState({androidData})
       return
     }
-    if (area||flow){
+    if(isDevice){
+      androidData.expression=""
+    }
+    if (!isDevice&&(area||flow)){
       androidData.expression="^"+area+flow+"$"
+    }else{
+      androidData.expression=""
     }
     this.setState({androidData})
   }
