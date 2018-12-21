@@ -12,8 +12,6 @@ import PipelineSvg from '@/assets/svg/nav_icon_pipeline_default.svg'
 import TestSvg from '@/assets/svg/nav_icon_test_default.svg'
 import PackagekSvg from '@/assets/svg/nav_icon_package_default.svg'
 import SettingSvg from '@/assets/svg/nav_icon_set_default.svg'
-import iOSSvg from '@/assets/svg/nav_icon_ios.svg'
-import AndroidSvg from '@/assets/svg/nav_icon_android.svg'
 import ReleaseSvg from '@/assets/svg/release_icon.svg'
 
 import './index.scss'

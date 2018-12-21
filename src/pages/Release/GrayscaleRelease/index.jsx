@@ -24,7 +24,6 @@ class GrayscaleRelease extends Component{
           title: '版本',
           dataIndex: 'appVersion',
           key: 'appVersion',
-          // render: (text, record) => <Link to={`/dashboard/${record.id}`}>{ text }</Link>
         },
         {
           title: 'Build',
@@ -234,6 +233,7 @@ class GrayscaleRelease extends Component{
           if(item.checked){
             selectedRowKeys.push(index)
           }
+          return item
         })
         this.setState({androidData:res.data,selectedRowKeys})
       }else{
@@ -342,6 +342,7 @@ class GrayscaleRelease extends Component{
           if(item.featureName===newFeatures.featureName){
             isExistKey=true
           }
+          return item
         })
       }
       if(isExistKey){
@@ -397,7 +398,7 @@ class GrayscaleRelease extends Component{
   getExpression = () =>{
     let androidData = this.state.androidData
     let featureItems=this.state.androidData.featureItems
-    let area="",flow="",device='',expression=''
+    let area="",flow="",device=''
     featureItems.map(item=>{
       if(item.checked===true){
         if(item.featureName==="T-G3-Device"){
@@ -415,10 +416,11 @@ class GrayscaleRelease extends Component{
           })
         }
         if(item.featureName==="T-G2-Flow"&&item.featureValue){
-          let featureValue=parseInt(item.featureValue)/10
+          let featureValue=parseInt(item.featureValue,10)/10
           flow=this.state.flowExpression[featureValue-1]
         }
       }
+      return item
     })
     if(device){
       androidData.expression="^"+device+"$"
@@ -447,6 +449,7 @@ class GrayscaleRelease extends Component{
     if(e===true){
       this.state.areaList.map(item=>{
         areaCheckedList.push(item.name)
+        return item
       })
     }
     this.setState({areaCheckedList,checkAllArea:e})

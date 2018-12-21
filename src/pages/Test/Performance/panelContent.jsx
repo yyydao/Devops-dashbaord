@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { Button, Modal, Row, Col, Divider } from 'antd'
+import { Modal, Row, Col, Divider } from 'antd'
 
 class panelContent extends Component {
   // constructor (props) {

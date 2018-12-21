@@ -155,7 +155,7 @@ class PipelineChart1 extends Component {
           },
           axisLabel:{
             formatter:(value, index)=>{
-              return parseInt(value/60)===0?value+"s":parseInt(value/60)+"'"+value%60+"s"
+              return parseInt(value/60,10)===0?value+"s":parseInt(value/60,10)+"'"+value%60+"s"
             }
           },
           splitLine:{
