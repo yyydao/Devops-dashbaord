@@ -82,7 +82,7 @@ class GrayscaleRelease extends Component{
           title: '操作',
           width:100,
           render: (text, record,index) => {
-            if(record.featureName==="T-G2-Flow"||record.featureName==="T-G1-Area"){
+            if(record.featureName==="T-G2-Flow"||record.featureName==="T-G1-Area"||record.featureName==="T-G3-Device"){
               return
             }else {
               return <a onClick={e=>{this.deleteFeature(e,index)}}>删除</a>
