@@ -404,7 +404,7 @@ class GrayscaleRelease extends Component{
     let area="",flow="",device='',expression=''
     featureItems.map(item=>{
       if(item.checked===true){
-        if(item.featureName==="T-G1-Device"){
+        if(item.featureName==="T-G3-Device"){
           device=item.featureValue
         }
         if(item.featureName==="T-G1-Area"&&item.featureValue){
@@ -530,11 +530,9 @@ class GrayscaleRelease extends Component{
                   rowKey={(record, index) => index}
                   dataSource={androidData.featureItems}
                   pagination={false}/>
-                {androidData.expression &&
                 <TextArea value={androidData.expression} style={{minHeight: 100, marginTop: 24}} onChange={(e) => {
                   this.onExpressionChange(e.target.value)
                 }}/>
-                }
                 <div style={{marginTop: 24}}>
                   <Button style={{marginRight: 8}} type="primary" onClick={() => {
                     this.getExpression()
