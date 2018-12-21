@@ -73,7 +73,6 @@ class PipelineChart1 extends Component {
     });
     myChart.hideLoading()
   }
-
   setOptions=(data)=> {
     const type=['开始','构建','测试','部署','完成','无']
     let legend=[]
@@ -155,7 +154,7 @@ class PipelineChart1 extends Component {
           },
           axisLabel:{
             formatter:(value, index)=>{
-              return parseInt(value/60,10)===0?value+"s":parseInt(value/60,10)+"'"+value%60+"s"
+              return this.formatSeconds(value)
             }
           },
           splitLine:{
