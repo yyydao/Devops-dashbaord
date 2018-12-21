@@ -288,7 +288,7 @@ class AddGrayscale extends Component{
                   <p className="version-info">
                     <span style={{paddingRight:24}}>版本：{versionInfo.appVersion}</span>
                     <span style={{paddingRight:24}}>大小：{versionInfo.fileSize}</span>
-                    <span style={{paddingRight:24}}>更新时间：{this.gettimeFn(versionInfo.updateTime||versionInfo.createTime)}</span>
+                    <span style={{paddingRight:24}}>更新时间：{versionInfo.updateTime||versionInfo.createTime}</span>
                   </p>
                   <img src={versionInfo.qrcodeImage} width={120} height={120} style={{marginTop:26}} alt="二维码"/>
                   <p style={{marginTop:8,color:" rgba(0,0,0,0.45)"}}>用手机扫描二维码安装</p>
