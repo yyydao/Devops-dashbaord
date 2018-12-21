@@ -425,8 +425,9 @@ class GrayscaleRelease extends Component{
       this.setState({androidData})
       return
     }
-    console.log(device,area,flow)
-    androidData.expression="^"+area+flow+"$"
+    if (area||flow){
+      androidData.expression="^"+area+flow+"$"
+    }
     this.setState({androidData})
   }
   /**
