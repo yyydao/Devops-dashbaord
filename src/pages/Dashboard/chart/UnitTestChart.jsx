@@ -1,4 +1,5 @@
 import React from "react";
+import {withRouter} from 'react-router-dom'
 import {
   Chart,
   Geom,
@@ -37,7 +38,18 @@ class UnitTestChart extends React.Component {
     }
     return (
         <div>
-          <Chart height={400} data={unitData} scale={cols} padding="auto" forceFit>
+          <Chart height={400} data={unitData} scale={cols} padding="auto" forceFit onPlotClick={ev => {
+            console.log(ev)
+            if(ev.data){
+              this.props.history.push({
+                pathname: `/pipeline/detail/${ev.data._origin.taskID}`,
+                search: `?buildNumber=${ev.data._origin.buildNum}&curRecordNo=${ev.data._origin.curRecordNo}&platform=${ev.data._origin.platform}`,
+                state:{
+                  taskStatus:2
+                }
+              })
+            }
+          }}>
             <Legend />
             <Axis name="createTime" title={titles} label={label}/>
             <Axis
@@ -87,4 +99,4 @@ class UnitTestChart extends React.Component {
   }
 }
 
-export default UnitTestChart;
+export default withRouter(UnitTestChart);

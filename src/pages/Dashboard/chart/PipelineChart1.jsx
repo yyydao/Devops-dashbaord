@@ -1,5 +1,6 @@
 
 import React, { Component } from 'react';
+import {withRouter} from 'react-router-dom'
 // 引入 ECharts 主模块
 import echarts from 'echarts/lib/echarts';
 
@@ -59,6 +60,17 @@ class PipelineChart1 extends Component {
     myChart.showLoading()
     let options = this.setOptions(pipeLineData)
     myChart.setOption(options,true)
+    myChart.on('click', params => {
+      if(params.data[4]!==-1){
+        this.props.history.push({
+          pathname: `/pipeline/detail/${params.data[3]}`,
+          search: `?buildNumber=${params.data[4]}&curRecordNo=${params.data[6]}&platform=${params.data[5]}`,
+          state:{
+            taskStatus:2
+          }
+        })
+      }
+    });
     myChart.hideLoading()
   }
 
@@ -133,7 +145,7 @@ class PipelineChart1 extends Component {
         {
           type : 'value',
           name : '执行耗时',
-          nameGap:40,
+          nameGap:50,
           nameLocation:'center',
           axisLine:{
             show:false,
@@ -164,4 +176,4 @@ class PipelineChart1 extends Component {
   }
 }
 
-export default PipelineChart1;
+export default withRouter(PipelineChart1);
