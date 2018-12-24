@@ -121,6 +121,7 @@
   "proxy": {
     "/api": {
       "target1": "http://10.100.99.159:9085",
+      "target2": "http://10.100.98.225:8090/",
       "target": "http://10.100.14.54:8090/",
       "changeOrigin": true,
       "pathRewrite": {

@@ -1,12 +1,15 @@
 import React from "react";
 
-import {Row, Col, Card} from 'antd';
+import {Row, Col, Card, Button} from 'antd';
 import FanChart from './FanChart';
 class IosSecurityScanChart extends React.Component {
   render() {
-    const { data } = this.props
+    const { data, detailUrl } = this.props
     return (
-        <Card  title="APP安全扫描" style={{marginTop: 30}}>
+        <Card
+          title="APP安全扫描"
+          style={{marginTop: 30}}
+          extra={<Button type="primary"><a href={detailUrl} target="_blank">查看详情</a></Button>}>
           <Row style={{marginTop: 30}} gutter={16}>
             <Col span={12} style={{minWidth:600}}>
               <Card

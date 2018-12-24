@@ -1,13 +1,13 @@
 import React from "react";
 
-import {Row, Col, Progress, Card} from 'antd';
+import {Row, Col, Progress, Card, Button} from 'antd';
 import LabelItem from '../LabelItem';
 import FanChart from './FanChart'
 class StaticScanChart extends React.Component {
   render() {
-    const { data } = this.props
+    const { data, detailUrl } = this.props
     return (
-        <Card  title="静态扫描" style={{marginTop: 30}}>
+        <Card  title="静态扫描" style={{marginTop: 30}} extra={<Button type="primary"><a href={detailUrl} target="_blank">查看详情</a></Button>}>
           <Row>
             <Col span={8}>
               <LabelItem label={"代码总行数："}>{data.totalCodeNum}</LabelItem>

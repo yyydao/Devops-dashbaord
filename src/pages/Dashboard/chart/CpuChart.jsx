@@ -1,4 +1,5 @@
 import React from "react";
+import {withRouter} from 'react-router-dom'
 import {
   Chart,
   Geom,
@@ -50,7 +51,19 @@ class CpuChart extends React.Component {
                     }
                     return item
                   })
-                }}>
+                }}
+                 onPlotClick={ev => {
+                   console.log(ev)
+                   if(ev.data){
+                     this.props.history.push({
+                       pathname: `/pipeline/detail/${ev.data._origin.taskID}`,
+                       search: `?buildNumber=${ev.data._origin.buildNum}&curRecordNo=${ev.data._origin.curRecordNo}&platform=${ev.data._origin.platform}`,
+                       state:{
+                         taskStatus:2
+                       }
+                     })
+                   }
+                 }}>
             <Legend />
             <Axis name="cpuValue"
                   label={{
@@ -118,4 +131,4 @@ class CpuChart extends React.Component {
   }
 }
 
-export default CpuChart;
+export default withRouter(CpuChart);

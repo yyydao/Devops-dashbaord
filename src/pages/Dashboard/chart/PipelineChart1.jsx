@@ -1,5 +1,6 @@
 
 import React, { Component } from 'react';
+import {withRouter} from 'react-router-dom'
 // 引入 ECharts 主模块
 import echarts from 'echarts/lib/echarts';
 
@@ -59,9 +60,19 @@ class PipelineChart1 extends Component {
     myChart.showLoading()
     let options = this.setOptions(pipeLineData)
     myChart.setOption(options,true)
+    myChart.on('click', params => {
+      if(params.data[4]&&params.data[4]!==-1){
+        this.props.history.push({
+          pathname: `/pipeline/detail/${params.data[3]}`,
+          search: `?buildNumber=${params.data[4]}&curRecordNo=${params.data[6]}&platform=${params.data[5]}`,
+          state:{
+            taskStatus:2
+          }
+        })
+      }
+    });
     myChart.hideLoading()
   }
-
   setOptions=(data)=> {
     const type=['开始','构建','测试','部署','完成','无']
     let legend=[]
@@ -90,12 +101,6 @@ class PipelineChart1 extends Component {
         textStyle:{
           color:"#595959"
         },
-        // axisPointer: {
-        //   type:'cross',
-        //   label: {
-        //     backgroundColor: '#6a7985'
-        //   }
-        // },
         formatter: (params) =>{
           let res=`<div><p style="font-size: 12px;margin-bottom: 4px">${params[0].data[0]}</p></div>`
           for(let i=0;i<params.length;i++){
@@ -138,14 +143,19 @@ class PipelineChart1 extends Component {
       yAxis : [
         {
           type : 'value',
-          name : '执行耗时（s）',
+          name : '执行耗时',
+          nameGap:50,
           nameLocation:'center',
-          nameGap:55,
           axisLine:{
             show:false,
           },
           axisTick:{
             show:false
+          },
+          axisLabel:{
+            formatter:(value, index)=>{
+              return this.formatSeconds(value)
+            }
           },
           splitLine:{
             lineStyle:{
@@ -165,4 +175,4 @@ class PipelineChart1 extends Component {
   }
 }
 
-export default PipelineChart1;
+export default withRouter(PipelineChart1);

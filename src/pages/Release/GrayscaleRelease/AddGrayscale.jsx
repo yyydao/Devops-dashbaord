@@ -44,6 +44,7 @@ class AddGrayscale extends Component{
       }
     }
   }
+
   /**
    * @desc 下一步操作(保存信息)
    */
@@ -84,13 +85,6 @@ class AddGrayscale extends Component{
     })
 
   }
-  /**
-   * @desc 上一步操作
-   */
-  prev = () => {
-    const current = this.state.current - 1;
-    this.setState({ current });
-  }
 
   /**
    * @desc 拖拽文件的改变事件
@@ -98,8 +92,8 @@ class AddGrayscale extends Component{
   onDraggerChange= (info) =>{
     const status = info.file.status;
     let fileList = info.fileList;
+    console.log(info)
     if (status === 'done') {
-      console.log(info)
       if(info.file.response.code===0){
         this.setState({
           packageID:info.file.response.package,
@@ -113,10 +107,24 @@ class AddGrayscale extends Component{
         message.error(info.file.response.msg)
       }
     } else if (status === 'error') {
+      fileList=[]
       message.error(`${info.file.name}  文件上传失败`)
+    }else if (!status){
+      fileList=[]
     }
     this.setState({fileList})
   }
+
+  /**
+   * @desc ipa上传之前的操作
+   */
+  beforeUpload = (file, fileList)=>{
+    if(fileList.length!==1){
+      message.error("只支持上传一个文件")
+      return false
+    }
+  }
+
   /**
   * @desc 获取包详情
   */
@@ -164,11 +172,13 @@ class AddGrayscale extends Component{
     let leave2=leave1%(3600*1000)    //计算小时数后剩余的毫秒数
     let minutes=Math.floor(leave2/(60*1000))//计算相差分钟数
     let str=""
-    str=dayDiff===0?str+'':str+"天 "
-    str=hours===0?str+'':str+"小时 "
-    str=minutes===0?str+'1分钟前':str+"分钟前 "
+    str=dayDiff===0?str+'':str+dayDiff+"天 "
+    str=hours===0?str+'':str+hours+"小时 "
+    str=minutes===0?str+'1分钟前':str+minutes+"分钟前 "
     return str
   }
+
+
   render () {
     const {current,steps,fileList,versionInfo,packageInfo} = this.state
     const fromItemLayout = {
@@ -197,10 +207,13 @@ class AddGrayscale extends Component{
               {current===0&&
               <Dragger style={{padding:"40px 0px"}}
                        name='file'
-                       action='/api/deploy/upload'
-                       data={{projectID:this.props.projectId,envID:62,token:this.props.token}}
+                       action='/deploy/upload'
+                       data={{projectID:this.props.projectId,envID:62}}
                        onChange={(info)=>{this.onDraggerChange(info) }}
-                       fileList={fileList}>
+                       beforeUpload={(file, fileList)=>this.beforeUpload(file, fileList)}
+                       accept=".ipa"
+                       fileList={fileList}
+                       headers={{token:this.props.token}}>
                 <Button type="primary" size="large"><Icon type="upload" />立即上传</Button>
                 <p style={{fontSize:16,color:"#262626",paddingTop:20,marginBottom:4}}>点击按钮选择应用的安装包，或拖拽文件到此区域</p>
                 <span style={{color:"#d9d9d9"}}>支持ipa文件</span>
@@ -245,6 +258,7 @@ class AddGrayscale extends Component{
                             hideDisabledOptions: true,
                             defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('11:59:59', 'HH:mm:ss')],
                           }}
+                          allowClear={false}
                           value={[moment(versionInfo.beginExpiryDate, "YYYY-MM-DD HH:mm:ss"), moment(versionInfo.endExpiryDate, "YYYY-MM-DD HH:mm:ss")]}
                           format="YYYY-MM-DD HH:mm:ss"
                           onChange={(date, dateString)=>{
@@ -274,7 +288,7 @@ class AddGrayscale extends Component{
                   <p className="version-info">
                     <span style={{paddingRight:24}}>版本：{versionInfo.appVersion}</span>
                     <span style={{paddingRight:24}}>大小：{versionInfo.fileSize}</span>
-                    <span style={{paddingRight:24}}>更新时间：{this.gettimeFn(versionInfo.updateTime||versionInfo.createTime)}</span>
+                    <span style={{paddingRight:24}}>更新时间：{versionInfo.updateTime||versionInfo.createTime}</span>
                   </p>
                   <img src={versionInfo.qrcodeImage} width={120} height={120} style={{marginTop:26}} alt="二维码"/>
                   <p style={{marginTop:8,color:" rgba(0,0,0,0.45)"}}>用手机扫描二维码安装</p>

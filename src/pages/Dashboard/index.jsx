@@ -143,37 +143,26 @@ class Dashboard extends Component {
     data.cpuMemoryAnalysis.map(item => {
       for (let i in item) {
         if (i.indexOf('cpuAverage') !== -1) {
-          cData.push({
-            cpu: '平均CPU',
-            cpuValue: parseFloat(item[i]),
-            text: item[i],
-            createTime: item['createTime']
-          })
+          item.cpu= '平均CPU'
+          item.cpuValue=parseFloat(item[i])
+          item.text= item[i]
         }
         if (i.indexOf('cpuMax') !== -1) {
-          cData.push({
-            cpu: '最高CPU',
-            cpuValue: parseFloat(item[i]),
-            text: item[i],
-            createTime: item['createTime']
-          })
+          item.cpu= '最高CPU'
+          item.cpuValue=parseFloat(item[i])
+          item.text= item[i]
         }
         if (i.indexOf('memoryAverage') !== -1) {
-          cData.push({
-            memory: '平均内存',
-            memoryValue: parseFloat(item[i]),
-            text: item[i],
-            createTime: item['createTime']
-          })
+          item.memory= '平均内存'
+          item.memoryValue=parseFloat(item[i])
+          item.text= item[i]
         }
         if (i.indexOf('memoryMax') !== -1) {
-          cData.push({
-            memory: '最高内存',
-            text: item[i],
-            memoryValue: parseFloat(item[i]),
-            createTime: item['createTime']
-          })
+          item.memory= '最高内存'
+          item.memoryValue=parseFloat(item[i])
+          item.text= item[i]
         }
+        cData.push(JSON.parse(JSON.stringify(item)))
       }
       return item
     })
@@ -189,26 +178,18 @@ class Dashboard extends Component {
     data.fluentColdStartTimeAnalysis.map(item => {
       for (let i in item) {
         if (i.indexOf('smAverage') !== -1) {
-          cData.push({
-            sm: '平均FPS',
-            smValue: parseFloat(item[i]),
-            createTime: item['createTime']
-          })
+          item.sm= '平均FPS'
+          item.smValue= parseFloat(item[i])
         }
         if (i.indexOf('smMin') !== -1) {
-          cData.push({
-            sm: '最低FPS',
-            smValue: parseFloat(item[i]),
-            createTime: item['createTime']
-          })
+          item.sm= '最低FPS'
+          item.smValue= parseFloat(item[i])
         }
         if (i.indexOf('coldStartTime') !== -1) {
-          cData.push({
-            coldStartTime: '冷启动时间',
-            coldStartTimeValue: parseFloat(item[i]),
-            createTime: item['createTime']
-          })
+          item.coldStartTime1= '冷启动时间'
+          item.coldStartTimeValue= parseFloat(item[i])
         }
+        cData.push(JSON.parse(JSON.stringify(item)))
       }
       return item
     })

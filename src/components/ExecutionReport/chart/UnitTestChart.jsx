@@ -1,11 +1,11 @@
 import React from "react";
 import FanChart from './FanChart';
-import {Row, Col, Progress, Card} from 'antd';
+import {Row, Col, Progress, Card, Button} from 'antd';
 class UnitTestChart extends React.Component {
   render() {
-    const { data } = this.props;
+    const { data, detailUrl } = this.props;
     return (
-        <Card  title="单元测试" style={{marginTop: 30}}>
+        <Card  title="单元测试" style={{marginTop: 30}} extra={<Button type="primary"><a href={detailUrl} target="_blank">查看详情</a></Button>}>
           <Col span={9}>
             <p>执行结果：</p>
             <FanChart data={data.executionResult}/>
