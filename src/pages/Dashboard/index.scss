@@ -20,6 +20,19 @@
     margin-right: 24px;
   }
 }
+.select-container:after{
+  display:block;
+  clear:both;
+  content:"";
+  visibility: hidden;
+  height:0
+}
+.popover-btn-group{
+  text-align: center;
+  button{
+    margin:24px 8px 0px 8px;
+  }
+}
 .basic-info-container{
   padding: 20px 32px 10px 32px;
   border-bottom: 1px #E8E8E8 solid;

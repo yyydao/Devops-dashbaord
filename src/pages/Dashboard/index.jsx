@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { Breadcrumb, Row, Col, Button, message, Select, Card } from 'antd'
+import { Breadcrumb, Row, Col, Button, message, Select, Card, Popover, Slider } from 'antd'
 
 import PipelineChart1 from './chart/PipelineChart1'
 import UnitTestChart from './chart/UnitTestChart'
@@ -32,7 +32,9 @@ class Dashboard extends Component {
         'uiTestMonitors',
         'cpuMemoryAnalysis',
         'fluentColdStartTimeAnalysis',
-        'packageBodyMonitors']
+        'packageBodyMonitors'],
+      sliderValue:0,
+      popoverVisable:false
     }
   }
 
@@ -211,8 +213,31 @@ class Dashboard extends Component {
     window.open(`http://${host}/download/downloadApk?filePath=${url}`)
   }
 
+  /**
+   * @desc 滑动选值器数据改变事件
+   * @param value 数据
+   */
+  sliderValueChange = (value) =>{
+    this.setState({sliderValue:value})
+  }
+
   render () {
-    const { currentTaskId, taskList, basicInformation, monitorData } = this.state
+    const { currentTaskId, taskList, basicInformation, monitorData, sliderValue, popoverVisable } = this.state
+    const marks = {
+      0: '1周',
+      1: '2周',
+      2: '3周',
+      3: '1个月',
+      4: '2个月',
+      5: '3个月'
+    };
+    const popoverContent = <div style={{width:400,padding:16}}>
+      <Slider marks={marks} onChange={this.sliderValueChange} value={sliderValue} min={0} max={5} tipFormatter={val=>marks[val]}/>
+      <div className="popover-btn-group">
+        <Button  onClick={(e) => {this.setState({popoverVisable:false})}}>取消</Button>
+        <Button type="primary" onClick={(e) => {this.setState({popoverVisable:false})}}>确定</Button>
+      </div>
+    </div>
     return (
       <div>
         <Breadcrumb className="devops-breadcrumb">
@@ -222,9 +247,16 @@ class Dashboard extends Component {
         {currentTaskId &&
         <div>
           <div className="select-container">
-            <Select defaultValue={currentTaskId} onChange={e => {this.onPipeLineChange(e)}} style={{ minWidth: 294 }}>
+            <Select defaultValue={currentTaskId} onChange={e => {this.onPipeLineChange(e)}} style={{ minWidth: 294,float:"left"}}>
               {taskList.map((item, index) => <Option value={item.taskID} key={index}>{item.taskName}</Option>)}
             </Select>
+            <Popover placement="bottom"
+                     content={popoverContent}
+                     trigger="click"
+                     visible={popoverVisable}
+                     onVisibleChange={visable=>{this.setState({popoverVisable:visable})}}>
+              <Button type="primary" style={{float:"left",marginLeft:24}} icon="clock-circle">最近1周</Button>
+            </Popover>
             <Button type="primary" onClick={(e) => {this.openUrl(basicInformation.sourceAppPath, 0)}}>原包下载</Button>
             {
               basicInformation.reinforceAppPath &&
