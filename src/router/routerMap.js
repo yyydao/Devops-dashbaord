@@ -23,6 +23,8 @@ import NoticeManager from '@/pages/Setting/NoticeManager'
 import GrayscaleRelease from '@/pages/Release/GrayscaleRelease'
 import AddGrayscale from '@/pages/Release/GrayscaleRelease/AddGrayscale'
 
+import Requirement from '@/pages/Requirement'
+
 export default [
   {
     path: '/',
@@ -140,5 +142,10 @@ export default [
     path: '/addGrayscale',
     name: 'addGrayscale',
     component: AddGrayscale
+  },
+  {
+    path: '/requirement',
+    name: 'requirement',
+    component: Requirement
   }
 ]
