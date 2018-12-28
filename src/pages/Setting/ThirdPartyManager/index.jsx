@@ -18,7 +18,9 @@ class ThirdPartyManager extends Component{
       jenkins:{},
       gitlab:{},
       sonarQube:{},
-      mobSF:{}
+      mobSF:{},
+      tapd:{},
+      stf:{}
     }
   }
 
@@ -40,7 +42,9 @@ class ThirdPartyManager extends Component{
           jenkins:res.data.jenkinsConfig,
           gitlab:res.data.gitlabConfig,
           sonarQube:res.data.sonarqubeConfig,
-          mobSF:res.data.mobSFConfig
+          mobSF:res.data.mobSFConfig,
+          tapd:res.data.tapdConfig,
+          stf:res.data.stfConfig
         })
       }else{
         message.error(res.msg);
@@ -167,6 +171,60 @@ class ThirdPartyManager extends Component{
   }
 
   /**
+   * tapd配置保存
+   * @param e 回调参数
+   */
+  tapdSubmit = (e)=>{
+    const {tapd} = this.state
+    e.preventDefault();
+    this.props.form.validateFields(['tapd_accessUrl','tapd_token'],(err, values) => {
+      if (!err) {
+        tapd.accessUrl=values.tapd_accessUrl
+        tapd.token=values.tapd_token
+        this.setState({tapd})
+        this.saveConfig(tapd)
+      }
+    });
+  }
+  /**
+   * tapd配置重置
+   */
+  tapdReset = () => {
+    const {tapd} =this.state
+    this.props.form.setFieldsValue({
+      tapd_accessUrl: tapd.accessUrl,
+      tapd_token: tapd.token,
+    })
+  }
+
+  /**
+   * tapd配置保存
+   * @param e 回调参数
+   */
+  stfSubmit = (e)=>{
+    const {stf} = this.state
+    e.preventDefault();
+    this.props.form.validateFields(['stf_accessUrl','stf_token'],(err, values) => {
+      if (!err) {
+        stf.accessUrl=values.stf_accessUrl
+        stf.token=values.stf_token
+        this.setState({stf})
+        this.saveConfig(stf)
+      }
+    });
+  }
+  /**
+   * tapd配置重置
+   */
+  stfReset = () => {
+    const {stf} =this.state
+    this.props.form.setFieldsValue({
+      stf_accessUrl: stf.accessUrl,
+      stf_token: stf.token,
+    })
+  }
+
+  /**
    * @desc 保存配置
    * @param data 配置内容
    */
@@ -182,7 +240,7 @@ class ThirdPartyManager extends Component{
 
   render(){
     const { getFieldDecorator } = this.props.form;
-    const {jenkins, gitlab, sonarQube, mobSF} = this.state
+    const {jenkins, gitlab, sonarQube, mobSF, tapd, stf} = this.state
 
     const fromItemLayout = {
       labelCol: {
@@ -397,8 +455,72 @@ class ThirdPartyManager extends Component{
               </FormItem>
             </Form>
           </Card>
-          </div>
+          <Card  title="TAPD 配置" style={{marginTop: 30}}>
+            <Form style={{width: 500}} onSubmit={this.tapdSubmit}>
+              <FormItem {...fromItemLayout} label="服务地址">
+                {
+                  getFieldDecorator('tapd_accessUrl',{
+                    rules: [{
+                      required: true, message: '请填写服务地址'
+                    }],
+                    initialValue:tapd.accessUrl
+                  })(
+                    <Input />
+                  )
+                }
+              </FormItem>
+              <FormItem {...fromItemLayout} label="token">
+                {
+                  getFieldDecorator('tapd_token',{
+                    rules: [{
+                      required: true, message: '请填写token'
+                    }],
+                    initialValue:tapd.token
+                  })(
+                    <Input />
+                  )
+                }
+              </FormItem>
+              <FormItem {...tailFormItemLayout}>
+                <Button onClick={this.tapdReset}>重置</Button>
+                <Button type="primary" htmlType="submit" style={{marginLeft: 20}}>保存</Button>
+              </FormItem>
+            </Form>
+          </Card>
+          <Card  title="STF配置" style={{marginTop: 30}}>
+            <Form style={{width: 500}} onSubmit={this.stfSubmit}>
+              <FormItem {...fromItemLayout} label="服务地址">
+                {
+                  getFieldDecorator('stf_accessUrl',{
+                    rules: [{
+                      required: true, message: '请填写服务地址'
+                    }],
+                    initialValue:stf.accessUrl
+                  })(
+                    <Input />
+                  )
+                }
+              </FormItem>
+              <FormItem {...fromItemLayout} label="token">
+                {
+                  getFieldDecorator('stf_token',{
+                    rules: [{
+                      required: true, message: '请填写token'
+                    }],
+                    initialValue:stf.token
+                  })(
+                    <Input />
+                  )
+                }
+              </FormItem>
+              <FormItem {...tailFormItemLayout}>
+                <Button onClick={this.stfReset}>重置</Button>
+                <Button type="primary" htmlType="submit" style={{marginLeft: 20}}>保存</Button>
+              </FormItem>
+            </Form>
+          </Card>
         </div>
+      </div>
     )
   }
 }
