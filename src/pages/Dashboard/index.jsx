@@ -33,8 +33,9 @@ class Dashboard extends Component {
         'cpuMemoryAnalysis',
         'fluentColdStartTimeAnalysis',
         'packageBodyMonitors'],
-      sliderValue:0,
-      popoverVisable:false
+      sliderValue:1,
+      popoverVisable:false,
+      sliderBtnName:"最近2周"
     }
   }
 
@@ -222,7 +223,7 @@ class Dashboard extends Component {
   }
 
   render () {
-    const { currentTaskId, taskList, basicInformation, monitorData, sliderValue, popoverVisable } = this.state
+    const { currentTaskId, taskList, basicInformation, monitorData, sliderValue, popoverVisable, sliderBtnName } = this.state
     const marks = {
       0: '1周',
       1: '2周',
@@ -235,7 +236,7 @@ class Dashboard extends Component {
       <Slider marks={marks} onChange={this.sliderValueChange} value={sliderValue} min={0} max={5} tipFormatter={val=>marks[val]}/>
       <div className="popover-btn-group">
         <Button  onClick={(e) => {this.setState({popoverVisable:false})}}>取消</Button>
-        <Button type="primary" onClick={(e) => {this.setState({popoverVisable:false})}}>确定</Button>
+        <Button type="primary" onClick={(e) => {this.setState({popoverVisable:false,sliderBtnName:'最近'+marks[sliderValue]})}}>确定</Button>
       </div>
     </div>
     return (
@@ -255,7 +256,7 @@ class Dashboard extends Component {
                      trigger="click"
                      visible={popoverVisable}
                      onVisibleChange={visable=>{this.setState({popoverVisable:visable})}}>
-              <Button type="primary" style={{float:"left",marginLeft:24}} icon="clock-circle">最近1周</Button>
+              <Button type="primary" style={{float:"left",marginLeft:24}} icon="clock-circle">{sliderBtnName}</Button>
             </Popover>
             <Button type="primary" onClick={(e) => {this.openUrl(basicInformation.sourceAppPath, 0)}}>原包下载</Button>
             {
