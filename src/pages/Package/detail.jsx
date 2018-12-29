@@ -273,9 +273,7 @@ class packageDetail extends Component {
       formDataUser, regressDesc, formDataPassword, passwdBuild, jenkinsStatus, buildId, envId
     } = this.state
     const { onCancleSuccess } = this.props
-    let cancleButton
-    let rebuildButton
-    let downloadButton
+    let cancleButton,rebuildButton,downloadButton,showLogButton
     let actionArray = []
     let cardTitle = <span style={{ color: '#1890FF' }}>正在构建...</span>
 
@@ -288,7 +286,8 @@ class packageDetail extends Component {
     if (status === 1 || status === 2) {
       cardTitle = <span style={{ color: '#F5222D' }}>失败</span>
       rebuildButton = <Button key={2} ghost type="primary" icon="redo" onClick={this.rebuild}>重新提交</Button>
-      actionArray.push(rebuildButton)
+      showLogButton = <Button key={4} type="primary" style={{marginRight:16}}>查看日志</Button>
+      actionArray.push(showLogButton,rebuildButton)
     }
     if (jenkinsStatus === 1 || jenkinsStatus === 2) {
       cancleButton = <Button key={3} ghost type="primary" icon="redo"
@@ -397,7 +396,7 @@ class packageDetail extends Component {
                     <p><span>时间：</span>{buildTime}</p>
                     <p><span>提测人：</span>{taskMaster}</p>
                     <p><span>提测分支：</span>{codeBranch}</p>
-                    <p><span>提测详情：</span>{submitDetails}</p>
+                    <p><span>提测详情：</span><a href={submitDetails} target="_blank">{submitDetails}</a></p>
                   </Col>
                   <Col span={6}>
                     {status === 0 &&
@@ -408,6 +407,8 @@ class packageDetail extends Component {
                     }
                   </Col>
                 </Row>
+                <p><span>提测需求：</span>V5.4.3</p>
+                <p className="packagedetail-info-desc"></p>
                 <p><span>提测概要：</span></p>
                 <p className="packagedetail-info-desc">{submitContent}</p>
                 {

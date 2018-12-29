@@ -62,7 +62,8 @@ class BuildTestPackage extends Component {
       formDataPassword: '',
       passwdBuild: 0,
       formDataEnvID: '',
-      dingTalk: toContentState('')
+      dingTalk: toContentState(''),
+      suggestions:[]
     }
   }
 
@@ -269,7 +270,7 @@ class BuildTestPackage extends Component {
           mentionList.push(item.name)
           return item
         })
-        this.setState({ mentionList })
+        this.setState({ mentionList ,suggestions:mentionList})
       } else {
         message.error(res.msg)
       }
@@ -412,6 +413,12 @@ class BuildTestPackage extends Component {
     })
   }
 
+  onSearchChange = (value, trigger) => {
+    const dataSource = this.state.mentionList;
+    this.setState({
+      suggestions: dataSource.filter(item => item.indexOf(value) !== -1),
+    });
+  }
   render () {
     const {
       totalCount,
@@ -437,7 +444,7 @@ class BuildTestPackage extends Component {
       formDataPassword,
       formDataEnvID,
       selectDisabled,
-      mentionList
+      suggestions
     } = this.state
 
     return (
@@ -479,9 +486,11 @@ class BuildTestPackage extends Component {
             <Mention
               style={{ width: '100%', minHeight: 88 }}
               value={dingTalk}
-              suggestions={mentionList}
+              suggestions={suggestions}
               onChange={(e) => {this.onMentionChange(e)}}
               placeholder='钉钉通知（输入“@”选择用户，以空格分隔）'
+              prefix={['@']}
+              onSearchChange={this.onSearchChange}
             />
           </div>
           <div className="package-modal-item">
