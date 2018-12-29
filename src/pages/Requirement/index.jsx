@@ -253,7 +253,7 @@ class Requirement extends Component{
           onCancel={()=>{this.setState({modalVisible:false})}}>
           <Input placeholder="需求集合名称，如：v5.4.3"/>
           <Row style={{marginTop:24}}>
-            <Col span={20}><Input placeholder='TAPD_ID（填入Tapd关联的父需求id，多个需求以";"分号间隔）'/></Col>
+            <Col span={20}><Input placeholder='TAPD_ID（填入Tapd关联的父需求id）'/></Col>
             <Col span={4}><Button type="primary" style={{cssFloat:"right"}}>刷新</Button></Col>
           </Row>
           <div style={{border:"1px solid #d9d9d9",borderRadius:4,marginTop:24,maxHeight:200,padding:8,overflowY:"scroll"}}>
