@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { Breadcrumb, Row, Col, Button, message, Select, Card, Popover, Slider } from 'antd'
+import { Breadcrumb, Row, Col, Button, message, Select, Card, Popover, Slider, Icon, DatePicker, Checkbox } from 'antd'
 
 import PipelineChart1 from './chart/PipelineChart1'
 import UnitTestChart from './chart/UnitTestChart'
@@ -13,9 +13,11 @@ import { reqGet } from '@/api/api'
 import './index.scss'
 import DataSet from '@antv/data-set'
 import { setProjectId } from '@/store/action'
+import moment from 'moment';
 
 const BreadcrumbItem = Breadcrumb.Item
 const Option = Select.Option
+const RangePicker = DatePicker.RangePicker;
 
 class Dashboard extends Component {
   constructor () {
@@ -35,7 +37,21 @@ class Dashboard extends Component {
         'packageBodyMonitors'],
       sliderValue:1,
       popoverVisable:false,
-      sliderBtnName:"最近2周"
+      sliderBtnName:"最近2周",
+      //是否选择自定义时间
+      isCheckCustomDate:false,
+      startTime:'',
+      endTime:'',
+      selectedStartTime:'',
+      selectedEndTime:'',
+      marks: {
+        0: '1周',
+        1: '2周',
+        2: '3周',
+        3: '1个月',
+        4: '2个月',
+        5: '3个月'
+      }
     }
   }
 
@@ -47,7 +63,13 @@ class Dashboard extends Component {
     } else {
       id = window.localStorage.getItem('oldProjectId')
     }
-    this.setState({ projectId: id })
+    this.setState({
+      projectId: id ,
+      startTime:moment().subtract(13, 'days'),
+      endTime:moment(),
+      selectedStartTime:moment().subtract(13, 'days'),
+      selectedEndTime:moment()
+    })
     window.localStorage.setItem('oldProjectId', id)
     this.getTaskList(id)
   }
@@ -105,9 +127,12 @@ class Dashboard extends Component {
   getAllMonitorReport = () => {
     reqGet('/dashboard/report', {
       taskId: this.state.currentTaskId,
-      dataType: 2
+      dataType: 2,
+      startTime:this.state.startTime.format('YYYY-MM-DD'),
+      endTime:this.state.endTime.format('YYYY-MM-DD')
     }).then((res) => {
       if (res.code === 0) {
+        this.setState({selectedEndTime:this.state.endTime,selectedStartTime:this.state.startTime})
         res.data.unitTestMonitors.map(item => item.sqaleValue = parseFloat(item.sqaleValue))
         const type = ['', '源码', '加固', '补丁']
         res.data.packageBodyMonitors.map(item => {
@@ -222,21 +247,84 @@ class Dashboard extends Component {
     this.setState({sliderValue:value})
   }
 
+  /**
+   * @desc 筛选时间change事件
+   * @param dates 数据
+   * @param dateStrings
+   */
+  changeDate = (dates,dateStrings) =>{
+    this.setState({selectedStartTime:dates[0],selectedEndTime:dates[1]})
+  }
+
+  /**
+   * @desc 自定义时间change事件
+   * @param e 是否选择
+   */
+  onDateTypeChange = (e) =>{
+    console.log(e)
+    this.setState({isCheckCustomDate:e})
+  }
+  /**
+   * @desc 时间筛选按钮确定事件
+   */
+  confirmDate = () =>{
+    const {marks, isCheckCustomDate, sliderValue, selectedStartTime, selectedEndTime} = this.state
+    let sliderBtnName='',startTime='',endTime=''
+    if(!isCheckCustomDate){
+      sliderBtnName='最近'+marks[sliderValue]
+      switch (sliderValue) {
+        case 0:
+          startTime=moment().subtract(6, 'days')
+          endTime=moment()
+          break;
+        case 1:
+          startTime=moment().subtract(13, 'days')
+          endTime=moment()
+          break;
+        case 2:
+          startTime=moment().subtract(20, 'days')
+          endTime=moment()
+          break;
+        case 3:
+          startTime=moment().subtract(1, 'month')
+          endTime=moment()
+          break;
+        case 4:
+          startTime=moment().subtract(2, 'month')
+          endTime=moment()
+          break;
+        case 5:
+          startTime=moment().subtract(3, 'month')
+          endTime=moment()
+          break;
+      }
+      this.setState({startTime,endTime},()=>this.getBasicInfor())
+    }
+    else{
+      sliderBtnName=selectedStartTime.format('YYYY-MM-DD')+"~"+selectedEndTime.format('YYYY-MM-DD')
+      this.setState({startTime:selectedStartTime,endTime:selectedEndTime,sliderValue:1},()=>this.getBasicInfor())
+    }
+    this.setState({popoverVisable:false,sliderBtnName})
+  }
+
   render () {
-    const { currentTaskId, taskList, basicInformation, monitorData, sliderValue, popoverVisable, sliderBtnName } = this.state
-    const marks = {
-      0: '1周',
-      1: '2周',
-      2: '3周',
-      3: '1个月',
-      4: '2个月',
-      5: '3个月'
-    };
+    const { currentTaskId, taskList, basicInformation, monitorData, sliderValue, popoverVisable, sliderBtnName, isCheckCustomDate,selectedStartTime, selectedEndTime, marks} = this.state
     const popoverContent = <div style={{width:400,padding:16}}>
+      {!isCheckCustomDate&&
       <Slider marks={marks} onChange={this.sliderValueChange} value={sliderValue} min={0} max={5} tipFormatter={val=>marks[val]}/>
+      }
+      <Checkbox onChange={(e)=>{this.onDateTypeChange(e.target.checked)}} style={{margin:"24px 0"}}>自定义时间</Checkbox>
+      {
+        isCheckCustomDate&&
+        <RangePicker
+          format="YYYY/MM/DD"
+          value={[selectedStartTime,selectedEndTime]}
+          onChange={(dates,dateStrings)=>{this.changeDate(dates,dateStrings)}}
+        />
+      }
       <div className="popover-btn-group">
         <Button  onClick={(e) => {this.setState({popoverVisable:false})}}>取消</Button>
-        <Button type="primary" onClick={(e) => {this.setState({popoverVisable:false,sliderBtnName:'最近'+marks[sliderValue]})}}>确定</Button>
+        <Button type="primary" onClick={() => {this.confirmDate()}}>确定</Button>
       </div>
     </div>
     return (
@@ -256,7 +344,7 @@ class Dashboard extends Component {
                      trigger="click"
                      visible={popoverVisable}
                      onVisibleChange={visable=>{this.setState({popoverVisable:visable})}}>
-              <Button type="primary" style={{float:"left",marginLeft:24}} icon="clock-circle">{sliderBtnName}</Button>
+              <Button style={{float:"left",marginLeft:24}} icon="clock-circle">{sliderBtnName}<Icon type="down" style={{fontSize:13,color:"#ccc",paddingLeft:8}}/></Button>
             </Popover>
             <Button type="primary" onClick={(e) => {this.openUrl(basicInformation.sourceAppPath, 0)}}>原包下载</Button>
             {
