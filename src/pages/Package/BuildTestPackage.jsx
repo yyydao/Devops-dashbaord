@@ -8,12 +8,13 @@ import BuildTestPackageDetail from './detail'
 
 import {
   Icon, Button, Input, Modal, Select, Pagination,
-  Mention, message, Row, Col
+  Mention, message, Row, Col, Checkbox
 } from 'antd'
 
 const { TextArea } = Input
 const Option = Select.Option
 const { toContentState, getMentions } = Mention
+const CheckboxGroup = Checkbox.Group
 
 class BuildTestPackage extends Component {
   constructor (props) {
@@ -492,6 +493,28 @@ class BuildTestPackage extends Component {
               prefix={['@']}
               onSearchChange={this.onSearchChange}
             />
+          </div>
+          <div className="package-modal-item">
+            <span>选择需求集合：</span>
+            <Select placeholder="选择需求集合"
+                    style={{ width: 340 }}>
+              <Option value="1" >5.4.3</Option>
+              <Option value="2" >5.4.2</Option>
+            </Select>
+            <Button type="primary" style={{cssFloat:"right"}}>修改需求</Button>
+          </div>
+          <div className="package-modal-item">
+            <div style={{border:"1px solid #ccc",borderRadius:4,maxHeight:200,overflowY:"scroll",padding:"8px 24px"}}>
+              <CheckboxGroup>
+                <Row>
+                  <Col style={{ marginBottom: 8 }}><Checkbox value="1">123</Checkbox></Col>
+                  <Col style={{ marginBottom: 8 }}><Checkbox value="2">1234</Checkbox></Col>
+                  <Col style={{ marginBottom: 8 }}><Checkbox value="3">12345</Checkbox></Col>
+                  <Col style={{ marginBottom: 8 }}><Checkbox value="4">123456</Checkbox></Col>
+                  <Col style={{ marginBottom: 8}}><Checkbox value="5">1234567</Checkbox></Col>
+                </Row>
+              </CheckboxGroup>
+            </div>
           </div>
           <div className="package-modal-item">
               <TextArea
