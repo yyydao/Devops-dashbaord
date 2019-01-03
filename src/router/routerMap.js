@@ -24,6 +24,8 @@ import GrayscaleRelease from '@/pages/Release/GrayscaleRelease'
 import AddGrayscale from '@/pages/Release/GrayscaleRelease/AddGrayscale'
 
 import Requirement from '@/pages/Requirement'
+import STFList from '@/pages/Test/STF/Index'
+import STFControl from '@/pages/Test/STF/Control'
 
 export default [
   {
@@ -147,5 +149,15 @@ export default [
     path: '/requirement',
     name: 'requirement',
     component: Requirement
+  },
+  {
+    path: '/STF',
+    name: 'STFList',
+    component: STFList
+  },
+  {
+    path: '/STF/control/:deviceID',
+    name: 'STFControl',
+    component: STFControl
   }
 ]

@@ -34,6 +34,7 @@ ul, li {
 }
 
 .container .main-container {
+  height: 100%;
   position: absolute;
   left: 256px;
   right: 0;

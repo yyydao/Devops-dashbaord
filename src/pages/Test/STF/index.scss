@@ -1,0 +1,107 @@
+.device-meta {
+  display: flex;
+  background-color: #fff;
+  border-top: 1px solid #eee;
+  padding: 24px;
+  justify-content: center;
+
+  .info {
+    flex: 1;
+    text-align: center;
+  }
+
+  .content {
+    font-size: 30px;
+    line-height: 32px;
+
+    &.amount {
+      color: rgba(0, 0, 0, 0.85);
+    }
+
+    &.available {
+      color: rgba(56, 158, 13, 0.85);;
+    }
+
+    &.using {
+      color: #1890FF;
+    }
+  }
+
+  .title {
+    margin-bottom: 12px;
+  }
+
+  .has-border {
+    border-left: 1px solid #eeeeee;
+    border-right: 1px solid #eeeeee;
+  }
+}
+
+.device-block {
+  margin: 24px;
+  padding: 24px;
+  background-color: #fff;
+
+  .device-card {
+
+    border: 1px solid #eeeeee;
+  }
+
+  .device-info{
+    display: flex;
+    padding: 16px;
+  }
+
+  .device-brand{
+    display: inline-block;
+  }
+  .device-detail-block{
+    padding-left: 48px;
+    display: inline-block;
+  }
+
+  .device-name {
+    font-size: 18px;
+    color: rgba(0, 0, 0, 0.85);
+    line-height: 24px;
+  }
+
+  .device-detail {
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.45);
+    letter-spacing: 0;
+    line-height: 22px;
+  }
+
+  .status-line {
+    vertical-align: center;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.65);
+    line-height: 22px;
+    margin-bottom: 0;
+    padding: 16px 0 16px 16px;
+  }
+
+  .device-status {
+    border-top: 1px solid #eeeeee;
+  }
+
+  .status {
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+    vertical-align: 1px;
+    margin-right: 6px;
+
+    &.available {
+      background: #56AC31;
+    }
+
+    &.unavailable {
+      background: #F5222D;
+    }
+  }
+}
