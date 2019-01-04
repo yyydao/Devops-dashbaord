@@ -211,6 +211,34 @@ class ConfigManager extends Component {
     })
   }
 
+  /**
+   * @desc 云盾场景导入
+   */
+  onImportydScan = (index) =>{
+    reqGet('http://10.100.98.163:7702/getScenario').then(res => {
+      if (parseInt(res.code, 0) === 200) {
+        /**由于后台不给加全选字段，只能自己添加一个全选**/
+        let object = {}, arr = [];
+        object.name = "全选";
+        object.scenario = "all"
+        object.childrens = res.data
+        arr.push(object)
+        /**数据处理结束**/
+
+        let envData = JSON.parse(JSON.stringify(this.state.envData))
+        envData[index].scenes = arr
+        envData[index].checkedScenes= []
+        this.setState({
+          envData: envData
+        })
+      } else {
+        message.error(res.msg);
+      }
+    })
+  }
+
+
+
   render() {
     const {envData, visible, importJson } = this.state;
     return (
@@ -234,6 +262,7 @@ class ConfigManager extends Component {
                     changeSwitch={this.changeSwitch}
                     onButtonClick={this.onButtonClick}
                     onImportJson={this.onImportJson}
+                    onImportydScan={this.onImportydScan}
                   >
                   </ConfigPanel>
                 </TabPane>

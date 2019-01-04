@@ -19,7 +19,7 @@ export default class ConfigPanel extends Component{
   }
 
   render(){
-    const { envData, treeCheck, treeSelect, changeSwitch, changeEdit, panelIndex,onButtonClick,onImportJson} = this.props;
+    const { envData, treeCheck, treeSelect, changeSwitch, changeEdit, panelIndex,onButtonClick,onImportJson, onImportydScan} = this.props;
     return(
         <div>
           <Card title="提测配置">
@@ -56,8 +56,7 @@ export default class ConfigPanel extends Component{
           </Card>
           <Card title="场景管理"
                 className="jsonInput"
-                extra={<button style={{padding:"4px 16px",color: "#fff",backgroundColor:"#1890ff",border:"none",borderRadius:4,cursor:"pointer"}}
-                               onClick={()=>{onImportJson(panelIndex)}}>JSON导入</button>}>
+                extra={<div><Button style={{marginRight:8}} onClick={()=>{onImportydScan(panelIndex)}}>云盾场景导入</Button><Button type="primary" onClick={()=>{onImportJson(panelIndex)}}>JSON导入</Button></div>}>
             <Tree
                 checkable
                 onCheck={(checkedKeys)=>{treeCheck(checkedKeys,panelIndex)}}

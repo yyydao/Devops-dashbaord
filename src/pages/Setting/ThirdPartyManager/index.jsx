@@ -295,7 +295,7 @@ class ThirdPartyManager extends Component{
                     }],
                     initialValue:jenkins.token
                   })(
-                      <Input/>
+                      <Input type="password"/>
                   )
                 }
               </FormItem>
@@ -395,7 +395,7 @@ class ThirdPartyManager extends Component{
                     }],
                     initialValue:sonarQube.token
                   })(
-                      <Input />
+                      <Input type="password" />
                   )
                 }
               </FormItem>
@@ -427,7 +427,7 @@ class ThirdPartyManager extends Component{
                     }],
                     initialValue:mobSF.token
                   })(
-                      <Input />
+                      <Input type="password" />
                   )
                 }
               </FormItem>
@@ -477,7 +477,7 @@ class ThirdPartyManager extends Component{
                     }],
                     initialValue:tapd.token
                   })(
-                    <Input />
+                    <Input type="password"/>
                   )
                 }
               </FormItem>
@@ -509,7 +509,7 @@ class ThirdPartyManager extends Component{
                     }],
                     initialValue:stf.token
                   })(
-                    <Input />
+                    <Input type="password"/>
                   )
                 }
               </FormItem>
