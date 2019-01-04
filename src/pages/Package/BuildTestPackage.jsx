@@ -8,7 +8,7 @@ import BuildTestPackageDetail from './detail'
 
 import {
   Icon, Button, Input, Modal, Select, Pagination,
-  Mention, message, Row, Col, Checkbox
+  Mention, message, Row, Col, Checkbox, Spin
 } from 'antd'
 
 const { TextArea } = Input
@@ -22,7 +22,7 @@ class BuildTestPackage extends Component {
 
     this.state = {
       projectId: props.projectId,
-
+      tapdID: props.tapdID,
       //控制列表数量以及当前页码
       totalCount: 100,
       curPage: 1,
@@ -64,19 +64,27 @@ class BuildTestPackage extends Component {
       passwdBuild: 0,
       formDataEnvID: '',
       dingTalk: toContentState(''),
-      suggestions:[]
+      suggestions: [],
+
+      //tapd
+      tapdList: [],
+      requirementList: [],
+      searchLoading:false
     }
   }
 
   propTypes: {
-    projectId: PropTypes.string.isRequired
+    projectId: PropTypes.string.isRequired,
+    tapdID: PropTypes.string.isRequired
   }
 
   componentWillReceiveProps (nextProps) {
     this.setState({
-      projectId: nextProps.projectId
+      projectId: nextProps.projectId,
+      tapdID:nextProps.tapdID
     }, () => {
       this.getEnvList()
+      this.getTapdList()
       this.getBuildingNum()
       this.getMentionList()
     })
@@ -84,6 +92,7 @@ class BuildTestPackage extends Component {
 
   componentWillMount () {
     this.getEnvList()
+    this.getTapdList()
     this.getBuildingNum()
     this.getMentionList()
   }
@@ -104,6 +113,24 @@ class BuildTestPackage extends Component {
           envList: res.data,
           envID: id//默认为测试环境
         }, () => {this.getVersionList()})
+      } else {
+        message.error(res.msg)
+      }
+    })
+  }
+
+  /**
+   * @desc 获取tapd需求列表
+   */
+  getTapdList = () => {
+    const { projectId,tapdID } = this.state
+    reqGet('demand/story/select', { projectID: projectId }).then(res => {
+      if (res.code === 0) {
+        this.setState({tapdList:res.data},()=>{
+          if(tapdID){
+            this.setState({modalVisible:true})
+          }
+        })
       } else {
         message.error(res.msg)
       }
@@ -164,6 +191,10 @@ class BuildTestPackage extends Component {
         this.setState({
           totalCount: res.data.totalCount,
           dataList: res.data.list,
+        },()=>{
+          if(this.state.tapdList.length<1){
+            this.getTapdList()
+          }
         })
       } else {
         message.error(res.msg)
@@ -420,6 +451,24 @@ class BuildTestPackage extends Component {
       suggestions: dataSource.filter(item => item.indexOf(value) !== -1),
     });
   }
+
+  /**
+   * @desc 修改需求
+   */
+  updateRequirement = () => {
+    this.setState({searchLoading:true},()=>{
+      reqGet('/demand/tapd/stories', {
+        demandIDs:this.state.tapdID,
+        projectID:this.state.projectId
+      }).then(res => {
+        if(res.code === 0){
+          this.setState({requirementList:res.data[0].list,searchLoading:false})
+        }else{
+          message.error(res.msg);
+        }
+      })
+    })
+  }
   render () {
     const {
       totalCount,
@@ -445,7 +494,11 @@ class BuildTestPackage extends Component {
       formDataPassword,
       formDataEnvID,
       selectDisabled,
-      suggestions
+      suggestions,
+      tapdList,
+      tapdID,
+      requirementList,
+      searchLoading
     } = this.state
 
     return (
@@ -460,6 +513,7 @@ class BuildTestPackage extends Component {
                maskClosable={false}
                destroyOnClose={true}
                width={600}>
+          <Spin spinning={searchLoading}>
           <div className="package-modal-item">
             <Input placeholder="提测人" style={{ width: 120, marginRight: 24 }} value={formDataName} onChange={(e) => {
               this.bindInput(e, 'formDataName')
@@ -497,25 +551,27 @@ class BuildTestPackage extends Component {
           <div className="package-modal-item">
             <span>选择需求集合：</span>
             <Select placeholder="选择需求集合"
-                    style={{ width: 340 }}>
-              <Option value="1" >5.4.3</Option>
-              <Option value="2" >5.4.2</Option>
+                    style={{ width: 340 }} value={tapdID} onChange={(e)=>{this.setState({tapdID:e,requirementList:[]})}}>
+              {
+                tapdList.map((item,index)=>
+                  <Option value={item.tapdID} key={index}>{item.demandName}</Option>
+                )
+              }
             </Select>
-            <Button type="primary" style={{cssFloat:"right"}}>修改需求</Button>
+            <Button type="primary" style={{cssFloat:"right"}} onClick={()=>{this.updateRequirement()}}>修改需求</Button>
           </div>
-          <div className="package-modal-item">
-            <div style={{border:"1px solid #ccc",borderRadius:4,maxHeight:200,overflowY:"scroll",padding:"8px 24px"}}>
-              <CheckboxGroup>
-                <Row>
-                  <Col style={{ marginBottom: 8 }}><Checkbox value="1">123</Checkbox></Col>
-                  <Col style={{ marginBottom: 8 }}><Checkbox value="2">1234</Checkbox></Col>
-                  <Col style={{ marginBottom: 8 }}><Checkbox value="3">12345</Checkbox></Col>
-                  <Col style={{ marginBottom: 8 }}><Checkbox value="4">123456</Checkbox></Col>
-                  <Col style={{ marginBottom: 8}}><Checkbox value="5">1234567</Checkbox></Col>
-                </Row>
-              </CheckboxGroup>
+          {
+            requirementList.length>0&&<div className="package-modal-item">
+              <div style={{border:"1px solid #ccc",borderRadius:4,maxHeight:200,overflowY:"scroll",padding:"8px 24px"}}>
+                <CheckboxGroup>
+                  <Row>
+                    {requirementList.map((item,index)=><Col style={{ marginBottom: 8 }} key={index}><Checkbox value={item.id}>{item.name}</Checkbox></Col>)}
+                  </Row>
+                </CheckboxGroup>
+              </div>
             </div>
-          </div>
+          }
+
           <div className="package-modal-item">
               <TextArea
                 style={{ width: '100%', minHeight: 88 }}
@@ -544,6 +600,7 @@ class BuildTestPackage extends Component {
             </div>
           </div>
           }
+          </Spin>
         </Modal>
         <div className="package-title">
           <Button type="primary" onClick={() => {this.toggleBuildModal(true)}}>新增提测</Button>
@@ -676,7 +733,6 @@ class BuildTestPackage extends Component {
 }
 
 BuildTestPackage = connect((state) => {
-  console.log(state)
   return {
     token: state.token,
     projectId: state.projectId
