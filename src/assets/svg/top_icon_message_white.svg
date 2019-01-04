@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="12px" height="16px" viewBox="0 0 12 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 51 (57462) - http://www.bohemiancoding.com/sketch -->
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.5 (67469) - http://www.bohemiancoding.com/sketch -->
     <title>top_icon_message_white</title>
     <desc>Created with Sketch.</desc>
-    <defs></defs>
     <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Desktop-HD" transform="translate(-186.000000, -136.000000)" fill="#FFFFFF">
-            <g id="top_icon_message_white" transform="translate(184.000000, 136.000000)">
+        <g id="Desktop-HD" transform="translate(-147.000000, -234.000000)" fill="#FFFFFF">
+            <g id="top_icon_message_white" transform="translate(147.000000, 234.000000)">
                 <rect id="Path" fill-opacity="0" x="0" y="0" width="16" height="16"></rect>
                 <path d="M13.4251576,13.0000549 L12.9880727,13.0000549 L12.9880727,5.99998779 C12.9880727,3.42812918 11.049568,1.31095863 8.55539593,1.03127079 L8.55539593,0.562520218 C8.55539593,0.251543276 8.30412526,0 7.99348534,0 C7.68292346,0 7.43157475,0.251543276 7.43157475,0.562520218 L7.43157475,1.03127079 C4.93742219,1.31095863 2.99889797,3.42812918 2.99889797,5.99998779 L2.99889797,13.0000549 L2.56191059,13.0000549 C2.25127067,13.0000549 2,13.2515787 2,13.5624775 C2,13.8734544 2.25127067,14.1249977 2.56191059,14.1249977 L6.86976171,14.1249977 L6.86976171,14.8750572 C6.86976171,15.4969134 7.37228354,16 7.99348534,16 C8.61468715,16 9.11730652,15.4969134 9.11730652,14.8750572 L9.11730652,14.1249977 L13.4251576,14.1249977 C13.7357195,14.1249977 13.9869707,13.8734544 13.9869707,13.5624775 C13.9869707,13.2515787 13.7357195,13.0000549 13.4251576,13.0000549 Z M11.8643491,13.0000549 L4.12271915,13.0000549 L4.12271915,5.99998779 C4.12271915,3.85941877 5.85523615,2.12502213 7.99348534,2.12502213 C10.1318321,2.12502213 11.8643491,3.85941877 11.8643491,5.99998779 L11.8643491,13.0000549 Z" id="消息"></path>
             </g>

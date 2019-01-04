@@ -221,7 +221,7 @@ class PipelinePackage extends Component {
           </Select>
             </Col>
             <Col span={2}>
-          <Icon type="question-circle" style={{ fontSize: 24, color: '#000', verticalAlign: 'middle', marginLeft: 50 }}
+          <Icon type="question-circle" style={{ fontSize: 24, color: '#ccc', verticalAlign: 'middle', marginLeft: 50, cursor:'pointer' }}
                 onClick={() => this.toggleDialogInfo()}/>
             </Col>
           </Row>
