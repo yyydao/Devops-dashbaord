@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { reqPost, reqGet, reqPostURLEncode } from '@/api/api'
-import { Button, Breadcrumb, Row, Col, Card, Table, Modal, Input, Progress, message, Spin} from 'antd'
+import { Button, Breadcrumb, Row, Col, Card, Table, Modal, Input, Progress, message, Spin, Popover} from 'antd'
 import './index.scss'
 
 const BreadcrumbItem = Breadcrumb.Item;
@@ -39,9 +39,16 @@ class Requirement extends Component{
         },
         {
           title: '状态',
-          dataIndex: 'status',
-          key: 'status',
+          dataIndex: 'statuses',
+          key: 'statuses',
           width:"8%",
+          render:(text,record)=>
+            <Popover
+              placement="bottom"
+              content={this.popoverContent(record.statuses)}
+              trigger="click">
+              <a>查看</a>
+            </Popover>
         },
         {
           title: '创建人',
@@ -89,6 +96,13 @@ class Requirement extends Component{
       }},()=>this.getTableData())
   }
 
+  popoverContent = (statuses) =>{
+    if(statuses){
+      return <div>{statuses.map((item,index)=><p key={index}>{item.status}<span style={{paddingLeft:24}}>{item.size}个</span></p>)}</div>
+    }else{
+      return <div>暂无状态</div>
+    }
+  }
   /**
    * @desc 表格页数改变事件
    */
