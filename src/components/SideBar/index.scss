@@ -31,6 +31,7 @@
         color: #ffffff;
         border: none;
         background-color: rgba(168,208,255,0.3);
+        box-shadow: none;
       }
       .ant-select-dropdown-menu-item-active{
         background-color: #cccccc;
@@ -51,6 +52,9 @@
       }
       .ant-select-arrow {
         color: #fff;
+      }
+      .ant-select-open .ant-select-selection{
+        box-shadow: none;
       }
     }
     .logo-img {
