@@ -103,5 +103,27 @@
     &.unavailable {
       background: #F5222D;
     }
+    &.occupation {
+      background: #1890FF;
+    }
+  }
+}
+
+.modal-content-wrap{
+  padding: 3px 0 14px ;
+  .modal-p {
+    margin-left: 40px;
+    font-size: 14px;
+    color: rgba(0,0,0,0.65);
+    margin-bottom: 18px;
+  }
+  .modal-type{
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+    width: 6em;
+  }
+  .modal-span{
+    margin-left: 20px;
   }
 }

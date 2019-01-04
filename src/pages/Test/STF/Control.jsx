@@ -1,16 +1,28 @@
-import React,{ Component } from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import qs from 'qs'
 
 class STFControl extends Component {
 
   constructor () {
     super()
     this.state = {
-      iFrameHeight: '0px'
+      iFrameHeight: '0px',
+      url: ''
     }
   }
 
+  componentWillMount () {
+    const serial = this.props.match.params.serial
+    console.log(serial)
+    this.setState({
+      serial,
+      url: `http://10.100.12.52/#!/control/${serial}`
+    })
+  }
+
   render () {
+    const { url } = this.state
     return (
       <div style={{ height: '100%' }}>
         <iframe
@@ -21,7 +33,7 @@ class STFControl extends Component {
           //   })
           // }}
           ref="iframe"
-          src="http://10.100.12.52:7100"
+          src={url}
           width="100%"
           height="100%"
           scrolling="yes"
@@ -30,7 +42,6 @@ class STFControl extends Component {
       </div>)
   }
 }
-
 
 STFControl = connect((state) => {
   return {
