@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="28px" height="32px" viewBox="0 0 28 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <!-- Generator: Sketch 52.5 (67469) - http://www.bohemiancoding.com/sketch -->
-    <title>包管理icon</title>
+    <title>pipelining_icon_package</title>
     <desc>Created with Sketch.</desc>
     <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.65">
-        <g id="Desktop-HD" transform="translate(-633.000000, -448.000000)" fill="#000000">
+        <g id="Desktop-HD" transform="translate(-631.000000, -448.000000)" fill="#000000">
             <g id="包管理icon" transform="translate(631.000000, 448.000000)">
                 <rect id="矩形" opacity="0" x="0" y="0" width="32" height="32"></rect>
                 <path d="M22.1,10.968 L15.897,14.57 L9.801,11.079 C8.642,10.419 7.653,12.158 8.812,12.817 L15.022,16.373 L15.022,24.396 C15.022,24.9482847 15.4697153,25.396 16.022,25.396 C16.5742847,25.396 17.022,24.9482847 17.022,24.396 L17.022,16.333 C17.022,16.3 17.006,16.272 17.003,16.239 L23.089,12.705 C24.248,12.047 23.259,10.308 22.1,10.968 Z" id="路径"></path>

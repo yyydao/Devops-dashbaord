@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="28px" height="28px" viewBox="0 0 28 28" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <!-- Generator: Sketch 52.5 (67469) - http://www.bohemiancoding.com/sketch -->
-    <title>UI测试icon</title>
+    <title>pipelining_icon_ui_test</title>
     <desc>Created with Sketch.</desc>
     <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.65">
-        <g id="Desktop-HD" transform="translate(-409.000000, -451.000000)" fill="#000000">
+        <g id="Desktop-HD" transform="translate(-407.000000, -449.000000)" fill="#000000">
             <g id="UI测试icon" transform="translate(407.000000, 449.000000)">
                 <rect id="矩形" opacity="0" x="0" y="0" width="32" height="32"></rect>
                 <path d="M27,2 L5,2 C3,2 2,3 2,5 C2,6.33333333 2,13.6666667 2,27 C2,29 3,30 5,30 L22.5,30 C23.0522847,30 23.5,29.5522847 23.5,29 C23.5,28.4477153 23.0522847,28 22.5,28 L4,28 L4,4 L28,4 L28,22.5 C28,23.0522847 28.4477153,23.5 29,23.5 C29.5522847,23.5 30,23.0522847 30,22.5 L30,5 C30,3 29,2 27,2 Z" id="路径"></path>
