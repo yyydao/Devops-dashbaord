@@ -13,7 +13,7 @@ class STFControl extends Component {
   }
 
   componentWillMount () {
-    const serial = this.props.match.params.serial
+    const serial = this.props.match.params.deviceID
     console.log(serial)
     this.setState({
       serial,
