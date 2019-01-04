@@ -1,41 +1,39 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { reqPost, reqGet } from '@/api/api'
-import { Button, Breadcrumb, Row, Col, Card, Table, Tree, Modal, Input, Progress} from 'antd'
+import { reqPost, reqGet, reqPostURLEncode } from '@/api/api'
+import { Button, Breadcrumb, Row, Col, Card, Table, Modal, Input, Progress, message, Spin} from 'antd'
 import './index.scss'
 
 const BreadcrumbItem = Breadcrumb.Item;
-const { TreeNode } = Tree;
 
 class Requirement extends Component{
   constructor(){
     super();
     this.state = {
-      projectId: '',
       columns:[
         {
           title: 'ID',
-          dataIndex: 'id',
-          key: 'id',
-          width:"10%",
+          dataIndex: 'demandID',
+          key: 'demandID',
+          width:"8%",
         },
         {
           title: '需求集合',
           dataIndex: 'name',
           key: 'name',
-          width:"13%",
+          width:"30%"
         },
         {
           title: 'TAPD_ID',
-          dataIndex: 'tapd_id',
-          key: 'tapd_id',
-          width:"10%",
+          dataIndex: 'id',
+          key: 'id',
+          width:"8%",
         },
         {
           title: '进度',
-          dataIndex: 'progress',
-          key: 'progress',
+          dataIndex: 'percentStage',
+          key: 'percentStage',
           width:"10%",
           render:(text,record)=><Progress percent={parseInt(text,10)} />
         },
@@ -43,96 +41,202 @@ class Requirement extends Component{
           title: '状态',
           dataIndex: 'status',
           key: 'status',
-          width:"10%",
+          width:"8%",
         },
         {
           title: '创建人',
-          dataIndex: 'user',
-          key: 'user',
-          width:"10%",
+          dataIndex: 'creator',
+          key: 'creator',
+          width:"6%",
         },
         {
           title: '预计开始',
           dataIndex: 'begin',
           key: 'begin',
-          width:"13%",
+          width:"10%",
         },
         {
           title: '预计结束',
-          dataIndex: 'end',
-          key: 'end',
-          width:"13%",
+          dataIndex: 'due',
+          key: 'due',
+          width:"10%",
         },
         {
           title: '操作',
           width:"10%",
-          render: (text, record) => {if(record.id){return<div><a href="javascript:void(0);">删除</a><span style={{color:"#eee"}}> | </span><a href="javascript:void(0);">提测</a></div>}}
+          render: (text, record) => {if(record.id){return<div><a onClick={e=>this.deleteRequirement(e,record.demandID)}>删除</a><span style={{color:"#eee"}}> | </span><Link to={{pathname:'/package', query:{tapdID:record.id}}}>提测</Link></div>}}
         }
       ],
-      data: [
-        {
-          id:"00001",
-          name:"v5.4.0",
-          tapd_id:"12456",
-          progress: '10%',
-          status: '进行中',
-          user: 'wuyanzu',
-          begin: '2018-12-27 08:00:00',
-          end: '2018-12-27 08:00:00'
-        },
-        {
-          id:"00002",
-          name:"v5.4.0",
-          tapd_id:"124567",
-          progress: '10%',
-          status: '进行中',
-          user: 'wuyanzu',
-          begin: '2018-12-27 08:00:00',
-          end: '2018-12-27 08:00:00'
-        }],
+      listData: [],
       pagination: {
         pageSize: 7,
         total: 0,
         showTotal: null
       },
+      params: {},
       loading: false,
-      modalVisible:false
+      modalVisible:false,
+      searchTapdId:'',
+      searchRequirement:{},
+      searchLoading:false
     }
   }
   componentWillMount(){
+    this.setState({params:{
+        limit: 10,
+        page: 1,
+        projectID:this.props.projectId
+      }},()=>this.getTableData())
   }
 
+  /**
+   * @desc 表格页数改变事件
+   */
+  handleTableChange = (pagination) => {
+    const params = { ...this.state.params };
+    params.page = pagination.current;
+    this.setState({ params: params }, this.getTableData);
+  }
+
+  /**
+   * @desc 获取tapd表格数据
+   */
+  getTableData = () => {
+    this.setState({ loading: true });
+    reqGet('demand/story/list', this.state.params).then(res => {
+      if(res.code === 0){
+        const pagination = { ...this.state.pagination };
+        const params = { ...this.state.params };
+        pagination.total = res.data.totalCount;
+        pagination.showTotal = () => {
+          return '共 ' + res.data.totalCount+ ' 条';
+        };
+
+        this.setState({
+          loading: false,
+          listData: res.data.list,
+          pagination,
+          params
+        });
+      }else{
+        this.setState({ loading: false });
+        message.error(res.msg);
+      }
+    })
+  }
+
+  /**
+   * @desc 获取某个tapd需求的数据
+   */
+  getRequirement = () =>{
+    if(!this.state.searchTapdId) {
+      message.info("请填入Tapd关联的父需求id")
+      return
+    }
+    this.setState({searchLoading:true},()=>{
+      reqGet('/demand/tapd/stories', {
+        demandIDs:this.state.searchTapdId,
+        projectID:this.props.projectId
+      }).then(res => {
+        if(res.code === 0){
+          this.setState({searchRequirement:res.data[0],searchLoading:false})
+        }else{
+          message.error(res.msg);
+        }
+      })
+    })
+  }
+
+  /**
+   * @desc 创建需求集合
+   */
+  onCreateRequirement = () =>{
+    if(!this.state.searchTapdId) {
+      message.info("请填入Tapd关联的父需求id")
+      return
+    }
+    if(!this.state.searchRequirement.name) {
+      message.info("请点击刷新，获得需求集合名称")
+      return
+    }
+    reqPost('/demand/story/add', {
+      storyName:this.state.searchRequirement.name,
+      storyID:this.state.searchTapdId,
+      projectID:this.props.projectId
+    }).then(res => {
+      if(res.code === 0){
+        message.success("创建成功")
+        this.setState({
+          modalVisible:false,
+          searchLoading:false,
+          params:{limit: 10, page: 1, projectID:this.props.projectId}
+          },()=>this.getTableData())
+      }else{
+        message.error(res.msg);
+      }
+    })
+  }
+
+  /**
+   * @desc 关闭Modal的事件
+   */
+  onCloseModal = () => {
+    this.setState({modalVisible:false,searchLoading:false,searchRequirement:{}})
+  }
+
+  /**
+   * @desc 删除需求
+   */
+  deleteRequirement = (e,id) => {
+    reqPostURLEncode('demand/story/delete', {
+      ID:id
+    }).then(res => {
+      if(res.code === 0){
+        message.success("删除成功")
+        this.setState({
+          modalVisible:false,
+          searchLoading:false
+        },()=>this.getTableData())
+      }else{
+        message.error(res.msg);
+      }
+    })
+  }
 
   render () {
     const {
-      data,
+      listData,
       columns,
       pagination,
       loading,
-      modalVisible} = this.state
+      modalVisible,
+      searchTapdId,
+      searchRequirement,
+      searchLoading} = this.state
     const expandedRowRender = (record) => {
+      console.log(record)
       const columns = [
         {
           title: 'ID',
-          width:"10%",
-          key:'id'
+          width:"8%",
+          key:'demandID'
         },
         {
           title: '需求集合',
           dataIndex: 'name',
           key: 'name',
-          width:"13%"
+          width:"30%"
         },
         {
           title: 'TAPD_ID',
-          dataIndex: 'tapd_id',
-          key: 'tapd_id',
-          width:"10%"
+          dataIndex: 'id',
+          key: 'id',
+          width:"8%"
         },
         {
           title: '进度',
-          dataIndex: 'progress',
-          key: 'progress',
+          dataIndex: 'percentStage',
+          key: 'percentStage',
           width:"10%",
           render:(text,record)=><Progress percent={parseInt(text,10)} />
         },
@@ -140,25 +244,25 @@ class Requirement extends Component{
           title: '状态',
           dataIndex: 'status',
           key: 'status',
-          width:"10%"
+          width:"8%"
         },
         {
           title: '创建人',
-          dataIndex: 'user',
-          key: 'user',
-          width:"10%"
+          dataIndex: 'creator',
+          key: 'creator',
+          width:"6%"
         },
         {
           title: '预计开始',
           dataIndex: 'begin',
           key: 'begin',
-          width:"13%"
+          width:"10%"
         },
         {
           title: '预计结束',
-          dataIndex: 'end',
-          key: 'end',
-          width:"13%"
+          dataIndex: 'due',
+          key: 'due',
+          width:"10%"
         },
         {
           title: '操作',
@@ -166,17 +270,15 @@ class Requirement extends Component{
           key:'edit'
         }
       ];
-
-      let data1=[];
-      data1.push(record)
       return (
         <Table
           columns={columns}
-          dataSource={data1}
+          dataSource={record.list}
           pagination={false}
           showHeader={false}
           indentSize={0}
-          rowKey={record => record.tapd_id}
+          rowClassName="rowClass"
+          rowKey={record => record.id}
         />
       );
     };
@@ -193,31 +295,34 @@ class Requirement extends Component{
             extra={<Button type="primary" icon="plus" onClick={()=>{this.setState({modalVisible:true})}}>创建需求集合</Button>}>
             <Table
               columns={columns}
-              rowKey={record => record.tapd_id}
-              expandedRowRender={()=>{expandedRowRender}}
-              dataSource={data}
+              rowKey={record => record.id}
+              expandedRowRender={expandedRowRender}
+              dataSource={listData}
               indentSize={0}
               pagination={pagination}
               loading={loading}
-              onExpand={(expanded, record)=>{console.log(expanded, record)}}/>
+              onChange={this.handleTableChange}/>
           </Card>
         </div>
         <Modal
-          title="创建需求列表"
+          title="创建需求集合"
           visible={modalVisible}
-          onOk={()=>{this.setState({modalVisible:false})}}
-          onCancel={()=>{this.setState({modalVisible:false})}}>
-          <Input placeholder="需求集合名称，如：v5.4.3"/>
-          <Row style={{marginTop:24}}>
-            <Col span={20}><Input placeholder='TAPD_ID（填入Tapd关联的父需求id）'/></Col>
-            <Col span={4}><Button type="primary" style={{cssFloat:"right"}}>刷新</Button></Col>
+          onOk={()=>{this.onCreateRequirement()}}
+          onCancel={()=>{this.onCloseModal()}}>
+          <Spin spinning={searchLoading}>
+          <Row>
+            <Col span={20}><Input placeholder='TAPD_ID（填入Tapd关联的父需求id）' value={searchTapdId} onChange={(e)=>{this.setState({searchTapdId:e.target.value})}}/></Col>
+            <Col span={4}><Button type="primary" style={{cssFloat:"right"}} onClick={()=>this.getRequirement()}>刷新</Button></Col>
           </Row>
-          <div style={{border:"1px solid #d9d9d9",borderRadius:4,marginTop:24,maxHeight:200,padding:8,overflowY:"scroll"}}>
-            <p>需求1</p>
-            <p>需求2</p>
-            <p>需求3</p>
+          <Input placeholder="需求集合名称" readOnly style={{marginTop:16}} value={searchRequirement.name}/>
+          <div style={{border:"1px solid #d9d9d9",borderRadius:4,marginTop:16,maxHeight:200,padding:8,overflowY:"scroll",minHeight:100}}>
+            {
+              searchRequirement.list&&searchRequirement.list.map((item,index)=>
+                <p key={index} style={{marginBottom:8}}>{item.name}</p>)
+            }
           </div>
-          <p style={{marginTop:24}}>预计时间：   —/—</p>
+          <p style={{marginTop:24,marginBottom:0}}>预计时间：   {searchRequirement.begin||'—'}{searchRequirement.begin&&searchRequirement.due?'~':'/'}{searchRequirement.due||'—'}</p>
+          </Spin>
         </Modal>
       </div>
     )
