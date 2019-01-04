@@ -177,10 +177,12 @@ class ThirdPartyManager extends Component{
   tapdSubmit = (e)=>{
     const {tapd} = this.state
     e.preventDefault();
-    this.props.form.validateFields(['tapd_accessUrl','tapd_token'],(err, values) => {
+    this.props.form.validateFields(['tapd_accessUrl','tapd_token','tapd_userName','tapd_userPwd'],(err, values) => {
       if (!err) {
         tapd.accessUrl=values.tapd_accessUrl
         tapd.token=values.tapd_token
+        tapd.userName=values.tapd_userName
+        tapd.userPwd=values.tapd_userPwd
         this.setState({tapd})
         this.saveConfig(tapd)
       }
@@ -194,6 +196,8 @@ class ThirdPartyManager extends Component{
     this.props.form.setFieldsValue({
       tapd_accessUrl: tapd.accessUrl,
       tapd_token: tapd.token,
+      tapd_userName:tapd.userName,
+      tapd_userPwd:tapd.userPwd
     })
   }
 
@@ -476,6 +480,30 @@ class ThirdPartyManager extends Component{
                       required: true, message: '请填写token'
                     }],
                     initialValue:tapd.token
+                  })(
+                    <Input type="password"/>
+                  )
+                }
+              </FormItem>
+              <FormItem {...fromItemLayout} label="Username">
+                {
+                  getFieldDecorator('tapd_userName',{
+                    rules: [{
+                      required: true, message: '请填写Username'
+                    }],
+                    initialValue:tapd.userName
+                  })(
+                    <Input/>
+                  )
+                }
+              </FormItem>
+              <FormItem {...fromItemLayout} label="Password">
+                {
+                  getFieldDecorator('tapd_userPwd',{
+                    rules: [{
+                      required: true, message: '请填写Password'
+                    }],
+                    initialValue:tapd.userPwd
                   })(
                     <Input type="password"/>
                   )
