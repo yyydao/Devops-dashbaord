@@ -1,3 +1,9 @@
 .add-requirement .ant-card-extra{
   padding: 10px 0;
 }
+.rowClass{
+  height: 40px;
+}
+.ant-table-thead > tr.rowClass > th, .ant-table-tbody > tr.rowClass > td{
+  padding: 8px 16px;
+}

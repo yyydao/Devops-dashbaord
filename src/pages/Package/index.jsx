@@ -12,9 +12,19 @@ const BreadcrumbItem = Breadcrumb.Item
 const TabPane = Tabs.TabPane
 
 class Package extends Component {
+  constructor(){
+    super();
+    this.state ={
+      tapdID:''
+    }
+  }
   componentWillMount () {
-    console.log(this.props.projectId)
     window.localStorage.setItem('oldProjectId', this.props.projectId)
+    let data = this.props.location.query;
+    if(data){
+      let {tapdID} = data;
+      this.setState({tapdID})
+    }
   }
 
   render () {
@@ -28,7 +38,7 @@ class Package extends Component {
         <div className="devops-main-wrapper">
           <Tabs className="package-tab">
             <TabPane tab=" 提测包 " key="1">
-              <BuildTestPackage projectId={this.props.projectId}></BuildTestPackage>
+              <BuildTestPackage projectId={this.props.projectId} tapdID={this.state.tapdID}></BuildTestPackage>
             </TabPane>
             <TabPane tab="流水线包" key="2">
               <PipelinePackage projectId={this.props.projectId}></PipelinePackage>

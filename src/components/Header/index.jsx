@@ -42,7 +42,7 @@ class Header extends Component {
           <Col span={12}>
             <div className="platform-name">
               <Link to="/home">
-                <img src={require('@/assets/favicon.ico')} width={40} height={40} alt="DevOps平台"/>
+                <img src={require('@/assets/favicon.ico')} width={32} height={32} alt="DevOps平台"/>
                 <span>DevOps平台</span>
               </Link>
             </div>
