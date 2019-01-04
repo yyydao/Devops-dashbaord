@@ -297,6 +297,10 @@ class Dashboard extends Component {
           startTime=moment().subtract(3, 'month')
           endTime=moment()
           break;
+        default:
+          startTime=moment().subtract(13, 'days')
+          endTime=moment()
+          break;
       }
       this.setState({startTime,endTime},()=>this.getBasicInfor())
     }
