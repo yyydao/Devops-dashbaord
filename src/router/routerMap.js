@@ -151,12 +151,12 @@ export default [
     component: Requirement
   },
   {
-    path: '/STF',
+    path: '/stfDevices',
     name: 'STFList',
     component: STFList
   },
   {
-    path: '/STF/control/:deviceID',
+    path: '/stfDevices/control/:deviceID',
     name: 'STFControl',
     component: STFControl
   }

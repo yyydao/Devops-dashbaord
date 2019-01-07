@@ -158,6 +158,21 @@ export function formatTime (time, precision, option) {
   }
 }
 
+/**
+ * 把 秒 转换成对应的 秒、分、时
+ * @param time
+ * @returns {string}
+ */
+export function transSecond (time) {
+  if (time < 60) {
+    return `${time}秒`
+  } else if (time < 3600) {
+    return `${Math.ceil(time / 60)}分钟`
+  } else {
+    return `${Math.ceil(time / 3600)}小时`
+  }
+}
+
 export function makeHistoryStepCard (stepsList) {
   const category = uniq(stepsList.map(item => item.stepCategory))
   let tempStepObject = {}
