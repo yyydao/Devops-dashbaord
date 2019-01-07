@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Breadcrumb, Row, Col, Button, Pagination, message, Modal } from 'antd'
 import { connect } from 'react-redux'
-import { reqGet, reqPost, reqPostURLEncode } from '@/api/api'
+import { reqGet, reqPostURLEncode } from '@/api/api'
 import { Link } from 'react-router-dom'
 import './index.scss'
 import { transSecond } from '@/utils/utils'

@@ -1,0 +1,48 @@
+.control-meta{
+  border-top: 1px solid #E8E8E8;
+  padding: 24px;
+  background: #ffffff;
+  .phone-model{
+    margin-left: 12.5px;
+    font-size: 16px;
+    color: rgba(0,0,0,0.85);
+    line-height: 24px;
+  }
+  .control{
+    text-align: right;
+    &-time{
+      font-size: 14px;
+      color: rgba(0,0,0,0.45);
+      line-height: 22px;
+      i{
+        font-style: normal;
+        color: rgba(0,0,0,0.65);
+      }
+    }
+    &-button{
+      margin-left: 40px;
+    }
+  }
+}
+
+
+.modal-content-wrap{
+  min-width: 273px;
+  padding: 12px 0px ;
+  .popover-control {
+    //margin-left: 40px;
+    font-size: 14px;
+    color: rgba(0,0,0,0.65);
+    margin-bottom: 18px;
+  }
+  .popover-control-type{
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+    width: 8em;
+  }
+  .popover-control-span{
+    margin-left: 30px;
+  }
+}
+
