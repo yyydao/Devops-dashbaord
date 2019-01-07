@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Breadcrumb, Row, Col, Button, Pagination, message, Modal } from 'antd'
 import { connect } from 'react-redux'
-import { reqGet, reqPost,reqPostURLEncode } from '@/api/api'
+import { reqGet, reqPost, reqPostURLEncode } from '@/api/api'
 import { Link } from 'react-router-dom'
 import './index.scss'
 import { transSecond } from '@/utils/utils'
@@ -22,6 +22,7 @@ class STFList extends Component {
 
     this.state = {
       projectId: props.projectId,
+      curPage: 1,
       deviceList: [],
       modalVisible: false,
       modalModel: '',
@@ -72,104 +73,105 @@ class STFList extends Component {
   /**
    * @desc 获取设备列表
    */
-  async getDeviceList (page = 1) {
-    const { projectId } = this.state
-    const res = await reqGet('/stfDevices/devices', { projectId: projectId, page: page, limit: 6 })
+  async getDeviceList () {
+    const { projectId,curPage } = this.state
+    const res = await reqGet('/stfDevices/devices', { projectId: projectId, page: curPage, limit: 6 })
 
     if (await res.code === 0) {
-      const fakeList = [
-        {
-          'abi': 'arm64-v8a',
-          'model': 'MIX',
-          'serial': '66a91c01',
-          'version': '8.0.0',
-          'status': 1,
-          'height': 2040,
-          'width': 1080,
-          'manufacturer': 'XIAOMI',
-          'totalUseQuantity': 0,
-          'totalUseTime': 0,
-          'userName': '',
-          'iconPath': '/images/XIAOMIMIX.png',
-          'useTime': 1
-        },
-        {
-          'abi': 'arm64-v8a',
-          'model': 'MIX',
-          'serial': '66a91c01',
-          'version': '8.0.0',
-          'status': 4,
-          'height': 2040,
-          'width': 1080,
-          'manufacturer': 'XIAOMI',
-          'totalUseQuantity': 0,
-          'totalUseTime': 0,
-          'userName': '',
-          'iconPath': '/images/XIAOMIMIX.png',
-          'useTime': 1
-        },
-        {
-          'abi': 'arm64-v8a',
-          'model': 'MIX',
-          'serial': '66a91c01',
-          'version': '8.0.0',
-          'status': 2,
-          'height': 2040,
-          'width': 1080,
-          'manufacturer': 'XIAOMI',
-          'totalUseQuantity': 0,
-          'totalUseTime': 0,
-          'userName': 'wtx',
-          'iconPath': '/images/XIAOMIMIX.png',
-          'useTime': 1
-        },
-        {
-          'abi': 'arm64-v8a',
-          'model': 'MIX',
-          'serial': '66a91c01',
-          'version': '8.0.0',
-          'status': 3,
-          'height': 2040,
-          'width': 1080,
-          'manufacturer': 'XIAOMI',
-          'totalUseQuantity': 0,
-          'totalUseTime': 0,
-          'userName': '',
-          'iconPath': '/images/XIAOMIMIX.png',
-          'useTime': 1
-        },
-        {
-          'abi': 'arm64-v8a',
-          'model': 'MIX',
-          'serial': '66a91c01',
-          'version': '8.0.0',
-          'status': 4,
-          'height': 2040,
-          'width': 1080,
-          'manufacturer': 'XIAOMI',
-          'totalUseQuantity': 0,
-          'totalUseTime': 0,
-          'userName': '',
-          'iconPath': '/images/XIAOMIMIX.png',
-          'useTime': 1
-        },
-        {
-          'abi': 'arm64-v8a',
-          'model': 'MIX',
-          'serial': '66a91c01',
-          'version': '8.0.0',
-          'status': 4,
-          'height': 2040,
-          'width': 1080,
-          'manufacturer': 'XIAOMI',
-          'totalUseQuantity': 0,
-          'totalUseTime': 0,
-          'userName': '',
-          'iconPath': '/images/XIAOMIMIX.png',
-          'useTime': 1
-        }
-      ]
-      const deviceList = res.data && res.data.pageData && res.data.pageData.list.concat(fakeList)
+      // const fakeList = [
+      //   {
+      //     'abi': 'arm64-v8a',
+      //     'model': 'MIX',
+      //     'serial': '66a91c01',
+      //     'version': '8.0.0',
+      //     'status': 1,
+      //     'height': 2040,
+      //     'width': 1080,
+      //     'manufacturer': 'XIAOMI',
+      //     'totalUseQuantity': 0,
+      //     'totalUseTime': 0,
+      //     'userName': '',
+      //     'iconPath': '/images/XIAOMIMIX.png',
+      //     'useTime': 1
+      //   },
+      //   {
+      //     'abi': 'arm64-v8a',
+      //     'model': 'MIX',
+      //     'serial': '66a91c01',
+      //     'version': '8.0.0',
+      //     'status': 4,
+      //     'height': 2040,
+      //     'width': 1080,
+      //     'manufacturer': 'XIAOMI',
+      //     'totalUseQuantity': 0,
+      //     'totalUseTime': 0,
+      //     'userName': '',
+      //     'iconPath': '/images/XIAOMIMIX.png',
+      //     'useTime': 1
+      //   },
+      //   {
+      //     'abi': 'arm64-v8a',
+      //     'model': 'MIX',
+      //     'serial': '66a91c01',
+      //     'version': '8.0.0',
+      //     'status': 2,
+      //     'height': 2040,
+      //     'width': 1080,
+      //     'manufacturer': 'XIAOMI',
+      //     'totalUseQuantity': 0,
+      //     'totalUseTime': 0,
+      //     'userName': 'wtx',
+      //     'iconPath': '/images/XIAOMIMIX.png',
+      //     'useTime': 1
+      //   },
+      //   {
+      //     'abi': 'arm64-v8a',
+      //     'model': 'MIX',
+      //     'serial': '66a91c01',
+      //     'version': '8.0.0',
+      //     'status': 3,
+      //     'height': 2040,
+      //     'width': 1080,
+      //     'manufacturer': 'XIAOMI',
+      //     'totalUseQuantity': 0,
+      //     'totalUseTime': 0,
+      //     'userName': '',
+      //     'iconPath': '/images/XIAOMIMIX.png',
+      //     'useTime': 1
+      //   },
+      //   {
+      //     'abi': 'arm64-v8a',
+      //     'model': 'MIX',
+      //     'serial': '66a91c01',
+      //     'version': '8.0.0',
+      //     'status': 4,
+      //     'height': 2040,
+      //     'width': 1080,
+      //     'manufacturer': 'XIAOMI',
+      //     'totalUseQuantity': 0,
+      //     'totalUseTime': 0,
+      //     'userName': '',
+      //     'iconPath': '/images/XIAOMIMIX.png',
+      //     'useTime': 1
+      //   },
+      //   {
+      //     'abi': 'arm64-v8a',
+      //     'model': 'MIX',
+      //     'serial': '66a91c01',
+      //     'version': '8.0.0',
+      //     'status': 4,
+      //     'height': 2040,
+      //     'width': 1080,
+      //     'manufacturer': 'XIAOMI',
+      //     'totalUseQuantity': 0,
+      //     'totalUseTime': 0,
+      //     'userName': '',
+      //     'iconPath': '/images/XIAOMIMIX.png',
+      //     'useTime': 1
+      //   }
+      // ]
+      // const deviceList = res.data && res.data.pageData && res.data.pageData.list.concat(fakeList)
+      const deviceList = res.data && res.data.pageData && res.data.pageData.list
       this.setState({
         freeCount: res.data.freeCount,
         totalCount: res.data.totalCount,
@@ -179,6 +181,14 @@ class STFList extends Component {
     } else {
       message.error(res.msg)
     }
+  }
+
+  /**
+   * @desc 分页的改变事件
+   * @param page 修改成的页数
+   */
+  onPaginationChange = (page) => {
+    this.setState({ curPage: page }, () => this.getDeviceList())
   }
 
   applyForDevice = () => {
@@ -268,7 +278,7 @@ class STFList extends Component {
                   <div className="device-card">
                     <div className="device-info">
                       <div className="device-brand">
-                        <img src={item.iconPath} alt=""/>
+                        <img src={item.iconPath} alt="" onError={(e)=>{e.target.onerror = null; e.target.src=phoneBrandImage}}/>
                       </div>
                       <div className="device-detail-block">
                         <h4 className="device-name">{item.model}</h4>
@@ -292,7 +302,15 @@ class STFList extends Component {
               )
             })}
           </Row>
-          <Pagination size="small" total={totalCount} defaultPageSize={6} pageSize={6} showQuickJumper/>
+          <div className="stf-pager-wrapper">
+            <Pagination
+              onChange={(e) => {this.onPaginationChange(e)}}
+              size="small"
+              total={totalCount}
+              current={curPage}
+              defaultPageSize={6}
+              pageSize={6} showQuickJumper/>
+          </div>
         </div>
       </div>)
   }
