@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 import { reqPost, reqGet } from '@/api/api'
 import './list.scss'
 import favicon from '@/assets/favicon.ico'
@@ -69,7 +70,11 @@ class BuildTestPackage extends Component {
       //tapd
       tapdList: [],
       requirementList: [],
-      searchLoading:false
+      searchLoading:false,
+      checkAllRequire:false,
+      requireCheckedList:[],
+      storys:[],
+      demandName:''
     }
   }
 
@@ -128,6 +133,8 @@ class BuildTestPackage extends Component {
       if (res.code === 0) {
         this.setState({tapdList:res.data},()=>{
           if(tapdID){
+            this.updateRequirement()
+            this.getBranchList()
             this.setState({modalVisible:true})
           }
         })
@@ -375,7 +382,21 @@ class BuildTestPackage extends Component {
   }
 
   addBuild = () => {
-    const { formDataEnvID, passwdBuild, formDataName, formDataBranch, formDataDesc, formDataWiki, formDataReDesc, formDataUser, formDataPassword, dingTalk } = this.state
+    const { formDataEnvID,
+      passwdBuild,
+      formDataName,
+      formDataBranch,
+      formDataDesc,
+      formDataWiki,
+      formDataReDesc,
+      formDataUser,
+      formDataPassword,
+      dingTalk,
+      requireCheckedList,
+      storys,
+      tapdID,
+      demandName
+    } = this.state
     const url = '/package/addSubmit'
 
     if (!formDataEnvID) {
@@ -389,8 +410,8 @@ class BuildTestPackage extends Component {
       message.error('请选择“开发分支”')
       return
     }
-    if (!formDataDesc) {
-      message.error('请填写“提测概要”')
+    if (!formDataDesc&&requireCheckedList.length===0) {
+      message.error('请选择“提测需求”，或者填写“提测概要”')
       return
     }
     if (passwdBuild === 1) {
@@ -417,7 +438,10 @@ class BuildTestPackage extends Component {
       dingTalk: getMentions(dingTalk).join(','),
       userName: formDataUser,
       password: formDataPassword,
-      regression: formDataReDesc
+      regression: formDataReDesc,
+      storys:storys,
+      demandID:tapdID,
+      demandName:demandName
     }).then((res) => {
       this.toggleBuildModal(false)
 
@@ -453,7 +477,7 @@ class BuildTestPackage extends Component {
   }
 
   /**
-   * @desc 修改需求
+   * @desc 获取子需求
    */
   updateRequirement = () => {
     this.setState({searchLoading:true},()=>{
@@ -462,13 +486,50 @@ class BuildTestPackage extends Component {
         projectID:this.state.projectId
       }).then(res => {
         if(res.code === 0){
-          this.setState({requirementList:res.data[0].list,searchLoading:false})
+          if(res.data!==null){
+            this.setState({requirementList:res.data[0].list||[],demandName:res.data[0].name,searchLoading:false})
+          }else {
+            this.setState({requirementList:[],searchLoading:false})
+          }
         }else{
           message.error(res.msg);
         }
       })
     })
   }
+
+  /**
+   * @desc 全选事件
+   */
+  onCheckAllChange = (e) =>{
+    let requireCheckedList=[]
+    if(e===true){
+      this.state.requirementList.map(item=>{
+        requireCheckedList.push(item.id)
+        return item
+      })
+    }
+    this.setState({requireCheckedList,checkAllRequire:e},()=>{this.isCheckedAllRequire()})
+  }
+
+  /**
+   * @desc 是否全选需求
+   */
+  isCheckedAllRequire = () =>{
+    let checkAllRequire=true,storys=[]
+    let requirementList =JSON.parse(JSON.stringify(this.state.requirementList))
+    let requireCheckedList =JSON.parse(JSON.stringify(this.state.requireCheckedList))
+    requirementList.map(item=>{
+      if(requireCheckedList.indexOf(item.id) === -1){
+        checkAllRequire=false
+      }else{
+        storys.push(item.name)
+      }
+      return item
+    })
+    this.setState({checkAllRequire,storys})
+  }
+
   render () {
     const {
       totalCount,
@@ -498,7 +559,9 @@ class BuildTestPackage extends Component {
       tapdList,
       tapdID,
       requirementList,
-      searchLoading
+      searchLoading,
+      checkAllRequire,
+      requireCheckedList
     } = this.state
 
     return (
@@ -551,27 +614,29 @@ class BuildTestPackage extends Component {
           <div className="package-modal-item">
             <span>选择需求集合：</span>
             <Select placeholder="选择需求集合"
-                    style={{ width: 340 }} value={tapdID} onChange={(e)=>{this.setState({tapdID:e,requirementList:[]})}}>
+                    style={{ width: 340 }} value={tapdID} onChange={(e)=>{this.setState({tapdID:e,requirementList:[]},()=>{this.updateRequirement()})}}>
               {
                 tapdList.map((item,index)=>
                   <Option value={item.tapdID} key={index}>{item.demandName}</Option>
                 )
               }
             </Select>
-            <Button type="primary" style={{cssFloat:"right"}} onClick={()=>{this.updateRequirement()}}>修改需求</Button>
+            <Button type="primary" style={{cssFloat:"right"}}><Link to="/requirement">修改需求</Link></Button>
           </div>
-          {
-            requirementList.length>0&&<div className="package-modal-item">
-              <div style={{border:"1px solid #ccc",borderRadius:4,maxHeight:200,overflowY:"scroll",padding:"8px 24px"}}>
-                <CheckboxGroup>
-                  <Row>
-                    {requirementList.map((item,index)=><Col style={{ marginBottom: 8 }} key={index}><Checkbox value={item.id}>{item.name}</Checkbox></Col>)}
-                  </Row>
-                </CheckboxGroup>
+          <div className="package-modal-item">
+            <div style={{border:"1px solid #ccc",borderRadius:4,maxHeight:200,overflowY:"scroll",padding:"8px 24px"}}>
+              {requirementList.length>0&&
+              <div style={{marginBottom:8}}>
+                <Checkbox onChange={e=>{this.onCheckAllChange(e.target.checked)}} checked={checkAllRequire}>全选</Checkbox>
               </div>
+              }
+              <CheckboxGroup value={requireCheckedList} onChange={e=>{this.setState({requireCheckedList:e},()=>{this.isCheckedAllRequire()})}}>
+                <Row>
+                  {requirementList.map((item,index)=><Col style={{ marginBottom: 8 }} key={index}><Checkbox value={item.id}>{item.name}</Checkbox></Col>)}
+                </Row>
+              </CheckboxGroup>
             </div>
-          }
-
+          </div>
           <div className="package-modal-item">
               <TextArea
                 style={{ width: '100%', minHeight: 88 }}

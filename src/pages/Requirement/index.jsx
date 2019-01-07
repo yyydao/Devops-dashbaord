@@ -6,6 +6,7 @@ import { Button, Breadcrumb, Row, Col, Card, Table, Modal, Input, Progress, mess
 import './index.scss'
 
 const BreadcrumbItem = Breadcrumb.Item;
+const confirm = Modal.confirm;
 
 class Requirement extends Component{
   constructor(){
@@ -71,7 +72,7 @@ class Requirement extends Component{
         {
           title: '操作',
           width:"10%",
-          render: (text, record) => {if(record.id){return<div><a onClick={e=>this.deleteRequirement(e,record.demandID)}>删除</a><span style={{color:"#eee"}}> | </span><Link to={{pathname:'/package', query:{tapdID:record.id}}}>提测</Link></div>}}
+          render: (text, record) => {if(record.id){return<div><a onClick={()=>this.showConfirm(record.demandID)}>删除</a><span style={{color:"#eee"}}> | </span><Link to={{pathname:'/package', query:{tapdID:record.id}}}>提测</Link></div>}}
         }
       ],
       listData: [],
@@ -95,7 +96,13 @@ class Requirement extends Component{
         projectID:this.props.projectId
       }},()=>this.getTableData())
   }
-
+  showConfirm = (demandID) =>{
+    confirm({
+      title: '',
+      content: '该配置中可能存在重要数据，是否继续删除？（请谨慎操作！）',
+      onOk:()=> {this.deleteRequirement(demandID)}
+    });
+  }
   popoverContent = (statuses) =>{
     if(statuses){
       return <div>{statuses.map((item,index)=><p key={index}>{item.status}<span style={{paddingLeft:24}}>{item.size}个</span></p>)}</div>
@@ -153,7 +160,12 @@ class Requirement extends Component{
         projectID:this.props.projectId
       }).then(res => {
         if(res.code === 0){
-          this.setState({searchRequirement:res.data[0],searchLoading:false})
+          if(res.data===null){
+            message.info(`未查询到"${this.state.searchTapdId}"对应的需求，请确认输入的TAPD_ID是否正确`)
+            this.setState({searchRequirement:[],searchLoading:false})
+          }else{
+            this.setState({searchRequirement:res.data[0],searchLoading:false})
+          }
         }else{
           message.error(res.msg);
         }
@@ -201,7 +213,7 @@ class Requirement extends Component{
   /**
    * @desc 删除需求
    */
-  deleteRequirement = (e,id) => {
+  deleteRequirement = (id) => {
     reqPostURLEncode('demand/story/delete', {
       ID:id
     }).then(res => {
@@ -256,8 +268,8 @@ class Requirement extends Component{
         },
         {
           title: '状态',
-          dataIndex: 'status',
-          key: 'status',
+          dataIndex: 'statusStr',
+          key: 'statusStr',
           width:"8%"
         },
         {

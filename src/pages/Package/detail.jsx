@@ -63,6 +63,8 @@ class packageDetail extends Component {
       apkBuildId: '',
       dingTalk: '',
       jenkinsStatus: '',
+      storys:[],
+      demandName:'',
 
       passwdBuild: 0,
       formDataUser: '',
@@ -103,6 +105,8 @@ class packageDetail extends Component {
           passwdBuild,
           jenkinsStatus,
           ipaPath,
+          storys,
+          demandName
         } = res.data
 
         this.setState({
@@ -127,6 +131,8 @@ class packageDetail extends Component {
           passwdBuild,
           jenkinsStatus,
           ipaPath,
+          storys,
+          demandName
         })
         if (res.data.apkBuildId) {
           this.setState({ apkBuildId: res.data.apkBuildId })
@@ -270,7 +276,7 @@ class packageDetail extends Component {
       regressModalVisible, addConfirmLoading, dingTalk,
       status, apkBuildId, fileName, version, fileSize, buildTime, taskMaster, codeBranch, submitDetails,
       submitContent, rebuildContent, appUrl, imageUrl,
-      formDataUser, regressDesc, formDataPassword, passwdBuild, jenkinsStatus, buildId, envId
+      formDataUser, regressDesc, formDataPassword, passwdBuild, jenkinsStatus, buildId, envId, storys, demandName
     } = this.state
     const { onCancleSuccess } = this.props
     let cancleButton,rebuildButton,downloadButton,showLogButton
@@ -407,8 +413,11 @@ class packageDetail extends Component {
                     }
                   </Col>
                 </Row>
-                <p><span>提测需求：</span>V5.4.3</p>
-                <p className="packagedetail-info-desc"></p>
+                <p><span>提测需求：</span>{demandName}</p>
+                <div className="packagedetail-info-desc">
+                  {storys&&storys.length>0&& storys.map((item,index)=><p key={index}>item</p>)
+                  }
+                  </div>
                 <p><span>提测概要：</span></p>
                 <p className="packagedetail-info-desc">{submitContent}</p>
                 {

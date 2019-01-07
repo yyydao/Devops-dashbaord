@@ -450,7 +450,6 @@ class GrayscaleRelease extends Component{
    * @desc 全选事件
    */
   onCheckAllChange = (e) =>{
-    console.log(e)
     let areaCheckedList=[]
     if(e===true){
       this.state.areaList.map(item=>{
