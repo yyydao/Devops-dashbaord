@@ -69,7 +69,8 @@ class packageDetail extends Component {
 
       passwdBuild: 0,
       formDataUser: '',
-      formDataPassword: ''
+      formDataPassword: '',
+      buildUrl:''
     }
   }
 
@@ -107,7 +108,8 @@ class packageDetail extends Component {
           jenkinsStatus,
           ipaPath,
           storys,
-          demandName
+          demandName,
+          buildUrl
         } = res.data
 
         this.setState({
@@ -133,7 +135,8 @@ class packageDetail extends Component {
           jenkinsStatus,
           ipaPath,
           storys,
-          demandName
+          demandName,
+          buildUrl
         })
         if (res.data.apkBuildId) {
           this.setState({ apkBuildId: res.data.apkBuildId })
@@ -277,7 +280,7 @@ class packageDetail extends Component {
       regressModalVisible, addConfirmLoading, dingTalk,
       status, apkBuildId, fileName, version, fileSize, buildTime, taskMaster, codeBranch, submitDetails,
       submitContent, rebuildContent, appUrl, imageUrl,
-      formDataUser, regressDesc, formDataPassword, passwdBuild, jenkinsStatus, buildId, envId, storys, demandName
+      formDataUser, regressDesc, formDataPassword, passwdBuild, jenkinsStatus, buildId, envId, storys, demandName,buildUrl
     } = this.state
     const { onCancleSuccess } = this.props
     let cancleButton,rebuildButton,downloadButton,showLogButton
@@ -293,7 +296,7 @@ class packageDetail extends Component {
     if (status === 1 || status === 2) {
       cardTitle = <span style={{ color: '#F5222D' }}>失败</span>
       rebuildButton = <Button key={2} ghost type="primary" icon="redo" onClick={this.rebuild}>重新提交</Button>
-      showLogButton = <Button key={4} type="primary" style={{marginRight:16}}>查看日志</Button>
+      showLogButton = <Button key={4} type="primary" style={{marginRight:16}}><a href={buildUrl}>查看日志</a></Button>
       actionArray.push(showLogButton,rebuildButton)
     }
     if (jenkinsStatus === 1 || jenkinsStatus === 2) {
