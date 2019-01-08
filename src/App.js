@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Route from './router'
 import qs from 'qs'
-import getQueryString from './utils'
+import getQueryString from 'utils/utils'
 import { setProjectId, setUserInfo } from '@/store/action'
 
 class App extends Component {
