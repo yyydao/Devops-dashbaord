@@ -110,6 +110,7 @@ class STFList extends Component {
         })
       } else {
         message.error(res.msg)
+        this.getDeviceList()
       }
     })
 
