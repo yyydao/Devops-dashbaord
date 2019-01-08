@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import './index.scss'
+import qs from 'qs'
 
 import BuildTestPackage from './BuildTestPackage'
 import PipelinePackage from './PipelinePackage'
@@ -21,6 +22,8 @@ class Package extends Component {
   componentWillMount () {
     window.localStorage.setItem('oldProjectId', this.props.projectId)
     let data = this.props.location.query;
+    const parsedHash = qs.parse(this.props.location.search.slice(1))
+    console.log(parsedHash)
     if(data){
       let {tapdID} = data;
       this.setState({tapdID})
