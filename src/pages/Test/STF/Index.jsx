@@ -16,6 +16,13 @@ const enumStatusClass = {
   4: 'status unavailable'
 }
 
+const enumBlockStatusClass = {
+  1: 'device-status available',
+  2: 'device-status occupation',
+  3: 'device-status unavailable',
+  4: 'device-status unavailable'
+}
+
 class STFList extends Component {
   constructor (props) {
     super(props)
@@ -209,7 +216,7 @@ class STFList extends Component {
                       </div>
 
                     </div>
-                    <div className="device-status">
+                    <div className={enumBlockStatusClass[item.status]}>
                       <p className='status-line'><span
                         className={enumStatusClass[item.status]}></span>{this.getStatus(item.status, item.userName, item.useTime)}
                       </p>
