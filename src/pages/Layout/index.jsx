@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Switch, Route } from 'react-router-dom';
 import { message } from 'antd';
+import qs from 'qs'
 
 import Header from '@/components/Header';
 import SideBar from '@/components/SideBar';
@@ -27,7 +28,8 @@ class Layout extends Component{
         const token = getQueryString('token');
         this.setState({ token: token });
         setToken(token);
-
+      const parsedHash = qs.parse(this.props.location.search.slice(1))
+      console.log(parsedHash)
         this.getRouteList();
         this.getExcludeSideBarPath();
         this.getUserInfo();

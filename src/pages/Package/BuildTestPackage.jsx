@@ -392,7 +392,6 @@ class BuildTestPackage extends Component {
       formDataUser,
       formDataPassword,
       dingTalk,
-      requireCheckedList,
       storys,
       tapdID,
       demandName
@@ -410,7 +409,7 @@ class BuildTestPackage extends Component {
       message.error('请选择“开发分支”')
       return
     }
-    if (!formDataDesc&&requireCheckedList.length===0) {
+    if (!formDataDesc&&!tapdID) {
       message.error('请选择“提测需求”，或者填写“提测概要”')
       return
     }
@@ -530,6 +529,13 @@ class BuildTestPackage extends Component {
     this.setState({checkAllRequire,storys})
   }
 
+  onRequirementChange = (e) =>{
+    this.setState({tapdID:e,requirementList:[],requireCheckedList:[],storys:[]},()=>{
+      if(this.state.tapdID){
+        this.updateRequirement()
+      }
+    })
+  }
   render () {
     const {
       totalCount,
@@ -614,7 +620,8 @@ class BuildTestPackage extends Component {
           <div className="package-modal-item">
             <span>选择需求集合：</span>
             <Select placeholder="选择需求集合"
-                    style={{ width: 340 }} value={tapdID} onChange={(e)=>{this.setState({tapdID:e,requirementList:[]},()=>{this.updateRequirement()})}}>
+                    style={{ width: 340 }} value={tapdID} onChange={(e)=>{this.onRequirementChange(e)}}>
+              <Option value="">无</Option>
               {
                 tapdList.map((item,index)=>
                   <Option value={item.tapdID} key={index}>{item.demandName}</Option>

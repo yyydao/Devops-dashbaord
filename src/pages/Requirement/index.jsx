@@ -43,13 +43,13 @@ class Requirement extends Component{
           dataIndex: 'statuses',
           key: 'statuses',
           width:"8%",
-          render:(text,record)=>
-            <Popover
-              placement="bottom"
-              content={this.popoverContent(record.statuses)}
-              trigger="click">
-              <a>查看</a>
-            </Popover>
+          render:(text,record)=>{
+            if(record.list){
+              return <Popover placement="bottom" content={this.popoverContent(record.statuses)} trigger="click"><a>查看</a></Popover>
+            }else{
+              return record.statusStr
+            }
+          }
         },
         {
           title: '创建人',
