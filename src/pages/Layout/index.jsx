@@ -8,7 +8,7 @@ import Header from '@/components/Header';
 import SideBar from '@/components/SideBar';
 import Routers from '@/router/routerMap';
 import { reqPost } from '@/api/api';
-import { setToken, setUserInfo } from '@/store/action';
+import { setToken, setUserInfo, setProjectId } from '@/store/action';
 import { getQueryString } from '@/utils/utils';
 
 class Layout extends Component{
@@ -30,6 +30,10 @@ class Layout extends Component{
         setToken(token);
       const parsedHash = qs.parse(this.props.location.search.slice(1))
       console.log(parsedHash)
+      if(parsedHash.project){
+        localStorage.setItem("projectId",parsedHash.project)
+        this.props.setProjectId(parsedHash.project)
+      }
         this.getRouteList();
         this.getExcludeSideBarPath();
         this.getUserInfo();
@@ -104,4 +108,4 @@ export default connect(state => {
     return {
         projectId: state.projectId
     }
-}, { setToken, setUserInfo })(Layout);
+}, { setToken, setUserInfo, setProjectId })(Layout);

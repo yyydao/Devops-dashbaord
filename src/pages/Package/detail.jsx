@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 import { reqPost, reqGet } from '@/api/api'
 
 import {
@@ -296,6 +297,9 @@ class packageDetail extends Component {
       actionArray.push(showLogButton,rebuildButton)
     }
     if (jenkinsStatus === 1 || jenkinsStatus === 2) {
+      if(jenkinsStatus === 1 ){
+        cardTitle = <span style={{ color: '#1890FF' }}>等待构建...</span>
+      }
       cancleButton = <Button key={3} ghost type="primary" icon="redo"
                              onClick={(e) => {onCancleSuccess(null, buildId, envId)}}>取消构建</Button>
       actionArray.push(cancleButton)
@@ -413,7 +417,7 @@ class packageDetail extends Component {
                     }
                   </Col>
                 </Row>
-                <p><span>提测需求：</span>{demandName}</p>
+                <p><span>提测需求：</span><Link to={'/requirement'}>{demandName}</Link></p>
                 <div className="packagedetail-info-desc" style={{padding:8,overflowY:"scroll",maxHeight:200}}>
                   {storys&&storys.length>0&& storys.map((item,index)=><p key={index} style={{marginBottom:4}}>{item}</p>)
                   }
