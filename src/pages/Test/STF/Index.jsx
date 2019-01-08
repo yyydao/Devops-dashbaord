@@ -63,7 +63,7 @@ class STFList extends Component {
     const enumStatusContet = {
       1: '设备闲置，可申请试用',
       2: `${user}正在使用设备 (${transSecond(useTime_in_second)})`,
-      3: '',
+      3: `${user}正在使用设备 (${transSecond(useTime_in_second)})`,
       4: '设备断开连接'
     }
 
@@ -74,103 +74,10 @@ class STFList extends Component {
    * @desc 获取设备列表
    */
   async getDeviceList () {
-    const { projectId,curPage } = this.state
+    const { projectId, curPage } = this.state
     const res = await reqGet('/stfDevices/devices', { projectId: projectId, page: curPage, limit: 6 })
 
     if (await res.code === 0) {
-      // const fakeList = [
-      //   {
-      //     'abi': 'arm64-v8a',
-      //     'model': 'MIX',
-      //     'serial': '66a91c01',
-      //     'version': '8.0.0',
-      //     'status': 1,
-      //     'height': 2040,
-      //     'width': 1080,
-      //     'manufacturer': 'XIAOMI',
-      //     'totalUseQuantity': 0,
-      //     'totalUseTime': 0,
-      //     'userName': '',
-      //     'iconPath': '/images/XIAOMIMIX.png',
-      //     'useTime': 1
-      //   },
-      //   {
-      //     'abi': 'arm64-v8a',
-      //     'model': 'MIX',
-      //     'serial': '66a91c01',
-      //     'version': '8.0.0',
-      //     'status': 4,
-      //     'height': 2040,
-      //     'width': 1080,
-      //     'manufacturer': 'XIAOMI',
-      //     'totalUseQuantity': 0,
-      //     'totalUseTime': 0,
-      //     'userName': '',
-      //     'iconPath': '/images/XIAOMIMIX.png',
-      //     'useTime': 1
-      //   },
-      //   {
-      //     'abi': 'arm64-v8a',
-      //     'model': 'MIX',
-      //     'serial': '66a91c01',
-      //     'version': '8.0.0',
-      //     'status': 2,
-      //     'height': 2040,
-      //     'width': 1080,
-      //     'manufacturer': 'XIAOMI',
-      //     'totalUseQuantity': 0,
-      //     'totalUseTime': 0,
-      //     'userName': 'wtx',
-      //     'iconPath': '/images/XIAOMIMIX.png',
-      //     'useTime': 1
-      //   },
-      //   {
-      //     'abi': 'arm64-v8a',
-      //     'model': 'MIX',
-      //     'serial': '66a91c01',
-      //     'version': '8.0.0',
-      //     'status': 3,
-      //     'height': 2040,
-      //     'width': 1080,
-      //     'manufacturer': 'XIAOMI',
-      //     'totalUseQuantity': 0,
-      //     'totalUseTime': 0,
-      //     'userName': '',
-      //     'iconPath': '/images/XIAOMIMIX.png',
-      //     'useTime': 1
-      //   },
-      //   {
-      //     'abi': 'arm64-v8a',
-      //     'model': 'MIX',
-      //     'serial': '66a91c01',
-      //     'version': '8.0.0',
-      //     'status': 4,
-      //     'height': 2040,
-      //     'width': 1080,
-      //     'manufacturer': 'XIAOMI',
-      //     'totalUseQuantity': 0,
-      //     'totalUseTime': 0,
-      //     'userName': '',
-      //     'iconPath': '/images/XIAOMIMIX.png',
-      //     'useTime': 1
-      //   },
-      //   {
-      //     'abi': 'arm64-v8a',
-      //     'model': 'MIX',
-      //     'serial': '66a91c01',
-      //     'version': '8.0.0',
-      //     'status': 4,
-      //     'height': 2040,
-      //     'width': 1080,
-      //     'manufacturer': 'XIAOMI',
-      //     'totalUseQuantity': 0,
-      //     'totalUseTime': 0,
-      //     'userName': '',
-      //     'iconPath': '/images/XIAOMIMIX.png',
-      //     'useTime': 1
-      //   }
-      // ]
-      // const deviceList = res.data && res.data.pageData && res.data.pageData.list.concat(fakeList)
       const deviceList = res.data && res.data.pageData && res.data.pageData.list
       this.setState({
         freeCount: res.data.freeCount,
@@ -209,10 +116,16 @@ class STFList extends Component {
   }
 
   async componentDidMount (): void {
+    console.log(this.state)
     const { projectId } = this.state
     const res = await reqGet('/stfDevices/checkUserUseDevice', { projectId: projectId })
-    const using = await res.code === 3
-    console.log(using)
+    const using = await res.code === 0
+    if (using) {
+      const serial = await res.data.serial
+      this.props.history.replace({
+        pathname: `stfDevices/control/${serial}`,
+      })
+    }
   }
 
   componentWillMount (): void {
@@ -278,10 +191,13 @@ class STFList extends Component {
                   <div className="device-card">
                     <div className="device-info">
                       <div className="device-brand">
-                        <img src={item.iconPath} alt="" onError={(e)=>{e.target.onerror = null; e.target.src=phoneBrandImage}}/>
+                        <img src={item.iconPath} alt="" onError={(e) => {
+                          e.target.onerror = null
+                          e.target.src = phoneBrandImage
+                        }}/>
                       </div>
                       <div className="device-detail-block">
-                        <h4 className="device-name">{item.model}</h4>
+                        <h4 className="device-name">{item.manufacturer} {item.model}</h4>
                         <p className="device-detail">版本：{item.version}</p>
                         <p className="device-detail">分辨率：{item.width}*{item.height}</p>
                         <p className="device-detail">使用次数：{item.totalUseQuantity}</p>

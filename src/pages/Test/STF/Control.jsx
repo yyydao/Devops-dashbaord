@@ -87,7 +87,6 @@ class STFControl extends Component {
           <Row type='flex' align='space-around' justify='middle' className='task-item-row'>
             <Col span={12}>
               <Popover style={{ width: '198px' }}
-                       placement="bottomRight"
                        trigger="hover"
                        content={popoverContent}
                        arrowPointAtCenter
@@ -107,6 +106,7 @@ class STFControl extends Component {
           </Row>
         </div>
         <iframe
+          title={'SFB'}
           // onLoad={() => {
           //   const obj = ReactDOM.findDOMNode(this)
           //   this.setState({
