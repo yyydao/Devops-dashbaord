@@ -20,6 +20,7 @@ class STFControl extends Component {
       useTimeInSecond: 0,
       model: '',
       deviceInfo: {},
+      stfPath: '',
     }
   }
 
@@ -53,10 +54,6 @@ class STFControl extends Component {
   componentWillMount () {
     const serial = this.props.match.params.deviceID
     console.log(serial)
-    this.setState({
-      serial,
-      url: `http://10.100.12.52/#!/control/${serial}`
-    })
   }
 
   componentWillUnmount () {
@@ -72,11 +69,21 @@ class STFControl extends Component {
         deviceInfo,
         useTimeInSecond: deviceInfo && deviceInfo['useTime'] ? deviceInfo.useTime : 1,
         model: deviceInfo && deviceInfo.model,
+        serial: deviceInfo && deviceInfo.serial,
+        stfPath: deviceInfo && deviceInfo.stfPath,
+
       }, () => {
         this.startTimer()
+        this.setState({ url: `${this.state.stfPath}#!/control/${this.state.serial}` })
       })
     } else {
-
+      message.error(`${res.msg}`, 2.5)
+        .then(()=>message.info(`即将跳转到列表页`),2.5)
+        .then(()=>{
+          this.props.history.replace({
+            pathname: `/stfDevices`,
+          })
+        })
     }
   }
 
@@ -126,12 +133,6 @@ class STFControl extends Component {
         </div>
         <iframe
           title={'SFB'}
-          // onLoad={() => {
-          //   const obj = ReactDOM.findDOMNode(this)
-          //   this.setState({
-          //     'iFrameHeight': obj.contentWindow.document.body.scrollHeight + 'px'
-          //   })
-          // }}
           ref="iframe"
           src={url}
           width="100%"

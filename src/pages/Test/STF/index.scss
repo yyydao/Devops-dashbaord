@@ -85,6 +85,16 @@
 
   .device-status {
     border-top: 1px solid #eeeeee;
+    &.available {
+      background: #f6ffec;
+    }
+
+    &.unavailable {
+      background: #fff1f0;
+    }
+    &.occupation {
+      background: #e6f7ff;
+    }
   }
 
   .status {
