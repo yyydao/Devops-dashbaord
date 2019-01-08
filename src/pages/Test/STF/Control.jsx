@@ -17,7 +17,7 @@ class STFControl extends Component {
       iFrameHeight: '0px',
       url: '',
       popoverContent: '',
-      useTimeInSecond: '',
+      useTimeInSecond: 0,
       model: '',
       deviceInfo: {},
     }
@@ -36,6 +36,20 @@ class STFControl extends Component {
     }
   }
 
+  tick = () => {
+    this.setState({ useTimeInSecond: (this.state.useTimeInSecond + 1) })
+  }
+
+  startTimer = () => {
+    console.log('rrrrunnnnn~')
+    clearInterval(this.timer)
+    this.timer = setInterval(this.tick.bind(this), 1000)
+  }
+
+  stopTimer = () => {
+    clearInterval(this.timer)
+  }
+
   componentWillMount () {
     const serial = this.props.match.params.deviceID
     console.log(serial)
@@ -45,6 +59,10 @@ class STFControl extends Component {
     })
   }
 
+  componentWillUnmount () {
+    clearInterval(this.timer)
+  }
+
   async componentDidMount (): void {
     const { projectId } = this.state
     const res = await reqGet('/stfDevices/checkUserUseDevice', { projectId: projectId })
@@ -52,13 +70,14 @@ class STFControl extends Component {
     if (res.code === 0) {
       this.setState({
         deviceInfo,
-        useTimeInSecond: deviceInfo && deviceInfo['useTime'] ? deviceInfo.useTime : 0,
+        useTimeInSecond: deviceInfo && deviceInfo['useTime'] ? deviceInfo.useTime : 1,
         model: deviceInfo && deviceInfo.model,
+      }, () => {
+        this.startTimer()
       })
     } else {
 
     }
-
   }
 
   render () {
