@@ -414,8 +414,8 @@ class packageDetail extends Component {
                   </Col>
                 </Row>
                 <p><span>提测需求：</span>{demandName}</p>
-                <div className="packagedetail-info-desc">
-                  {storys&&storys.length>0&& storys.map((item,index)=><p key={index}>item</p>)
+                <div className="packagedetail-info-desc" style={{padding:8,overflowY:"scroll",maxHeight:200}}>
+                  {storys&&storys.length>0&& storys.map((item,index)=><p key={index} style={{marginBottom:4}}>{item}</p>)
                   }
                   </div>
                 <p><span>提测概要：</span></p>
