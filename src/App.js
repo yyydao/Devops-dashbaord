@@ -14,6 +14,7 @@ class App extends Component {
       localStorage.setItem('projectId',projectId)
     }
     console.log(projectId)
+    console.log(parsedHash)
     const userInfo = JSON.parse(localStorage.getItem('userInfo'))
     this.props.setProjectId(projectId)
     this.props.setUserInfo(userInfo)
