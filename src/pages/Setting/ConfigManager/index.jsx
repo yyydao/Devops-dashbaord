@@ -217,6 +217,10 @@ class ConfigManager extends Component {
   onImportydScan = (index) =>{
     reqGet('http://10.100.98.163:7702/getScenario').then(res => {
       if (parseInt(res.code, 0) === 200) {
+        if(!res.data||res.data.length===0){
+          message.info("云盾场景暂时无法导入")
+          return
+        }
         /**由于后台不给加全选字段，只能自己添加一个全选**/
         let object = {}, arr = [];
         object.name = "全选";
