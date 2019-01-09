@@ -412,9 +412,10 @@ class packageDetail extends Component {
           title="查看日志"
           className="logModal"
           visible={logModalVisible}
+          style={{maxHeight:500,minWidth:500,maxWidth:800}}
           onCancel={()=>{this.setState({logModalVisible:false,logLoading:false})}}
           confirmLoading={logLoading}>
-          <p>{logData}</p>
+          <div dangerouslySetInnerHTML = {{ __html:logData }}/>
         </Modal>
         <Skeleton loading={this.state.skeletonLoading}>
           <div className='detail-card'>
