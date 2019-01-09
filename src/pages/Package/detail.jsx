@@ -411,6 +411,7 @@ class packageDetail extends Component {
         <Modal
           title="查看日志"
           className="logModal"
+          width="80%"
           visible={logModalVisible}
           onCancel={()=>{this.setState({logModalVisible:false,logLoading:false})}}
           confirmLoading={logLoading}>
