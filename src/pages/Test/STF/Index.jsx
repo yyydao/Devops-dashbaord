@@ -194,6 +194,7 @@ class STFList extends Component {
           <Row gutter={24}>
 
             {deviceList.map((item, index) => {
+              const title = `${item.manufacturer} ${item.model}`
               return (
                 <Col span={8} key={index}>
                   <div className="device-card">
@@ -205,7 +206,7 @@ class STFList extends Component {
                         }}/>
                       </div>
                       <div className="device-detail-block">
-                        <h4 className="device-name">{item.manufacturer} {item.model}</h4>
+                        <h4 className="device-name" title={title}>{title}</h4>
                         <p className="device-detail">版本：{item.version}</p>
                         <p className="device-detail">分辨率：{item.width}*{item.height}</p>
                         <p className="device-detail">使用次数：{item.totalUseQuantity}</p>
