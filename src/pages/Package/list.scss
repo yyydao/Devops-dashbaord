@@ -354,3 +354,8 @@
 a:hover {
   color: #000;
 }
+.logModal{
+  .ant-modal-footer{
+    display: none;
+  }
+}

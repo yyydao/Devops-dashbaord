@@ -1,7 +1,7 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
-import { reqPost, reqGet } from '@/api/api'
+import React, {Component} from 'react'
+import {connect} from 'react-redux'
+import {Link} from 'react-router-dom'
+import {reqPost, reqGet} from '@/api/api'
 
 import {
   Button,
@@ -14,11 +14,11 @@ import {
   Form,
 } from 'antd'
 
-const { TextArea } = Input
+const {TextArea} = Input
 const FormItem = Form.Item
 
 class packageDetail extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.state = {
@@ -64,13 +64,14 @@ class packageDetail extends Component {
       apkBuildId: '',
       dingTalk: '',
       jenkinsStatus: '',
-      storys:[],
-      demandName:'',
+      storys: [],
+      demandName: '',
 
       passwdBuild: 0,
       formDataUser: '',
       formDataPassword: '',
-      buildUrl:''
+      buildUrl: '',
+      logModalVisible: false
     }
   }
 
@@ -139,7 +140,7 @@ class packageDetail extends Component {
           buildUrl
         })
         if (res.data.apkBuildId) {
-          this.setState({ apkBuildId: res.data.apkBuildId })
+          this.setState({apkBuildId: res.data.apkBuildId})
         }
       } else {
         Modal.info({
@@ -147,7 +148,7 @@ class packageDetail extends Component {
           content: (
             <p>{res.msg}</p>
           ),
-          onOk () {
+          onOk() {
           }
         })
       }
@@ -170,7 +171,7 @@ class packageDetail extends Component {
         content: (
           <p>{res.code === 0 ? '已成功发起构建' : res.msg}</p>
         ),
-        onOk () {
+        onOk() {
         }
       })
     })
@@ -191,7 +192,8 @@ class packageDetail extends Component {
           content: (
             <p>{res.msg}</p>
           ),
-          onOk () {}
+          onOk() {
+          }
         })
       } else {
         message.success('取消成功')
@@ -203,7 +205,7 @@ class packageDetail extends Component {
    * @desc 回归
    */
   versionRegress = () => {
-    const { envId, taskMaster, codeBranch, submitContent, submitDetails, regressDesc, formDataUser, formDataPassword, dingTalk } = this.state
+    const {envId, taskMaster, codeBranch, submitContent, submitDetails, regressDesc, formDataUser, formDataPassword, dingTalk} = this.state
     if (!this.state.regressDesc) {
       message.error('请输入回归内容')
       return
@@ -251,7 +253,7 @@ class packageDetail extends Component {
     })
   }
 
-  componentWillMount () {
+  componentWillMount() {
     this.getDetail()
     this.setState({
       appUrl: `${window.location.origin}/package/download?buildId=${this.state.buildId}&token=${this.props.token ? this.props.token : ''}`,
@@ -261,7 +263,7 @@ class packageDetail extends Component {
     })
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     this.setState({
       buildId: nextProps.buildId,
       appUrl: `${window.location.origin}/package/download?buildId=${nextProps.buildId}&token=${this.props.token ? this.props.token : ''}`,
@@ -271,21 +273,21 @@ class packageDetail extends Component {
     })
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     clearTimeout(this.state.timer)
   }
 
-  render () {
+  render() {
     const {
       regressModalVisible, addConfirmLoading, dingTalk,
       status, apkBuildId, fileName, version, fileSize, buildTime, taskMaster, codeBranch, submitDetails,
       submitContent, rebuildContent, appUrl, imageUrl,
-      formDataUser, regressDesc, formDataPassword, passwdBuild, jenkinsStatus, buildId, envId, storys, demandName,buildUrl
+      formDataUser, regressDesc, formDataPassword, passwdBuild, jenkinsStatus, buildId, envId, storys, demandName, buildUrl, logModalVisible
     } = this.state
-    const { onCancleSuccess } = this.props
-    let cancleButton,rebuildButton,downloadButton,showLogButton
+    const {onCancleSuccess} = this.props
+    let cancleButton, rebuildButton, downloadButton, showLogButton
     let actionArray = []
-    let cardTitle = <span style={{ color: '#1890FF' }}>正在构建...</span>
+    let cardTitle = <span style={{color: '#1890FF'}}>正在构建...</span>
 
     if (status === 0) {
       cardTitle = fileName
@@ -294,29 +296,31 @@ class packageDetail extends Component {
       actionArray.push(downloadButton)
     }
     if (status === 1 || status === 2) {
-      cardTitle = <span style={{ color: '#F5222D' }}>失败</span>
+      cardTitle = <span style={{color: '#F5222D'}}>失败</span>
       rebuildButton = <Button key={2} ghost type="primary" icon="redo" onClick={this.rebuild}>重新提交</Button>
-      showLogButton = <Button key={4} type="primary" style={{marginRight:16}}><a href={buildUrl}>查看日志</a></Button>
-      actionArray.push(showLogButton,rebuildButton)
+      showLogButton = <Button key={4} type="primary" style={{marginRight: 16}} onClick={()=>{this.setState({logModalVisible:true})}}>查看日志</Button>
+      actionArray.push(showLogButton, rebuildButton)
     }
     if (jenkinsStatus === 1 || jenkinsStatus === 2) {
-      if(jenkinsStatus === 1 ){
-        cardTitle = <span style={{ color: '#1890FF' }}>等待构建...</span>
+      if (jenkinsStatus === 1) {
+        cardTitle = <span style={{color: '#1890FF'}}>等待构建...</span>
       }
       cancleButton = <Button key={3} ghost type="primary" icon="redo"
-                             onClick={(e) => {onCancleSuccess(null, buildId, envId)}}>取消构建</Button>
+                             onClick={(e) => {
+                               onCancleSuccess(null, buildId, envId)
+                             }}>取消构建</Button>
       actionArray.push(cancleButton)
     }
 
 
     const formItemLayout = {
       labelCol: {
-        xs: { span: 24 },
-        sm: { span: 6 },
+        xs: {span: 24},
+        sm: {span: 6},
       },
       wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 16 },
+        xs: {span: 24},
+        sm: {span: 16},
       },
     }
 
@@ -366,7 +370,7 @@ class packageDetail extends Component {
               label="回归内容"
             >
                           <TextArea rows={4} placeholder="回归内容（多行）" value={regressDesc} onChange={(e) => {
-                            this.setState({ regressDesc: e.target.value })
+                            this.setState({regressDesc: e.target.value})
                           }}/>
             </FormItem>
             {
@@ -377,7 +381,7 @@ class packageDetail extends Component {
                   label="构建账号"
                 >
                   <Input placeholder="构建账号" value={formDataUser} onChange={(e) => {
-                    this.setState({ formDataUser: e.target.value })
+                    this.setState({formDataUser: e.target.value})
                   }}/>
                 </FormItem>
                 <FormItem
@@ -385,12 +389,18 @@ class packageDetail extends Component {
                   label="构建账号"
                 >
                   <Input placeholder="构建账号" value={formDataPassword} onChange={(e) => {
-                    this.setState({ formDataPassword: e.target.value })
+                    this.setState({formDataPassword: e.target.value})
                   }}/>
                 </FormItem>
               </div>
             }
           </Form>
+        </Modal>
+        <Modal
+          title="查看日志"
+          className="logModal"
+          visible={logModalVisible} onCancel={()=>{this.setState({logModalVisible:false})}}>
+          <p>{buildUrl}</p>
         </Modal>
         <Skeleton loading={this.state.skeletonLoading}>
           <div className='detail-card'>
@@ -413,18 +423,19 @@ class packageDetail extends Component {
                   </Col>
                   <Col span={6}>
                     {status === 0 &&
-                    <div style={{ width: 120 }}>
+                    <div style={{width: 120}}>
                       <img width='140' src={imageUrl} alt="下载二维码"/>
-                      <p style={{ textAlign: 'center', color: '#000' }}>【钉钉】扫码安装</p>
+                      <p style={{textAlign: 'center', color: '#000'}}>【钉钉】扫码安装</p>
                     </div>
                     }
                   </Col>
                 </Row>
                 <p><span>提测需求：</span><Link to={'/requirement'}>{demandName}</Link></p>
-                <div className="packagedetail-info-desc" style={{padding:8,overflowY:"scroll",maxHeight:200}}>
-                  {storys&&storys.length>0&& storys.map((item,index)=><p key={index} style={{marginBottom:4}}>{item}</p>)
+                <div className="packagedetail-info-desc" style={{padding: 8, overflowY: "scroll", maxHeight: 200}}>
+                  {storys && storys.length > 0 && storys.map((item, index) => <p key={index}
+                                                                                 style={{marginBottom: 4}}>{item}</p>)
                   }
-                  </div>
+                </div>
                 <p><span>提测概要：</span></p>
                 <p className="packagedetail-info-desc">{submitContent}</p>
                 {
