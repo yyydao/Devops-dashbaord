@@ -215,7 +215,12 @@ class ConfigManager extends Component {
    * @desc 云盾场景导入
    */
   onImportydScan = (index) =>{
-    reqGet('http://10.100.98.163:7702/getScenario').then(res => {
+    let scenesUrl= this.state.envData[index].scenesUrl
+    if(!scenesUrl){
+      message.info("云盾场景暂时无法导入")
+      return
+    }
+    reqGet(scenesUrl).then(res => {
       if (parseInt(res.code, 0) === 200) {
         if(!res.data||res.data.length===0){
           message.info("云盾场景暂时无法导入")

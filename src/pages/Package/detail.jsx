@@ -71,7 +71,9 @@ class packageDetail extends Component {
       formDataUser: '',
       formDataPassword: '',
       buildUrl: '',
-      logModalVisible: false
+      logModalVisible: false,
+      logData:'',
+      logLoading:false
     }
   }
 
@@ -259,10 +261,20 @@ class packageDetail extends Component {
       appUrl: `${window.location.origin}/package/download?buildId=${this.state.buildId}&token=${this.props.token ? this.props.token : ''}`,
       ipaPath: this.state.ipaPath,
       // passwdBuild: passwdBuild
-    }, () => {
     })
   }
-
+  showLog = () => {
+    this.setState({logModalVisible:true,logLoading:true},()=>{
+      reqGet(this.state.buildUrl).then((res) => {
+        if (res.code === 0) {
+          this.setState({logData:res.data,logLoading:false})
+        } else {
+          this.setState({logLoading:false})
+          message.error(res.msg)
+        }
+      })
+    })
+  }
   componentWillReceiveProps(nextProps) {
     this.setState({
       buildId: nextProps.buildId,
@@ -282,7 +294,7 @@ class packageDetail extends Component {
       regressModalVisible, addConfirmLoading, dingTalk,
       status, apkBuildId, fileName, version, fileSize, buildTime, taskMaster, codeBranch, submitDetails,
       submitContent, rebuildContent, appUrl, imageUrl,
-      formDataUser, regressDesc, formDataPassword, passwdBuild, jenkinsStatus, buildId, envId, storys, demandName, buildUrl, logModalVisible
+      formDataUser, regressDesc, formDataPassword, passwdBuild, jenkinsStatus, buildId, envId, storys, demandName, logLoading, logModalVisible, logData
     } = this.state
     const {onCancleSuccess} = this.props
     let cancleButton, rebuildButton, downloadButton, showLogButton
@@ -298,7 +310,7 @@ class packageDetail extends Component {
     if (status === 1 || status === 2) {
       cardTitle = <span style={{color: '#F5222D'}}>失败</span>
       rebuildButton = <Button key={2} ghost type="primary" icon="redo" onClick={this.rebuild}>重新提交</Button>
-      showLogButton = <Button key={4} type="primary" style={{marginRight: 16}} onClick={()=>{this.setState({logModalVisible:true})}}>查看日志</Button>
+      showLogButton = <Button key={4} type="primary" style={{marginRight: 16}} onClick={()=>{this.showLog()}}>查看日志</Button>
       actionArray.push(showLogButton, rebuildButton)
     }
     if (jenkinsStatus === 1 || jenkinsStatus === 2) {
@@ -399,8 +411,10 @@ class packageDetail extends Component {
         <Modal
           title="查看日志"
           className="logModal"
-          visible={logModalVisible} onCancel={()=>{this.setState({logModalVisible:false})}}>
-          <p>{buildUrl}</p>
+          visible={logModalVisible}
+          onCancel={()=>{this.setState({logModalVisible:false,logLoading:false})}}
+          confirmLoading={logLoading}>
+          <p>{logData}</p>
         </Modal>
         <Skeleton loading={this.state.skeletonLoading}>
           <div className='detail-card'>
