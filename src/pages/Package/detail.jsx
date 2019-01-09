@@ -264,7 +264,7 @@ class packageDetail extends Component {
     })
   }
   showLog = () => {
-    this.setState({logModalVisible:true,logLoading:true},()=>{
+    this.setState({logModalVisible:true,logLoading:true,logData:""},()=>{
       reqGet(this.state.buildUrl).then((res) => {
         if (res.code === 0) {
           this.setState({logData:res.data,logLoading:false})
