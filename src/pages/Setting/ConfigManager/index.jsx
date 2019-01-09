@@ -283,7 +283,7 @@ class ConfigManager extends Component {
               }}>
             <TextArea autosize value={importJson} onChange={(e) => {
               this.setState({importJson: e.target.value})
-            }}></TextArea>
+            }}/>
           </Modal>
         </div>
     )
