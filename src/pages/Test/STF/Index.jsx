@@ -68,7 +68,7 @@ class STFList extends Component {
 
   getStatus = (status, user, useTime_in_second) => {
     const enumStatusContet = {
-      1: '设备闲置，可申请试用',
+      1: '设备闲置，可申请使用',
       2: `${user}正在使用设备 (${transSecond(useTime_in_second)})`,
       3: `${user}正在使用设备 (${transSecond(useTime_in_second)})`,
       4: '设备断开连接'
