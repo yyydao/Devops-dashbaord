@@ -77,7 +77,7 @@ class Requirement extends Component{
       ],
       listData: [],
       pagination: {
-        pageSize: 7,
+        pageSize: 10,
         total: 0,
         showTotal: null
       },
