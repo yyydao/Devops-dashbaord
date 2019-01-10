@@ -162,7 +162,7 @@ class Requirement extends Component{
         if(res.code === 0){
           if(res.data===null){
             message.info(`未查询到"${this.state.searchTapdId}"对应的需求，请确认输入的TAPD_ID是否正确`)
-            this.setState({searchRequirement:[],searchLoading:false})
+            this.setState({searchRequirement:{},searchLoading:false})
           }else{
             this.setState({searchRequirement:res.data[0],searchLoading:false})
           }
@@ -181,7 +181,8 @@ class Requirement extends Component{
       message.info("请填入Tapd关联的父需求id")
       return
     }
-    if(!this.state.searchRequirement.name) {
+    if(!this.state.searchRequirement.name||this.state.searchRequirement.id!==this.state.searchTapdId) {
+      this.setState({searchRequirement:{}})
       message.info("请点击刷新，获得需求集合名称")
       return
     }
@@ -195,6 +196,8 @@ class Requirement extends Component{
         this.setState({
           modalVisible:false,
           searchLoading:false,
+          searchTapdId:'',
+          searchRequirement:{},
           params:{limit: 10, page: 1, projectID:this.props.projectId}
           },()=>this.getTableData())
       }else{
@@ -207,7 +210,7 @@ class Requirement extends Component{
    * @desc 关闭Modal的事件
    */
   onCloseModal = () => {
-    this.setState({modalVisible:false,searchLoading:false,searchRequirement:{}})
+    this.setState({modalVisible:false,searchLoading:false,searchRequirement:{},searchTapdId:''})
   }
 
   /**
