@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Breadcrumb, Row, Col, Icon, Popover, Button, message } from 'antd'
-import { transSecond } from '@/utils/utils'
+import { formatSecond } from '@/utils/utils'
 import { Link } from 'react-router-dom'
 import { reqGet, reqPostURLEncode } from '@/api/api'
 import './control.scss'
@@ -101,7 +101,7 @@ class STFControl extends Component {
       <p className='popover-control'><span className='popover-control-type'>总使用次数：</span><span
         className='popover-control-span'>{deviceInfo['totalUseQuantity']}</span></p>
       <p className='popover-control'><span className='popover-control-type'>总使用时长：</span><span
-        className='popover-control-span'>{transSecond(deviceInfo['totalUseTime'])}</span></p>
+        className='popover-control-span'>{formatSecond(deviceInfo['totalUseTime'])}</span></p>
     </div>
     return (
       <div style={{ height: '100%' }}>
@@ -123,7 +123,7 @@ class STFControl extends Component {
               </Popover>
             </Col>
             <Col span={12} className='control'>
-              <span className='control-time'>已使用：<i>{transSecond(useTimeInSecond)}</i></span>
+              <span className='control-time'>已使用：<i>{formatSecond(useTimeInSecond)}</i></span>
               <Button type='default'
                       className='control-button'
                       onClick={() => this.endUp()}

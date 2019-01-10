@@ -5,7 +5,8 @@ import {
   composeEditFinalStep,
   isJsonString,
   checkPermission,
-  transSecond
+  transSecond,
+  formatSecond,
 } from './utils'
 
 describe('utils', () => {
@@ -333,9 +334,14 @@ describe('utils', () => {
     expect(transSecond(time)).toBe(`1分钟`)
   })
 
+  it('should return 1 min', () => {
+    const time = 70
+    expect(transSecond(time)).toBe(`1分钟`)
+  })
+
   it('should return 60 min', () => {
     const time = 3599
-    expect(transSecond(time)).toBe(`60分钟`)
+    expect(transSecond(time)).toBe(`59分钟`)
   })
 
   it('should return 1 hour', () => {
@@ -346,6 +352,39 @@ describe('utils', () => {
   it('should return 2 hour', () => {
     const time = 7200
     expect(transSecond(time)).toBe(`2小时`)
+  })
+
+  it('should return 1min10s',()=>{
+    const time = 70
+    expect(formatSecond(time)).toBe(`1分钟10秒`)
+  })
+  it('should return 2min10s',()=>{
+    const time = 130
+    expect(formatSecond(time)).toBe(`2分钟10秒`)
+  })
+  it('should return 59min59s',()=>{
+    const time = 3599
+    expect(formatSecond(time)).toBe(`59分钟59秒`)
+  })
+  it('should return 1h0min0s',()=>{
+    const time = 3600
+    expect(formatSecond(time)).toBe(`1小时0分钟0秒`)
+  })
+  it('should return 59min59s',()=>{
+    const time = 3601
+    expect(formatSecond(time)).toBe(`1小时0分钟1秒`)
+  })
+  it('should return 1h1min1s',()=>{
+    const time = 3661
+    expect(formatSecond(time)).toBe(`1小时1分钟1秒`)
+  })
+  it('should return 1h1min1s',()=>{
+    const time = 3901
+    expect(formatSecond(time)).toBe(`1小时5分钟1秒`)
+  })
+  it('should return 2h0min0s',()=>{
+    const time = 7200
+    expect(formatSecond(time)).toBe(`2小时0分钟0秒`)
   })
 
 })
