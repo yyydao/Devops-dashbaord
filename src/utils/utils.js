@@ -167,9 +167,24 @@ export function transSecond (time) {
   if (time < 60) {
     return `${time}秒`
   } else if (time < 3600) {
-    return `${Math.ceil(time / 60)}分钟`
+    return `${Math.floor(time / 60)}分钟`
   } else {
-    return `${Math.ceil(time / 3600)}小时`
+    return `${Math.floor(time / 3600)}小时`
+  }
+}
+
+/**
+ * 把 秒 转换成对应的 d-h-m-s
+ * @param time
+ * @returns {string}
+ */
+export function formatSecond (time) {
+  if (time < 60) {
+    return `${time}秒`
+  } else if (time < 3600) {
+    return `${Math.floor(time / 60)}分钟${Math.floor(time % 60)}秒`
+  } else {
+    return `${Math.floor(time / 3600)}小时${(Math.floor(time / 60)) % 60}分钟${Math.floor(time % 60)}秒`
   }
 }
 
