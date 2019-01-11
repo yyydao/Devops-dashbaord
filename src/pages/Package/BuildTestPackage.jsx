@@ -322,7 +322,12 @@ class BuildTestPackage extends Component {
   toggleBuildModal = (isShow = true) => {
     const newState = {
       modalVisible: isShow,
-      modalConfirmLoading: false
+      modalConfirmLoading: false,
+      checkAllRequire:false,
+      tapdID:'',
+      requirementList:[],
+      requireCheckedList:[],
+      storys:[]
     }
 
     if (isShow) {
@@ -530,7 +535,7 @@ class BuildTestPackage extends Component {
   }
 
   onRequirementChange = (e) =>{
-    this.setState({tapdID:e,requirementList:[],requireCheckedList:[],storys:[]},()=>{
+    this.setState({tapdID:e,requirementList:[],requireCheckedList:[],storys:[],checkAllRequire:false},()=>{
       if(this.state.tapdID){
         this.updateRequirement()
       }
