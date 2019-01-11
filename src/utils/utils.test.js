@@ -1,5 +1,6 @@
 import {
   getQueryString,
+  getHashPath,
   makeHistoryStepCard,
   constructStepCard,
   composeEditFinalStep,
@@ -28,6 +29,25 @@ describe('utils', () => {
     const token = getQueryString('token')
 
     expect(token).toEqual(`eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1Mzk4NDczNzAsInN1YiI6IlRELTQwNDMiLCJ0ZF9wYXlsb2FkIjoie1wiZW1wSWRcIjpcIjJjZTJkMmU5LTg0Y2MtNGRiMi05NmJjLWYxMzA1ZTM5YmM1YlwiLFwiaWRcIjpcInpKYVYwVzJVRENrUU1HOXNcIixcImVtcE5vXCI6XCJURC00MDQzXCIsXCJleHBpcmVUaW1lXCI6XCIyMDE4LTEwLTE4VDE2OjIyOjUwLjE3N1wifSIsImV4cCI6MTUzOTg1MDk3MH0.rZ-Irzgsak_klxD2Zb-4dM4TOyr_6NzQGCmeBNEJLKs`)
+
+  })
+
+  it('should get hash patch',()=>{
+    window.history.pushState({}, 'Test Title', `http://localhost:2000/?token=eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NDcxNzM1NjcsInN1YiI6IlRELTExOTE0IiwidGRfcGF5bG9hZCI6IntcImVtcElkXCI6XCIyOWZiZWUyNi1iYWQ0LTQ2N2YtYWI4YS04YzIzMmRmYjhhNWRcIixcImlkXCI6XCJYR21SbmVRM002SzB4VElQXCIsXCJlbXBOb1wiOlwiVEQtMTE5MTRcIixcImV4cGlyZVRpbWVcIjpcIjIwMTktMDEtMTJUMTA6MjY6MDcuMjMyXCJ9IiwiZXhwIjoxNTQ3MjU5OTY3fQ.RiwlkB7VCdwwlnGfpqiPW_G0daA2b-rO5G0JjLPiB5M&setToken=true#/dashboard/63`)
+    expect(window.location.href).toEqual('http://localhost:2000/?token=eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NDcxNzM1NjcsInN1YiI6IlRELTExOTE0IiwidGRfcGF5bG9hZCI6IntcImVtcElkXCI6XCIyOWZiZWUyNi1iYWQ0LTQ2N2YtYWI4YS04YzIzMmRmYjhhNWRcIixcImlkXCI6XCJYR21SbmVRM002SzB4VElQXCIsXCJlbXBOb1wiOlwiVEQtMTE5MTRcIixcImV4cGlyZVRpbWVcIjpcIjIwMTktMDEtMTJUMTA6MjY6MDcuMjMyXCJ9IiwiZXhwIjoxNTQ3MjU5OTY3fQ.RiwlkB7VCdwwlnGfpqiPW_G0daA2b-rO5G0JjLPiB5M&setToken=true#/dashboard/63')
+    const hash = getHashPath()
+
+    expect(hash).toEqual(`/dashboard/63`)
+
+  })
+
+
+  it('should get hash patch stf',()=>{
+    window.history.pushState({}, 'Test Title', `http://localhost:2000/?token=eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NDcxNzM1NjcsInN1YiI6IlRELTExOTE0IiwidGRfcGF5bG9hZCI6IntcImVtcElkXCI6XCIyOWZiZWUyNi1iYWQ0LTQ2N2YtYWI4YS04YzIzMmRmYjhhNWRcIixcImlkXCI6XCJYR21SbmVRM002SzB4VElQXCIsXCJlbXBOb1wiOlwiVEQtMTE5MTRcIixcImV4cGlyZVRpbWVcIjpcIjIwMTktMDEtMTJUMTA6MjY6MDcuMjMyXCJ9IiwiZXhwIjoxNTQ3MjU5OTY3fQ.RiwlkB7VCdwwlnGfpqiPW_G0daA2b-rO5G0JjLPiB5M&setToken=true#/stfDevices`)
+    expect(window.location.href).toEqual('http://localhost:2000/?token=eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NDcxNzM1NjcsInN1YiI6IlRELTExOTE0IiwidGRfcGF5bG9hZCI6IntcImVtcElkXCI6XCIyOWZiZWUyNi1iYWQ0LTQ2N2YtYWI4YS04YzIzMmRmYjhhNWRcIixcImlkXCI6XCJYR21SbmVRM002SzB4VElQXCIsXCJlbXBOb1wiOlwiVEQtMTE5MTRcIixcImV4cGlyZVRpbWVcIjpcIjIwMTktMDEtMTJUMTA6MjY6MDcuMjMyXCJ9IiwiZXhwIjoxNTQ3MjU5OTY3fQ.RiwlkB7VCdwwlnGfpqiPW_G0daA2b-rO5G0JjLPiB5M&setToken=true#/stfDevices')
+    const hash = getHashPath()
+
+    expect(hash).toEqual(`/stfDevices`)
 
   })
 

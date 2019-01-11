@@ -19,6 +19,7 @@ class STFControl extends Component {
       popoverContent: '',
       useTimeInSecond: 0,
       model: '',
+      manufacturer: '',
       deviceInfo: {},
       stfPath: '',
     }
@@ -71,6 +72,7 @@ class STFControl extends Component {
         model: deviceInfo && deviceInfo.model,
         serial: deviceInfo && deviceInfo.serial,
         stfPath: deviceInfo && deviceInfo.stfPath,
+        manufacturer: deviceInfo && deviceInfo.manufacturer,
 
       }, () => {
         this.startTimer()
@@ -78,8 +80,8 @@ class STFControl extends Component {
       })
     } else {
       message.error(`${res.msg}`, 2.5)
-        .then(()=>message.info(`即将跳转到列表页`),2.5)
-        .then(()=>{
+        .then(() => message.info(`即将跳转到列表页`), 2.5)
+        .then(() => {
           this.props.history.replace({
             pathname: `/stfDevices`,
           })
@@ -88,10 +90,10 @@ class STFControl extends Component {
   }
 
   render () {
-    const { url, useTimeInSecond, model, deviceInfo } = this.state
+    const { url, useTimeInSecond, model, deviceInfo, manufacturer } = this.state
     const popoverContent = <div className='modal-content-wrap'>
       <p className='popover-control'><span className='popover-control-type'>型号：</span><span
-        className='popover-control-span'>{deviceInfo['model']}</span></p>
+        className='popover-control-span'>{deviceInfo['manufacturer']} {deviceInfo['model']}</span></p>
       <p className='popover-control'><span className='popover-control-type'>版本：</span><span
         className='popover-control-span'>{deviceInfo['version']}</span></p>
       <p className='popover-control'><span className='popover-control-type'>分辨率：</span><span
@@ -119,7 +121,7 @@ class STFControl extends Component {
                        placement="bottom"
               >
                 <Icon style={{ 'cursor': 'pointer', fontSize: 24, verticalAlign: 'middle' }} type='mobile'/>
-                <span className='phone-model'>{model}</span>
+                <span className='phone-model'>{manufacturer} {model}</span>
               </Popover>
             </Col>
             <Col span={12} className='control'>

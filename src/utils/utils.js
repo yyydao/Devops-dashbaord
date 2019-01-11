@@ -8,6 +8,11 @@ export function getQueryString (name) {
   return null
 }
 
+export function getHashPath () {
+  const parsedHash = window.location.hash.substr(1)
+  return parsedHash
+}
+
 export function stepParamstoObject (notFormattedSteps) {
   console.log(notFormattedSteps)
   let obj = {}
