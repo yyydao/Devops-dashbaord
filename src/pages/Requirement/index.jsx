@@ -132,7 +132,7 @@ class Requirement extends Component{
         pagination.showTotal = () => {
           return '共 ' + res.data.totalCount+ ' 条';
         };
-        if(this.state.params.page>res.data.totalPage){
+        if(this.state.params.page>res.data.totalPage&&res.data.totalPage!==0){
           params.page=res.data.totalPage
           this.setState({params},()=>{this.getTableData()})
         }else{
