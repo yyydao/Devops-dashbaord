@@ -132,13 +132,17 @@ class Requirement extends Component{
         pagination.showTotal = () => {
           return '共 ' + res.data.totalCount+ ' 条';
         };
-
-        this.setState({
-          loading: false,
-          listData: res.data.list,
-          pagination,
-          params
-        });
+        if(this.state.params.page>res.data.totalPage){
+          params.page=res.data.totalPage
+          this.setState({params},()=>{this.getTableData()})
+        }else{
+          this.setState({
+            loading: false,
+            listData: res.data.list,
+            pagination,
+            params
+          });
+        }
       }else{
         this.setState({ loading: false });
         message.error(res.msg);
@@ -340,7 +344,7 @@ class Requirement extends Component{
           onCancel={()=>{this.onCloseModal()}}>
           <Spin spinning={searchLoading}>
           <Row>
-            <Col span={20}><Input placeholder='TAPD_ID（填入Tapd关联的父需求id）' value={searchTapdId} onChange={(e)=>{this.setState({searchTapdId:e.target.value})}}/></Col>
+            <Col span={20}><Input placeholder='TAPD_ID（填入Tapd关联的父需求id）' value={searchTapdId} onChange={(e)=>{this.setState({searchTapdId:e.target.value.trim()})}}/></Col>
             <Col span={4}><Button type="primary" style={{cssFloat:"right"}} onClick={()=>this.getRequirement()}>刷新</Button></Col>
           </Row>
           <Input placeholder="需求集合名称" readOnly style={{marginTop:16}} value={searchRequirement.name}/>
