@@ -45,9 +45,10 @@ class STFList extends Component {
 
   showModal = (item) => {
     console.log(item)
+    const title = `${item.manufacturer} ${item.model}`
     this.setState({
 
-      modalModel: item.model,
+      modalModel: title,
       modalVersion: item.version,
       modalWidth: item.width,
       modalHeight: item.height,
