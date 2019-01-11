@@ -114,7 +114,22 @@ class PipelineChart1 extends Component {
       legend: {
         data:legend
       },
-      color:["#2ec7c9", "#b6a2de", "#5ab1ef", "#ffb980", "#d87a80", "#8d98b3", "#e5cf0d", "#97b552", "#95706d", "#dc69aa", "#07a2a4", "#9a7fd1", "#588dd5", "#f5994e", "#c05050", "#59678c", "#c9ab00", "#7eb00a", "#6f5553", "#c14089",'#1890ff','#2fc25b','#facc14','#f5222d','#8543e0','#13c2c2','#ad4e00','#919191'],
+      color:['#1890FF',
+        '#73C9E6',
+        '#13C2C2',
+        '#6CD9B3',
+        '#2FC25B',
+        '#9DD96C',
+        '#FACC14',
+        '#E6965C',
+        '#F04864',
+        '#D66BCA',
+        '#8543E0',
+        '#8E77ED',
+        '#3436C7',
+        '#737EE6',
+        '#223273',
+        '#7EA2E6'],
       grid: {
         left: '3%',
         right: '4%',
