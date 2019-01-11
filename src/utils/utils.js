@@ -1,6 +1,5 @@
 import uniq from 'lodash.uniq'
 import toPairs from 'lodash.topairs'
-import qs from 'qs'
 
 export function getQueryString (name) {
   var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i')
