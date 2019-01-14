@@ -105,7 +105,7 @@ class Requirement extends Component{
   }
   popoverContent = (statuses) =>{
     if(statuses){
-      return <div>{statuses.map((item,index)=><p key={index}>{item.status}<span style={{paddingLeft:24}}>{item.size}个</span></p>)}</div>
+      return <div>{statuses.map((item,index)=><p key={index} className="status-container"><span>{item.status}</span><span>{item.size}个</span></p>)}</div>
     }else{
       return <div>暂无状态</div>
     }
