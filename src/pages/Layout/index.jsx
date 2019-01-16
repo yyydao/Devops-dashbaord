@@ -24,10 +24,10 @@ class Layout extends Component {
   }
 
   componentWillMount () {
-    let { setToken } = this.props
-    const token = getQueryString('token')
-    this.setState({ token: token })
-    setToken(token)
+    // let { setToken } = this.props
+    // const token = getQueryString('token')
+    // this.setState({ token: token })
+    // setToken(token)
     const parsedHash = qs.parse(this.props.location.search.slice(1))
     console.log(parsedHash)
     if (parsedHash.project) {

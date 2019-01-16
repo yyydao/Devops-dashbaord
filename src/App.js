@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Route from './router'
-import { setProjectId, setUserInfo } from '@/store/action'
+import { setProjectId, setUserInfo,setLoginInfo } from '@/store/action'
 
 class App extends Component {
   componentWillMount () {
@@ -19,4 +19,4 @@ class App extends Component {
 
 export default connect(state => {
   return {}
-}, { setProjectId, setUserInfo })(App)
+}, { setProjectId, setUserInfo,setLoginInfo })(App)

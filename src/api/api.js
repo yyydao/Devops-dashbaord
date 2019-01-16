@@ -24,6 +24,22 @@ axios.interceptors.request.use(
 
 axios.interceptors.response.use(
   response => {
+    if (response.data.code === 401) {
+      confirm({
+        title: '提示信息',
+        content: '登录信息过期，请重新登录！',
+        onOk () {
+          localStorage.removeItem('token')
+          localStorage.removeItem('projectId')
+          console.log(window.location)
+          window.location.href = '#/login'
+        },
+        onCancel () {}
+      })
+      return response
+    }
+
+
     if (response.data.code === 495) {
       confirm({
         title: '提示信息',
@@ -31,7 +47,7 @@ axios.interceptors.response.use(
         onOk () {
           localStorage.removeItem('token')
           localStorage.removeItem('projectId')
-          window.location.href = 'http://uas.tuandai888.com'
+          window.location.href = '#/login'
         },
         onCancel () {}
       })

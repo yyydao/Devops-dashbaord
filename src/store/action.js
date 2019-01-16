@@ -5,6 +5,12 @@ export function setToken(token){
     return { type: types.SET_TOKEN, data: token };
 }
 
+export function setLoginInfo(loginInfo){
+
+  return { type: types.SET_USERINFO, data: loginInfo };
+}
+
+
 export function setUserInfo(userInfo){
     return { type: types.SET_USERINFO, data: userInfo };
 }
