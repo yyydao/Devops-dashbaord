@@ -12,8 +12,9 @@ import { setToken, setUserInfo, setProjectId } from '@/store/action'
 import { getQueryString } from '@/utils/utils'
 
 class Layout extends Component {
-  constructor () {
-    super()
+  constructor (props) {
+    console.log(props)
+    super(props)
     this.state = {
       token: null,
       excludeSideBar: [],
@@ -80,8 +81,10 @@ class Layout extends Component {
   }
 
   render () {
+    console.log(`Layout/index.jsx render`)
+    console.log(this.state)
     if (!this.state.token) {
-      // window.location.href = 'http://uas.tuandai888.com';
+      // window.location.href = '#/login';
     }
 
     const sideBarShow = !this.state.excludeSideBar.includes(this.props.location.pathname)

@@ -3,11 +3,12 @@ import { connect } from 'react-redux'
 import { reqPost } from '@/api/api'
 import { Form, Icon, Input, Button, Card, message } from 'antd'
 import { setLoginInfo, setToken } from '@/store/action.js'
+import { withRouter } from 'react-router-dom';
 import './index.scss'
 
 const FormItem = Form.Item
 
-class LoginForm extends Component {
+class Login extends Component {
   constructor () {
     super()
     this.state = {
@@ -26,7 +27,7 @@ class LoginForm extends Component {
     }).then(res => {
       if (res.code === 0) {
         setToken(res.token)
-        this.props.history.push('/home')
+        this.props.history.push('/')
       } else {
         message.error(res.msg)
       }
@@ -66,9 +67,10 @@ class LoginForm extends Component {
   }
 }
 
-const WrappedLoginForm = Form.create()(LoginForm)
-export default connect(state => {
+Login = Form.create()(Login)
+
+export default withRouter(connect(state => {
   return {
     loginInfo: state.loginInfo
   }
-}, { setToken, setLoginInfo })(WrappedLoginForm)
+}, { setToken, setLoginInfo })(Login))

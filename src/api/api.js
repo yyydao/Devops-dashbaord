@@ -11,8 +11,11 @@ axios.defaults.headers['X-Requested-With'] = 'XMLHttpRequest'
 axios.interceptors.request.use(
   config => {
     const token = localStorage.getItem('token')
+    console.log(token)
     if (token) {
       config.headers.token = token
+    }else{
+
     }
 
     return config
@@ -25,17 +28,18 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
   response => {
     if (response.data.code === 401) {
-      confirm({
-        title: '提示信息',
-        content: '登录信息过期，请重新登录！',
-        onOk () {
-          localStorage.removeItem('token')
-          localStorage.removeItem('projectId')
-          console.log(window.location)
-          window.location.href = '#/login'
-        },
-        onCancel () {}
-      })
+      // confirm({
+      //   title: '提示信息',
+      //   content: '登录信息过期，请重新登录！',
+      //   onOk () {
+      //     localStorage.removeItem('token')
+      //     localStorage.removeItem('projectId')
+      //     console.log(window.location)
+      //
+      //   },
+      //   onCancel () {}
+      // })
+      window.location.href = '#/login'
       return response
     }
 
@@ -47,7 +51,7 @@ axios.interceptors.response.use(
         onOk () {
           localStorage.removeItem('token')
           localStorage.removeItem('projectId')
-          window.location.href = '#/login'
+          // window.location.href = '#/login'
         },
         onCancel () {}
       })
