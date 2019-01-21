@@ -1,6 +1,7 @@
 import Welcome from '@/pages/Welcome'
 
 import Home from '@/pages/Home'
+import Login from '@/pages/Login'
 import Personal from '@/pages/Home/Personal'
 
 import MemberManager from '@/pages/Setting/MemberManager'
@@ -35,6 +36,11 @@ export default [
     path: '/',
     name: 'home',
     component: Home,
+    hideSideBar: true
+  },{
+    path: '/login',
+    name: 'login',
+    component: Login,
     hideSideBar: true
   },
   {

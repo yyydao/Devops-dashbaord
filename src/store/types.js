@@ -6,3 +6,4 @@ export const SET_PROJECTID = 'SET_PROJECTID';
 export const SET_STEP = 'SET_STEP';
 export const SET_STEPS = 'SET_STEPS';
 export const REMOVE_STEPS = 'REMOVE_STEPS';
+export const SETLOGININFO = 'SET_LOGININFO';
