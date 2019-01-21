@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Route from './router'
-import { setProjectId, setUserInfo,setLoginInfo } from '@/store/action'
+// import { setProjectId, setUserInfo,setLoginInfo } from '@/store/action'
+import { setProjectId } from '@/store/actions/project'
+import { setUserInfo } from '@/store/actions/login'
 
 class App extends Component {
   componentWillMount () {
@@ -16,7 +18,12 @@ class App extends Component {
     )
   }
 }
-
+//
+// export default connect(state => {
+//   return {}
+// }, { setProjectId, setUserInfo,setLoginInfo })(App)//
 export default connect(state => {
   return {}
-}, { setProjectId, setUserInfo,setLoginInfo })(App)
+}, { setProjectId, setUserInfo })(App)
+
+// export default App

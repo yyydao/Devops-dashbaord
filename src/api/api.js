@@ -2,11 +2,14 @@ import axios from 'axios'
 import qs from 'qs'
 import { message, Modal } from 'antd'
 import utilConfig from './config'
+import store from '@/store'
 
 const confirm = Modal.confirm
 
 axios.defaults.baseURL = utilConfig.baseUrl
 axios.defaults.headers['X-Requested-With'] = 'XMLHttpRequest'
+
+console.log(store.getState().token)
 
 axios.interceptors.request.use(
   config => {

@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { Menu, Icon, Select, message, } from 'antd'
 
 import { reqPost } from '@/api/api'
-import { setPermissionList, setProjectId } from '@/store/action'
+// import { setPermissionList, setProjectId } from '@/store/action'
 
 //SVG ICON
 import DashboardSvg from '@/assets/svg/nav_icon_dashboard_default.svg'
@@ -63,7 +63,7 @@ class SideBar extends Component {
   }
 
   componentWillUnmount () {
-    this.props.setProjectId(null)
+    // this.props.setProjectId(null)
     this.setState({
       defaultCurrentMenu: [],
       currentMenu: '',
@@ -74,7 +74,7 @@ class SideBar extends Component {
   selectChange = (value) => {
     console.log('change select type')
     sessionStorage.clear()
-    this.props.setProjectId(value)
+    // this.props.setProjectId(value)
     this.props.projectIdChange(value)
     const currentMenu = sessionStorage.getItem('currentMenu')
     const menuOpenKeys = JSON.parse(sessionStorage.getItem('menuOpenKeys'))
@@ -93,12 +93,12 @@ class SideBar extends Component {
   }
 
   getPermissionList () {
-    let { setPermissionList } = this.props
+    // let { setPermissionList } = this.props
 
     reqPost('/permission/list').then(res => {
       if (parseInt(res.code, 0) === 0) {
 
-        setPermissionList(res.data.permissionList)
+        // setPermissionList(res.data.permissionList)
         const menuList = this.getMenuList(res.data.menuList)
         this.setState({ menuList })
         if (menuList && menuList.length > 0) {
@@ -203,4 +203,10 @@ export default connect(state => {
   return {
     projectId: state.projectId
   }
-}, { setPermissionList, setProjectId })(SideBar)
+}, {})(SideBar)
+//
+// export default connect(state => {
+//   return {
+//     projectId: state.projectId
+//   }
+// }, { setPermissionList, setProjectId })(SideBar)

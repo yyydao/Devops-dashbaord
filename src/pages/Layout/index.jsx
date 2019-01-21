@@ -8,7 +8,7 @@ import Header from '@/components/Header'
 import SideBar from '@/components/SideBar'
 import Routers from '@/router/routerMap'
 import { reqPost } from '@/api/api'
-import { setToken, setUserInfo, setProjectId } from '@/store/action'
+// import { setToken, setUserInfo, setProjectId } from '@/store/action'
 import { getQueryString } from '@/utils/utils'
 
 class Layout extends Component {
@@ -106,9 +106,15 @@ class Layout extends Component {
     )
   }
 }
+//
+// export default connect(state => {
+//   return {
+//     projectId: state.projectId
+//   }
+// }, { setToken, setUserInfo, setProjectId })(Layout)
 
 export default connect(state => {
   return {
     projectId: state.projectId
   }
-}, { setToken, setUserInfo, setProjectId })(Layout)
+}, {})(Layout)

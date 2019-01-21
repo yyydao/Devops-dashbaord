@@ -12,7 +12,7 @@ import CpuChart from './chart/CpuChart'
 import { reqGet } from '@/api/api'
 import './index.scss'
 import DataSet from '@antv/data-set'
-import { setProjectId } from '@/store/action'
+// import { setProjectId } from '@/store/action'
 import moment from 'moment';
 
 const BreadcrumbItem = Breadcrumb.Item
@@ -58,8 +58,8 @@ class Dashboard extends Component {
   componentWillMount () {
     let id = this.props.match.params.id
     if (id) {
-      let { setProjectId } = this.props
-      setProjectId(id)
+      // let { setProjectId } = this.props
+      // setProjectId(id)
     } else {
       id = window.localStorage.getItem('oldProjectId')
     }
@@ -490,4 +490,9 @@ export default connect(state => {
   return {
     // projectId: state.projectId
   }
-}, { setProjectId })(Dashboard)
+}, {  })(Dashboard)
+// export default connect(state => {
+//   return {
+//     // projectId: state.projectId
+//   }
+// }, { setProjectId })(Dashboard)
