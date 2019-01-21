@@ -27,6 +27,9 @@ import Requirement from '@/pages/Requirement'
 import STFList from '@/pages/Test/STF/Index'
 import STFControl from '@/pages/Test/STF/Control'
 
+//系统管理
+import MenuManager from '@/pages/SystemManager/MenuManager'
+
 export default [
   {
     path: '/',
@@ -159,5 +162,10 @@ export default [
     path: '/stfDevices/control/:deviceID',
     name: 'STFControl',
     component: STFControl
+  },
+  {
+    path: '/menuManager',
+    name:'menuManager',
+    component:MenuManager
   }
 ]
