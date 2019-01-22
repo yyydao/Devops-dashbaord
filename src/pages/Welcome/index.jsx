@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { setProjectId } from '@/store/action';
+import { setProjectId } from '@/store/actions/project';
 
 class Welcome extends Component{
 

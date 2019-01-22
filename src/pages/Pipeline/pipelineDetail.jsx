@@ -5,7 +5,7 @@ import qs from 'qs'
 import './detail.scss'
 import { formatTime, constructStepCard, checkPermission } from '@/utils/utils'
 import { reqGet, reqDelete, reqPostURLEncode } from '@/api/api'
-import { setStep, removeSteps, setSteps } from '@/store/action'
+import { setStep, removeSteps, setSteps } from '@/store/actions/pipeline'
 
 import ExecutionReport from '@/components/ExecutionReport'
 import { track } from 'bizcharts'

@@ -17,7 +17,7 @@ import Patching from '@/assets/svg/pipelining_icon_patching.svg'
 import Package from '@/assets/svg/pipelining_icon_package.svg'
 import Custom from '@/assets/svg/pipelining_icon_custom.svg'
 
-import { setStep, removeSteps, setSteps } from '@/store/action'
+import { setStep, removeSteps, setSteps } from '@/store/actions/pipeline'
 
 import {
   Steps,

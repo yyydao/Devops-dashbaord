@@ -1,11 +1,11 @@
 import { combineReducers } from 'redux';
-import login from './login';
+import auth from './auth';
 import project from './project';
 import pipeline from './pipeline';
 import menu from './menu';
 
 const rootReducer = combineReducers({
-  login,
+  auth,
   project,
   pipeline,
   menu

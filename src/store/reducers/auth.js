@@ -1,14 +1,12 @@
-// import * as types from '../types'
-
 import {
   LOGIN_PENDING,
   LOGIN_SUCCESS,
   LOGIN_ERROR,
   LOGOUT_SUCCESS,
   FETCH_PROFILE_PENDING,
-  FETCH_PROFILE_SUCCESS
-} from '../actions/login'
-import * as types from '../types'
+  FETCH_PROFILE_SUCCESS,
+  SET_USERINFO
+} from '../actions/auth'
 
 const initialState = {
   user: null,
@@ -20,17 +18,16 @@ const initialState = {
   userInfo: null,
 }
 
-export default function login (state = initialState, action = {}) {
+export default function auth (state = initialState, action = {}) {
   switch (action.type) {
     case LOGIN_PENDING:
       return Object.assign({}, initialState, { loggingIn: true })
 
     case LOGIN_SUCCESS:
-      console.log(action)
-      let user = action.payload.data
+      let user = action.payload
       console.log(user)
-      localStorage.setItem('token', action.payload.data)
-      window.localStorage.setItem('uid', user.uid)
+      window.localStorage.setItem('token', user.token)
+      window.localStorage.setItem('uid', user.userId)
 
       return Object.assign({}, state, {
         token: user.token,
@@ -60,7 +57,7 @@ export default function login (state = initialState, action = {}) {
         loginErrors: null
       })
 
-    case types.SET_USERINFO:
+    case SET_USERINFO:
       localStorage.setItem('userInfo', JSON.stringify(action.data))
       return Object.assign({}, state, {
         userInfo: action.data,
@@ -69,26 +66,7 @@ export default function login (state = initialState, action = {}) {
         loginErrors: null
       })
 
-    // case types.SET_TOKEN:
-    //   localStorage.setItem('token', action.data)
-    //   return Object.assign({}, state, { user: action.payload.data, loggingIn: false, loginErrors: null })
-    // case types.SET_USERINFO:
-    //   localStorage.setItem('userInfo', JSON.stringify(action.data))
-    //   return Object.assign({}, state, { user: action.payload.data, loggingIn: false, loginErrors: null })
-    //
-    // case types.SET_PERMISSIONLIST:
-    //   return Object.assign({}, state, { permissionList: action.payload.data})
-    //
-    // case types.SET_PROJECTID:
-    //   // if (action.data) {
-    //   //   localStorage.setItem('projectId', action.data)
-    //   // } else {
-    //   //   localStorage.removeItem('projectId')
-    //   // }
-    //   // nextState.projectId = action.data
-    //   return Object.assign({}, state, { projectId: action.payload.data})
     default:
       return state
-    // return nextState
   }
 }

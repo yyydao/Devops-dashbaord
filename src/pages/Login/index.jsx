@@ -5,7 +5,7 @@ import { reqPost } from '@/api/api'
 import { Form, Icon, Input, Button, Card, message } from 'antd'
 // import { setLoginInfo, setToken } from '@/store/action.js'
 import { bindActionCreators } from 'redux'
-import { login } from '@/store/actions/login'
+import { login, setUserInfo } from '@/store/actions/auth'
 import { withRouter } from 'react-router-dom'
 import './index.scss'
 
@@ -15,8 +15,7 @@ const propTypes = {
   user: PropTypes.object,
   loggingIn: PropTypes.bool,
   loginErrors: PropTypes.string
-};
-
+}
 
 class Login extends Component {
   constructor (props) {
@@ -41,27 +40,43 @@ class Login extends Component {
     //     message.error(res.msg)
     //   }
     // })
-
-    this.props.login(data.username, data.password).payload.promise.then(res => {
-      console.log(res)
+    // this.props.login(data.username, data.password).payload.then(res => {
+    //   console.log(res)
+    //   this.setState({
+    //     loading: false
+    //   });
+    //   if (res.code!==0) {
+    //     message.error(res.msg);
+    //   }
+    //   if (res.code=== 0 )  {
+    //     message.success('Welcome ' + res.nickName).then(
+    //
+    //     );
+    //     this.props.history.replace('/');
+    //   }
+    // }).catch(err => {
+    //   this.setState({
+    //     loading: false
+    //   });
+    // })
+    this.props.login(data.username, data.password).then((response) => {
+      console.log(response)
+      let res = response.value
       this.setState({
         loading: false
-      });
-      if (res.code!==0) {
-        message.error(res.msg);
+      })
+      if (res.code !== 0) {
+        message.error(res.msg)
       }
-      if (res.code=== 0 )  {
-        message.success('Welcome ' + res.nickName).then(
+      if (res.code === 0) {
+        message.success('Welcome ' + res.nickName)
+          .then(()=>this.props.setUserInfo(res))
+          .then(
+            this.props.history.replace('/')
+          )
 
-        );
-        this.props.history.replace('/');
       }
-    }).catch(err => {
-      this.setState({
-        loading: false
-      });
     })
-
   }
 
   render () {
@@ -96,21 +111,31 @@ class Login extends Component {
   }
 }
 
-Login.propTypes = propTypes;
+Login.propTypes = propTypes
 Login = Form.create()(Login)
 
 function mapStateToProps (state) {
-  const { login } = state
-  if (login.user) {
-    return { user: login.user, loggingIn: login.loggingIn, loginErrors: '', userInfo: login.userInfo }
+  const { auth } = state
+  if (auth.user) {
+    return {
+      user: auth.user,
+      loggingIn: auth.loggingIn,
+      authErrors: '',
+      userInfo: auth.userInfo
+    }
   }
 
-  return { user: null, loggingIn: login.loggingIn, loginErrors: login.loginErrors }
+  return {
+    user: null,
+    loggingIn: auth.loggingIn,
+    loginErrors: auth.loginErrors
+  }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    login: bindActionCreators(login, dispatch)
+    login: bindActionCreators(login, dispatch),
+    setUserInfo:bindActionCreators(setUserInfo, dispatch),
   }
 }
 

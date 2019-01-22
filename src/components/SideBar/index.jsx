@@ -95,22 +95,22 @@ class SideBar extends Component {
   getPermissionList () {
     // let { setPermissionList } = this.props
 
-    reqPost('/permission/list').then(res => {
-      if (parseInt(res.code, 0) === 0) {
-
-        // setPermissionList(res.data.permissionList)
-        const menuList = this.getMenuList(res.data.menuList)
-        this.setState({ menuList })
-        if (menuList && menuList.length > 0) {
-          this.setState({ defaultCurrentMenu: [menuList[0].key] })
-        }
-        if (this.props.pathName.indexOf('dashboard') > -1) {
-          this.setState({ currentMenu: menuList[0].key })
-        }
-      } else {
-        message.error(res.msg)
-      }
-    })
+    // reqPost('/permission/list').then(res => {
+    //   if (parseInt(res.code, 0) === 0) {
+    //
+    //     // setPermissionList(res.data.permissionList)
+    //     const menuList = this.getMenuList(res.data.menuList)
+    //     this.setState({ menuList })
+    //     if (menuList && menuList.length > 0) {
+    //       this.setState({ defaultCurrentMenu: [menuList[0].key] })
+    //     }
+    //     if (this.props.pathName.indexOf('dashboard') > -1) {
+    //       this.setState({ currentMenu: menuList[0].key })
+    //     }
+    //   } else {
+    //     message.error(res.msg)
+    //   }
+    // })
   }
 
   getMenuList (menuObj) {
@@ -138,26 +138,26 @@ class SideBar extends Component {
   }
 
   getProjectList () {
-    reqPost('/project/listProjectByUser', {
-      pageSize: 1024,
-      pageNum: 1,
-      projectName: ''
-    }).then(res => {
-      if (parseInt(res.code, 0) === 0) {
-        let list = []
-        for (let item of res.data) {
-          let icon = ''
-          if (item.platform === 2) {icon = <Icon type="apple" theme="filled" style={{paddingRight: '10px',fontSize:'18px',color:"#fff"}}/> }
-          if (item.platform === 1) {icon =<Icon type="android" theme="filled" style={{paddingRight: '10px',fontSize:'18px',color:"#fff"}}/>}
-          list.push({
-            icon: icon,
-            id: item.id,
-            name: item.name
-          })
-        }
-        this.setState({ projectList: list })
-      }
-    })
+    // reqPost('/project/listProjectByUser', {
+    //   pageSize: 1024,
+    //   pageNum: 1,
+    //   projectName: ''
+    // }).then(res => {
+    //   if (parseInt(res.code, 0) === 0) {
+    //     let list = []
+    //     for (let item of res.data) {
+    //       let icon = ''
+    //       if (item.platform === 2) {icon = <Icon type="apple" theme="filled" style={{paddingRight: '10px',fontSize:'18px',color:"#fff"}}/> }
+    //       if (item.platform === 1) {icon =<Icon type="android" theme="filled" style={{paddingRight: '10px',fontSize:'18px',color:"#fff"}}/>}
+    //       list.push({
+    //         icon: icon,
+    //         id: item.id,
+    //         name: item.name
+    //       })
+    //     }
+    //     this.setState({ projectList: list })
+    //   }
+    // })
   }
 
   render () {

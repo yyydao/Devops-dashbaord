@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import { Switch, Route } from 'react-router-dom'
 import { message } from 'antd'
 import qs from 'qs'
@@ -9,6 +10,7 @@ import SideBar from '@/components/SideBar'
 import Routers from '@/router/routerMap'
 import { reqPost } from '@/api/api'
 // import { setToken, setUserInfo, setProjectId } from '@/store/action'
+import { fetchProfile, logout } from '@/store/actions/auth'
 import { getQueryString } from '@/utils/utils'
 
 class Layout extends Component {
@@ -68,16 +70,16 @@ class Layout extends Component {
   }
 
   getUserInfo = () => {
-    let { setUserInfo } = this.props
-
-    reqPost('/user/getUserInfo').then(res => {
-      if (parseInt(res.code, 0) === 0) {
-        this.setState({ userInfo: res.data })
-        setUserInfo(res.data)
-      } else {
-        message.error(res.msg)
-      }
-    })
+    // let { setUserInfo } = this.props
+    //
+    // reqPost('/user/getUserInfo').then(res => {
+    //   if (parseInt(res.code, 0) === 0) {
+    //     this.setState({ userInfo: res.data })
+    //     setUserInfo(res.data)
+    //   } else {
+    //     message.error(res.msg)
+    //   }
+    // })
   }
 
   render () {
@@ -106,15 +108,23 @@ class Layout extends Component {
     )
   }
 }
+
+const mapStateToProps = (state) => {
+  const { auth, menu } = state
+  return {
+    auth: auth ? auth : null,
+    navpath: menu.navpath
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return { actions: bindActionCreators({ fetchProfile, logout }, dispatch) }
+}
+
 //
 // export default connect(state => {
 //   return {
 //     projectId: state.projectId
 //   }
 // }, { setToken, setUserInfo, setProjectId })(Layout)
-
-export default connect(state => {
-  return {
-    projectId: state.projectId
-  }
-}, {})(Layout)
+export default connect(mapStateToProps, mapDispatchToProps)(Layout)

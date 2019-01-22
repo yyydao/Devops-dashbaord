@@ -52,6 +52,7 @@
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.3.1",
     "redux": "^4.0.0",
+    "redux-promise-middleware": "^5.1.1",
     "redux-thunk": "^2.3.0",
     "resolve": "1.6.0",
     "sass-loader": "^7.1.0",
@@ -117,13 +118,15 @@
     "enzyme-adapter-react-16": "^1.7.0",
     "jsdom": "^13.0.0",
     "redux-devtools-extension": "^2.13.5",
+    "redux-logger": "^3.0.6",
     "redux-mock-store": "^1.5.3"
   },
   "proxy": {
     "/api": {
       "target1": "http://10.100.99.159:9085",
       "target2": "http://10.100.98.225:8090/",
-      "target": "http://10.100.14.54:8090/",
+      "target3": "http://10.100.14.54:8090/",
+      "target": "http://10.100.98.186:8090/",
       "changeOrigin": true,
       "pathRewrite": {
         "^/api": "/"

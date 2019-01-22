@@ -3,7 +3,8 @@ import { connect } from 'react-redux'
 import { Link, withRouter } from 'react-router-dom'
 import './index.scss'
 import { reqPost, reqGet } from '@/api/api'
-import { setStep, setSteps } from '@/store/action'
+import { setStep, removeSteps, setSteps } from '@/store/actions/pipeline'
+
 import { isJsonString, stepParamstoArray, stepParamstoObject } from '@/utils/utils'
 
 import {
