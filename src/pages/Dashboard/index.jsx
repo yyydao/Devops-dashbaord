@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import { Breadcrumb, Row, Col, Button, message, Select, Card, Popover, Slider, Icon, DatePicker, Checkbox } from 'antd'
 
 import PipelineChart1 from './chart/PipelineChart1'
@@ -13,17 +13,19 @@ import { reqGet } from '@/api/api'
 import './index.scss'
 import DataSet from '@antv/data-set'
 // import { setProjectId } from '@/store/action'
-import moment from 'moment';
+import { setProjectId } from '@/store/actions/project'
+import moment from 'moment'
+import { bindActionCreators } from 'redux'
 
 const BreadcrumbItem = Breadcrumb.Item
 const Option = Select.Option
-const RangePicker = DatePicker.RangePicker;
+const RangePicker = DatePicker.RangePicker
 
 class Dashboard extends Component {
-  constructor () {
-    super()
+  constructor (props) {
+    super(props)
     this.state = {
-      projectId: '',
+      projectId: props.projectId,
       currentTaskId: '',
       taskList: [],
       basicInformation: {},
@@ -35,15 +37,15 @@ class Dashboard extends Component {
         'cpuMemoryAnalysis',
         'fluentColdStartTimeAnalysis',
         'packageBodyMonitors'],
-      sliderValue:1,
-      popoverVisable:false,
-      sliderBtnName:"最近2周",
+      sliderValue: 1,
+      popoverVisable: false,
+      sliderBtnName: '最近2周',
       //是否选择自定义时间
-      isCheckCustomDate:false,
-      startTime:'',
-      endTime:'',
-      selectedStartTime:'',
-      selectedEndTime:'',
+      isCheckCustomDate: false,
+      startTime: '',
+      endTime: '',
+      selectedStartTime: '',
+      selectedEndTime: '',
       marks: {
         0: '1周',
         1: '2周',
@@ -57,18 +59,19 @@ class Dashboard extends Component {
 
   componentWillMount () {
     let id = this.props.match.params.id
+    console.log(id)
     if (id) {
-      // let { setProjectId } = this.props
-      // setProjectId(id)
+      this.props.setProjectId(id)
     } else {
       id = window.localStorage.getItem('oldProjectId')
+      this.props.setProjectId(id)
     }
     this.setState({
-      projectId: id ,
-      startTime:moment().subtract(13, 'days'),
-      endTime:moment(),
-      selectedStartTime:moment().subtract(13, 'days'),
-      selectedEndTime:moment()
+      projectId: id,
+      startTime: moment().subtract(13, 'days'),
+      endTime: moment(),
+      selectedStartTime: moment().subtract(13, 'days'),
+      selectedEndTime: moment()
     })
     window.localStorage.setItem('oldProjectId', id)
     this.getTaskList(id)
@@ -128,11 +131,11 @@ class Dashboard extends Component {
     reqGet('/dashboard/report', {
       taskId: this.state.currentTaskId,
       dataType: 2,
-      startTime:this.state.startTime.format('YYYY-MM-DD'),
-      endTime:this.state.endTime.format('YYYY-MM-DD')
+      startTime: this.state.startTime.format('YYYY-MM-DD'),
+      endTime: this.state.endTime.format('YYYY-MM-DD')
     }).then((res) => {
       if (res.code === 0) {
-        this.setState({selectedEndTime:this.state.endTime,selectedStartTime:this.state.startTime})
+        this.setState({ selectedEndTime: this.state.endTime, selectedStartTime: this.state.startTime })
         res.data.unitTestMonitors.map(item => item.sqaleValue = parseFloat(item.sqaleValue))
         const type = ['', '源码', '加固', '补丁']
         res.data.packageBodyMonitors.map(item => {
@@ -171,24 +174,24 @@ class Dashboard extends Component {
     data.cpuMemoryAnalysis.map(item => {
       for (let i in item) {
         if (i.indexOf('cpuAverage') !== -1) {
-          item.cpu= '平均CPU'
-          item.cpuValue=parseFloat(item[i])
-          item.text= item[i]
+          item.cpu = '平均CPU'
+          item.cpuValue = parseFloat(item[i])
+          item.text = item[i]
         }
         if (i.indexOf('cpuMax') !== -1) {
-          item.cpu= '最高CPU'
-          item.cpuValue=parseFloat(item[i])
-          item.text= item[i]
+          item.cpu = '最高CPU'
+          item.cpuValue = parseFloat(item[i])
+          item.text = item[i]
         }
         if (i.indexOf('memoryAverage') !== -1) {
-          item.memory= '平均内存'
-          item.memoryValue=parseFloat(item[i])
-          item.text= item[i]
+          item.memory = '平均内存'
+          item.memoryValue = parseFloat(item[i])
+          item.text = item[i]
         }
         if (i.indexOf('memoryMax') !== -1) {
-          item.memory= '最高内存'
-          item.memoryValue=parseFloat(item[i])
-          item.text= item[i]
+          item.memory = '最高内存'
+          item.memoryValue = parseFloat(item[i])
+          item.text = item[i]
         }
         cData.push(JSON.parse(JSON.stringify(item)))
       }
@@ -206,16 +209,16 @@ class Dashboard extends Component {
     data.fluentColdStartTimeAnalysis.map(item => {
       for (let i in item) {
         if (i.indexOf('smAverage') !== -1) {
-          item.sm= '平均FPS'
-          item.smValue= parseFloat(item[i])
+          item.sm = '平均FPS'
+          item.smValue = parseFloat(item[i])
         }
         if (i.indexOf('smMin') !== -1) {
-          item.sm= '最低FPS'
-          item.smValue= parseFloat(item[i])
+          item.sm = '最低FPS'
+          item.smValue = parseFloat(item[i])
         }
         if (i.indexOf('coldStartTime') !== -1) {
-          item.coldStartTime1= '冷启动时间'
-          item.coldStartTimeValue= parseFloat(item[i])
+          item.coldStartTime1 = '冷启动时间'
+          item.coldStartTimeValue = parseFloat(item[i])
         }
         cData.push(JSON.parse(JSON.stringify(item)))
       }
@@ -243,8 +246,8 @@ class Dashboard extends Component {
    * @desc 滑动选值器数据改变事件
    * @param value 数据
    */
-  sliderValueChange = (value) =>{
-    this.setState({sliderValue:value})
+  sliderValueChange = (value) => {
+    this.setState({ sliderValue: value })
   }
 
   /**
@@ -252,82 +255,87 @@ class Dashboard extends Component {
    * @param dates 数据
    * @param dateStrings
    */
-  changeDate = (dates,dateStrings) =>{
-    this.setState({selectedStartTime:dates[0],selectedEndTime:dates[1]})
+  changeDate = (dates, dateStrings) => {
+    this.setState({ selectedStartTime: dates[0], selectedEndTime: dates[1] })
   }
 
   /**
    * @desc 自定义时间change事件
    * @param e 是否选择
    */
-  onDateTypeChange = (e) =>{
+  onDateTypeChange = (e) => {
     console.log(e)
-    this.setState({isCheckCustomDate:e})
+    this.setState({ isCheckCustomDate: e })
   }
   /**
    * @desc 时间筛选按钮确定事件
    */
-  confirmDate = () =>{
-    const {marks, isCheckCustomDate, sliderValue, selectedStartTime, selectedEndTime} = this.state
-    let sliderBtnName='',startTime='',endTime=''
-    if(!isCheckCustomDate){
-      sliderBtnName='最近'+marks[sliderValue]
+  confirmDate = () => {
+    const { marks, isCheckCustomDate, sliderValue, selectedStartTime, selectedEndTime } = this.state
+    let sliderBtnName = '', startTime = '', endTime = ''
+    if (!isCheckCustomDate) {
+      sliderBtnName = '最近' + marks[sliderValue]
       switch (sliderValue) {
         case 0:
-          startTime=moment().subtract(6, 'days')
-          endTime=moment()
-          break;
+          startTime = moment().subtract(6, 'days')
+          endTime = moment()
+          break
         case 1:
-          startTime=moment().subtract(13, 'days')
-          endTime=moment()
-          break;
+          startTime = moment().subtract(13, 'days')
+          endTime = moment()
+          break
         case 2:
-          startTime=moment().subtract(20, 'days')
-          endTime=moment()
-          break;
+          startTime = moment().subtract(20, 'days')
+          endTime = moment()
+          break
         case 3:
-          startTime=moment().subtract(1, 'month')
-          endTime=moment()
-          break;
+          startTime = moment().subtract(1, 'month')
+          endTime = moment()
+          break
         case 4:
-          startTime=moment().subtract(2, 'month')
-          endTime=moment()
-          break;
+          startTime = moment().subtract(2, 'month')
+          endTime = moment()
+          break
         case 5:
-          startTime=moment().subtract(3, 'month')
-          endTime=moment()
-          break;
+          startTime = moment().subtract(3, 'month')
+          endTime = moment()
+          break
         default:
-          startTime=moment().subtract(13, 'days')
-          endTime=moment()
-          break;
+          startTime = moment().subtract(13, 'days')
+          endTime = moment()
+          break
       }
-      this.setState({startTime,endTime},()=>this.getBasicInfor())
+      this.setState({ startTime, endTime }, () => this.getBasicInfor())
+    } else {
+      sliderBtnName = selectedStartTime.format('YYYY-MM-DD') + '~' + selectedEndTime.format('YYYY-MM-DD')
+      this.setState({
+        startTime: selectedStartTime,
+        endTime: selectedEndTime,
+        sliderValue: 1
+      }, () => this.getBasicInfor())
     }
-    else{
-      sliderBtnName=selectedStartTime.format('YYYY-MM-DD')+"~"+selectedEndTime.format('YYYY-MM-DD')
-      this.setState({startTime:selectedStartTime,endTime:selectedEndTime,sliderValue:1},()=>this.getBasicInfor())
-    }
-    this.setState({popoverVisable:false,sliderBtnName})
+    this.setState({ popoverVisable: false, sliderBtnName })
   }
 
   render () {
-    const { currentTaskId, taskList, basicInformation, monitorData, sliderValue, popoverVisable, sliderBtnName, isCheckCustomDate,selectedStartTime, selectedEndTime, marks} = this.state
-    const popoverContent = <div style={{width:400,padding:16}}>
-      {!isCheckCustomDate&&
-      <Slider marks={marks} onChange={this.sliderValueChange} value={sliderValue} min={0} max={5} tipFormatter={val=>marks[val]}/>
+    const { currentTaskId, taskList, basicInformation, monitorData, sliderValue, popoverVisable, sliderBtnName, isCheckCustomDate, selectedStartTime, selectedEndTime, marks } = this.state
+    const popoverContent = <div style={{ width: 400, padding: 16 }}>
+      {!isCheckCustomDate &&
+      <Slider marks={marks} onChange={this.sliderValueChange} value={sliderValue} min={0} max={5}
+              tipFormatter={val => marks[val]}/>
       }
-      <Checkbox onChange={(e)=>{this.onDateTypeChange(e.target.checked)}} style={{margin:"24px 0"}}>自定义时间</Checkbox>
+      <Checkbox onChange={(e) => {this.onDateTypeChange(e.target.checked)}}
+                style={{ margin: '24px 0' }}>自定义时间</Checkbox>
       {
-        isCheckCustomDate&&
+        isCheckCustomDate &&
         <RangePicker
           format="YYYY/MM/DD"
-          value={[selectedStartTime,selectedEndTime]}
-          onChange={(dates,dateStrings)=>{this.changeDate(dates,dateStrings)}}
+          value={[selectedStartTime, selectedEndTime]}
+          onChange={(dates, dateStrings) => {this.changeDate(dates, dateStrings)}}
         />
       }
       <div className="popover-btn-group">
-        <Button  onClick={(e) => {this.setState({popoverVisable:false})}}>取消</Button>
+        <Button onClick={(e) => {this.setState({ popoverVisable: false })}}>取消</Button>
         <Button type="primary" onClick={() => {this.confirmDate()}}>确定</Button>
       </div>
     </div>
@@ -340,15 +348,21 @@ class Dashboard extends Component {
         {currentTaskId &&
         <div>
           <div className="select-container">
-            <Select defaultValue={currentTaskId} onChange={e => {this.onPipeLineChange(e)}} style={{ minWidth: 294,float:"left"}}>
+            <Select defaultValue={currentTaskId} onChange={e => {this.onPipeLineChange(e)}}
+                    style={{ minWidth: 294, float: 'left' }}>
               {taskList.map((item, index) => <Option value={item.taskID} key={index}>{item.taskName}</Option>)}
             </Select>
             <Popover placement="bottom"
                      content={popoverContent}
                      trigger="click"
                      visible={popoverVisable}
-                     onVisibleChange={visable=>{this.setState({popoverVisable:visable})}}>
-              <Button style={{float:"left",marginLeft:24}} icon="clock-circle">{sliderBtnName}<Icon type="down" style={{fontSize:13,color:"#ccc",paddingLeft:8}}/></Button>
+                     onVisibleChange={visable => {this.setState({ popoverVisable: visable })}}>
+              <Button style={{ float: 'left', marginLeft: 24 }} icon="clock-circle">{sliderBtnName}<Icon type="down"
+                                                                                                         style={{
+                                                                                                           fontSize: 13,
+                                                                                                           color: '#ccc',
+                                                                                                           paddingLeft: 8
+                                                                                                         }}/></Button>
             </Popover>
             <Button type="primary" onClick={(e) => {this.openUrl(basicInformation.sourceAppPath, 0)}}>原包下载</Button>
             {
@@ -485,12 +499,28 @@ class Dashboard extends Component {
   }
 }
 
-// const DashboardForm = Form.create()(Dashboard);
-export default connect(state => {
-  return {
-    // projectId: state.projectId
+function mapStateToProps (state) {
+  const { project } = state
+  if (project.projectId) {
+    return {
+      projectId: project.projectId
+    }
   }
-}, {  })(Dashboard)
+
+  return {
+    permissionList: null,
+    projectId: null,
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    setProjectId: bindActionCreators(setProjectId, dispatch),
+  }
+}
+
+// const DashboardForm = Form.create()(Dashboard);
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard)
 // export default connect(state => {
 //   return {
 //     // projectId: state.projectId

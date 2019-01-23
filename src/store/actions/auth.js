@@ -9,10 +9,12 @@ export const LOGIN_ERROR = 'LOGIN_ERROR'
 
 export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS'
 
+export const GET_TOKEN = 'GET_TOKEN'
+
 export const login = (username, password) => ({
     type: 'LOGIN',
-    payload:{
-      promise:reqPost('/sys/login', {
+    payload: {
+      promise: reqPost('/sys/login', {
         username,
         password
       })
@@ -30,6 +32,16 @@ export function logout () {
     payload: {
       promise: reqPost('/logout')
     }
+  }
+}
+
+export function getToken () {
+  return {
+    type: 'GET_TOKEN',
+    payload:{
+      promise: window.localStorage.getItem('token')
+    }
+
   }
 }
 

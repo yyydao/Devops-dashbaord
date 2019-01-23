@@ -5,7 +5,8 @@ import {
   LOGOUT_SUCCESS,
   FETCH_PROFILE_PENDING,
   FETCH_PROFILE_SUCCESS,
-  SET_USERINFO
+  SET_USERINFO,
+  GET_TOKEN,
 } from '../actions/auth'
 
 const initialState = {
@@ -20,6 +21,10 @@ const initialState = {
 
 export default function auth (state = initialState, action = {}) {
   switch (action.type) {
+    case GET_TOKEN:
+      console.log(action)
+      let token = action.payload
+      return Object.assign({},initialState,{token})
     case LOGIN_PENDING:
       return Object.assign({}, initialState, { loggingIn: true })
 

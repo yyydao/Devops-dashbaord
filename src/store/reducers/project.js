@@ -1,5 +1,5 @@
 import {
-  SET_PROJECTID_SUCCESS
+  SET_PROJECTID
 } from '../actions/project'
 
 const initialState = {
@@ -10,15 +10,15 @@ const initialState = {
 
 export default function project(state = initialState, action = {}) {
   switch (action.type) {
-    case SET_PROJECTID_SUCCESS:
+    case SET_PROJECTID:
       // if (action.data) {
       //   localStorage.setItem('projectId', action.data)
       // } else {
       //   localStorage.removeItem('projectId')
       // }
       // nextState.projectId = action.data
-      window.localStorage.setItem('projectId', action.data)
-      return Object.assign({}, state, { projectId: action.payload.data})
+      window.localStorage.setItem('projectId', action.payload)
+      return Object.assign({}, state, { projectId: action.payload})
     default:
       return state
   }

@@ -10,7 +10,7 @@ import SideBar from '@/components/SideBar'
 import Routers from '@/router/routerMap'
 import { reqPost } from '@/api/api'
 // import { setToken, setUserInfo, setProjectId } from '@/store/action'
-import { fetchProfile, logout } from '@/store/actions/auth'
+import { fetchProfile, logout, getToken } from '@/store/actions/auth'
 import { getQueryString } from '@/utils/utils'
 
 class Layout extends Component {
@@ -31,8 +31,10 @@ class Layout extends Component {
     // const token = getQueryString('token')
     // this.setState({ token: token })
     // setToken(token)
+    // this.props.getToken().then(res=>console.log(res))
     const parsedHash = qs.parse(this.props.location.search.slice(1))
     console.log(parsedHash)
+    //@todo:projectID
     if (parsedHash.project) {
       localStorage.setItem('projectId', parsedHash.project)
       this.props.setProjectId(parsedHash.project)
@@ -72,14 +74,14 @@ class Layout extends Component {
   getUserInfo = () => {
     // let { setUserInfo } = this.props
     //
-    // reqPost('/user/getUserInfo').then(res => {
-    //   if (parseInt(res.code, 0) === 0) {
-    //     this.setState({ userInfo: res.data })
-    //     setUserInfo(res.data)
-    //   } else {
-    //     message.error(res.msg)
-    //   }
-    // })
+    reqPost('/user/getUserInfo').then(res => {
+      if (parseInt(res.code, 0) === 0) {
+        this.setState({ userInfo: res.data })
+        // setUserInfo(res.data)
+      } else {
+        message.error(res.msg)
+      }
+    })
   }
 
   render () {
@@ -118,7 +120,11 @@ const mapStateToProps = (state) => {
 }
 
 function mapDispatchToProps (dispatch) {
-  return { actions: bindActionCreators({ fetchProfile, logout }, dispatch) }
+  return {
+    fetchProfile: bindActionCreators(fetchProfile, dispatch),
+    logout:bindActionCreators(logout, dispatch),
+    getToken:bindActionCreators(getToken, dispatch),
+  }
 }
 
 //

@@ -75,34 +75,34 @@ class Home extends Component{
   }
 
   hasAddProjectPermission(){
-    // reqPost('/permission/hasAddProjectPermission').then(res => {
-    //   if(parseInt(res.code, 0) === 0){
-    //     this.setState({ hasPermission: res.data });
-    //   }else{
-    //     message.error(res.msg);
-    //   }
-    // })
+    reqPost('/permission/hasAddProjectPermission').then(res => {
+      if(parseInt(res.code, 0) === 0){
+        this.setState({ hasPermission: res.data });
+      }else{
+        message.error(res.msg);
+      }
+    })
   }
 
   getTableData = () => {
     this.setState({ loading: true });
-    // reqPost('/project/listProjectByUser', this.state.params).then(res => {
-    //   if(res.code === 0){
-    //     const pagination = { ...this.state.pagination };
-    //     pagination.total = res.count;
-    //     pagination.showTotal = () => {
-    //       return '共 ' + res.count + ' 条';
-    //     };
-    //     this.setState({
-    //       loading: false,
-    //       data: res.data,
-    //       pagination
-    //     });
-    //   }else{
-    //     this.setState({ loading: false });
-    //     message.error(res.msg);
-    //   }
-    // })
+    reqPost('/project/listProjectByUser', this.state.params).then(res => {
+      if(res.code === 0){
+        const pagination = { ...this.state.pagination };
+        pagination.total = res.count;
+        pagination.showTotal = () => {
+          return '共 ' + res.count + ' 条';
+        };
+        this.setState({
+          loading: false,
+          data: res.data,
+          pagination
+        });
+      }else{
+        this.setState({ loading: false });
+        message.error(res.msg);
+      }
+    })
   }
 
   handleTableChange = (pagination, filters, sorter) => {
@@ -119,13 +119,13 @@ class Home extends Component{
   }
 
   getPlatformList = () => {
-    // reqPost('/config/listPlatform').then(res => {
-    //   if(parseInt(res.code, 0) === 0){
-    //     this.setState({ platformList: res.data });
-    //   }else{
-    //     message.error(res.msg);
-    //   }
-    // })
+    reqPost('/config/listPlatform').then(res => {
+      if(parseInt(res.code, 0) === 0){
+        this.setState({ platformList: res.data });
+      }else{
+        message.error(res.msg);
+      }
+    })
   }
 
   showModal = () => {

@@ -1,5 +1,3 @@
-import Welcome from '@/pages/Welcome'
-
 import Home from '@/pages/Home'
 import Login from '@/pages/Login'
 import Personal from '@/pages/Home/Personal'
@@ -51,11 +49,6 @@ export default [
     name: 'personal',
     component: Personal,
     hideSideBar: true
-  },
-  {
-    path: '/welcome/:id',
-    name: 'welcome',
-    component: Welcome
   },
   {
     path: '/projectInfo',
