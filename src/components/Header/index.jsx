@@ -1,11 +1,24 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Menu, Dropdown, Icon, Row, Col, Avatar, Popover, Divider } from 'antd'
+import { Menu, Dropdown, Icon, Row, Col, Avatar, Popover, Divider,message } from 'antd'
 import './index.scss'
+
+import {reqGet} from '@/api/api'
 
 const MenuItem = Menu.Item
 
 class Header extends Component {
+  logout = () => {
+    reqGet('/sys/loginout').then(res => {
+      if(parseInt(res.code, 0) === 0){
+        localStorage.removeItem('token')
+        localStorage.removeItem('projectId')
+        window.location.href = '#/login'
+      }else{
+        message.error(res.msg);
+      }
+    })
+  }
 
   render () {
     let { userInfo, showSideBar } = this.props
@@ -33,7 +46,8 @@ class Header extends Component {
         minWidth: 12,
         marginRight: 8
       }}/>账户信息</Link></MenuItem>
-      <MenuItem key="logot"><a href="/user/loginOut"><Icon type="logout" style={{ minWidth: 12, marginRight: 8 }}/>退出</a></MenuItem>
+      <MenuItem key="logot"><a onClick={()=>
+        this.logout()}><Icon type="logout" style={{ minWidth: 12, marginRight: 8 }}/>退出</a></MenuItem>
     </Menu>
 
     return (
