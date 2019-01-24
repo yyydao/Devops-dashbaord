@@ -148,7 +148,7 @@ class STFControl extends Component {
 
 STFControl = connect((state) => {
   return {
-    projectId: state.projectId
+    projectId: state.project.projectId
   }
 })(STFControl)
 

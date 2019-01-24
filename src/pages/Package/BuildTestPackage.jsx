@@ -812,7 +812,7 @@ class BuildTestPackage extends Component {
 BuildTestPackage = connect((state) => {
   return {
     token: state.token,
-    projectId: state.projectId
+    projectId: state.project.projectId
   }
 })(BuildTestPackage)
 

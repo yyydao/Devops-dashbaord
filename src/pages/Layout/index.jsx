@@ -10,7 +10,8 @@ import SideBar from '@/components/SideBar'
 import Routers from '@/router/routerMap'
 import { reqPost } from '@/api/api'
 // import { setToken, setUserInfo, setProjectId } from '@/store/action'
-import { fetchProfile, logout, getToken } from '@/store/actions/auth'
+import { fetchProfile, logout, setToken } from '@/store/actions/auth'
+import { setProjectId } from '@/store/actions/project'
 import { getQueryString } from '@/utils/utils'
 
 class Layout extends Component {
@@ -18,6 +19,7 @@ class Layout extends Component {
     console.log(props)
     super(props)
     this.state = {
+      projectId: null,
       token: null,
       excludeSideBar: [],
       routeList: null,
@@ -27,14 +29,19 @@ class Layout extends Component {
   }
 
   componentWillMount () {
-    // let { setToken } = this.props
-    // const token = getQueryString('token')
-    // this.setState({ token: token })
-    // setToken(token)
-    // this.props.getToken().then(res=>console.log(res))
+    const token = window.localStorage.getItem('token')
+    const projectId = window.localStorage.getItem('projectId')
     const parsedHash = qs.parse(this.props.location.search.slice(1))
-    console.log(parsedHash)
-    //@todo:projectID
+
+    if(token !== null){
+      this.props.setToken(token)
+    }else{
+      console.log('no token')
+    }
+    if(projectId !== 'undefined' || projectId !== null){
+      this.props.setProjectId(projectId)
+    }
+
     if (parsedHash.project) {
       localStorage.setItem('projectId', parsedHash.project)
       this.props.setProjectId(parsedHash.project)
@@ -43,6 +50,8 @@ class Layout extends Component {
     this.getExcludeSideBarPath()
     this.getUserInfo()
   }
+
+
 
   projectIdChange = (value) => {
     this.setState({ isRender: false }, () => {
@@ -86,10 +95,9 @@ class Layout extends Component {
 
   render () {
     console.log(`Layout/index.jsx render`)
-    console.log(this.state)
-    if (!this.state.token) {
+    // if (!this.state.token) {
       // window.location.href = '#/login';
-    }
+    // }
 
     const sideBarShow = !this.state.excludeSideBar.includes(this.props.location.pathname)
 
@@ -112,18 +120,26 @@ class Layout extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { auth, menu } = state
+  const { auth,project } = state
+  if (auth.token && project.projectId) {
+    return {
+      token: auth.token,
+      projectId: project.projectId,
+    }
+  }
+
   return {
-    auth: auth ? auth : null,
-    navpath: menu.navpath
+    auth: null,
+    projectId: null,
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
     fetchProfile: bindActionCreators(fetchProfile, dispatch),
-    logout:bindActionCreators(logout, dispatch),
-    getToken:bindActionCreators(getToken, dispatch),
+    logout: bindActionCreators(logout, dispatch),
+    setToken: bindActionCreators(setToken, dispatch),
+    setProjectId: bindActionCreators(setProjectId, dispatch),
   }
 }
 

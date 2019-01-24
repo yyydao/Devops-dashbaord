@@ -539,7 +539,7 @@ class AddPipeline extends Component {
 
 AddPipeline = connect((state) => {
   return {
-    projectId: state.projectId
+    projectId: state.project.projectId
   }
 }, { setStep, removeSteps, setSteps })(AddPipeline)
 

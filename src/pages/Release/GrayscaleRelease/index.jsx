@@ -619,7 +619,7 @@ class GrayscaleRelease extends Component{
 
 GrayscaleRelease = connect((state) => {
   return {
-    projectId: state.projectId
+    projectId: state.project.projectId
   }
 })(GrayscaleRelease)
 

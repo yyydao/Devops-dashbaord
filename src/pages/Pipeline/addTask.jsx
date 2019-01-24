@@ -653,7 +653,7 @@ class taskAdd extends Component {
 
 taskAdd = connect((state) => {
   return {
-    projectId: state.projectId
+    projectId: state.project.projectId
   }
 }, { setStep, setSteps })(taskAdd)
 

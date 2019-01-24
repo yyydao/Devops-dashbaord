@@ -432,6 +432,6 @@ class NoticeManager extends Component {
 
 export default connect(state => {
   return {
-    projectId: state.projectId
+    projectId: state.project.projectId
   }
 }, {})(NoticeManager);

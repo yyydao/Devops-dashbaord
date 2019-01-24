@@ -10,6 +10,7 @@ export const LOGIN_ERROR = 'LOGIN_ERROR'
 export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS'
 
 export const GET_TOKEN = 'GET_TOKEN'
+export const SET_TOKEN = 'SET_TOKEN'
 
 export const login = (username, password) => ({
     type: 'LOGIN',
@@ -35,12 +36,28 @@ export function logout () {
   }
 }
 
+export function forceLogout () {
+
+  return {
+    type: 'LOGOUT_SUCCESS',
+    payload: {}
+  }
+}
+
 export function getToken () {
   return {
     type: 'GET_TOKEN',
-    payload:{
+    payload: {
       promise: window.localStorage.getItem('token')
     }
+
+  }
+}
+
+export function setToken (token) {
+  return {
+    type: 'SET_TOKEN',
+    payload: token
 
   }
 }

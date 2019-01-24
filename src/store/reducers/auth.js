@@ -7,6 +7,7 @@ import {
   FETCH_PROFILE_SUCCESS,
   SET_USERINFO,
   GET_TOKEN,
+  SET_TOKEN,
 } from '../actions/auth'
 
 const initialState = {
@@ -23,14 +24,15 @@ export default function auth (state = initialState, action = {}) {
   switch (action.type) {
     case GET_TOKEN:
       console.log(action)
-      let token = action.payload
-      return Object.assign({},initialState,{token})
+      return Object.assign({}, initialState, { token: action.payload })
+    case SET_TOKEN:
+      console.log(action)
+      return Object.assign({}, initialState, { token: action.payload })
     case LOGIN_PENDING:
       return Object.assign({}, initialState, { loggingIn: true })
 
     case LOGIN_SUCCESS:
       let user = action.payload
-      console.log(user)
       window.localStorage.setItem('token', user.token)
       window.localStorage.setItem('uid', user.userId)
 
@@ -49,11 +51,15 @@ export default function auth (state = initialState, action = {}) {
       }
     case LOGOUT_SUCCESS:
       window.localStorage.removeItem('uid')
+      window.localStorage.removeItem('token')
+      window.localStorage.removeItem('userInfo')
       return {
         ...state,
         loggingOut: false,
         user: null,
-        loginErrors: null
+        loginErrors: null,
+        token: null,
+        userInfo:null
       }
     case FETCH_PROFILE_SUCCESS:
       return Object.assign({}, state, {

@@ -51,7 +51,7 @@ class Package extends Component {
 
 Package = connect((state) => {
   return {
-    projectId: state.projectId
+    projectId: state.project.projectId
   }
 })(Package)
 

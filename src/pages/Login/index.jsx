@@ -1,11 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { reqPost } from '@/api/api'
 import { Form, Icon, Input, Button, Card, message } from 'antd'
-// import { setLoginInfo, setToken } from '@/store/action.js'
 import { bindActionCreators } from 'redux'
-import { login, setUserInfo } from '@/store/actions/auth'
+import { login, setUserInfo,forceLogout } from '@/store/actions/auth'
 import { withRouter } from 'react-router-dom'
 import './index.scss'
 
@@ -79,6 +77,10 @@ class Login extends Component {
     })
   }
 
+  componentWillMount () {
+    this.props.forceLogout()
+  }
+
   render () {
     const { getFieldDecorator } = this.props.form
     return (
@@ -136,6 +138,7 @@ function mapDispatchToProps (dispatch) {
   return {
     login: bindActionCreators(login, dispatch),
     setUserInfo:bindActionCreators(setUserInfo, dispatch),
+    forceLogout: bindActionCreators(forceLogout,dispatch)
   }
 }
 

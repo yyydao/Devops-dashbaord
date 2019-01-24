@@ -552,13 +552,13 @@ class pipelineDetail extends Component {
   }
 
   componentWillMount () {
-    const oldProjectId = window.localStorage.getItem('oldProjectId')
+    // const oldProjectId = window.localStorage.getItem('oldProjectId')
 
-    window.localStorage.setItem('oldProjectId', this.props.projectId)
+    // window.localStorage.setItem('oldProjectId', this.props.projectId)
 
-    if (oldProjectId !== null && oldProjectId !== this.props.projectId) {
-      this.props.history.push('/pipeline')
-    }
+    // if (oldProjectId !== null && oldProjectId !== this.props.projectId) {
+    //   this.props.history.push('/pipeline')
+    // }
     const parsedHash = qs.parse(this.props.location.search.slice(1))
     const taskID = this.props.match.params.taskID
     const buildNum = parsedHash.buildNumber + ''

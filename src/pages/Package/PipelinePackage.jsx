@@ -309,8 +309,8 @@ class PipelinePackage extends Component {
 PipelinePackage = connect((state) => {
   console.log(state)
   return {
-    token: state.token,
-    projectId: state.projectId
+    token: state.auth.token,
+    projectId: state.project.projectId
   }
 })(PipelinePackage)
 

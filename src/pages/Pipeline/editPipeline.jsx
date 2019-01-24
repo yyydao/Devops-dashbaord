@@ -598,7 +598,7 @@ class Edit extends Component {
 
 Edit = connect((state) => {
   return {
-    projectId: state.projectId
+    projectId: state.project.projectId
   }
 }, { setStep, removeSteps, setSteps })(Edit)
 

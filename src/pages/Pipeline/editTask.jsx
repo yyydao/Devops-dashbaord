@@ -572,7 +572,7 @@ class taskEdit extends Component {
 
 taskEdit = connect((state) => {
   return {
-    projectId: state.projectId
+    projectId: state.project.projectId
   }
 }, { setStep, setSteps })(taskEdit)
 

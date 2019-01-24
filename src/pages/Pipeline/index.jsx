@@ -156,7 +156,7 @@ class Pipeline extends Component {
   componentWillMount () {
     window.localStorage.removeItem('currentEditedPipeline')
     window.localStorage.removeItem('steps')
-    window.localStorage.setItem('oldProjectId', this.props.projectId)
+    // window.localStorage.setItem('oldProjectId', this.props.projectId)
   }
 
   componentDidMount () {
@@ -250,8 +250,8 @@ class Pipeline extends Component {
 
 Pipeline = connect((state) => {
   return {
-    projectId: state.projectId,
-    permissionList: state.permissionList
+    projectId: state.project.projectId,
+    permissionList: state.project.permissionList
   }
 })(Pipeline)
 

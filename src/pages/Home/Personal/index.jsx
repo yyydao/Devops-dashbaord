@@ -92,6 +92,6 @@ class Personal extends Component{
 const PersonalForm = Form.create()(Personal);
 export default connect(state => {
     return {
-        userInfo: state.userInfo
+        userInfo: state.auth.userInfo
     }
 }, {})(PersonalForm);

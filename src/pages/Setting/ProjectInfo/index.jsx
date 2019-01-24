@@ -191,6 +191,6 @@ class ProjectInfo extends Component {
 const ProjectInfoForm = Form.create()(ProjectInfo)
 export default connect(state => {
   return {
-    projectId: state.projectId
+    projectId: state.project.projectId
   }
 }, {})(ProjectInfoForm)

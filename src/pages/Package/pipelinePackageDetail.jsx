@@ -258,8 +258,8 @@ class pipelinePackageDetail extends Component {
 
 pipelinePackageDetail = connect((state) => {
     return {
-        token: state.token,
-        projectId: state.projectId
+        token: state.auth.token,
+      projectId: state.project.projectId
     }
 })(pipelinePackageDetail)
 

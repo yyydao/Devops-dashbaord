@@ -244,7 +244,7 @@ class STFList extends Component {
 
 STFList = connect((state) => {
   return {
-    projectId: state.projectId
+    projectId: state.project.projectId
   }
 })(STFList)
 

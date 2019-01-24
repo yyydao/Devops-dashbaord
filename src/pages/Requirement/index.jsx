@@ -364,7 +364,7 @@ class Requirement extends Component{
 
 Requirement = connect((state) => {
   return {
-    projectId: state.projectId
+    projectId: state.project.projectId
   }
 })(Requirement)
 

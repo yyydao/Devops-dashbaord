@@ -891,7 +891,7 @@ class Performance extends Component {
 
 Performance = connect((state) => {
   return {
-    projectId: state.projectId
+    projectId: state.project.projectId
   }
 })(Performance)
 

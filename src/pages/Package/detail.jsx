@@ -473,7 +473,7 @@ class packageDetail extends Component {
 packageDetail = connect((state) => {
   return {
     token: state.token,
-    projectId: state.projectId
+    projectId: state.project.projectId
   }
 })(packageDetail)
 

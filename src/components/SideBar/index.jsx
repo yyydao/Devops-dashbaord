@@ -35,6 +35,7 @@ class SideBar extends Component {
   constructor (props) {
     super(props)
     this.state = {
+      projectId:props.projectId,
       menuList: [],
       projectList: [],
       currentMenu: '',
@@ -46,20 +47,13 @@ class SideBar extends Component {
   componentWillMount () {
     this.getPermissionList()
     this.getProjectList()
+  }
 
-    const currentMenu = sessionStorage.getItem('currentMenu')
-    const defaultCurrentMenu = sessionStorage.getItem('defaultCurrentMenu')
-    const menuOpenKeys = JSON.parse(sessionStorage.getItem('menuOpenKeys'))
-    const { pathName } = this.props
-    if (currentMenu && pathName.indexOf('welcome') === -1) {
-      // this.setState({ currentMenu });
-    }
-    if (menuOpenKeys && pathName.indexOf('welcome') === -1) {
-      // this.setState({ menuOpenKeys });
-    }
-    if (defaultCurrentMenu && pathName.indexOf('welcome') === -1) {
-      // this.setState({ defaultCurrentMenu });
-    }
+  componentWillReceiveProps(nextProps){
+    console.log(nextProps.projectId)
+    this.setState({
+      projectId: nextProps.projectId,
+    });
   }
 
   componentWillUnmount () {
@@ -161,15 +155,21 @@ class SideBar extends Component {
   }
 
   render () {
-    const { menuList, projectList, currentMenu, menuOpenKeys, defaultCurrentMenu } = this.state
-    const { projectId } = this.props
-
+    const {
+      menuList,
+      projectList,
+      currentMenu,
+      menuOpenKeys,
+      defaultCurrentMenu,
+      projectId} = this.state
+    // const {  } = this.props
+    console.log(projectId)
     return (
       <div className="menu-side-bar">
         <div className="dropdown-link">
           {
-            projectId && <div className="dropdown-select-wrapper">
-            <Select defaultValue={projectId} className="dropdown-select" onChange={this.selectChange}>
+            this.state.projectId && <div className="dropdown-select-wrapper">
+            <Select value={this.state.projectId} className="dropdown-select" onChange={this.selectChange}>
               {
                 projectList.map((item) => {
                   return <Option key={item.id} className="sideBar-option"><span className="icon">{item.icon}</span><span className="project">{item.name}</span></Option>
@@ -201,7 +201,7 @@ class SideBar extends Component {
 
 export default connect(state => {
   return {
-    projectId: state.projectId
+    projectId: state.project.projectId
   }
 }, {})(SideBar)
 //

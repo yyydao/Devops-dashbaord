@@ -58,23 +58,28 @@ class Dashboard extends Component {
   }
 
   componentWillMount () {
-    let id = this.props.match.params.id
+    const id = this.props.match.params.id
     console.log(id)
     if (id) {
       this.props.setProjectId(id)
     } else {
-      id = window.localStorage.getItem('oldProjectId')
-      this.props.setProjectId(id)
+      let newId = window.localStorage.getItem('projectId')
+      this.props.setProjectId(newId)
     }
     this.setState({
-      projectId: id,
       startTime: moment().subtract(13, 'days'),
       endTime: moment(),
       selectedStartTime: moment().subtract(13, 'days'),
       selectedEndTime: moment()
     })
-    window.localStorage.setItem('oldProjectId', id)
     this.getTaskList(id)
+  }
+
+  componentWillReceiveProps (nextProps) {
+    console.log(nextProps)
+    this.setState({
+      projectId: nextProps.projectId
+    },()=>this.getTaskList(this.state.projectId))
   }
 
   /**

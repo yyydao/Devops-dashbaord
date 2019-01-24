@@ -323,7 +323,7 @@ class AddGrayscale extends Component{
 const AddGrayscaleForm = Form.create()(AddGrayscale);
 export default connect(state => {
   return{
-    projectId: state.projectId,
-    token: state.token
+    token: state.auth.token,
+    projectId: state.project.projectId
   }
 }, {})(AddGrayscaleForm);

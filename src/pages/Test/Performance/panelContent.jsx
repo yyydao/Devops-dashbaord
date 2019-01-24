@@ -102,7 +102,7 @@ class panelContent extends Component {
 
 panelContent = connect((state) => {
   return {
-    token: state.token
+    token: state.auth.token
   }
 })(panelContent)
 

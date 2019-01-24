@@ -556,6 +556,6 @@ class ThirdPartyManager extends Component{
 const ThirdPartyManagerForm = Form.create()(ThirdPartyManager);
 export default connect(state => {
   return{
-    projectId: state.projectId
+    projectId: state.project.projectId
   }
 }, {})(ThirdPartyManagerForm);
