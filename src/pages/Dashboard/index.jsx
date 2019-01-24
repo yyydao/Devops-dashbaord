@@ -58,12 +58,12 @@ class Dashboard extends Component {
   }
 
   componentWillMount () {
-    const id = this.props.match.params.id
+    let id = this.props.match.params.id
     if (id) {
       this.props.setProjectId(id)
     } else {
-      let newId = window.localStorage.getItem('projectId')
-      this.props.setProjectId(newId)
+      id = window.localStorage.getItem('projectId')
+      this.props.setProjectId(id)
     }
     this.setState({
       startTime: moment().subtract(13, 'days'),
