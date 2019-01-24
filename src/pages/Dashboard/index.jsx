@@ -59,7 +59,6 @@ class Dashboard extends Component {
 
   componentWillMount () {
     const id = this.props.match.params.id
-    console.log(id)
     if (id) {
       this.props.setProjectId(id)
     } else {

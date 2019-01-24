@@ -16,7 +16,6 @@ import { getQueryString } from '@/utils/utils'
 
 class Layout extends Component {
   constructor (props) {
-    console.log(props)
     super(props)
     this.state = {
       projectId: null,
@@ -94,7 +93,6 @@ class Layout extends Component {
   }
 
   render () {
-    console.log(`Layout/index.jsx render`)
     // if (!this.state.token) {
       // window.location.href = '#/login';
     // }

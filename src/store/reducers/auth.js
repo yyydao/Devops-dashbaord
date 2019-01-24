@@ -23,10 +23,8 @@ const initialState = {
 export default function auth (state = initialState, action = {}) {
   switch (action.type) {
     case GET_TOKEN:
-      console.log(action)
       return Object.assign({}, initialState, { token: action.payload })
     case SET_TOKEN:
-      console.log(action)
       return Object.assign({}, initialState, { token: action.payload })
     case LOGIN_PENDING:
       return Object.assign({}, initialState, { loggingIn: true })

@@ -86,7 +86,6 @@ class Pipeline extends Component {
       page: 1,
       limit: 20,
     }).then((res) => {
-      console.log(res)
       if (res.code === 0) {
         if (res.data.list) {
           let list = res.data.list

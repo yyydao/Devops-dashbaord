@@ -50,7 +50,6 @@ class SideBar extends Component {
   }
 
   componentWillReceiveProps(nextProps){
-    console.log(nextProps.projectId)
     this.setState({
       projectId: nextProps.projectId,
     });
@@ -161,9 +160,9 @@ class SideBar extends Component {
       currentMenu,
       menuOpenKeys,
       defaultCurrentMenu,
-      projectId} = this.state
+      projectId
+    } = this.state
     // const {  } = this.props
-    console.log(projectId)
     return (
       <div className="menu-side-bar">
         <div className="dropdown-link">
