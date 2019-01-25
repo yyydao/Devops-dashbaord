@@ -94,10 +94,11 @@ class SideBar extends Component {
         // setPermissionList(res.data.permissionList)
         const menuList = this.getMenuList(res.data.menuList)
         this.setState({ menuList })
+        console.info(menuList.length)
         if (menuList && menuList.length > 0) {
           this.setState({ defaultCurrentMenu: [menuList[0].key] })
         }
-        if (this.props.pathName.indexOf('dashboard') > -1) {
+        if (this.props.pathName.indexOf('dashboard') > -1 && menuList && menuList.length > 0) {
           this.setState({ currentMenu: menuList[0].key })
         }
       } else {
