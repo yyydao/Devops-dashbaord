@@ -1,4 +1,4 @@
-import { reqGet, reqPost } from '@/api/api'
+import { reqGet, reqPost,auth } from '@/api/api'
 
 export const FETCH_PROFILE_PENDING = 'FETCH_PROFILE_PENDING'
 export const FETCH_PROFILE_SUCCESS = 'FETCH_PROFILE_SUCCESS'
@@ -15,7 +15,7 @@ export const SET_TOKEN = 'SET_TOKEN'
 export const login = (username, password) => ({
     type: 'LOGIN',
     payload: {
-      promise: reqPost('/sys/login', {
+      promise: auth({
         username,
         password
       })
@@ -76,7 +76,7 @@ export function fetchProfile () {
   return {
     type: 'FETCH_PROFILE',
     payload: {
-      promise: reqGet('/user/getUserInfo')
+      promise: reqGet('/sys/user/getUserInfo')
     }
   }
 }

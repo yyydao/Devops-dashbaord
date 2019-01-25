@@ -78,7 +78,7 @@ class Header extends Component {
               {
                 userInfo && <Dropdown overlay={menu}>
                   {/*<Icon type="bars" style={{fontSize: 18}} />*/}
-                  <span className='userName'>{userInfo.name}</span>
+                  <span className='userName'>{userInfo.nickName}</span>
                 </Dropdown>
               }
 

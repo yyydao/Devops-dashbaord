@@ -36,17 +36,17 @@ export default function auth (state = initialState, action = {}) {
 
       return Object.assign({}, state, {
         token: user.token,
-        user: user, loggingIn: false,
+        user: user,
+        loggingIn: false,
         loginErrors: null
       })
 
     case LOGIN_ERROR:
-      return {
-        ...state,
+      return Object.assign({}, state, {
         loggingIn: false,
         user: null,
-        loginErrors: action.payload.response.data.message
-      }
+        loginErrors: action.payload.msg
+      })
     case LOGOUT_SUCCESS:
       window.localStorage.removeItem('uid')
       window.localStorage.removeItem('token')
@@ -57,11 +57,12 @@ export default function auth (state = initialState, action = {}) {
         user: null,
         loginErrors: null,
         token: null,
-        userInfo:null
+        userInfo: null
       }
     case FETCH_PROFILE_SUCCESS:
       return Object.assign({}, state, {
         user: action.payload.data,
+        userInfo: action.payload.data,
         loggingIn: false,
         loginErrors: null
       })

@@ -150,3 +150,15 @@ export async function checkPermission (url) {
   })
   return data
 }
+
+
+export async function auth (data) {
+  return axios.post('/sys/login',data).then(res=>{
+    const d = res.data
+    if(d.code !== 0){
+      throw d
+    }
+    return d
+  })
+}
+
