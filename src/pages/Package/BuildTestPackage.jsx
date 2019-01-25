@@ -55,8 +55,7 @@ class BuildTestPackage extends Component {
       modalConfirmLoading: false,
       branchList: [],
       formDataBranch: null,
-      //@todo:字段有修改
-      formDataName: JSON.parse(localStorage.getItem('userInfo')).name,
+      formDataName: JSON.parse(localStorage.getItem('userInfo')).nickName,
       fromDataMail: '',
       formDataDesc: '',
       formDataWiki: '',
