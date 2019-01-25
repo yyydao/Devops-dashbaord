@@ -11,7 +11,6 @@ import {
 } from '../actions/auth'
 
 const initialState = {
-  user: null,
   loggingIn: false,
   loggingOut: false,
   loginErrors: null,
@@ -36,7 +35,7 @@ export default function auth (state = initialState, action = {}) {
 
       return Object.assign({}, state, {
         token: user.token,
-        user: user,
+        userInfo: user,
         loggingIn: false,
         loginErrors: null
       })
@@ -54,24 +53,21 @@ export default function auth (state = initialState, action = {}) {
       return {
         ...state,
         loggingOut: false,
-        user: null,
+        userInfo: null,
         loginErrors: null,
         token: null,
-        userInfo: null
       }
     case FETCH_PROFILE_SUCCESS:
       return Object.assign({}, state, {
-        user: action.payload.data,
         userInfo: action.payload.data,
         loggingIn: false,
         loginErrors: null
       })
 
     case SET_USERINFO:
-      localStorage.setItem('userInfo', JSON.stringify(action.data))
+      localStorage.setItem('userInfo', JSON.stringify(action.payload))
       return Object.assign({}, state, {
-        userInfo: action.data,
-        user: action.data,
+        userInfo: action.payload,
         loggingIn: false,
         loginErrors: null
       })

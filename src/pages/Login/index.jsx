@@ -58,7 +58,6 @@ class Login extends Component {
     //   });
     // })
     this.props.login(data.username, data.password).then((response) => {
-      console.log(response)
       let res = response.value
       this.setState({
         loading: false

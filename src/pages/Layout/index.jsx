@@ -90,7 +90,7 @@ class Layout extends Component {
     //     message.error(res.msg)
     //   }
     // })
-    this.props.fetchProfile()
+    this.props.fetchProfile().then()
   }
 
   render () {

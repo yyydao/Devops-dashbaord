@@ -63,7 +63,7 @@ export function setToken (token) {
 }
 
 export function setUserInfo (userInfo) {
-  return { type: 'SET_USERINFO', data: userInfo }
+  return { type: 'SET_USERINFO', payload: userInfo }
 }
 
 export function fetchProfile () {
