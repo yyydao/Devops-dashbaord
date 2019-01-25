@@ -30,6 +30,10 @@ import STFControl from '@/pages/Test/STF/Control'
 
 //系统管理
 import MenuManager from '@/pages/SystemManager/MenuManager'
+import RoleManager from '@/pages/SystemManager/RoleManager'
+import UserManager from '@/pages/SystemManager/UserManager'
+import FilterManager from '@/pages/SystemManager/FilterManager'
+
 
 export default [
   {
@@ -173,5 +177,20 @@ export default [
     path: '/menuManager',
     name:'menuManager',
     component:MenuManager
+  },
+  {
+    path: '/roleManager',
+    name:'roleManager',
+    component:RoleManager
+  },
+  {
+    path: '/userManager',
+    name:'userManager',
+    component:UserManager
+  },
+  {
+    path: '/filterManager',
+    name:'filterManager',
+    component:FilterManager
   }
 ]
