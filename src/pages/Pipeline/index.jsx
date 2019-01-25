@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import './index.scss'
 import { reqGet, reqPostURLEncode } from '@/api/api'
-import { formatTime, checkPermission } from '@/utils/utils'
+import { formatTime } from '@/utils/utils'
 import { Steps, Breadcrumb, Button, Row, Col, message } from 'antd'
 
 const BreadcrumbItem = Breadcrumb.Item
@@ -116,11 +116,11 @@ class Pipeline extends Component {
   }
 
   jumpToAddPipeline = () => {
-    const hasAddAuth = checkPermission('/pipeline/add', this.props.permissionList)
-    if (!hasAddAuth) {
-      message.error('该用户无此操作权限')
-      return
-    }
+    // const hasAddAuth = checkPermission('/pipeline/add', this.props.permissionList)
+    // if (!hasAddAuth) {
+    //   message.error('该用户无此操作权限')
+    //   return
+    // }
     this.props.history.push({
       pathname: `/pipeline/add`
     })
@@ -250,7 +250,6 @@ class Pipeline extends Component {
 Pipeline = connect((state) => {
   return {
     projectId: state.project.projectId,
-    permissionList: state.project.permissionList
   }
 })(Pipeline)
 

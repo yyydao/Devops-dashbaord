@@ -512,7 +512,7 @@ function mapStateToProps (state) {
   }
 
   return {
-    permissionList: null,
+    // permissionList: null,
     projectId: null,
   }
 }
@@ -524,7 +524,7 @@ function mapDispatchToProps (dispatch) {
 }
 
 // const DashboardForm = Form.create()(Dashboard);
-export default connect(mapStateToProps, mapDispatchToProps)(Dashboard)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Dashboard))
 // export default connect(state => {
 //   return {
 //     // projectId: state.projectId

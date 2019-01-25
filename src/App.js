@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 import Route from './router'
+// import { connect } from 'react-redux'
 // import { setProjectId, setUserInfo,setLoginInfo } from '@/store/action'
 // import { setProjectId } from '@/store/actions/project'
 // import { setUserInfo } from '@/store/actions/login'

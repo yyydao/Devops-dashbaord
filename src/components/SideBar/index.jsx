@@ -28,14 +28,14 @@ const MenuIcon = {
   '安装包': () => <PackagekSvg/>,
   '项目设置': () => <SettingSvg/>,
   '发布': () => <ReleaseSvg/>,
-  '需求': ()=> <RequirementSvg/>
+  '需求': () => <RequirementSvg/>
 }
 
 class SideBar extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      projectId:props.projectId,
+      projectId: props.projectId,
       menuList: [],
       projectList: [],
       currentMenu: '',
@@ -49,10 +49,10 @@ class SideBar extends Component {
     this.getProjectList()
   }
 
-  componentWillReceiveProps(nextProps){
+  componentWillReceiveProps (nextProps) {
     this.setState({
       projectId: nextProps.projectId,
-    });
+    })
   }
 
   componentWillUnmount () {
@@ -114,14 +114,15 @@ class SideBar extends Component {
         list.push(this.getMenuList(item.children))
         menuList.push(
           <SubMenu key={`sub${item.id}`}
-                   title={<span><Icon style={{fontSize: '16px'}} component={MenuIcon[item.name]}/><span>{item.name}</span></span>}>
+                   title={<span><Icon style={{ fontSize: '16px' }}
+                                      component={MenuIcon[item.name]}/><span>{item.name}</span></span>}>
             {list}
           </SubMenu>
         )
       } else {
         menuList.push(
           <MenuItem key={item.id}>
-            <Link to={item.urls}><Icon style={{fontSize: '16px'}}  component={MenuIcon[item.name]}/>{item.name}</Link>
+            <Link to={item.urls}><Icon style={{ fontSize: '16px' }} component={MenuIcon[item.name]}/>{item.name}</Link>
           </MenuItem>
         )
       }
@@ -140,8 +141,13 @@ class SideBar extends Component {
         let list = []
         for (let item of res.data) {
           let icon = ''
-          if (item.platform === 2) {icon = <Icon type="apple" theme="filled" style={{paddingRight: '10px',fontSize:'18px',color:"#fff"}}/> }
-          if (item.platform === 1) {icon =<Icon type="android" theme="filled" style={{paddingRight: '10px',fontSize:'18px',color:"#fff"}}/>}
+          if (item.platform === 2) {
+            icon = <Icon type="apple" theme="filled" style={{ paddingRight: '10px', fontSize: '18px', color: '#fff' }}/>
+          }
+          if (item.platform === 1) {
+            icon =
+              <Icon type="android" theme="filled" style={{ paddingRight: '10px', fontSize: '18px', color: '#fff' }}/>
+          }
           list.push({
             icon: icon,
             id: item.id,
@@ -162,19 +168,19 @@ class SideBar extends Component {
       defaultCurrentMenu,
       projectId
     } = this.state
-    // const {  } = this.props
     return (
       <div className="menu-side-bar">
         <div className="dropdown-link">
           {
-            this.state.projectId && <div className="dropdown-select-wrapper">
-            <Select value={this.state.projectId} className="dropdown-select" onChange={this.selectChange}>
-              {
-                projectList.map((item) => {
-                  return <Option key={item.id} className="sideBar-option"><span className="icon">{item.icon}</span><span className="project">{item.name}</span></Option>
-                })
-              }
-            </Select>
+            projectId && <div className="dropdown-select-wrapper">
+              <Select value={projectId} className="dropdown-select" onChange={this.selectChange}>
+                {
+                  projectList.map((item) => {
+                    return <Option key={item.id} className="sideBar-option"><span
+                      className="icon">{item.icon}</span><span className="project">{item.name}</span></Option>
+                  })
+                }
+              </Select>
             </div>
           }
         </div>

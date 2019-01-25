@@ -1,5 +1,3 @@
-import { reqGet, reqPost } from '@/api/api'
-
 export const SET_PERMISSIONLIST = 'SET_PERMISSIONLIST';
 
 export function setPermissionList(permissionList){

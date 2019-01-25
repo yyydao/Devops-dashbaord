@@ -1,4 +1,4 @@
-import { reqGet, reqPost, auth } from '@/api/api'
+import { reqGet, reqPost } from '@/api/api'
 
 export const FETCH_PROFILE_PENDING = 'FETCH_PROFILE_PENDING'
 export const FETCH_PROFILE_SUCCESS = 'FETCH_PROFILE_SUCCESS'

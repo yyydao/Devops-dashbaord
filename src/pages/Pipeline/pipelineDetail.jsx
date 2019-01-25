@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import qs from 'qs'
 import './detail.scss'
-import { formatTime, constructStepCard, checkPermission } from '@/utils/utils'
+import { formatTime, constructStepCard } from '@/utils/utils'
 import { reqGet, reqDelete, reqPostURLEncode } from '@/api/api'
 import { setStep, removeSteps, setSteps } from '@/store/actions/pipeline'
 
@@ -21,6 +21,7 @@ import {
   message,
   Modal
 } from 'antd'
+import { bindActionCreators } from 'redux'
 
 const BreadcrumbItem = Breadcrumb.Item
 const Step = Steps.Step
@@ -169,11 +170,11 @@ class pipelineDetail extends Component {
   }
 
   gotoEditPipeline = () => {
-    const hasEditAuth = checkPermission('/pipeline/edit', this.props.permissionList)
-    if (!hasEditAuth) {
-      message.error('该用户无此操作权限')
-      return
-    }
+    // const hasEditAuth = checkPermission('/pipeline/edit', this.props.permissionList)
+    // if (!hasEditAuth) {
+    //   message.error('该用户无此操作权限')
+    //   return
+    // }
     localStorage.setItem('currentEditedPipeline', JSON.stringify({
       fullSteps: this.state.fullSteps,
       stepsList: this.state.stepsList
@@ -839,12 +840,31 @@ class pipelineDetail extends Component {
   }
 }
 
+
+function mapStateToProps (state) {
+  const { project,pipeline } = state
+  return {
+    projectId: project.projectId
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    setStep: bindActionCreators(setStep, dispatch),
+    removeSteps: bindActionCreators(removeSteps, dispatch),
+    setSteps: bindActionCreators(setSteps, dispatch),
+  }
+}
+
+
+
+
 pipelineDetail = connect((state) => {
   return {
     taskID: state.taskID,
-    projectId: state.projectId,
-    permissionList: state.permissionList
+    projectId: state.project.projectId,
+    // permissionList: state.permissionList
   }
-}, { setStep, removeSteps, setSteps })(pipelineDetail)
+}, { mapDispatchToProps })(pipelineDetail)
 
 export default pipelineDetail

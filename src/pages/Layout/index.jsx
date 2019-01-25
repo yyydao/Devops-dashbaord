@@ -9,10 +9,8 @@ import Header from '@/components/Header'
 import SideBar from '@/components/SideBar'
 import Routers from '@/router/routerMap'
 import { reqPost } from '@/api/api'
-// import { setToken, setUserInfo, setProjectId } from '@/store/action'
 import { fetchProfile, logout, setToken } from '@/store/actions/auth'
 import { setProjectId } from '@/store/actions/project'
-import { getQueryString } from '@/utils/utils'
 
 class Layout extends Component {
   constructor (props) {
