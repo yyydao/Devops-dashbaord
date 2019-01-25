@@ -26,6 +26,13 @@ import Requirement from '@/pages/Requirement'
 import STFList from '@/pages/Test/STF/Index'
 import STFControl from '@/pages/Test/STF/Control'
 
+//系统管理
+import MenuManager from '@/pages/SystemManager/MenuManager'
+import RoleManager from '@/pages/SystemManager/RoleManager'
+import UserManager from '@/pages/SystemManager/UserManager'
+import FilterManager from '@/pages/SystemManager/FilterManager'
+
+
 export default [
   {
     path: '/',
@@ -158,5 +165,25 @@ export default [
     path: '/stfDevices/control/:deviceID',
     name: 'STFControl',
     component: STFControl
+  },
+  {
+    path: '/menuManager',
+    name:'menuManager',
+    component:MenuManager
+  },
+  {
+    path: '/roleManager',
+    name:'roleManager',
+    component:RoleManager
+  },
+  {
+    path: '/userManager',
+    name:'userManager',
+    component:UserManager
+  },
+  {
+    path: '/filterManager',
+    name:'filterManager',
+    component:FilterManager
   }
 ]

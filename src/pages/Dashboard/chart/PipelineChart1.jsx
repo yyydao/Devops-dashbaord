@@ -78,8 +78,10 @@ class PipelineChart1 extends Component {
     let legend=[]
     let series=[]
     if(data){
-      data.map(item => {
-        legend.push(item.stepName);
+      data.map((item,index) => {
+        let obj={}
+        obj.name=item.stepName;
+        legend.push(obj);
         series.push({
           name:item.stepName,
           type:'line',
@@ -114,22 +116,9 @@ class PipelineChart1 extends Component {
       legend: {
         data:legend
       },
-      color:['#1890FF',
-        '#73C9E6',
-        '#13C2C2',
-        '#6CD9B3',
-        '#2FC25B',
-        '#9DD96C',
-        '#FACC14',
-        '#E6965C',
-        '#F04864',
-        '#D66BCA',
-        '#8543E0',
-        '#8E77ED',
-        '#3436C7',
-        '#737EE6',
-        '#223273',
-        '#7EA2E6'],
+      color:['#1890FF', '#73C9E6', '#13C2C2', '#6CD9B3', '#2FC25B', '#9DD96C', '#FACC14', '#E6965C', '#F04864', '#D66BCA', '#8543E0', '#8E77ED', '#3436C7', '#737EE6', '#223273', '#7EA2E6'],
+      // color:['#20b0ba', '#26c770', '#f8c517', '#f78e63', '#f4493d', '#f65896', '#c95afe', '#6170f2', '#2096f3'],
+      // color:['#c1f1e8', '#bcecd2', '#f9eabc', '#f9dace', '#f8c4c1', '#f8cadd', '#eac7fe', '#cbd1f9', '#baddf9'],
       grid: {
         left: '3%',
         right: '4%',
