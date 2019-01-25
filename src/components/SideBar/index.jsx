@@ -11,9 +11,10 @@ import DashboardSvg from '@/assets/svg/nav_icon_dashboard_default.svg'
 import PipelineSvg from '@/assets/svg/nav_icon_pipeline_default.svg'
 import TestSvg from '@/assets/svg/nav_icon_test_default.svg'
 import PackagekSvg from '@/assets/svg/nav_icon_package_default.svg'
-import SettingSvg from '@/assets/svg/nav_icon_set_default.svg'
+import SettingSvg from '@/assets/svg/setting.svg'
 import ReleaseSvg from '@/assets/svg/release_icon.svg'
 import RequirementSvg from '@/assets/svg/nav_icon_demand_default.svg'
+import SystemSvg from '@/assets/svg/nav_icon_set_default.svg'
 
 import './index.scss'
 
@@ -28,8 +29,10 @@ const MenuIcon = {
   '安装包': () => <PackagekSvg/>,
   '项目设置': () => <SettingSvg/>,
   '发布': () => <ReleaseSvg/>,
-  '需求': () => <RequirementSvg/>
+  '需求': () => <RequirementSvg/>,
+  '系统管理': () => <SystemSvg/>
 }
+
 
 class SideBar extends Component {
   constructor (props) {
