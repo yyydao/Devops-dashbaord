@@ -80,17 +80,15 @@ class Layout extends Component {
   }
 
   getUserInfo = () => {
-    // let { setUserInfo } = this.props
     //
-    // reqPost('/user/getUserInfo').then(res => {
-    //   if (parseInt(res.code, 0) === 0) {
-    //     this.setState({ userInfo: res.data })
-    //     // setUserInfo(res.data)
-    //   } else {
-    //     message.error(res.msg)
-    //   }
-    // })
-    this.props.fetchProfile().then()
+    reqPost('/sys/user/getUserInfo').then(res => {
+      if (parseInt(res.code, 0) === 0) {
+        this.setState({ userInfo: res.data })
+        // setUserInfo(res.data)
+      } else {
+        message.error(res.msg)
+      }
+    })
   }
 
   render () {
