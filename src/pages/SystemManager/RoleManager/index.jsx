@@ -66,7 +66,9 @@ class RoleManager extends Component {
         total: 0,
         showTotal: null
       },
-      selectedRowKeys:[]
+      selectedRowKeys:[],
+      halfCheckedKeys:[],
+      expandedKeys:[],
     }
   }
 
@@ -135,12 +137,34 @@ class RoleManager extends Component {
         this.setState({
           newRole:res.role,
           modalTitle:'修改',
-          modalVisible:true
+          modalVisible:true,
+          expandedKeys:[]
         },()=>{
           this.props.form.setFieldsValue({roleName:res.role.roleName})
+          this.dealTreeData(this.state.AllMenuList)
         })
       }else{
         message.error(res.msg);
+      }
+    })
+  }
+  dealTreeData = (data) =>{
+    let menuIdList =JSON.parse(JSON.stringify(this.state.newRole.menuIdList))
+    data.map((item)=>{
+      if(menuIdList.indexOf(item.menuId)>-1){
+        if(item.list){
+          for(let i=0;i<item.list.length;i++){
+            if(menuIdList.indexOf(item.list[i].menuId)<0){
+              menuIdList.splice(menuIdList.indexOf(item.menuId),1)
+              let newRole=this.state.newRole
+              newRole.menuIdList=menuIdList
+              this.setState({newRole},()=>{
+                this.dealTreeData(JSON.parse(JSON.stringify(item.list)))
+              })
+              break;
+            }
+          }
+        }
       }
     })
   }
@@ -187,7 +211,8 @@ class RoleManager extends Component {
     this.setState({
       modalVisible:true,
       modalTitle:'新增',
-      newRole:{}
+      newRole:{},
+      expandedKeys:[]
       },()=>{
       this.props.form.setFieldsValue({roleName:''})
     })
@@ -210,10 +235,10 @@ class RoleManager extends Component {
   /**
    * @desc 授权改变事件
    */
-  menuIdListChanged = (checkedKeys) =>{
+  menuIdListChanged = (checkedKeys,e) =>{
     let newRole = this.state.newRole
-    newRole.menuIdList = checkedKeys.checked
-    this.setState({newRole})
+    newRole.menuIdList = checkedKeys
+    this.setState({newRole,halfCheckedKeys:e.halfCheckedKeys})
   }
   /**
    * @desc 备注改变事件
@@ -230,12 +255,13 @@ class RoleManager extends Component {
     let successMsg="新增成功"
     this.props.form.validateFields(['roleName'],(err, values) => {
       if (!err) {
-        let role= this.state.newRole,postUrl='/sys/role/save'
+        let role= JSON.parse(JSON.stringify(this.state.newRole)),postUrl='/sys/role/save'
         if(role.roleId){
           postUrl='/sys/role/update'
           successMsg="修改成功"
         }
         role.roleName=values.roleName
+        role.menuIdList=[...this.state.newRole.menuIdList,...this.state.halfCheckedKeys]
         reqPost(postUrl,role).then(res => {
           if(res.code === 0){
             message.success(successMsg)
@@ -249,7 +275,7 @@ class RoleManager extends Component {
   }
 
   render() {
-    const {columns, roleList,loading, newRole, modalVisible, pagination, selectedRowKeys, AllMenuList, modalTitle} = this.state
+    const {columns, roleList,loading, newRole, modalVisible, pagination, selectedRowKeys, AllMenuList, modalTitle, expandedKeys} = this.state
     const { getFieldDecorator } = this.props.form;
     const fromItemLayout = {
       labelCol: {
@@ -324,10 +350,10 @@ class RoleManager extends Component {
               <div className="tree-container">
                 <Tree
                   checkable
-                  checkStrictly
-                  onCheck={(checkedKeys)=>{this.menuIdListChanged(checkedKeys)}}
+                  onCheck={(checkedKeys,e)=>{this.menuIdListChanged(checkedKeys,e)}}
                   checkedKeys={newRole.menuIdList}
-                  defaultExpandedKeys={['0']}
+                  expandedKeys={expandedKeys}
+                  onExpand={(expandedKeys)=>{this.setState({expandedKeys})}}
                 >
                   {this.renderTreeNodes(AllMenuList)}
                 </Tree>
