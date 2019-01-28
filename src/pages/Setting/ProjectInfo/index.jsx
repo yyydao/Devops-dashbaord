@@ -19,7 +19,8 @@ class ProjectInfo extends Component {
       hasDeleteBtn: false,
       creator: '',
       createTime: '',
-      platform: ''
+      platform: '',
+      projectCode:''
     }
   }
 
@@ -52,7 +53,8 @@ class ProjectInfo extends Component {
           projectId: res.data.id,
           creator: res.data.creator,
           createTime: res.data.createTime,
-          platform: platformType[res.data.platform - 1]
+          platform: platformType[res.data.platform - 1],
+          projectCode:res.data.projectCode
         })
       } else {
         message.error(res.msg)
@@ -103,7 +105,7 @@ class ProjectInfo extends Component {
 
   render () {
     const { getFieldDecorator } = this.props.form
-    const { creator, createTime, platform } = this.state
+    const { creator, createTime, platform, projectCode } = this.state
 
     const fromItemLayout = {
       labelCol: {
@@ -173,7 +175,10 @@ class ProjectInfo extends Component {
                 <span>{creator}</span>
               </FormItem>
               <FormItem {...fromItemLayout} label="创建时间" style={{ marginBottom: 0 }}>
-                <p>{createTime}</p>
+                <span>{createTime}</span>
+              </FormItem>
+              <FormItem {...fromItemLayout} label="项目编码" style={{ marginBottom: 0 }}>
+                <p>{projectCode}</p>
               </FormItem>
               <FormItem {...tailFormItemLayout}>
                 {this.state.hasSubmitBtn && <Button type="primary" htmlType="submit">更新</Button>}
