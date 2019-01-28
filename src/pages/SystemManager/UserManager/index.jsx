@@ -103,10 +103,11 @@ class UserManager extends Component {
 
   componentWillMount() {
     this.getUserList()
+    this.getRoleList()
   }
 
   /**
-   * @desc 获取菜单列表
+   * @desc 获取用户列表
    */
   getUserList = () =>{
     this.setState({ loading: true });
@@ -125,6 +126,21 @@ class UserManager extends Component {
           params,
           loading:false,
           selectedRowKeys:[]
+        })
+      }else{
+        message.error(res.msg);
+      }
+    })
+  }
+  /**
+   * @desc 获取角色列表
+   */
+  getRoleList = () =>{
+    this.setState({ loading: true });
+    reqGet('/sys/role/select').then(res => {
+      if(res.code === 0){
+        this.setState({
+          plainOptions:res.list,
         })
       }else{
         message.error(res.msg);
@@ -322,7 +338,7 @@ class UserManager extends Component {
         </div>
         <Modal
           title={modalTitle}
-          width={600}
+          width={700}
           visible={modalVisible}
           confirmLoading={confirmLoading}
           onOk={()=>{this.onCreateUser()}}
@@ -420,7 +436,11 @@ class UserManager extends Component {
             <FormItem {...fromItemLayout} label="角色">
               {
                 getFieldDecorator('roleIdList',{initialValue:newUser.roleIdList})(
-                  <CheckboxGroup options={plainOptions} />
+                  <CheckboxGroup>
+                    <Row>
+                      {plainOptions.map((item,index)=><Col span={6} style={{marginTop:8}} key={index}><Checkbox value={item.roleId}>{item.roleName}</Checkbox></Col>)}
+                    </Row>
+                  </CheckboxGroup>
                 )
               }
             </FormItem>
