@@ -78,7 +78,7 @@ class RoleManager extends Component {
   }
 
   /**
-   * @desc 获取菜单列表
+   * @desc 获取角色列表
    */
   getRoleList = () =>{
     this.setState({ loading: true });
