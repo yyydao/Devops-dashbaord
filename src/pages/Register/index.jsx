@@ -1,0 +1,218 @@
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { Form, Icon, Input, Button, Card, message, Row, Col, Checkbox } from 'antd'
+import { bindActionCreators } from 'redux'
+import { login, setUserInfo,forceLogout } from '@/store/actions/auth'
+import { withRouter } from 'react-router-dom'
+import './index.scss'
+
+import {reqGet,reqPost} from '@/api/api'
+
+const FormItem = Form.Item
+const CheckboxGroup = Checkbox.Group
+
+const propTypes = {
+  user: PropTypes.object,
+  loggingIn: PropTypes.bool,
+  loginErrors: PropTypes.string
+}
+
+class Login extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      newUser: {},
+      loading: false,
+      rolelist: []
+    }
+  }
+
+  handleSubmit (e) {
+    e.preventDefault()
+    let data = this.props.form.getFieldsValue()
+    reqPost('/sys/user/register',data).then((res) => {
+      if(res.code === 0){
+        message.success('注册成功').then(()=>{
+          this.props.history.replace('/login')
+        })
+
+      } else{
+        message.error(res.msg)
+      }
+    }).catch(err=>{
+      console.log(err)
+      message.error(err.msg)
+    })
+  }
+
+  componentWillMount () {
+    // this.props.forceLogout()
+    reqGet('/sys/role/selectnoadmin').then(res =>{
+      console.log(res)
+      if(res.code === 0){
+        this.setState({rolelist:res.list})
+      }
+
+    })
+  }
+
+  render () {
+    const formItemLayout = {
+      labelCol: {
+        xs: { span: 4 },
+        sm: { span: 4 },
+      },
+      wrapperCol: {
+        xs: { span: 20 },
+        sm: { span: 16 },
+      },
+    };
+    const tailFormItemLayout = {
+      wrapperCol: {
+        xs: {
+          span: 24,
+          offset: 0,
+        },
+        sm: {
+          span: 16,
+          offset: 8,
+        },
+      },
+    };
+
+    const { getFieldDecorator } = this.props.form
+    const { rolelist,newUser } = this.state
+    return (
+      <div className="login-wrapper">
+        <Card title="DevOps平台" className="login-form-card">
+          <Form onSubmit={this.handleSubmit.bind(this)} className="register-form">
+            <FormItem
+              {...formItemLayout}
+              label={"昵称"}>
+              {getFieldDecorator('nickName', {
+                rules: [{ required: true, message: '请输入' }]
+              })(
+                <Input prefix={<Icon type="user" style={{ color: 'rgba(0, 0, 0, .25)' }}></Icon>}
+                       placeholder="昵称"/>
+              )}
+            </FormItem>
+            <FormItem
+              {...formItemLayout}
+              label={"用户名"}>
+              {getFieldDecorator('username', {
+                rules: [{ required: true, message: '请输入' }]
+              })(
+                <Input prefix={<Icon type="user" style={{ color: 'rgba(0, 0, 0, .25)' }}></Icon>}
+                       placeholder="用户名"/>
+              )}
+            </FormItem>
+            <FormItem
+              {...formItemLayout}
+              label={"密码"}>
+              {getFieldDecorator('password', {
+                rules: [{ required: true, message: '请输入' }]
+              })(
+                <Input prefix={<Icon type="lock" style={{ color: 'rgba(0, 0, 0, .25)' }}></Icon>} type="password"
+                       placeholder="密码"/>
+              )}
+            </FormItem>
+            <FormItem
+              {...formItemLayout}
+              label={"确认密码"}>
+              {getFieldDecorator('confirmpassword', {
+                rules: [{ required: true, message: '请输入' }]
+              })(
+                <Input prefix={<Icon type="lock" style={{ color: 'rgba(0, 0, 0, .25)' }}></Icon>} type="password"
+                       placeholder="password"/>
+              )}
+            </FormItem>
+            <FormItem
+              {...formItemLayout}
+              label={"手机号"}>
+              {getFieldDecorator('mobile', {
+                rules: [{ required: true, message: '请输入' }]
+              })(
+                <Input prefix={<Icon type="mobile" style={{ color: 'rgba(0, 0, 0, .25)' }}></Icon>} type="text"
+                       placeholder="手机号"/>
+              )}
+            </FormItem>
+            <FormItem
+              {...formItemLayout}
+              label={"邮箱"}>
+              {getFieldDecorator('email', {
+                rules: [{ required: true, message: '请输入' }]
+              })(
+                <Input prefix={<Icon type="mail" style={{ color: 'rgba(0, 0, 0, .25)' }}></Icon>} type="text"
+                       placeholder="邮箱"/>
+              )}
+            </FormItem>
+            <FormItem
+              {...formItemLayout}
+              label={"项目识别码"}>
+              {getFieldDecorator('projectCode', {
+                // rules: [{ required: true, message: '请输入' }]
+              })(
+                <Input prefix={<Icon type="project" style={{ color: 'rgba(0, 0, 0, .25)' }}></Icon>} type="text"
+                       placeholder="项目识别码"/>
+              )}
+            </FormItem>
+            <FormItem
+              {...formItemLayout}
+              label={"用户类型"}>
+              {
+                getFieldDecorator('roleIdList',{initialValue:newUser.roleIdList})(
+                  <CheckboxGroup>
+                    <Row type='flex' align='space-around' justify='middle' className='task-item-row'>
+                      {rolelist.map((item,index)=><Col style={{marginTop:8}} key={index}><Checkbox value={item.roleId}>{item.roleName}</Checkbox></Col>)}
+                    </Row>
+                  </CheckboxGroup>
+                )
+              }
+            </FormItem>
+            <FormItem  {...formItemLayout}>
+              <Button type="primary" htmlType="submit" className="login-form-button">注册</Button>
+            </FormItem>
+          </Form>
+        </Card>
+      </div>
+    )
+  }
+}
+
+Login.propTypes = propTypes
+Login = Form.create()(Login)
+
+function mapStateToProps (state) {
+  const { auth } = state
+  if (auth.user) {
+    return {
+      user: auth.user,
+      loggingIn: auth.loggingIn,
+      authErrors: '',
+      userInfo: auth.userInfo
+    }
+  }
+
+  return {
+    user: null,
+    loggingIn: auth.loggingIn,
+    loginErrors: auth.loginErrors
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    login: bindActionCreators(login, dispatch),
+    setUserInfo:bindActionCreators(setUserInfo, dispatch),
+    forceLogout: bindActionCreators(forceLogout,dispatch)
+  }
+}
+
+// export default withRouter(connect(state => {
+//   return {
+//     loginInfo: state.loginInfo
+//   }
+// }, { setToken, setLoginInfo })(Login))
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Login))
