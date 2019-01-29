@@ -9,7 +9,7 @@ import Header from '@/components/Header'
 import SideBar from '@/components/SideBar'
 import Routers from '@/router/routerMap'
 import { reqPost } from '@/api/api'
-import { fetchProfile, logout, setToken } from '@/store/actions/auth'
+import { fetchProfile, logout, setToken,setUserInfo } from '@/store/actions/auth'
 import { setProjectId } from '@/store/actions/project'
 
 class Layout extends Component {
@@ -49,6 +49,7 @@ class Layout extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
+    console.log(nextProps)
     this.setState({userInfo:nextProps.userInfo})
   }
 
@@ -83,8 +84,8 @@ class Layout extends Component {
     //
     reqPost('/sys/user/getUserInfo').then(res => {
       if (parseInt(res.code, 0) === 0) {
-        this.setState({ userInfo: res.data })
-        // setUserInfo(res.data)
+        this.setState({ userInfo: res.user })
+        // this.props.setUserInfo(res.user)
       } else {
         message.error(res.msg)
       }
@@ -138,6 +139,7 @@ function mapDispatchToProps (dispatch) {
     logout: bindActionCreators(logout, dispatch),
     setToken: bindActionCreators(setToken, dispatch),
     setProjectId: bindActionCreators(setProjectId, dispatch),
+    setUserInfo:bindActionCreators(setUserInfo,dispatch),
   }
 }
 

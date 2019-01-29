@@ -58,8 +58,9 @@ export default function auth (state = initialState, action = {}) {
         token: null,
       }
     case FETCH_PROFILE_SUCCESS:
+      console.log(action.payload)
       return Object.assign({}, state, {
-        userInfo: action.payload.data,
+        userInfo: action.payload.user,
         loggingIn: false,
         loginErrors: null
       })
