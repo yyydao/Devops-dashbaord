@@ -85,7 +85,7 @@ class Layout extends Component {
     reqPost('/sys/user/getUserInfo').then(res => {
       if (parseInt(res.code, 0) === 0) {
         this.setState({ userInfo: res.user })
-        // this.props.setUserInfo(res.user)
+        this.props.setUserInfo(res.user)
       } else {
         message.error(res.msg)
       }
