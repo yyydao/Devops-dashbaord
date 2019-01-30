@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {Link} from 'react-router-dom'
 import {connect} from 'react-redux'
-import {Breadcrumb, Table, message, Modal, Checkbox, Button, Row, Col, Form, Input, Radio, InputNumber } from 'antd'
+import {Breadcrumb, Table, message, Modal, Button, Row, Col, Form, Input, InputNumber } from 'antd'
 
 import {reqGet,reqPost} from '@/api/api'
 import './index.scss'
@@ -9,9 +9,7 @@ import './index.scss'
 const BreadcrumbItem = Breadcrumb.Item
 const FormItem = Form.Item;
 const Search = Input.Search;
-const CheckboxGroup = Checkbox.Group;
 const confirm = Modal.confirm;
-const RadioGroup = Radio.Group;
 
 class FilterManager extends Component {
   constructor() {

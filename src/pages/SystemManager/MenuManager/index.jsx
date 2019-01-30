@@ -47,7 +47,7 @@ class MenuManager extends Component {
           key: 'icon',
           width: "10%",
           align:"center",
-          render: (text, record) => <Icon type={text}/>
+          render: (text) => <Icon type={text}/>
         },
         {
           title: '类型',
@@ -55,14 +55,12 @@ class MenuManager extends Component {
           key: 'type',
           width: "8%",
           align:"center",
-          render: (text, record) => {
+          render: (text) => {
             switch (text){
               case 2: return <Tag color="gray">按钮</Tag>
-                break;
               case 1: return <Tag color="green">菜单</Tag>
-                break;
               case 0: return <Tag color="cyan">目录</Tag>
-                break;
+              default: return <Tag color="gray">未知</Tag>
             }
           }
         },
@@ -177,10 +175,10 @@ class MenuManager extends Component {
         item.parentList=[...parentList]
         item.parentList.push(item.parentId)
       }
-
       if(item.list){
         this.dealData(item.list,item.parentList)
       }
+      return item
     })
   }
   /**
