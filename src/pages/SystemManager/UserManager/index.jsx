@@ -264,8 +264,12 @@ class UserManager extends Component {
    */
   onCreateUser = () =>{
     let successMsg="新增成功"
-    let fields=this.state.modalTitle==='新增'?['username','psw','password','mobile','nickName','projectCode','email','roleIdList','status']:['username','mobile','nickName','email','roleIdList','status']
+    let fields=this.state.modalTitle==='新增'?['username','psw','password','mobile','nickName','projectCode','email','roleIdList','status']:['username','psw','password','mobile','nickName','email','roleIdList','status']
     this.props.form.validateFields(fields,(err, values) => {
+      if(values.password&&!values.psw){
+        message.error("请填写确认密码")
+        return
+      }
       if (!err) {
         let user= this.state.newUser,postUrl='/sys/user/save'
         if(user.userId){
@@ -373,6 +377,20 @@ class UserManager extends Component {
               </FormItem>
             }
             {
+              modalTitle=== '修改' &&
+              <FormItem {...fromItemLayout} label="密码">
+                {
+                  getFieldDecorator('password',{
+                    rules: [{
+                      validator:this.passwordConfirm
+                    }]
+                  })(
+                    <Input type="password"/>
+                  )
+                }
+              </FormItem>
+            }
+            {
               modalTitle === '新增' &&
               <FormItem {...fromItemLayout} label="确认密码">
                 {
@@ -383,6 +401,20 @@ class UserManager extends Component {
                       required: true, message: '请填写确认密码'
                     }],
                     initialValue:newUser.psw
+                  })(
+                    <Input type="password"/>
+                  )
+                }
+              </FormItem>
+            }
+            {
+              modalTitle === '修改' &&
+              <FormItem {...fromItemLayout} label="确认密码">
+                {
+                  getFieldDecorator('psw',{
+                    rules: [{
+                      validator:this.pswConfirm
+                    }]
                   })(
                     <Input type="password"/>
                   )
