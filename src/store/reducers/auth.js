@@ -3,8 +3,7 @@ import {
   LOGIN_SUCCESS,
   LOGIN_ERROR,
   LOGOUT_SUCCESS,
-  FETCH_PROFILE_PENDING,
-  FETCH_PROFILE_SUCCESS,
+  FETCH_PROFILE,
   SET_USERINFO,
   GET_TOKEN,
   SET_TOKEN,
@@ -57,7 +56,7 @@ export default function auth (state = initialState, action = {}) {
         loginErrors: null,
         token: null,
       }
-    case FETCH_PROFILE_SUCCESS:
+    case FETCH_PROFILE:
       console.log(action.payload)
       return Object.assign({}, state, {
         userInfo: action.payload.user,

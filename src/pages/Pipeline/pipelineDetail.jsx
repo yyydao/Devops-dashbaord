@@ -841,13 +841,6 @@ class pipelineDetail extends Component {
 }
 
 
-function mapStateToProps (state) {
-  const { project,pipeline } = state
-  return {
-    projectId: project.projectId
-  }
-}
-
 function mapDispatchToProps (dispatch) {
   return {
     setStep: bindActionCreators(setStep, dispatch),

@@ -170,7 +170,7 @@ class Login extends Component {
                 )
               }
             </FormItem>
-            <FormItem  {...formItemLayout}>
+            <FormItem  {...tailFormItemLayout}>
               <Button type="primary" htmlType="submit" className="login-form-button">注册</Button>
             </FormItem>
           </Form>
