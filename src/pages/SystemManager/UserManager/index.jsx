@@ -58,12 +58,11 @@ class UserManager extends Component {
           dataIndex: 'status',
           key: 'status',
           width: "8%",
-          render: (text, record) => {
+          render: (text) => {
             switch (text){
               case 1: return <Tag color="green">正常</Tag>
-                break;
               case 0: return <Tag color="red">禁用</Tag>
-                break;
+              default:return <Tag color="gray">未知</Tag>
             }
           }
         },

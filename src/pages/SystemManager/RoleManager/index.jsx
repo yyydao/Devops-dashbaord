@@ -150,7 +150,7 @@ class RoleManager extends Component {
   }
   dealTreeData = (data) =>{
     let menuIdList =JSON.parse(JSON.stringify(this.state.newRole.menuIdList))
-    data.map((item)=>{
+    data.map(item=>{
       if(menuIdList.indexOf(item.menuId)>-1){
         if(item.list){
           for(let i=0;i<item.list.length;i++){
@@ -166,6 +166,7 @@ class RoleManager extends Component {
           }
         }
       }
+      return item
     })
   }
   /**
