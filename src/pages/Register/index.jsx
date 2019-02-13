@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { Form, Icon, Input, Button, message, Row, Col, Checkbox } from 'antd'
+import { Form, Icon, Input, Button, message, Row, Col, Radio } from 'antd'
 import { bindActionCreators } from 'redux'
 import { login, setUserInfo, forceLogout } from '@/store/actions/auth'
 import { withRouter } from 'react-router-dom'
@@ -10,7 +10,7 @@ import './index.scss'
 import { reqGet, reqPost } from '@/api/api'
 
 const FormItem = Form.Item
-const CheckboxGroup = Checkbox.Group
+const RadioGroup = Radio.Group
 
 const propTypes = {
   user: PropTypes.object,
@@ -31,6 +31,7 @@ class Login extends Component {
   handleSubmit (e) {
     e.preventDefault()
     let data = this.props.form.getFieldsValue()
+    data.roleIdList = [data.roleIdList]
     reqPost('/sys/user/register', data).then((res) => {
       if (res.code === 0) {
         message.success('注册成功').then(() => {
@@ -151,12 +152,12 @@ class Login extends Component {
                   label={'用户类型'}>
                   {
                     getFieldDecorator('roleIdList', { initialValue: newUser.roleIdList })(
-                      <CheckboxGroup>
+                      <RadioGroup>
                         <Row type='flex' align='space-around' justify='middle' className='task-item-row'>
-                          {rolelist.map((item, index) => <Col style={{ marginTop: 8 }} key={index}><Checkbox
-                            value={item.roleId}>{item.roleName}</Checkbox></Col>)}
+                          {rolelist.map((item, index) => <Col style={{ marginTop: 8 }} key={index}><Radio
+                            value={item.roleId}>{item.roleName}</Radio></Col>)}
                         </Row>
-                      </CheckboxGroup>
+                      </RadioGroup>
                     )
                   }
                 </FormItem>
