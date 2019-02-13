@@ -49,8 +49,10 @@ class Layout extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
+    console.group('layout')
     console.log(nextProps)
     this.setState({userInfo:nextProps.userInfo})
+    console.groupEnd()
   }
 
   projectIdChange = (value) => {
@@ -121,7 +123,7 @@ const mapStateToProps = (state) => {
   const { auth,project } = state
   if (auth.token && project.projectId) {
     return {
-      userInfo:auth.userInfo,
+      userInfo:JSON.parse(JSON.stringify(auth.userInfo)),
       token: auth.token,
       projectId: project.projectId,
     }
@@ -133,7 +135,7 @@ const mapStateToProps = (state) => {
   }
 }
 
-function mapDispatchToProps (dispatch) {
+const mapDispatchToProps = (dispatch) =>{
   return {
     fetchProfile: bindActionCreators(fetchProfile, dispatch),
     logout: bindActionCreators(logout, dispatch),

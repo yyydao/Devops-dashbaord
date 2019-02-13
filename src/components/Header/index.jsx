@@ -8,6 +8,20 @@ import {reqGet} from '@/api/api'
 const MenuItem = Menu.Item
 
 class Header extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      userInfo:{}
+    }
+  }
+  propTypes: {
+    userInfo: PropTypes.object.isRequired,
+  }
+
+  componentWillReceiveProps (nextProps) {
+    console.log(nextProps)
+    this.setState({userInfo:nextProps.userInfo})
+  }
   logout = () => {
     reqGet('/sys/loginout').then(res => {
       if(parseInt(res.code, 0) === 0){
@@ -21,7 +35,8 @@ class Header extends Component {
   }
 
   render () {
-    let { userInfo, showSideBar } = this.props
+    let { showSideBar } = this.props
+    let { userInfo } = this.state
     let host = window.location.origin.indexOf('localhost') > -1 ? 'http://10.100.14.54:8090/' : window.location.origin
     let appQRcode = <div>
       <Row type="flex" style={{ width: '268px' }} align='middle' justify='center'>
@@ -40,7 +55,7 @@ class Header extends Component {
       </Row>
 
     </div>
-
+    {console.log(this.state)}
     const menu = <Menu>
       <MenuItem key="account"><Link to="/personal"><Icon type="user" style={{
         minWidth: 12,

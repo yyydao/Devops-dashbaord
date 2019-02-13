@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { Breadcrumb, Card, Form, Input, Radio } from 'antd'
-
+import { bindActionCreators } from 'redux'
+import { Breadcrumb, Card, Form, Input, Radio, Button, message } from 'antd'
+import { reqPost } from '@/api/api'
+import { setUserInfo } from '@/store/actions/auth'
 const BreadcrumbItem = Breadcrumb.Item
 const FormItem = Form.Item
 const RadioGroup = Radio.Group
@@ -28,13 +30,33 @@ class Personal extends Component {
 
   getUserInfo () {
     const { userInfo } = this.state
-    console.log(userInfo)
     this.props.form.setFieldsValue({
       name: userInfo.nickName,
-      mobilePhone: userInfo.mobilePhone,
+      mobile: userInfo.mobile,
+      email: userInfo.email,
       admin: userInfo.admin ? 1 : 0,
       roleName: userInfo.roleName
     })
+  }
+  saveUserInfo = () => {
+    const { userInfo } = this.state
+    this.props.form.validateFields(['name','mobile','email'],(err, values) => {
+      if (!err) {
+        userInfo.nickName=values.name
+        userInfo.mobile=values.mobile
+        userInfo.email=values.email
+        this.setState({userInfo},()=>{
+          reqPost('/sys/user/update',userInfo).then(res => {
+            if(res.code === 0){
+              message.success('保存成功')
+              this.props.setUserInfo(userInfo)
+            }else{
+              message.error(res.msg);
+            }
+          })
+        })
+      }
+    });
   }
 
   render () {
@@ -51,6 +73,19 @@ class Personal extends Component {
       }
     }
 
+    const tailFormItemLayout = {
+      wrapperCol: {
+        xs: {
+          span: 24,
+          offset: 0
+        },
+        sm: {
+          span: 18,
+          offset: 6
+        }
+      }
+    }
+
     return (
       <div className="home-card">
         <Breadcrumb className="devops-breadcrumb">
@@ -58,18 +93,25 @@ class Personal extends Component {
           <BreadcrumbItem>个人信息</BreadcrumbItem>
         </Breadcrumb>
         <Card title="个人信息" style={{ marginTop: 30 }}>
-          <Form style={{ width: 500 }}>
-            <FormItem {...fromItemLayout} label="名称">
+          <Form style={{ width: 500 }} onSubmit={this.saveUserInfo}>
+            <FormItem {...fromItemLayout} label="昵称">
               {
                 getFieldDecorator('name')(
-                  <Input disabled/>
+                  <Input/>
                 )
               }
             </FormItem>
             <FormItem {...fromItemLayout} label="手机号码">
               {
-                getFieldDecorator('mobilePhone')(
-                  <Input disabled/>
+                getFieldDecorator('mobile')(
+                  <Input/>
+                )
+              }
+            </FormItem>
+            <FormItem {...fromItemLayout} label="邮箱">
+              {
+                getFieldDecorator('email')(
+                  <Input/>
                 )
               }
             </FormItem>
@@ -90,16 +132,37 @@ class Personal extends Component {
                 )
               }
             </FormItem>
+            <FormItem {...tailFormItemLayout}>
+              <Button type="primary" htmlType="submit">保存</Button>
+            </FormItem>
           </Form>
         </Card>
       </div>
     )
   }
 }
-
-const PersonalForm = Form.create()(Personal)
-export default connect(state => {
-  return {
-    userInfo: state.auth.userInfo
+const mapStateToProps = (state) => {
+  const { auth} = state
+  if (auth.token) {
+    return {
+      userInfo:JSON.parse(JSON.stringify(auth.userInfo))
+    }
   }
-}, {})(PersonalForm)
+
+  return {
+    auth: null
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    setUserInfo:bindActionCreators(setUserInfo,dispatch),
+  }
+}
+const PersonalForm = Form.create()(Personal)
+// export default connect(state => {
+//   return {
+//     userInfo: state.auth.userInfo
+//   }
+// }, {setUserInfo})(PersonalForm)
+export default connect(mapStateToProps, mapDispatchToProps)(PersonalForm)
