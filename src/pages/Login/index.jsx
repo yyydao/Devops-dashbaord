@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Form, Icon, Input, Button, message } from 'antd'
 import { bindActionCreators } from 'redux'
-import { login, setUserInfo, forceLogout } from '@/store/actions/auth'
+import { login, forceLogout } from '@/store/actions/auth'
 import { withRouter } from 'react-router-dom'
 import './index.scss'
 

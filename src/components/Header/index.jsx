@@ -57,7 +57,6 @@ class Header extends Component {
       </Row>
 
     </div>
-    {console.log(this.state)}
     const menu = <Menu>
       <MenuItem key="account"><Link to="/personal"><Icon type="user" style={{
         minWidth: 12,

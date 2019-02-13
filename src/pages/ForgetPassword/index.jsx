@@ -25,7 +25,6 @@ class ForgetPassword extends Component {
   handleSubmit (e) {
     e.preventDefault()
     let data = this.props.form.getFieldsValue()
-    console.log(data)
 
     reqPost('/sys/user/forgetpwd',data).then((res) => {
       if(res.code === 0){
