@@ -27,26 +27,22 @@ class ForgetPassword extends Component {
     let data = this.props.form.getFieldsValue()
     console.log(data)
 
-    reqPostURLEncode('/sys/user/forgetpwd',data).then((response) => {
-      let res = response.value
-      this.setState({
-        loading: false
-      })
-      if (res.code !== 0) {
+    reqPost('/sys/user/forgetpwd',data).then((res) => {
+      if(res.code === 0){
+        message.success(res.msg).then(() => {
+            this.props.history.replace('/login')
+          }
+        )
+      }else{
         message.error(res.msg)
       }
-      if (res.code === 0) {
-
-      }
-    }).catch(err => {
-      console.log(err)
-      message.error(err.msg)
     })
+
   }
 
   sendEmail () {
-    let data = this.props.form.getFieldValue('emailAddress')
-    reqPostURLEncode('/sys/user/sendemail',{emailAddress:data}).then(res=>{
+    let data = this.props.form.getFieldValue('email')
+    reqPostURLEncode('/sys/user/sendemail',{email:data}).then(res=>{
       if(res.code === 0){
         message.success(res.msg)
       }else{
@@ -89,11 +85,11 @@ class ForgetPassword extends Component {
                   <FormItem>
                     <Row gutter={8}>
                       <Col span={12}>
-                        {getFieldDecorator('emailAddress', {
+                        {getFieldDecorator('email', {
                           rules: [{message: 'Please input the captcha you got!' }],
                         })(
                           <Input
-                            placeholder="邮箱地址"
+                            placeholder="注册邮箱地址"
                           />
                         )}
                       </Col>
@@ -111,15 +107,7 @@ class ForgetPassword extends Component {
                     )}
                   </FormItem>
                   <FormItem>
-                    {getFieldDecorator('email', {
-                      rules: [{ required: true, message: '请输入' }]
-                    })(
-                      <Input prefix={<Icon type="user" style={{ color: 'rgba(0, 0, 0, .25)' }}></Icon>}
-                             placeholder="注册邮箱"/>
-                    )}
-                  </FormItem>
-                  <FormItem>
-                    {getFieldDecorator('password', {
+                    {getFieldDecorator('newPassword', {
                       rules: [{ required: true, message: '请输入' }]
                     })(
                       <Input prefix={<Icon type="lock" style={{ color: 'rgba(0, 0, 0, .25)' }}></Icon>} type="password"
