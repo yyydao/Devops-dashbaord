@@ -48,9 +48,9 @@ class Layout extends Component {
     this.getUserInfo()
   }
 
-  // componentWillReceiveProps (nextProps) {
-  //   this.setState({userInfo:nextProps.userInfo})
-  // }
+  componentWillReceiveProps (nextProps) {
+      this.setState({userInfo:nextProps.userInfo})
+  }
 
   projectIdChange = (value) => {
     this.setState({ isRender: false }, () => {
@@ -83,7 +83,6 @@ class Layout extends Component {
     //
     reqPost('/sys/user/getUserInfo').then(res => {
       if (parseInt(res.code, 0) === 0) {
-        console.log(res.user,'----')
         this.setState({ userInfo: res.user })
         this.props.setUserInfo(res.user)
       } else {
@@ -128,6 +127,7 @@ const mapStateToProps = (state) => {
   }
 
   return {
+    userInfo:JSON.parse(JSON.stringify(auth.userInfo)),
     auth: null,
     projectId: null,
   }
