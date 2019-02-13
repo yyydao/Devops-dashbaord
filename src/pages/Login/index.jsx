@@ -67,7 +67,7 @@ class Login extends Component {
       }
       if (res.code === 0) {
         message.success('Welcome ' + res.nickName)
-          .then(() => this.props.setUserInfo(res))
+          // .then(() => this.props.setUserInfo(res))
           .then(
             this.props.history.replace('/')
           )
@@ -151,7 +151,7 @@ function mapStateToProps (state) {
       user: auth.user,
       loggingIn: auth.loggingIn,
       authErrors: '',
-      userInfo: auth.userInfo
+      // userInfo: JSON.parse(JSON.stringify(auth.userInfo))
     }
   }
 
@@ -165,7 +165,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     login: bindActionCreators(login, dispatch),
-    setUserInfo: bindActionCreators(setUserInfo, dispatch),
+    // setUserInfo: bindActionCreators(setUserInfo, dispatch),
     forceLogout: bindActionCreators(forceLogout, dispatch)
   }
 }

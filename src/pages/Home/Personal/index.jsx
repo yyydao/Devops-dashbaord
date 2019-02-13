@@ -21,11 +21,7 @@ class Personal extends Component {
     const userInfo = JSON.parse(localStorage.getItem('userInfo'))
     this.setState({
       userInfo: userInfo
-    })
-  }
-
-  componentDidMount () {
-    this.getUserInfo()
+    },()=>{this.getUserInfo()})
   }
 
   getUserInfo () {
