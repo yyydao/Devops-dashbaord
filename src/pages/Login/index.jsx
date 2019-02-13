@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { Form, Icon, Input, Button, Card, message } from 'antd'
+import { Form, Icon, Input, Button, message } from 'antd'
 import { bindActionCreators } from 'redux'
-import { login, setUserInfo,forceLogout } from '@/store/actions/auth'
+import { login, setUserInfo, forceLogout } from '@/store/actions/auth'
 import { withRouter } from 'react-router-dom'
 import './index.scss'
 
@@ -67,13 +67,13 @@ class Login extends Component {
       }
       if (res.code === 0) {
         message.success('Welcome ' + res.nickName)
-          .then(()=>this.props.setUserInfo(res))
+          .then(() => this.props.setUserInfo(res))
           .then(
             this.props.history.replace('/')
           )
 
       }
-    }).catch(err=>{
+    }).catch(err => {
       console.log(err)
       message.error(err.msg)
     })
@@ -84,32 +84,58 @@ class Login extends Component {
   }
 
   render () {
+
     const { getFieldDecorator } = this.props.form
     return (
-      <div className="login-wrapper">
-        <Card title="DevOps平台" className="login-form-card">
-          <Form onSubmit={this.handleSubmit.bind(this)} className="login-form">
-            <FormItem>
-              {getFieldDecorator('username', {
-                rules: [{ required: true, message: '请输入' }]
-              })(
-                <Input prefix={<Icon type="user" style={{ color: 'rgba(0, 0, 0, .25)' }}></Icon>}
-                       placeholder="username"/>
-              )}
-            </FormItem>
-            <FormItem>
-              {getFieldDecorator('password', {
-                rules: [{ required: true, message: '请输入' }]
-              })(
-                <Input prefix={<Icon type="lock" style={{ color: 'rgba(0, 0, 0, .25)' }}></Icon>} type="password"
-                       placeholder="password"/>
-              )}
-            </FormItem>
-            <FormItem>
-              <Button type="primary" htmlType="submit" className="login-form-button">登录</Button>
-            </FormItem>
-          </Form>
-        </Card>
+      <div className="layouts-user-layout">
+        <div className="layouts-user-layout-content">
+          <div className="login-wrapper">
+            <div className="content">
+              <div className="top">
+                <div className="header">
+                  <a href="/">
+                    <img alt="logo"
+                         className="logo"
+                         src={require('@/assets/favicon.ico')}
+                    />
+
+                    <span className="title">DevOps</span>
+                  </a>
+                </div>
+                <div className="desc"></div>
+              </div>
+
+              <div className="login-form-card">
+                <Form onSubmit={this.handleSubmit.bind(this)} className="login-form">
+                  <FormItem>
+                    {getFieldDecorator('username', {
+                      rules: [{ required: true, message: '请输入' }]
+                    })(
+                      <Input prefix={<Icon type="user" style={{ color: 'rgba(0, 0, 0, .25)' }}></Icon>}
+                             placeholder="username"/>
+                    )}
+                  </FormItem>
+                  <FormItem>
+                    {getFieldDecorator('password', {
+                      rules: [{ required: true, message: '请输入' }]
+                    })(
+                      <Input prefix={<Icon type="lock" style={{ color: 'rgba(0, 0, 0, .25)' }}></Icon>} type="password"
+                             placeholder="password"/>
+                    )}
+                  </FormItem>
+                  <FormItem>
+
+                    <a className="login-form-forgot" href="">忘记密码</a>
+                    <Button type="primary" htmlType="submit" className="login-form-button">
+                      登录
+                    </Button>
+                    <a className="login-form-toRegister" href="#/register">注册账户</a>
+                  </FormItem>
+                </Form>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     )
   }
@@ -139,8 +165,8 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     login: bindActionCreators(login, dispatch),
-    setUserInfo:bindActionCreators(setUserInfo, dispatch),
-    forceLogout: bindActionCreators(forceLogout,dispatch)
+    setUserInfo: bindActionCreators(setUserInfo, dispatch),
+    forceLogout: bindActionCreators(forceLogout, dispatch)
   }
 }
 
