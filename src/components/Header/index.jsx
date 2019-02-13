@@ -20,7 +20,9 @@ class Header extends Component {
 
   componentWillReceiveProps (nextProps) {
     console.log(nextProps)
-    this.setState({userInfo:nextProps.userInfo})
+    if(nextProps.userInfo!== undefined){
+      this.setState({userInfo:nextProps.userInfo})
+    }
   }
   logout = () => {
     reqGet('/sys/loginout').then(res => {

@@ -21,11 +21,7 @@ class Personal extends Component {
     const userInfo = JSON.parse(localStorage.getItem('userInfo'))
     this.setState({
       userInfo: userInfo
-    })
-  }
-
-  componentDidMount () {
-    this.getUserInfo()
+    },()=>{this.getUserInfo()})
   }
 
   getUserInfo () {
@@ -45,8 +41,10 @@ class Personal extends Component {
         userInfo.nickName=values.name
         userInfo.mobile=values.mobile
         userInfo.email=values.email
+        let obj=Object.assign({},userInfo)
+        delete obj.password
         this.setState({userInfo},()=>{
-          reqPost('/sys/user/update',userInfo).then(res => {
+          reqPost('/sys/user/update',obj).then(res => {
             if(res.code === 0){
               message.success('保存成功')
               this.props.setUserInfo(userInfo)

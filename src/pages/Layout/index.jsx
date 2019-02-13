@@ -49,10 +49,7 @@ class Layout extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.group('layout')
-    console.log(nextProps)
-    this.setState({userInfo:nextProps.userInfo})
-    console.groupEnd()
+      this.setState({userInfo:nextProps.userInfo})
   }
 
   projectIdChange = (value) => {
@@ -130,6 +127,7 @@ const mapStateToProps = (state) => {
   }
 
   return {
+    userInfo:JSON.parse(JSON.stringify(auth.userInfo)),
     auth: null,
     projectId: null,
   }
