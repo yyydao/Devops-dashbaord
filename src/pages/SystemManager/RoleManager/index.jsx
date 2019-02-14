@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {Link} from 'react-router-dom'
 import {connect} from 'react-redux'
-import {Breadcrumb, Table, message, Modal, Tree, Button, Row, Col, Form, Input} from 'antd'
+import {Breadcrumb, Table, message, Modal, Tree, Button, Row, Col, Form, Input, Switch } from 'antd'
 
 import {reqGet,reqPost} from '@/api/api'
 import './index.scss'
@@ -250,6 +250,14 @@ class RoleManager extends Component {
     this.setState({newRole})
   }
   /**
+   * @desc 是否用于注册改变事件
+   */
+  onUseRegisterChanged = (e) =>{
+    let newRole = this.state.newRole
+    newRole.useRegister = e
+    this.setState({newRole})
+  }
+  /**
    * @desc 新增角色/修改角色
    */
   onCreateRole = () =>{
@@ -262,6 +270,7 @@ class RoleManager extends Component {
           successMsg="修改成功"
         }
         role.roleName=values.roleName
+        role.useRegister=this.state.newRole.useRegister||false
         role.menuIdList=[...this.state.newRole.menuIdList,...this.state.halfCheckedKeys]
         reqPost(postUrl,role).then(res => {
           if(res.code === 0){
@@ -346,6 +355,9 @@ class RoleManager extends Component {
             </FormItem>
             <FormItem {...fromItemLayout} label="备注">
               <Input value={newRole.remark} onChange={(e)=>{this.onRemarkChanged(e)}}/>
+            </FormItem>
+            <FormItem {...fromItemLayout} label="是否用于注册">
+              <Switch checked={newRole.useRegister} onChange={(e)=>{this.onUseRegisterChanged(e)}}/>
             </FormItem>
             <FormItem {...fromItemLayout} label="授权">
               <div className="tree-container">
