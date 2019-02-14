@@ -40,10 +40,12 @@ class ForgetPassword extends Component {
   }
 
   sendEmail () {
-    let data = this.props.form.getFieldValue('email')
-    reqPostURLEncode('/sys/user/sendemail',{email:data}).then(res=>{
+    let username = this.props.form.getFieldValue('username')
+    reqPostURLEncode('/sys/user/sendemail',{username:username}).then(res=>{
       if(res.code === 0){
         message.success(res.msg)
+      }else if(res.code === 1000){
+        message.error('用户信息不完善，请联系管理员修改密码')
       }else{
         message.error(res.msg)
       }
@@ -84,16 +86,16 @@ class ForgetPassword extends Component {
                   <FormItem>
                     <Row gutter={8}>
                       <Col span={12}>
-                        {getFieldDecorator('email', {
+                        {getFieldDecorator('username', {
                           rules: [{message: 'Please input the captcha you got!' }],
                         })(
                           <Input
-                            placeholder="注册邮箱地址"
+                            placeholder="用户名"
                           />
                         )}
                       </Col>
                       <Col span={12}>
-                        <a onClick={this.sendEmail.bind(this)}>获取邮箱验证码</a>
+                        <a onClick={this.sendEmail.bind(this)}>获取验证码</a>
                       </Col>
                     </Row>
                   </FormItem>
