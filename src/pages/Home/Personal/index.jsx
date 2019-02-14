@@ -31,18 +31,24 @@ class Personal extends Component {
       mobile: userInfo.mobile,
       email: userInfo.email,
       admin: userInfo.admin ? 1 : 0,
-      roleName: userInfo.roleName
+      roleName: userInfo.roleName,
+      password:''
     })
   }
   saveUserInfo = () => {
     const { userInfo } = this.state
-    this.props.form.validateFields(['name','mobile','email'],(err, values) => {
+    this.props.form.validateFields(['name','mobile','email','password'],(err, values) => {
       if (!err) {
         userInfo.nickName=values.name
         userInfo.mobile=values.mobile
         userInfo.email=values.email
         let obj=Object.assign({},userInfo)
-        delete obj.password
+        if(values.password){
+          userInfo.password=values.password
+          obj.password=values.password
+        }else{
+          delete obj.password
+        }
         this.setState({userInfo},()=>{
           reqPost('/sys/user/update',obj).then(res => {
             if(res.code === 0){
@@ -94,8 +100,19 @@ class Personal extends Component {
           <Form style={{ width: 500 }} onSubmit={this.saveUserInfo}>
             <FormItem {...fromItemLayout} label="昵称">
               {
-                getFieldDecorator('name')(
+                getFieldDecorator('name',{
+                  rules: [{
+                    required: true, message: '昵称'
+                  }]
+                })(
                   <Input/>
+                )
+              }
+            </FormItem>
+            <FormItem {...fromItemLayout} label="密码">
+              {
+                getFieldDecorator('password')(
+                  <Input type='password'/>
                 )
               }
             </FormItem>
