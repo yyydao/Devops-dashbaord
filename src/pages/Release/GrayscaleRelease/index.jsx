@@ -86,30 +86,8 @@ class GrayscaleRelease extends Component {
       checkAllArea: false,
       androidData: {},//分发数
       grayRules: ['规则0：关闭下发', '规则1：按区域下发', '规则2：按流量下发', '规则3：按设备下发', '规则4：按区域&流量下发'],
-      rules: {
-        "projectId": 63,
-        "type": 2,
-        "devices": "dc30293e-2507-11e9-b96b-fa163eb48bb3,e229c814-2507-11e9-b96b-fa163eb48bb3",
-        "flows": "20%",
-        "areas": '1,2,3,6',
-        "version": 157,
-        "versionName": "5.4.4",
-        "name": "tuandai.5.4.4.apk",
-        "url": "https://apk.tuandai.com/tuandai/tuandai5.4.1.2.apk",
-        "desc": "迎接12.18网贷爱心日，狂送百万福利！||- 许心愿，写祝福，分享就有机会得现金红包；||- 爱心礼物，普惠加息，人人有份；||- 红包雨常常下，出借红包免费领；||- 邀好友集爱心，瓜分9000元现金红包；||- 出借上榜更有机会获得50g金元宝！"
-      },
-      newRules: {
-        "projectId": 63,
-        "type": 2,
-        "devices": "dc30293e-2507-11e9-b96b-fa163eb48bb3,e229c814-2507-11e9-b96b-fa163eb48bb3",
-        "flows": "20%",
-        "areas": "1,2,3,6",
-        "version": 157,
-        "versionName": "5.4.4",
-        "name": "tuandai.5.4.4.apk",
-        "url": "https://apk.tuandai.com/tuandai/tuandai5.4.1.2.apk",
-        "desc": "迎接12.18网贷爱心日，狂送百万福利！||- 许心愿，写祝福，分享就有机会得现金红包；||- 爱心礼物，普惠加息，人人有份；||- 红包雨常常下，出借红包免费领；||- 邀好友集爱心，瓜分9000元现金红包；||- 出借上榜更有机会获得50g金元宝！"
-      },
+      rules: {},
+      newRules: {}
     }
   }
 
@@ -132,7 +110,7 @@ class GrayscaleRelease extends Component {
         }, () => {
           if (res.data.platform === 1) {
             this.getDistributeNum()
-            this.getAndroidGrayScaleRules()
+            // this.getAndroidGrayScaleRules()
             this.getAreaInfo()
           }
           if (res.data.platform === 2) {
