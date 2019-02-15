@@ -338,7 +338,7 @@ class GrayscaleRelease extends Component {
                 </Button>
               }>
               <Row className="info-item">
-                <Col span={infoItem.left}>灰度规则 <Icon type="question-circle" style={{cursor:'pointer'}} onClick={this.showTips}/></Col>
+                <Col span={infoItem.left}><span onClick={this.showTips} style={{cursor:'pointer'}}>灰度规则<Icon type="question-circle" style={{paddingLeft:8}}/></span></Col>
                 <Col span={infoItem.right}>{grayRules[rules.type]||'-'}</Col>
               </Row>
               <Row className="info-item">
