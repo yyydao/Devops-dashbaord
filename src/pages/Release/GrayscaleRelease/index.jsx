@@ -15,11 +15,9 @@ import {
   Checkbox,
   Input,
   Form,
-  Radio,
   Divider,
   Select
 } from 'antd'
-import Edit from '@/pages/Setting/ConfigManager/Edit';
 import './index.scss'
 
 const BreadcrumbItem = Breadcrumb.Item;
@@ -27,7 +25,6 @@ const Option = Select.Option;
 const CheckboxGroup = Checkbox.Group
 const FormItem = Form.Item;
 const TextArea = Input.TextArea;
-const RadioGroup = Radio.Group;
 
 class GrayscaleRelease extends Component {
   constructor() {
@@ -82,25 +79,37 @@ class GrayscaleRelease extends Component {
         bundleID: 'com.tuandai.client'
       },
       downloadPath: '',
-      selectedRowKeys: [],
 
       //灰度发布-android
       modalVisible: false,
       areaList: [],
       checkAllArea: false,
-      androidData: {},
+      androidData: {},//分发数
       grayRules: ['规则0：关闭下发', '规则1：按区域下发', '规则2：按流量下发', '规则3：按设备下发', '规则4：按区域&流量下发'],
       rules: {
-        ruleId: 0,
-        areaCheckedList: [],
-        devices:'',
-        flow:'10%',
-        version: 153,
-        versionName: '5.4.4',
-        name: 'tuandai5.4.4.apk',
-        url: 'https://apk.tuandai.com/tuandai/tuandai5.4.4.2.apk',
-        desc: '为了让您获得更好的体验，我们本次更新：||- 团宝箱升级，可以更直观的查看所有优惠券；||- 部分界面优化，给您更清晰简洁的视觉体验。'
-      }
+        "projectId": 63,
+        "type": 2,
+        "devices": "dc30293e-2507-11e9-b96b-fa163eb48bb3,e229c814-2507-11e9-b96b-fa163eb48bb3",
+        "flows": "20%",
+        "areas": '1,2,3,6',
+        "version": 157,
+        "versionName": "5.4.4",
+        "name": "tuandai.5.4.4.apk",
+        "url": "https://apk.tuandai.com/tuandai/tuandai5.4.1.2.apk",
+        "desc": "迎接12.18网贷爱心日，狂送百万福利！||- 许心愿，写祝福，分享就有机会得现金红包；||- 爱心礼物，普惠加息，人人有份；||- 红包雨常常下，出借红包免费领；||- 邀好友集爱心，瓜分9000元现金红包；||- 出借上榜更有机会获得50g金元宝！"
+      },
+      newRules: {
+        "projectId": 63,
+        "type": 2,
+        "devices": "dc30293e-2507-11e9-b96b-fa163eb48bb3,e229c814-2507-11e9-b96b-fa163eb48bb3",
+        "flows": "20%",
+        "areas": "1,2,3,6",
+        "version": 157,
+        "versionName": "5.4.4",
+        "name": "tuandai.5.4.4.apk",
+        "url": "https://apk.tuandai.com/tuandai/tuandai5.4.1.2.apk",
+        "desc": "迎接12.18网贷爱心日，狂送百万福利！||- 许心愿，写祝福，分享就有机会得现金红包；||- 爱心礼物，普惠加息，人人有份；||- 红包雨常常下，出借红包免费领；||- 邀好友集爱心，瓜分9000元现金红包；||- 出借上榜更有机会获得50g金元宝！"
+      },
     }
   }
 
@@ -122,7 +131,9 @@ class GrayscaleRelease extends Component {
           projectName: res.data.description
         }, () => {
           if (res.data.platform === 1) {
-            this.getAndroidGrayScaleData()
+            this.getDistributeNum()
+            this.getAndroidGrayScaleRules()
+            this.getAreaInfo()
           }
           if (res.data.platform === 2) {
             this.getTableData()
@@ -172,49 +183,13 @@ class GrayscaleRelease extends Component {
   }
 
   /**
-   * @desc 文本编辑事件
-   * @param value string 文本编辑内容
-   * @param key string 文本编辑字段
-   * @param index num 环境下标
-   */
-  changeEdit = (value, index, key) => {
-    if (key === "version") {
-      let androidData = this.state.androidData
-      androidData[key] = value
-      this.setState({androidData}, () => {
-        this.saveAndroidGrayScaleData(true)
-      })
-    } else {
-      let androidData = this.state.androidData
-      androidData.featureItems[index][key] = value
-      this.setState({androidData})
-    }
-  }
-
-  /**
-   * @desc 新增特征值改变事件
-   */
-  onNewFeaturesChange = (e, key) => {
-    let newFeatures = this.state.newFeatures
-    newFeatures[key] = e
-    this.setState({newFeatures})
-  }
-  /**
    * @desc 获取android灰度发布主页数据
    */
-  getAndroidGrayScaleData = () => {
-    reqGet('/distribute/queryInformation', {projectId: this.props.projectId}).then(res => {
+  getAndroidGrayScaleRules = () => {
+    reqGet('/distribute/queryRule', {projectId: this.props.projectId}).then(res => {
       if (res.code === 0) {
-        let selectedRowKeys = []
-        if (res.data.featureItems) {
-          res.data.featureItems.map((item, index) => {
-            if (item.checked) {
-              selectedRowKeys.push(index)
-            }
-            return item
-          })
-        }
-        this.setState({androidData: res.data, selectedRowKeys})
+        res.data.areas=res.data.areas.split(',')
+        this.setState({rules: res.data, newRules: res.data})
       } else {
         message.error(res.msg)
       }
@@ -222,15 +197,24 @@ class GrayscaleRelease extends Component {
   }
 
   /**
+   * @desc 灰度部署 / Android灰度分发-获取分发数
+   */
+  getDistributeNum = () => {
+    reqGet('/distribute/getDistributeNum', {projectId: this.props.projectId}).then(res => {
+      if (res.code === 0) {
+        this.setState({androidData: res.data})
+      } else {
+        message.error(res.msg)
+      }
+    })
+  }
+  /**
    * @desc 获取地区信息
    */
   getAreaInfo = () => {
     reqGet('/distribute/queryArea', {projectId: this.props.projectId}).then(res => {
       if (res.code === 0) {
-        this.setState({areaList: res.data}, () => {
-          this.isCheckedAllArea()
-          this.setState({modalVisible: true})
-        })
+        this.setState({areaList: res.data})
       } else {
         message.error(res.msg)
       }
@@ -240,154 +224,67 @@ class GrayscaleRelease extends Component {
    * @desc 判断地区是否全选
    */
   isCheckedAllArea = () => {
-    let areaList =this.state.areaList
-    let areaCheckedList = this.state.rules.areaCheckedList
-    this.setState({checkAllArea:areaCheckedList.length===areaList.length})
-  }
-
-  /**
-   * @desc 表格选择栏改变事件
-   */
-  onSelectedRowKeys = (selectedRowKeys) => {
-    console.log(selectedRowKeys)
-    let androidData = this.state.androidData
-    androidData.featureItems.map((item, index) => {
-      if (selectedRowKeys.indexOf(index) === -1) {
-        item.checked = false
-      } else {
-        item.checked = true
-      }
-      return item
-    })
-    this.setState({androidData, selectedRowKeys: selectedRowKeys})
+    let areaList = this.state.areaList
+    let areas = this.state.newRules.areas
+    this.setState({checkAllArea: areas.length === areaList.length})
   }
 
   /**
    * @desc
    */
-  addFeatures = () => {
-    this.setState({modalVisible: true})
+  addRules = () => {
+    let {rules, newRules} = this.state
+    newRules = JSON.parse(JSON.stringify(rules))
+    this.setState({newRules, modalVisible: true})
   }
 
   /**
-   * @desc modal框确定事件
+   * @desc 保存Android灰度发布
    */
-  handleOk = () => {
-    this.setState({modalVisible: false})
-  }
-  /**
-   * @desc 保存Android灰度发布信息
-   */
-  saveAndroidGrayScaleData = (isVersion) => {
-    let params = {}
-    if (isVersion) {
-      params = {
-        projectId: this.props.projectId,
-        version: this.state.androidData.version,
-      }
-    } else {
-      params = {
-        projectId: this.props.projectId,
-        expression: this.state.androidData.expression,
-        featureItems: this.state.androidData.featureItems
-      }
-    }
-    reqPost('/distribute/saveDistribute', params).then(res => {
+  saveAndroidGrayScaleRules = () => {
+    let params = JSON.parse(JSON.stringify(this.state.newRules))
+    params.areas = params.areas.join(',')
+    reqPost('/distribute/saveRule', params).then(res => {
       if (res.code === 0) {
         message.success("保存成功")
+        this.setState({modalVisible: false})
+        this.getAndroidGrayScaleRules()
       } else {
         message.error(res.msg)
       }
     })
   }
   /**
-   * @desc 生成表达式
-   */
-  getExpression = () => {
-    let androidData = this.state.androidData
-    let featureItems = this.state.androidData.featureItems
-    let area = "", flow = "", device = '', isDevice = false
-    featureItems.map(item => {
-      if (item.checked === true) {
-        if (item.featureName === "T-G3-Device") {
-          device = item.featureValue
-          isDevice = true
-        }
-        if (item.featureName === "T-G1-Area" && item.featureValue) {
-          let featureValue = item.featureValue.split(',')
-          featureValue.map((item, index) => {
-            if (index === 0) {
-              area += "(" + encodeURI(item) + ")"
-            } else {
-              area += "|(" + encodeURI(item) + ")"
-            }
-            return item
-          })
-        }
-        if (item.featureName === "T-G2-Flow" && item.featureValue) {
-          let featureValue = parseInt(item.featureValue, 10) / 10
-          flow = this.state.flowExpression[featureValue - 1]
-        }
-      }
-      return item
-    })
-    if (device) {
-      androidData.expression = "^" + device + "$"
-      this.setState({androidData})
-      return
-    }
-    if (isDevice) {
-      androidData.expression = ""
-    }
-    if (!isDevice && (area || flow)) {
-      androidData.expression = "^" + area + flow + "$"
-    } else {
-      androidData.expression = ""
-    }
-    this.setState({androidData})
-  }
-  /**
-   * @desc Android表达式改变
-   */
-  onExpressionChange = (value) => {
-    let androidData = this.state.androidData
-    androidData.expression = value
-    this.setState({androidData})
-  }
-  /**
    * @desc 全选事件
    */
   onCheckAllChange = (e) => {
-    const {rules}= this.state
-    let areaCheckedList = []
+    const {newRules} = this.state
+    let areas = []
     if (e === true) {
       this.state.areaList.map(item => {
-        areaCheckedList.push(item.name)
+        areas.push(item.code)
         return item
       })
     }
-    rules.areaCheckedList=areaCheckedList
-    this.setState({rules, checkAllArea: e})
+    newRules.areas = areas
+    this.setState({newRules, checkAllArea: e})
   }
   /**
    * @desc 规则改变事件
    */
-  onRulesChange = (e, index) => {
-    const {rules} = this.state
-    rules[index] = e
-    if (index === 'ruleId' && (e === 1||e === 4)) {
-      this.getAreaInfo()
-    }
-    this.setState({rules})
+  onNewRulesChange = (e, index) => {
+    let {newRules} = this.state
+    newRules[index] = e
+    this.setState({newRules})
   }
 
   /**
    * @desc 区域改变事件
    */
   onAreaChange = (e) => {
-    const {rules} = this.state
-    rules.areaCheckedList = e
-    this.setState({rules}, () => {
+    const {newRules} = this.state
+    newRules.areas = e
+    this.setState({newRules}, () => {
       this.isCheckedAllArea()
     })
   }
@@ -403,26 +300,14 @@ class GrayscaleRelease extends Component {
       params,
       downloadPath,
       androidData,
-      selectedRowKeys,
       areaList,
-      areaCheckedList,
       modalVisible,
       checkAllArea,
-      newFeatures,
       grayRules,
-      rules
+      rules,
+      newRules
     } = this.state
     const {getFieldDecorator} = this.props.form;
-    const fromItemLayout = {
-      labelCol: {
-        xs: {span: 24},
-        sm: {span: 4}
-      },
-      wrapperCol: {
-        xs: {span: 24},
-        sm: {span: 20}
-      }
-    };
     const infoItem = {
       left: 4,
       right: 20
@@ -446,7 +331,6 @@ class GrayscaleRelease extends Component {
             <span>{projectName}</span>
           </div>
           <div className="content-container">
-            {JSON.stringify(androidData) !== "{}" &&
             <Card
               title="当前灰度策略"
               className="gray-feature"
@@ -454,67 +338,59 @@ class GrayscaleRelease extends Component {
                 <Button
                   type="primary"
                   onClick={() => {
-                    this.addFeatures()
+                    this.addRules()
                   }}>
                   <Icon type="edit"/>编辑
                 </Button>
               }>
               <Row className="info-item">
                 <Col span={infoItem.left}>灰度规则</Col>
-                <Col span={infoItem.right}>{grayRules[rules.ruleId]}</Col>
+                <Col span={infoItem.right}>{grayRules[rules.type]||'-'}</Col>
               </Row>
               <Row className="info-item">
                 <Col span={infoItem.left}>灰度下发区域</Col>
-                <Col span={infoItem.right}>广东省、广西省、北京市、广西自治区</Col>
+                <Col span={infoItem.right}>{rules.areaName||'-'}</Col>
               </Row>
               <Row className="info-item">
                 <Col span={infoItem.left}>灰度下发百分百</Col>
-                <Col span={infoItem.right}>50%</Col>
+                <Col span={infoItem.right}>{rules.flows||'-'}</Col>
               </Row>
               <Row className="info-item">
                 <Col span={infoItem.left}>灰度下发设备</Col>
-                <Col span={infoItem.right}>2225c695-cfb8-4ebb-aaaa-80da344e8352；
-                  ed1847d9-254c-47d1-b213-f14c05e594ea</Col>
+                <Col span={infoItem.right}>{rules.devices||'-'}</Col>
               </Row>
               <Divider/>
               <Row className="info-item">
                 <Col span={infoItem.left}>version</Col>
-                <Col span={infoItem.right}>153</Col>
+                <Col span={infoItem.right}>{rules.version||'-'}</Col>
               </Row>
               <Row className="info-item">
                 <Col span={infoItem.left}>versionName</Col>
-                <Col span={infoItem.right}>5.4.4</Col>
+                <Col span={infoItem.right}>{rules.versionName||'-'}</Col>
               </Row>
               <Row className="info-item">
                 <Col span={infoItem.left}>name</Col>
-                <Col span={infoItem.right}>tuandai5.4.4.apk</Col>
+                <Col span={infoItem.right}>{rules.name||'-'}</Col>
               </Row>
               <Row className="info-item">
                 <Col span={infoItem.left}>url</Col>
-                <Col span={infoItem.right}>https://apk.tuandai.com/tuandai/tuandai5.4.4.2.apk</Col>
+                <Col span={infoItem.right}>{rules.url||'-'}</Col>
               </Row>
               <Row className="info-item">
                 <Col span={infoItem.left}>desc</Col>
-                <Col span={infoItem.right}>为了让您获得更好的体验，我们本次更新：||- 团宝箱升级，可以更直观的查看所有优惠券；||- 部分界面优化，给您更清晰简洁的视觉体验。</Col>
+                <Col span={infoItem.right}>{rules.desc||'-'}</Col>
               </Row>
             </Card>
-            }
-            {JSON.stringify(androidData) !== "{}" &&
             <Card title="分布情况" style={{marginTop: 24}}>
-              <div className="config-project-item">
-                <span>分发版本：</span>
-                <Edit name='version' defaultValue={androidData.version} handleConfirm={this.changeEdit}/>
-              </div>
               <p>
                 <span style={{paddingRight: 8, marginBottom: 0}}>实际分发数/预计分发数：(昨天)</span>
-                {androidData.beforeActualQuantity}/{androidData.beforeExpectQuantitty}
+                {androidData.beforeActualQuantity||'--'}/{androidData.beforeExpectQuantitty||'--'}
               </p>
               <p>
                 <span style={{paddingRight: 8, marginBottom: 0}}>实际分发数/预计分发数：(今天)</span>
-                {androidData.actualQuantity}/{androidData.expectQuantitty}
+                {androidData.actualQuantity||'--'}/{androidData.expectQuantitty||'--'}
               </p>
             </Card>
-            }
           </div>
         </div>
         }
@@ -538,29 +414,36 @@ class GrayscaleRelease extends Component {
           </div>
         </div>
         }
-        <Modal title='编辑灰度策略' visible={modalVisible} onOk={this.handleOk} onCancel={() => {
-          this.setState({modalVisible: false})
-        }}
-               okText="确认" cancelText="取消">
-          <Select value={rules.ruleId} style={{width: "100%"}}
-                  onChange={e => this.onRulesChange(e, 'ruleId')}>
+        <Modal
+          title='编辑灰度策略'
+          visible={modalVisible}
+          onOk={this.saveAndroidGrayScaleRules}
+          onCancel={() => {
+            this.setState({modalVisible: false})
+          }}
+          okText="确认"
+          cancelText="取消">
+          <Select value={newRules.type} style={{width: "100%"}}
+                  onChange={e => this.onNewRulesChange(e, 'type')}>
             {grayRules.map((item, index) => <Option value={index} key={index}>{item}</Option>)}
           </Select>
           {
-            rules.ruleId === 0 &&
+            newRules.type === 0 &&
             <p style={{fontSize: 24, color: '#ccc', textAlign: "center", marginTop: 24}}>【关闭灰度下发】</p>
           }
           {
-            (rules.ruleId === 1|| rules.ruleId === 4)&&
+            (newRules.type === 1 || newRules.type === 4) &&
             <div className="area-checkbox-container">
               <Checkbox checked={checkAllArea} onChange={e => this.onCheckAllChange(e.target.checked)}>全部</Checkbox>
               <div style={{marginTop: 8}}>
-                <CheckboxGroup value={rules.areaCheckedList} onChange={(e) => {this.onAreaChange(e)}}>
+                <CheckboxGroup value={newRules.areas} onChange={(e) => {
+                  this.onAreaChange(e)
+                }}>
                   <Row>
                     {
                       areaList.map((item, index) => {
-                        return <Col span={12}key={index} style={{marginBottom: 8}}>
-                          <Checkbox value={item.name}>{item.name}</Checkbox>
+                        return <Col span={12} key={index} style={{marginBottom: 8}}>
+                          <Checkbox value={item.code}>{item.name}</Checkbox>
                         </Col>
                       })
                     }
@@ -570,46 +453,45 @@ class GrayscaleRelease extends Component {
             </div>
           }
           {
-            (rules.ruleId === 2|| rules.ruleId === 4) &&
-            <Select value={rules.flow} style={{width: "100%",  marginTop: 16}}
-                    onChange={e => this.onRulesChange(e, 'flow')}>
-              {
-                flowList()
-              }
-              {/*{grayRules.map((item, index) => <Option value={index} key={index}>{item}</Option>)}*/}
+            (newRules.type === 2 || newRules.type === 4) &&
+            <Select value={newRules.flows} style={{width: "100%", marginTop: 16}}
+                    onChange={e => this.onNewRulesChange(e, 'flows')}>
+              {flowList()}
             </Select>
           }
           {
-            rules.ruleId === 3 &&
-            <TextArea style={{marginTop: 4,height:100, marginTop: 16}} value={rules.devices} placeholder='填写下发设备唯一码，以【回车键】分割' onChange={e => this.onRulesChange(e, 'devices')}/>
+            newRules.type === 3 &&
+            <TextArea style={{height: 100, marginTop: 16}} value={newRules.devices} placeholder='填写下发设备唯一码，以【回车键】分割'
+                      onChange={e => this.onNewRulesChange(e, 'devices')}/>
           }
           {
-            rules.ruleId !== 0 &&
+            newRules.type !== 0 &&
             <div>
               <Form onSubmit={this.jenkinsSubmit} className="editRules">
                 <FormItem label="version">
                   {
-                    getFieldDecorator('version', {initialValue: rules.version})(<Input/>)
+                    getFieldDecorator('version', {initialValue: newRules.version})(<Input/>)
                   }
                 </FormItem>
                 <FormItem label="versionName">
                   {
-                    getFieldDecorator('versionName', {initialValue: rules.versionName})(<Input/>)
+                    getFieldDecorator('versionName', {initialValue: newRules.versionName})(<Input/>)
                   }
                 </FormItem>
                 <FormItem label="name">
                   {
-                    getFieldDecorator('name', {initialValue: rules.name})(<Input/>)
+                    getFieldDecorator('name', {initialValue: newRules.name})(<Input/>)
                   }
                 </FormItem>
                 <FormItem label="url">
                   {
-                    getFieldDecorator('url', {initialValue: rules.url})(<Input/>)
+                    getFieldDecorator('url', {initialValue: newRules.url})(<Input/>)
                   }
                 </FormItem>
                 <FormItem label="desc">
                   {
-                    getFieldDecorator('desc', {initialValue: rules.desc})(<TextArea style={{marginTop: 4,height:100}}/>)
+                    getFieldDecorator('desc', {initialValue: newRules.desc})(<TextArea
+                      style={{marginTop: 4, height: 100}}/>)
                   }
                 </FormItem>
               </Form>
