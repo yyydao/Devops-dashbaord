@@ -271,6 +271,20 @@ class GrayscaleRelease extends Component {
     })
   }
 
+  showTips=()=>{
+    Modal.confirm({
+      title: '灰度规则',
+      content: <div style={{paddingTop:16}}>
+        <p>规则0：关闭下发</p>
+        <p>规则1：按区域下发，如“广东省”，“北京市”</p>
+        <p>规则2：按流量下发，如“10%”，“50%”</p>
+        <p>规则3：按设备下发，根据设备唯一码</p>
+        <p>规则4：按区域&amp;流量下发，如“广东省，50%”</p>
+      </div>,
+      okText: '确认',
+      cancelText: '取消',
+    });
+  }
   render() {
     const {
       platform,
@@ -326,7 +340,7 @@ class GrayscaleRelease extends Component {
                 </Button>
               }>
               <Row className="info-item">
-                <Col span={infoItem.left}>灰度规则</Col>
+                <Col span={infoItem.left}>灰度规则 <Icon type="question-circle" style={{cursor:'pointer'}} onClick={this.showTips}/></Col>
                 <Col span={infoItem.right}>{grayRules[rules.type]||'-'}</Col>
               </Row>
               <Row className="info-item">
