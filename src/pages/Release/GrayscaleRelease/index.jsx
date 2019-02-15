@@ -220,6 +220,7 @@ class GrayscaleRelease extends Component {
       }
     })
   }
+
   /**
    * @desc 判断地区是否全选
    */
@@ -254,6 +255,7 @@ class GrayscaleRelease extends Component {
       }
     })
   }
+
   /**
    * @desc 全选事件
    */
@@ -269,6 +271,7 @@ class GrayscaleRelease extends Component {
     newRules.areas = areas
     this.setState({newRules, checkAllArea: e})
   }
+
   /**
    * @desc 规则改变事件
    */
