@@ -272,7 +272,7 @@ class GrayscaleRelease extends Component {
   }
 
   showTips=()=>{
-    Modal.confirm({
+    Modal.info({
       title: '灰度规则',
       content: <div style={{paddingTop:16}}>
         <p>规则0：关闭下发</p>
@@ -280,9 +280,7 @@ class GrayscaleRelease extends Component {
         <p>规则2：按流量下发，如“10%”，“50%”</p>
         <p>规则3：按设备下发，根据设备唯一码</p>
         <p>规则4：按区域&amp;流量下发，如“广东省，50%”</p>
-      </div>,
-      okText: '确认',
-      cancelText: '取消',
+      </div>
     });
   }
   render() {
