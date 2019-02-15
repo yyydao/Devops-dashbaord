@@ -67,7 +67,12 @@ class Layout extends Component {
         excludeSideBar.push(item.path)
       }
     })
-
+    //@todo:后台配置
+    excludeSideBar.push('/system/systemManager')
+    excludeSideBar.push('/system/filterManager')
+    excludeSideBar.push('/system/userManager')
+    excludeSideBar.push('/system/roleManager')
+    excludeSideBar.push('/system/menuManager')
     this.setState({ excludeSideBar })
   }
 
