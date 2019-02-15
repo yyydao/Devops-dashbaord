@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import { HashRouter as Router, Switch, Route } from 'react-router-dom'
 
-import Layout from '../pages/Layout'
-import Login from '../pages/Login'
+import Layout from '@/pages/Layout'
+import Login from '@/pages/Login'
 import ForgetPassword  from '@/pages/ForgetPassword'
-import Register from '../pages/Register'
+import Register from '@/pages/Register'
+
 
 export default class RouteConfig extends Component {
   render () {

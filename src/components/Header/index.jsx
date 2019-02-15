@@ -19,7 +19,6 @@ class Header extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log(nextProps)
     if(nextProps.userInfo!== undefined){
       this.setState({userInfo:nextProps.userInfo})
     }
