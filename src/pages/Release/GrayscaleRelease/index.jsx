@@ -208,6 +208,7 @@ class GrayscaleRelease extends Component {
       }
     })
   }
+
   /**
    * @desc 获取地区信息
    */
