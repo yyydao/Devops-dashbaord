@@ -110,7 +110,7 @@ class GrayscaleRelease extends Component {
         }, () => {
           if (res.data.platform === 1) {
             this.getDistributeNum()
-            // this.getAndroidGrayScaleRules()
+            this.getAndroidGrayScaleRules()
             this.getAreaInfo()
           }
           if (res.data.platform === 2) {
