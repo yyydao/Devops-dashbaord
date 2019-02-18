@@ -377,11 +377,11 @@ class GrayscaleRelease extends Component {
             </Card>
             <Card title="分布情况" style={{marginTop: 24}}>
               <p>
-                <span style={{paddingRight: 8, marginBottom: 0}}>实际分发数/预计分发数：(昨天)</span>
+                <span style={{paddingRight: 8, marginBottom: 0}}>实际分发数/预计分发数(昨天)：</span>
                 {androidData.beforeActualQuantity||'--'}/{androidData.beforeExpectQuantitty||'--'}
               </p>
               <p>
-                <span style={{paddingRight: 8, marginBottom: 0}}>实际分发数/预计分发数：(今天)</span>
+                <span style={{paddingRight: 8, marginBottom: 0}}>实际分发数/预计分发数(今天)：</span>
                 {androidData.actualQuantity||'--'}/{androidData.expectQuantitty||'--'}
               </p>
             </Card>
