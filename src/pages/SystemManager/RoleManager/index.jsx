@@ -69,6 +69,7 @@ class RoleManager extends Component {
       selectedRowKeys:[],
       halfCheckedKeys:[],
       expandedKeys:[],
+      isOver:false
     }
   }
 
@@ -134,14 +135,25 @@ class RoleManager extends Component {
   updateRole = (roleId) =>{
     reqGet(`/sys/role/info/${roleId}`).then(res => {
       if(res.code === 0){
+        let role=res.role
+        if(role.unSelect){
+          let halfcheck=role.unSelect.split(',')
+          halfcheck.map(item=>{
+            let index=role.menuIdList.indexOf(parseInt(item))
+            if(index>-1){
+              role.menuIdList.splice(index,1)
+            }
+          })
+        }
+        console.log(role.menuIdList)
         this.setState({
-          newRole:res.role,
+          newRole:role,
           modalTitle:'修改',
           modalVisible:true,
           expandedKeys:[]
         },()=>{
           this.props.form.setFieldsValue({roleName:res.role.roleName})
-          this.dealTreeData(this.state.AllMenuList)
+          // this.dealTreeData(JSON.parse(JSON.stringify(this.state.AllMenuList)))
         })
       }else{
         message.error(res.msg);
@@ -156,9 +168,9 @@ class RoleManager extends Component {
           for(let i=0;i<item.list.length;i++){
             if(menuIdList.indexOf(item.list[i].menuId)<0){
               menuIdList.splice(menuIdList.indexOf(item.menuId),1)
-              let newRole=this.state.newRole
+              let newRole=JSON.parse(JSON.stringify(this.state.newRole))
               newRole.menuIdList=menuIdList
-              this.setState({newRole},()=>{
+              this.setState({newRole,isOver:true},()=>{
                 this.dealTreeData(JSON.parse(JSON.stringify(item.list)))
               })
               break;
@@ -271,6 +283,7 @@ class RoleManager extends Component {
         }
         role.roleName=values.roleName
         role.useRegister=this.state.newRole.useRegister||false
+        role.unSelect=this.state.halfCheckedKeys.join(',')
         role.menuIdList=[...this.state.newRole.menuIdList,...this.state.halfCheckedKeys]
         reqPost(postUrl,role).then(res => {
           if(res.code === 0){
