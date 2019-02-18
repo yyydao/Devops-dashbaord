@@ -70,7 +70,6 @@
   margin-bottom: 0px;
 }
 .gray-feature{
-  margin-top: 24px;
   .ant-card-extra{
     padding: 10px 0px;
   }
@@ -83,4 +82,26 @@
 }
 .newFeature .ant-modal-body{
   padding: 0px 40px;
+}
+.info-item{
+  margin-bottom: 8px;
+}
+.editRules{
+  margin-top: 16px;
+  padding-top: 8px;
+  border-top:1px solid #e8e8e8;
+  .ant-form-item{
+    margin-bottom: 8px;
+  }
+  .ant-form-item-label{
+    line-height: 16px;
+  }
+}
+.area-checkbox-container{
+  border: 1px solid #e8e8e8;
+  padding: 24px;
+  max-height: 150px;
+  border-radius: 4px;
+  overflow-y: scroll;
+  margin-top: 16px;
 }
