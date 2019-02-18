@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
-import { Route, Switch } from 'react-router-dom'
-import { Icon, Menu, message } from 'antd'
+import {Menu, message } from 'antd'
 
 import { reqGet } from '@/api/api'
-import styles from './index.scss'
+import './index.scss'
 
 import MenuManager from '@/pages/SystemManager/MenuManager'
 import RoleManager from '@/pages/SystemManager/RoleManager'
@@ -13,16 +12,17 @@ import FilterManager from '@/pages/SystemManager/FilterManager'
 const { Item } = Menu
 
 const childrenMap = {
-  '/menuManager':<MenuManager></MenuManager>,
-  '/roleManager':<RoleManager/>,
-  '/userManager':<UserManager/>,
-  '/filterManager':<FilterManager/>,
+  '/menuManager': <MenuManager></MenuManager>,
+  '/roleManager': <RoleManager/>,
+  '/userManager': <UserManager/>,
+  '/filterManager': <FilterManager/>,
 }
 
 class SystemManager extends Component {
   constructor (props) {
     super(props)
     this.state = {
+      defaultCurrentMenu: [],
       mode: 'inline',
       menuList: [],
       children: null
@@ -45,7 +45,9 @@ class SystemManager extends Component {
           </Item>
         )
       }
-      this.setState({ menuList })
+      this.setState({ menuList }, () => {
+        this.setState({ defaultCurrentMenu: [menuList[0].key] })
+      })
     } else {
       message.error(res.msg)
     }
@@ -60,16 +62,16 @@ class SystemManager extends Component {
     let childre = null
     this.setState({
       selectKey: key,
-    },()=>{
-      childre =   childrenMap[key]
+    }, () => {
+      childre = childrenMap[key]
       this.setState({
-        children:childre
+        children: childre
       })
     })
   }
 
   render () {
-    const { mode, selectKey, menuList, children } = this.state
+    const { mode, selectKey, menuList, children} = this.state
 
     return (
       <div className="system-manager-layout">
@@ -80,14 +82,15 @@ class SystemManager extends Component {
           }}
         >
           <div className="systemManager-leftMenu">
-            <Menu mode={mode} selectedKeys={[selectKey]} onClick={this.selectKey}>
+            <Menu
+              mode={mode} selectedKeys={[selectKey]} onClick={this.selectKey}>
               {menuList}
             </Menu>
           </div>
           <div className="systemManager-right">
             <div className="systemManager-title">{this.getRightTitle()}</div>
             <React.Fragment>
-            {children}
+              {children}
             </React.Fragment>
           </div>
         </div>
