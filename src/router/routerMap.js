@@ -19,9 +19,10 @@ import Package from '@/pages/Package'
 import Dashboard from '@/pages/Dashboard'
 import ThirdParty from '@/pages/Setting/ThirdPartyManager'
 import NoticeManager from '@/pages/Setting/NoticeManager'
-
+//发布
 import GrayscaleRelease from '@/pages/Release/GrayscaleRelease'
 import AddGrayscale from '@/pages/Release/GrayscaleRelease/AddGrayscale'
+import Hotfixs from '@/pages/Release/Hotfixs'
 
 import Requirement from '@/pages/Requirement'
 import STFList from '@/pages/Test/STF/Index'
@@ -152,6 +153,11 @@ export default [
     path: '/addGrayscale',
     name: 'addGrayscale',
     component: AddGrayscale
+  },
+  {
+    path: '/hotfixs',
+    name: 'hotfixs',
+    component: Hotfixs
   },
   {
     path: '/requirement',
