@@ -25,7 +25,8 @@ class SystemManager extends Component {
       defaultCurrentMenu: [],
       mode: 'inline',
       menuList: [],
-      children: null
+      children: null,
+      selectKey:'/userManager'
     }
   }
 
@@ -46,7 +47,9 @@ class SystemManager extends Component {
         )
       }
       this.setState({ menuList }, () => {
-        this.setState({ defaultCurrentMenu: [menuList[0].key] })
+        this.setState({
+          children: <UserManager/>
+        })
       })
     } else {
       message.error(res.msg)
@@ -83,7 +86,10 @@ class SystemManager extends Component {
         >
           <div className="systemManager-leftMenu">
             <Menu
-              mode={mode} selectedKeys={[selectKey]} onClick={this.selectKey}>
+              mode={mode}
+              selectedKeys={[selectKey]}
+              defaultSelectedKeys={['1']}
+              onClick={this.selectKey}>
               {menuList}
             </Menu>
           </div>
