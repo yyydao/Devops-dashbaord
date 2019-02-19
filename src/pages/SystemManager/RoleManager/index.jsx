@@ -282,7 +282,7 @@ class RoleManager extends Component {
         }
         role.roleName=values.roleName
         role.useRegister=this.state.newRole.useRegister||false
-        role.isAdmin=this.state.newRole.isAdmin||false
+        role.admin=this.state.newRole.admin||false
         role.unSelect=this.state.halfCheckedKeys.join(',')
         role.menuIdList=[...this.state.newRole.menuIdList,...this.state.halfCheckedKeys]
         reqPost(postUrl,role).then(res => {
@@ -373,7 +373,7 @@ class RoleManager extends Component {
             <Switch checked={newRole.useRegister} onChange={(e)=>{this.onSwitchChanged(e,'useRegister')}}/>
           </FormItem>
             <FormItem {...fromItemLayout} label="是否管理员角色">
-              <Switch checked={newRole.isAdmin} onChange={(e)=>{this.onSwitchChanged(e,'isAdmin')}}/>
+              <Switch checked={newRole.admin} onChange={(e)=>{this.onSwitchChanged(e,'admin')}}/>
             </FormItem>
             <FormItem {...fromItemLayout} label="授权">
               <div className="tree-container">
