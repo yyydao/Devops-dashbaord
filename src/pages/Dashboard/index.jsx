@@ -75,7 +75,6 @@ class Dashboard extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log(nextProps)
     this.setState({
       projectId: nextProps.projectId
     },()=>this.getTaskList(this.state.projectId))

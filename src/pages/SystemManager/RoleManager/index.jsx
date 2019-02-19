@@ -69,7 +69,6 @@ class RoleManager extends Component {
       selectedRowKeys:[],
       halfCheckedKeys:[],
       expandedKeys:[],
-      isOver:false
     }
   }
 
@@ -139,13 +138,13 @@ class RoleManager extends Component {
         if(role.unSelect){
           let halfcheck=role.unSelect.split(',')
           halfcheck.map(item=>{
-            let index=role.menuIdList.indexOf(parseInt(item))
+            let index=role.menuIdList.indexOf(parseInt(item,0))
             if(index>-1){
               role.menuIdList.splice(index,1)
             }
+            return item
           })
         }
-        console.log(role.menuIdList)
         this.setState({
           newRole:role,
           modalTitle:'修改',
@@ -170,7 +169,7 @@ class RoleManager extends Component {
               menuIdList.splice(menuIdList.indexOf(item.menuId),1)
               let newRole=JSON.parse(JSON.stringify(this.state.newRole))
               newRole.menuIdList=menuIdList
-              this.setState({newRole,isOver:true},()=>{
+              this.setState({newRole},()=>{
                 this.dealTreeData(JSON.parse(JSON.stringify(item.list)))
               })
               break;
@@ -262,11 +261,11 @@ class RoleManager extends Component {
     this.setState({newRole})
   }
   /**
-   * @desc 是否用于注册改变事件
+   * @desc 是否用于Switch改变事件
    */
-  onUseRegisterChanged = (e) =>{
+  onSwitchChanged = (e,index) =>{
     let newRole = this.state.newRole
-    newRole.useRegister = e
+    newRole[index] = e
     this.setState({newRole})
   }
   /**
@@ -283,6 +282,7 @@ class RoleManager extends Component {
         }
         role.roleName=values.roleName
         role.useRegister=this.state.newRole.useRegister||false
+        role.isAdmin=this.state.newRole.isAdmin||false
         role.unSelect=this.state.halfCheckedKeys.join(',')
         role.menuIdList=[...this.state.newRole.menuIdList,...this.state.halfCheckedKeys]
         reqPost(postUrl,role).then(res => {
@@ -370,7 +370,10 @@ class RoleManager extends Component {
               <Input value={newRole.remark} onChange={(e)=>{this.onRemarkChanged(e)}}/>
             </FormItem>
             <FormItem {...fromItemLayout} label="是否用于注册">
-              <Switch checked={newRole.useRegister} onChange={(e)=>{this.onUseRegisterChanged(e)}}/>
+            <Switch checked={newRole.useRegister} onChange={(e)=>{this.onSwitchChanged(e,'useRegister')}}/>
+          </FormItem>
+            <FormItem {...fromItemLayout} label="是否管理员角色">
+              <Switch checked={newRole.isAdmin} onChange={(e)=>{this.onSwitchChanged(e,'isAdmin')}}/>
             </FormItem>
             <FormItem {...fromItemLayout} label="授权">
               <div className="tree-container">

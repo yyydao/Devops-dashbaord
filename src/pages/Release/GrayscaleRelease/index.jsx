@@ -166,8 +166,10 @@ class GrayscaleRelease extends Component {
   getAndroidGrayScaleRules = () => {
     reqGet('/distribute/queryRule', {projectId: this.props.projectId}).then(res => {
       if (res.code === 0) {
-        res.data.areas=res.data.areas.split(',')
-        this.setState({rules: res.data, newRules: res.data})
+        if(res.data){
+          res.data.areas=res.data.areas.split(',')
+          this.setState({rules: res.data, newRules: res.data})
+        }
       } else {
         message.error(res.msg)
       }
@@ -378,11 +380,11 @@ class GrayscaleRelease extends Component {
             <Card title="分布情况" style={{marginTop: 24}}>
               <p>
                 <span style={{paddingRight: 8, marginBottom: 0}}>实际分发数/预计分发数(昨天)：</span>
-                {androidData.beforeActualQuantity||'--'}/{androidData.beforeExpectQuantitty||'--'}
+                {JSON.stringify(androidData.beforeActualQuantity)||'--'}/{JSON.stringify(androidData.beforeExpectQuantitty)||'--'}
               </p>
               <p>
                 <span style={{paddingRight: 8, marginBottom: 0}}>实际分发数/预计分发数(今天)：</span>
-                {androidData.actualQuantity||'--'}/{androidData.expectQuantitty||'--'}
+                {JSON.stringify(androidData.actualQuantity)||'--'}/{JSON.stringify(androidData.expectQuantitty)||'--'}
               </p>
             </Card>
           </div>
