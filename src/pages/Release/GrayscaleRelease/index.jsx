@@ -168,7 +168,6 @@ class GrayscaleRelease extends Component {
       if (res.code === 0) {
         if (res.data) {
           res.data.areas = res.data.areas.split(',')
-          console.log(res.data.areas)
           this.setState({rules: res.data, newRules: res.data})
         }
       } else {
