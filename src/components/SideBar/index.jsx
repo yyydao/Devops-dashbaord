@@ -33,7 +33,6 @@ const MenuIcon = {
   '系统管理': () => <SystemSvg/>
 }
 
-
 class SideBar extends Component {
   constructor (props) {
     super(props)
@@ -126,11 +125,11 @@ class SideBar extends Component {
           <MenuItem key={item.id}>
             <Link to={item.urls}>
               {
-                MenuIcon[item.name]&&
+                MenuIcon[item.name] &&
                 <Icon style={{ fontSize: '16px' }} component={MenuIcon[item.name]}/>
               }
               {item.name}
-              </Link>
+            </Link>
           </MenuItem>
         )
       }
@@ -192,19 +191,13 @@ class SideBar extends Component {
             </div>
           }
         </div>
-        <Menu mode="inline" selectedKeys={[currentMenu]} theme="dark" onClick={this.menuClick}
+        <Menu className="devops-side-menu"
+              mode="inline" selectedKeys={[currentMenu]} theme="dark" onClick={this.menuClick}
               onOpenChange={this.menuOpenChange}
               defaultSelectedKeys={defaultCurrentMenu} defaultOpenKeys={menuOpenKeys}>
           {menuList}
         </Menu>
-        <div style={{
-          color: 'rgba(255,255,255,0.65)',
-          textAlign: 'left',
-          position: 'absolute',
-          width: '100%',
-          left: '24px',
-          bottom: '16px'
-        }}>
+        <div className="devops-side-version">
           版本：V{process.env.VERSION}
         </div>
       </div>

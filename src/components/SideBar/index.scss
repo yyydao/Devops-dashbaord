@@ -7,6 +7,9 @@
   width: 256px;
   border-right: 1px solid #e8e8e8;
   background-color: #001529;
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
 
   .ant-menu-inline {
     border-right: none;
@@ -19,23 +22,26 @@
     text-align: center;
 
     .dropdown-select {
-      &-wrapper{
+      &-wrapper {
         width: 100%;
         //padding: 0 14px;
       }
 
       width: 100%;
+
       .ant-select-selection {
         vertical-align: middle;
         height: 50px;
         color: #ffffff;
         border: none;
-        background-color: rgba(168,208,255,0.3);
+        background-color: rgba(168, 208, 255, 0.3);
         box-shadow: none;
       }
-      .ant-select-dropdown-menu-item-active{
+
+      .ant-select-dropdown-menu-item-active {
         background-color: #cccccc;
       }
+
       .ant-select-selection__rendered {
         display: block;
         margin-left: 11px;
@@ -44,34 +50,68 @@
         line-height: 50px;
         height: 50px;
       }
-      .ant-select-dropdown{
+
+      .ant-select-dropdown {
         color: #fff !important;
       }
-      .ant-select-dropdown-menu-item{
-        color:red
+
+      .ant-select-dropdown-menu-item {
+        color: red
       }
+
       .ant-select-arrow {
         color: #fff;
       }
-      .ant-select-open .ant-select-selection{
+
+      .ant-select-open .ant-select-selection {
         box-shadow: none;
       }
     }
+
     .logo-img {
       margin: 10px 0 5px;
     }
   }
+
+  .devops-side-menu {
+    flex: 1 1;
+  }
+
+  .devops-side-version {
+    color: rgba(255, 255, 255, 0.65);
+    position: static;
+    width: 100%;
+    padding: 40px 0 24px 24px;
+  }
+
+  &::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #F5F5F5;
+  }
+
+  &::-webkit-scrollbar {
+    width: 0px;
+    background-color: #F5F5F5;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #000000;
+  }
 }
-.ant-select-dropdown-menu-item.sideBar-option{
+
+.ant-select-dropdown-menu-item.sideBar-option {
   background: #324c69;
   padding: 8px 8px;
 }
-.ant-select-dropdown-menu-item.sideBar-option.ant-select-dropdown-menu-item-selected{
+
+.ant-select-dropdown-menu-item.sideBar-option.ant-select-dropdown-menu-item-selected {
   background: #1890ff;
 }
-.ant-select-dropdown-menu-item.sideBar-option:hover{
+
+.ant-select-dropdown-menu-item.sideBar-option:hover {
   background: #63b2fb;
 }
-.project{
-  color:#fff
+
+.project {
+  color: #fff
 }
