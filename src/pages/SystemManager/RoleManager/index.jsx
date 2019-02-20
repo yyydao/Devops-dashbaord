@@ -137,6 +137,7 @@ class RoleManager extends Component {
         let role=res.role
         if(role.unSelect){
           let halfcheck=role.unSelect.split(',')
+          this.setState({halfCheckedKeys:halfcheck})
           halfcheck.map(item=>{
             let index=role.menuIdList.indexOf(parseInt(item,0))
             if(index>-1){

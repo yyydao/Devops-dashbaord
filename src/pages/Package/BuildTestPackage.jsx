@@ -40,11 +40,11 @@ class BuildTestPackage extends Component {
       currentBuild: '',
 
       //筛选条件
-      envID: '',
+      envID: props.envID,
       status: 0,//默认显示成功列表
-      version: '',
+      version: props.version,
       selectDisabled: false,//环境&版本是否可选择
-
+      buildId:props.buildId,
       //正在构建的数量
       buildingNum: 0,
       //状态集合
@@ -80,13 +80,19 @@ class BuildTestPackage extends Component {
 
   propTypes: {
     projectId: PropTypes.string.isRequired,
-    tapdID: PropTypes.string.isRequired
+    tapdID: PropTypes.string.isRequired,
+    buildId: PropTypes.string.isRequired,
+    version: PropTypes.string.isRequired,
+    envID: PropTypes.string.isRequired
   }
 
   componentWillReceiveProps (nextProps) {
     this.setState({
       projectId: nextProps.projectId,
-      tapdID:nextProps.tapdID
+      tapdID:nextProps.tapdID,
+      version:nextProps.version,
+      envID:nextProps.envID,
+      buildId:nextProps.buildId
     }, () => {
       this.getEnvList()
       this.getTapdList()
@@ -110,13 +116,18 @@ class BuildTestPackage extends Component {
     reqGet('package/envselect', { projectID: projectId }).then(res => {
       if (res.code === 0) {
         let id = ''
-        res.data.map(item => {
-          if (item.name === '测试环境') {id = item.id}
-          return item
-        })
+        //钉钉进入该页面时，会带来一个envID，否则默认为测试环境
+        if(this.state.envID){
+          id=this.state.envID
+        }else{
+          res.data.map(item => {
+            if (item.name === '测试环境') {id = item.id}
+            return item
+          })
+        }
         this.setState({
           envList: res.data,
-          envID: id//默认为测试环境
+          envID: id
         }, () => {this.getVersionList()})
       } else {
         message.error(res.msg)
@@ -155,8 +166,12 @@ class BuildTestPackage extends Component {
     }).then(res => {
       if (res.code === 0) {
         let buildVersion = ''
-        if (res.data.length > 0 && !selectDisabled) {
-          buildVersion = res.data[0].buildVersion
+        if(this.state.buildId){
+          buildVersion=this.state.version
+        }else{
+          if (res.data.length > 0 && !selectDisabled) {
+            buildVersion = res.data[0].buildVersion
+          }
         }
         this.setState({
           versionList: res.data,
@@ -202,6 +217,9 @@ class BuildTestPackage extends Component {
           if(this.state.tapdList.length<1){
             this.getTapdList()
           }
+          if(this.state.buildId){
+            this.onListItemClick(this.state.buildId)
+          }
         })
       } else {
         message.error(res.msg)
@@ -218,6 +236,9 @@ class BuildTestPackage extends Component {
     let newState = {}
     newState[key] = e
     newState['curPage'] = 1
+    if(this.state.buildId){
+      this.setState({buildId:''})
+    }
     this.setState(newState, () => {
       if (key === 'envID') {
         this.getVersionList()
@@ -242,6 +263,9 @@ class BuildTestPackage extends Component {
    * @param page 修改成的页数
    */
   onPaginationChange = (page) => {
+    if(this.state.buildId){
+      this.setState({buildId:''})
+    }
     this.setState({ curPage: page }, () => {this.getPackageList()})
   }
 
