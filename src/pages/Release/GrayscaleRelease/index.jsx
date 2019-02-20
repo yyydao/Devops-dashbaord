@@ -168,6 +168,7 @@ class GrayscaleRelease extends Component {
       if (res.code === 0) {
         if (res.data) {
           res.data.areas = res.data.areas.split(',')
+          console.log(res.data.areas)
           this.setState({rules: res.data, newRules: res.data})
         }
       } else {
@@ -290,7 +291,6 @@ class GrayscaleRelease extends Component {
             newRules[key]=''
           }
         }
-
         reqPost('/distribute/saveRule', Object.assign({},newRules,values)).then(res => {
           if (res.code === 0) {
             message.success("保存成功")
@@ -528,7 +528,7 @@ class GrayscaleRelease extends Component {
                           {
                             areaList.map((item, index) => {
                               return <Col span={12} key={index} style={{marginBottom: 8}}>
-                                <Checkbox value={item.code}>{item.name}</Checkbox>
+                                <Checkbox value={item.code.toString()}>{item.name}</Checkbox>
                               </Col>
                             })
                           }
