@@ -168,6 +168,7 @@ class GrayscaleRelease extends Component {
       if (res.code === 0) {
         if (res.data) {
           res.data.areas = res.data.areas.split(',')
+          res.data.devices = res.data.devices.split(',')
           this.setState({rules: res.data, newRules: res.data})
         }
       } else {
@@ -250,7 +251,7 @@ class GrayscaleRelease extends Component {
         fieldsValue.flows = newRules.flows || ''
         break
       case 3:
-        fieldsValue.devices = newRules.devices || ''
+        fieldsValue.devices = newRules.devices.join('\n') || ''
         break
       case 4:
         fieldsValue.flows = newRules.flows || ''
@@ -280,17 +281,20 @@ class GrayscaleRelease extends Component {
         if (values.areas) {
           values.areas = newRules.areas.join(',')
         }
+        if (values.devices) {
+          values.devices = values.devices.split('\n').join(',')
+        }
         values.projectId = newRules.projectId
         values.type = newRules.type
 
         //不提交的数据都置为''
-        let uploadKeys=Object.keys(values)
-        for(let key in newRules){
-          if(uploadKeys.indexOf(key)<0&&key!=='areaName'){
-            newRules[key]=''
+        let uploadKeys = Object.keys(values)
+        for (let key in newRules) {
+          if (uploadKeys.indexOf(key) < 0 && key !== 'areaName') {
+            newRules[key] = ''
           }
         }
-        reqPost('/distribute/saveRule', Object.assign({},newRules,values)).then(res => {
+        reqPost('/distribute/saveRule', Object.assign({}, newRules, values)).then(res => {
           if (res.code === 0) {
             message.success("保存成功")
             this.setState({modalVisible: false})
@@ -432,7 +436,9 @@ class GrayscaleRelease extends Component {
                 rules.devices &&
                 <Row className="info-item">
                   <Col span={infoItem.left}>灰度下发设备</Col>
-                  <Col span={infoItem.right}>{rules.devices || '-'}</Col>
+                  <Col span={infoItem.right}>
+                    {rules.devices.map(item => <p style={{marginBottom:4}}>{item}</p>)}
+                  </Col>
                 </Row>
               }
               <Divider/>
@@ -450,7 +456,7 @@ class GrayscaleRelease extends Component {
               </Row>
               <Row className="info-item">
                 <Col span={infoItem.left}>url</Col>
-                <Col span={infoItem.right}><a href={rules.url}>{ rules.url|| '-'}</a></Col>
+                <Col span={infoItem.right}><a href={rules.url}>{rules.url || '-'}</a></Col>
               </Row>
               <Row className="info-item">
                 <Col span={infoItem.left}>desc</Col>
