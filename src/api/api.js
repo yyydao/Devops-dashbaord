@@ -29,9 +29,11 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
   response => {
     if (response.data.code === 401) {
-      window.location.href = '#/login'
+      window.localStorage.setItem('oldUrl',window.location.href)
+      setTimeout(()=>{
+        window.location.href = '#/login'
+      },0)
       return
-      // return response
     }
 
 

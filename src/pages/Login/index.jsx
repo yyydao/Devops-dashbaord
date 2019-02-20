@@ -59,6 +59,7 @@ class Login extends Component {
     // })
     this.props.login(data.username, data.password).then((response) => {
       let res = response.value
+
       this.setState({
         loading: false
       })
@@ -67,10 +68,16 @@ class Login extends Component {
       }
       if (res.code === 0) {
         message.success('Welcome ' + res.nickName)
-          // .then(() => this.props.setUserInfo(res))
-          .then(
-            this.props.history.replace('/')
-          )
+          .then(() => {
+            let oldUrl = window.localStorage.getItem('oldUrl')
+            if (oldUrl) {
+              window.localStorage.removeItem('oldUrl')
+              window.location.href = oldUrl
+            } else {
+              this.props.history.replace('/')
+            }
+
+          })
 
       }
     }).catch(err => {
