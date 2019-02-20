@@ -167,8 +167,8 @@ class GrayscaleRelease extends Component {
     reqGet('/distribute/queryRule', {projectId: this.props.projectId}).then(res => {
       if (res.code === 0) {
         if (res.data) {
-          res.data.areas = res.data.areas.split(',')
-          res.data.devices = res.data.devices.split(',')
+          res.data.areas = res.data.areas?res.data.areas.split(','):[]
+          res.data.devices = res.data.devices?res.data.devices.split(','):[]
           this.setState({rules: res.data, newRules: res.data})
         }
       } else {
@@ -232,6 +232,7 @@ class GrayscaleRelease extends Component {
   areasValidate = (rule, value, callback) => {
     let areas = this.state.newRules.areas
     if (areas.length > 0) {
+      console.log(areas)
       callback();
       return;
     }
@@ -419,7 +420,7 @@ class GrayscaleRelease extends Component {
                 <Col span={infoItem.right}>{grayRules[rules.type] || '-'}</Col>
               </Row>
               {
-                rules.areaName &&
+                 rules.areaName &&
                 <Row className="info-item">
                   <Col span={infoItem.left}>灰度下发区域</Col>
                   <Col span={infoItem.right}>{rules.areaName || '-'}</Col>
@@ -433,11 +434,11 @@ class GrayscaleRelease extends Component {
                 </Row>
               }
               {
-                rules.devices &&
+                rules.devices&&rules.devices.length>0 &&
                 <Row className="info-item">
                   <Col span={infoItem.left}>灰度下发设备</Col>
                   <Col span={infoItem.right}>
-                    {rules.devices.map(item => <p style={{marginBottom:4}}>{item}</p>)}
+                    {rules.devices.map((item,index) => <p key={index} style={{marginBottom:4}}>{item}</p>)}
                   </Col>
                 </Row>
               }
