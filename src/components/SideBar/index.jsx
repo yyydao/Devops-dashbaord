@@ -68,7 +68,6 @@ class SideBar extends Component {
   }
 
   selectChange = (value) => {
-    console.log('change select type')
     sessionStorage.clear()
     // this.props.setProjectId(value)
     this.props.projectIdChange(value)
@@ -97,7 +96,6 @@ class SideBar extends Component {
         // setPermissionList(res.data.permissionList)
         const menuList = this.getMenuList(res.data.menuList)
         this.setState({ menuList })
-        console.info(menuList.length)
         if (menuList && menuList.length > 0) {
           this.setState({ defaultCurrentMenu: [menuList[0].key] })
         }
