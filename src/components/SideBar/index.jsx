@@ -124,7 +124,13 @@ class SideBar extends Component {
       } else {
         menuList.push(
           <MenuItem key={item.id}>
-            <Link to={item.urls}><Icon style={{ fontSize: '16px' }} component={MenuIcon[item.name]}/>{item.name}</Link>
+            <Link to={item.urls}>
+              {
+                MenuIcon[item.name]&&
+                <Icon style={{ fontSize: '16px' }} component={MenuIcon[item.name]}/>
+              }
+              {item.name}
+              </Link>
           </MenuItem>
         )
       }
