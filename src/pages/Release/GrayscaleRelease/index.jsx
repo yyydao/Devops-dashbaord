@@ -166,8 +166,8 @@ class GrayscaleRelease extends Component {
   getAndroidGrayScaleRules = () => {
     reqGet('/distribute/queryRule', {projectId: this.props.projectId}).then(res => {
       if (res.code === 0) {
-        if(res.data){
-          res.data.areas=res.data.areas.split(',')
+        if (res.data) {
+          res.data.areas = res.data.areas.split(',')
           this.setState({rules: res.data, newRules: res.data})
         }
       } else {
@@ -215,24 +215,91 @@ class GrayscaleRelease extends Component {
    * @desc
    */
   addRules = () => {
-    let {rules, newRules} = this.state
-    newRules = JSON.parse(JSON.stringify(rules))
-    this.setState({newRules, modalVisible: true})
+    let {rules} = this.state
+    this.setState({
+      newRules: JSON.parse(JSON.stringify(rules))
+    }, () => {
+      let fieldsValues = this.getReturnFieldsValues()
+      this.props.form.setFieldsValue(fieldsValues)
+      this.setState({modalVisible: true})
+    })
   }
 
+  /**
+   * @desc 验证区域
+   */
+  areasValidate = (rule, value, callback) => {
+    let areas = this.state.newRules.areas
+    if (areas.length > 0) {
+      callback();
+      return;
+    }
+    callback("请选择灰度下发区域");
+  }
+  /**
+   * @desc 获取表单默认数据
+   */
+  getReturnFieldsValues = () => {
+    let newRules = this.state.newRules
+    let fieldsValue = {}
+    switch (newRules.type) {
+      case 1:
+        fieldsValue.areas = []
+        break
+      case 2:
+        fieldsValue.flows = newRules.flows || ''
+        break
+      case 3:
+        fieldsValue.devices = newRules.devices || ''
+        break
+      case 4:
+        fieldsValue.flows = newRules.flows || ''
+        fieldsValue.areas = []
+        break
+      default:
+        break
+    }
+    if (newRules.type !== 0) {
+      fieldsValue.version = newRules.version
+      fieldsValue.versionName = newRules.versionName
+      fieldsValue.name = newRules.name
+      fieldsValue.url = newRules.url
+      fieldsValue.desc = newRules.desc
+    }
+    return fieldsValue
+  }
   /**
    * @desc 保存Android灰度发布
    */
   saveAndroidGrayScaleRules = () => {
-    let params = JSON.parse(JSON.stringify(this.state.newRules))
-    params.areas = params.areas.join(',')
-    reqPost('/distribute/saveRule', params).then(res => {
-      if (res.code === 0) {
-        message.success("保存成功")
-        this.setState({modalVisible: false})
-        this.getAndroidGrayScaleRules()
-      } else {
-        message.error(res.msg)
+    let fields = this.getReturnFieldsValues()
+    this.props.form.validateFields(Object.keys(fields), (err, values) => {
+      if (!err) {
+        //合并要提交的数据
+        let newRules = JSON.parse(JSON.stringify(this.state.newRules))
+        if (values.areas) {
+          values.areas = newRules.areas.join(',')
+        }
+        values.projectId = newRules.projectId
+        values.type = newRules.type
+
+        //不提交的数据都置为''
+        let uploadKeys=Object.keys(values)
+        for(let key in newRules){
+          if(uploadKeys.indexOf(key)<0&&key!=='areaName'){
+            newRules[key]=''
+          }
+        }
+
+        reqPost('/distribute/saveRule', Object.assign({},newRules,values)).then(res => {
+          if (res.code === 0) {
+            message.success("保存成功")
+            this.setState({modalVisible: false})
+            this.getAndroidGrayScaleRules()
+          } else {
+            message.error(res.msg)
+          }
+        })
       }
     })
   }
@@ -256,10 +323,13 @@ class GrayscaleRelease extends Component {
   /**
    * @desc 规则改变事件
    */
-  onNewRulesChange = (e, index) => {
+  onNewRulesChange = (e) => {
     let {newRules} = this.state
-    newRules[index] = e
-    this.setState({newRules})
+    newRules.type = e
+    this.setState({newRules}, () => {
+      let fieldsValues = this.getReturnFieldsValues()
+      this.props.form.setFieldsValue(fieldsValues)
+    })
   }
 
   /**
@@ -273,10 +343,10 @@ class GrayscaleRelease extends Component {
     })
   }
 
-  showTips=()=>{
+  showTips = () => {
     Modal.info({
       title: '灰度规则',
-      content: <div style={{paddingTop:16}}>
+      content: <div style={{paddingTop: 16}}>
         <p>规则0：关闭下发</p>
         <p>规则1：按区域下发，如“广东省”，“北京市”</p>
         <p>规则2：按流量下发，如“10%”，“50%”</p>
@@ -285,6 +355,7 @@ class GrayscaleRelease extends Component {
       </div>
     });
   }
+
   render() {
     const {
       platform,
@@ -340,51 +411,61 @@ class GrayscaleRelease extends Component {
                 </Button>
               }>
               <Row className="info-item">
-                <Col span={infoItem.left}><span onClick={this.showTips} style={{cursor:'pointer'}}>灰度规则<Icon type="question-circle" style={{paddingLeft:8}}/></span></Col>
-                <Col span={infoItem.right}>{grayRules[rules.type]||'-'}</Col>
+                <Col span={infoItem.left}><span onClick={this.showTips} style={{cursor: 'pointer'}}>灰度规则<Icon
+                  type="question-circle" style={{paddingLeft: 8}}/></span></Col>
+                <Col span={infoItem.right}>{grayRules[rules.type] || '-'}</Col>
               </Row>
-              <Row className="info-item">
-                <Col span={infoItem.left}>灰度下发区域</Col>
-                <Col span={infoItem.right}>{rules.areaName||'-'}</Col>
-              </Row>
-              <Row className="info-item">
-                <Col span={infoItem.left}>灰度下发百分百</Col>
-                <Col span={infoItem.right}>{rules.flows||'-'}</Col>
-              </Row>
-              <Row className="info-item">
-                <Col span={infoItem.left}>灰度下发设备</Col>
-                <Col span={infoItem.right}>{rules.devices||'-'}</Col>
-              </Row>
+              {
+                rules.areaName &&
+                <Row className="info-item">
+                  <Col span={infoItem.left}>灰度下发区域</Col>
+                  <Col span={infoItem.right}>{rules.areaName || '-'}</Col>
+                </Row>
+              }
+              {
+                rules.flows &&
+                <Row className="info-item">
+                  <Col span={infoItem.left}>灰度下发百分百</Col>
+                  <Col span={infoItem.right}>{rules.flows || '-'}</Col>
+                </Row>
+              }
+              {
+                rules.devices &&
+                <Row className="info-item">
+                  <Col span={infoItem.left}>灰度下发设备</Col>
+                  <Col span={infoItem.right}>{rules.devices || '-'}</Col>
+                </Row>
+              }
               <Divider/>
               <Row className="info-item">
                 <Col span={infoItem.left}>version</Col>
-                <Col span={infoItem.right}>{rules.version||'-'}</Col>
+                <Col span={infoItem.right}>{rules.version || '-'}</Col>
               </Row>
               <Row className="info-item">
                 <Col span={infoItem.left}>versionName</Col>
-                <Col span={infoItem.right}>{rules.versionName||'-'}</Col>
+                <Col span={infoItem.right}>{rules.versionName || '-'}</Col>
               </Row>
               <Row className="info-item">
                 <Col span={infoItem.left}>name</Col>
-                <Col span={infoItem.right}>{rules.name||'-'}</Col>
+                <Col span={infoItem.right}>{rules.name || '-'}</Col>
               </Row>
               <Row className="info-item">
                 <Col span={infoItem.left}>url</Col>
-                <Col span={infoItem.right}>{rules.url||'-'}</Col>
+                <Col span={infoItem.right}><a href={rules.url}>{ rules.url|| '-'}</a></Col>
               </Row>
               <Row className="info-item">
                 <Col span={infoItem.left}>desc</Col>
-                <Col span={infoItem.right}>{rules.desc||'-'}</Col>
+                <Col span={infoItem.right}>{rules.desc || '-'}</Col>
               </Row>
             </Card>
             <Card title="分布情况" style={{marginTop: 24}}>
               <p>
                 <span style={{paddingRight: 8, marginBottom: 0}}>实际分发数/预计分发数(昨天)：</span>
-                {JSON.stringify(androidData.beforeActualQuantity)||'--'}/{JSON.stringify(androidData.beforeExpectQuantitty)||'--'}
+                {JSON.stringify(androidData.beforeActualQuantity) || '--'}/{JSON.stringify(androidData.beforeExpectQuantitty) || '--'}
               </p>
               <p>
                 <span style={{paddingRight: 8, marginBottom: 0}}>实际分发数/预计分发数(今天)：</span>
-                {JSON.stringify(androidData.actualQuantity)||'--'}/{JSON.stringify(androidData.expectQuantitty)||'--'}
+                {JSON.stringify(androidData.actualQuantity) || '--'}/{JSON.stringify(androidData.expectQuantitty) || '--'}
               </p>
             </Card>
           </div>
@@ -420,73 +501,118 @@ class GrayscaleRelease extends Component {
           okText="确认"
           cancelText="取消">
           <Select value={newRules.type} style={{width: "100%"}}
-                  onChange={e => this.onNewRulesChange(e, 'type')}>
+                  onChange={e => this.onNewRulesChange(e)}>
             {grayRules.map((item, index) => <Option value={index} key={index}>{item}</Option>)}
           </Select>
           {
             newRules.type === 0 &&
             <p style={{fontSize: 24, color: '#ccc', textAlign: "center", marginTop: 24}}>【关闭灰度下发】</p>
           }
-          {
-            (newRules.type === 1 || newRules.type === 4) &&
-            <div className="area-checkbox-container">
-              <Checkbox checked={checkAllArea} onChange={e => this.onCheckAllChange(e.target.checked)}>全部</Checkbox>
-              <div style={{marginTop: 8}}>
-                <CheckboxGroup value={newRules.areas} onChange={(e) => {
-                  this.onAreaChange(e)
-                }}>
-                  <Row>
-                    {
-                      areaList.map((item, index) => {
-                        return <Col span={12} key={index} style={{marginBottom: 8}}>
-                          <Checkbox value={item.code}>{item.name}</Checkbox>
-                        </Col>
-                      })
-                    }
-                  </Row>
-                </CheckboxGroup>
-              </div>
-            </div>
-          }
-          {
-            (newRules.type === 2 || newRules.type === 4) &&
-            <Select value={newRules.flows} style={{width: "100%", marginTop: 16}}
-                    onChange={e => this.onNewRulesChange(e, 'flows')}>
-              {flowList()}
-            </Select>
-          }
-          {
-            newRules.type === 3 &&
-            <TextArea style={{height: 100, marginTop: 16}} value={newRules.devices} placeholder='填写下发设备唯一码，以【回车键】分割'
-                      onChange={e => this.onNewRulesChange(e, 'devices')}/>
-          }
+          <Form className="editRules-active">
+            {
+              (newRules.type === 1 || newRules.type === 4) &&
+              <FormItem label="灰度下发区域">
+                {
+                  getFieldDecorator('areas', {
+                    rules: [{
+                      validator: this.areasValidate
+                    }]
+                  })(
+                    <div className="area-checkbox-container">
+                      <Checkbox checked={checkAllArea}
+                                onChange={e => this.onCheckAllChange(e.target.checked)}>全部</Checkbox>
+                      <CheckboxGroup value={newRules.areas} onChange={(e) => {
+                        this.onAreaChange(e)
+                      }}>
+                        <Row>
+                          {
+                            areaList.map((item, index) => {
+                              return <Col span={12} key={index} style={{marginBottom: 8}}>
+                                <Checkbox value={item.code}>{item.name}</Checkbox>
+                              </Col>
+                            })
+                          }
+                        </Row>
+                      </CheckboxGroup>
+                    </div>
+                  )
+                }
+              </FormItem>
+            }
+            {
+              (newRules.type === 2 || newRules.type === 4) &&
+              <FormItem label="灰度下发百分百">
+                {
+                  getFieldDecorator('flows', {
+                    rules: [{
+                      required: true, message: '请选择灰度下发百分百'
+                    }]
+                  })(
+                    <Select style={{width: "100%"}}>
+                      {flowList()}
+                    </Select>
+                  )
+                }
+              </FormItem>
+            }
+            {
+              newRules.type === 3 &&
+              <FormItem label="灰度下发设备">
+                {
+                  getFieldDecorator('devices', {
+                    rules: [{
+                      required: true, message: '请填写灰度下发设备'
+                    }]
+                  })(
+                    <TextArea style={{height: 100}} placeholder='填写下发设备唯一码，以【回车键】分割'/>
+                  )
+                }
+              </FormItem>
+            }
+          </Form>
           {
             newRules.type !== 0 &&
             <div>
-              <Form onSubmit={this.jenkinsSubmit} className="editRules">
+              <Form className="editRules">
                 <FormItem label="version">
                   {
-                    getFieldDecorator('version', {initialValue: newRules.version})(<Input/>)
+                    getFieldDecorator('version', {
+                      rules: [{
+                        required: true, message: '请填写version'
+                      }]
+                    })(<Input/>)
                   }
                 </FormItem>
                 <FormItem label="versionName">
                   {
-                    getFieldDecorator('versionName', {initialValue: newRules.versionName})(<Input/>)
+                    getFieldDecorator('versionName', {
+                      rules: [{
+                        required: true, message: '请填写versionName'
+                      }]
+                    })(<Input/>)
                   }
                 </FormItem>
                 <FormItem label="name">
                   {
-                    getFieldDecorator('name', {initialValue: newRules.name})(<Input/>)
+                    getFieldDecorator('name', {
+                      rules: [{
+                        required: true, message: '请填写name'
+                      }]
+                    })(<Input/>)
                   }
                 </FormItem>
                 <FormItem label="url">
                   {
-                    getFieldDecorator('url', {initialValue: newRules.url})(<Input/>)
+                    getFieldDecorator('url', {
+                      rules: [{
+                        required: true, message: '请填写url'
+                      }]
+                    })(<Input/>)
                   }
                 </FormItem>
                 <FormItem label="desc">
                   {
-                    getFieldDecorator('desc', {initialValue: newRules.desc})(<TextArea
+                    getFieldDecorator('desc')(<TextArea
                       style={{marginTop: 4, height: 100}}/>)
                   }
                 </FormItem>
