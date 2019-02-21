@@ -16,7 +16,8 @@ import {
   Input,
   Form,
   Divider,
-  Select
+  Select,
+  InputNumber
 } from 'antd'
 import './index.scss'
 
@@ -285,7 +286,7 @@ class GrayscaleRelease extends Component {
         if (values.devices) {
           values.devices = values.devices.split('\n').join(',')
         }
-        values.projectId = newRules.projectId
+        values.projectId = newRules.projectId||this.props.projectId
         values.type = newRules.type
 
         //不提交的数据都置为''
@@ -586,7 +587,7 @@ class GrayscaleRelease extends Component {
                       rules: [{
                         required: true, message: '请填写version'
                       }]
-                    })(<Input/>)
+                    })(<InputNumber />)
                   }
                 </FormItem>
                 <FormItem label="versionName">
