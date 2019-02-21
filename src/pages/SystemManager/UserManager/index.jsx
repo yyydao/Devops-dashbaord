@@ -3,7 +3,7 @@ import {Link} from 'react-router-dom'
 import {connect} from 'react-redux'
 import {Breadcrumb, Table, message, Modal, Checkbox, Button, Row, Col, Form, Input, Radio, Tag} from 'antd'
 
-import {reqGet,reqPost} from '@/api/api'
+import {reqGet, reqPost} from '@/api/api'
 import './index.scss'
 
 const BreadcrumbItem = Breadcrumb.Item
@@ -20,7 +20,7 @@ class UserManager extends Component {
       userList: [],
       newUser: {},
       loading: false,
-      confirmLoading:false,
+      confirmLoading: false,
       modalVisible: false,
       params: {
         limit: 10,
@@ -59,10 +59,13 @@ class UserManager extends Component {
           key: 'status',
           width: "8%",
           render: (text) => {
-            switch (text){
-              case 1: return <Tag color="green">正常</Tag>
-              case 0: return <Tag color="red">禁用</Tag>
-              default:return <Tag color="gray">未知</Tag>
+            switch (text) {
+              case 1:
+                return <Tag color="green">正常</Tag>
+              case 0:
+                return <Tag color="red">禁用</Tag>
+              default:
+                return <Tag color="gray">未知</Tag>
             }
           }
         },
@@ -84,7 +87,7 @@ class UserManager extends Component {
           }
         }
       ],
-      modalTitle:'新增',
+      modalTitle: '新增',
       pagination: {
         pageSize: 10,
         total: 0,
@@ -108,25 +111,25 @@ class UserManager extends Component {
   /**
    * @desc 获取用户列表
    */
-  getUserList = () =>{
-    this.setState({ loading: true });
-    reqGet('/sys/user/list',this.state.params).then(res => {
-      if(res.code === 0){
-        const pagination = { ...this.state.pagination };
-        const params = { ...this.state.params };
+  getUserList = () => {
+    this.setState({loading: true});
+    reqGet('/sys/user/list', this.state.params).then(res => {
+      if (res.code === 0) {
+        const pagination = {...this.state.pagination};
+        const params = {...this.state.params};
         pagination.total = res.page.totalCount;
         pagination.current = res.page.currPage;
         pagination.showTotal = () => {
-          return '共 ' + res.page.totalCount+ ' 条';
+          return '共 ' + res.page.totalCount + ' 条';
         };
         this.setState({
-          userList:res.page.list,
+          userList: res.page.list,
           pagination,
           params,
-          loading:false,
-          selectedRowKeys:[]
+          loading: false,
+          selectedRowKeys: []
         })
-      }else{
+      } else {
         message.error(res.msg);
       }
     })
@@ -134,14 +137,14 @@ class UserManager extends Component {
   /**
    * @desc 获取角色列表
    */
-  getRoleList = () =>{
-    this.setState({ loading: true });
+  getRoleList = () => {
+    this.setState({loading: true});
     reqGet('/sys/role/select').then(res => {
-      if(res.code === 0){
+      if (res.code === 0) {
         this.setState({
-          plainOptions:res.list,
+          plainOptions: res.list,
         })
-      }else{
+      } else {
         message.error(res.msg);
       }
     })
@@ -149,37 +152,37 @@ class UserManager extends Component {
   /**
    * @desc 表格选择栏改变事件
    */
-  onSelectedRowKeys = (selectedRowKeys) =>{
+  onSelectedRowKeys = (selectedRowKeys) => {
     this.setState({selectedRowKeys})
   }
 
   /**
    * @desc 关闭弹窗
    */
-  onCloseModal = () =>{
-    this.setState({modalVisible:false,confirmLoading:false})
+  onCloseModal = () => {
+    this.setState({modalVisible: false, confirmLoading: false})
   }
   /**
    * @desc 修改用户
    */
-  updateUser = (userId) =>{
+  updateUser = (userId) => {
     this.setState({
-      confirmLoading:true,
-      modalVisible:true,
-      modalTitle:'修改'
-    },()=>{
+      confirmLoading: true,
+      modalVisible: true,
+      modalTitle: '修改'
+    }, () => {
       reqGet(`/sys/user/info/${userId}`).then(res => {
-        if(res.code === 0){
-          this.setState({newUser:res.user,confirmLoading:false})
-            this.props.form.setFieldsValue({
-              username:res.user.username,
-              nickName:res.user.nickName,
-              email:res.user.email,
-              mobile:res.user.mobile,
-              roleIdList:res.user.roleIdList,
-              status:res.user.status
-            })
-        }else{
+        if (res.code === 0) {
+          this.setState({newUser: res.user, confirmLoading: false})
+          this.props.form.setFieldsValue({
+            username: res.user.username,
+            nickName: res.user.nickName,
+            email: res.user.email,
+            mobile: res.user.mobile,
+            roleIdList: res.user.roleIdList,
+            status: res.user.status
+          })
+        } else {
           message.error(res.msg);
         }
       })
@@ -188,20 +191,20 @@ class UserManager extends Component {
   /**
    * @desc 删除用户
    */
-  deleteUser = (userIds) =>{
-    if(userIds.length===0){
+  deleteUser = (userIds) => {
+    if (userIds.length === 0) {
       message.warning("请选择删除的用户")
       return
     }
     confirm({
       title: '',
       content: '该配置中可能存在重要数据，是否继续删除？（请谨慎操作！）',
-      onOk:()=> {
-        reqPost(`/sys/user/delete`,userIds).then(res => {
-          if(res.code === 0){
+      onOk: () => {
+        reqPost(`/sys/user/delete`, userIds).then(res => {
+          if (res.code === 0) {
             message.success("删除成功")
             this.getUserList()
-          }else{
+          } else {
             message.error(res.msg);
           }
         })
@@ -211,31 +214,31 @@ class UserManager extends Component {
   /**
    * @desc 表格页数改变事件
    */
-  handleTableChange = (pagination,nickName) => {
-    const params = { ...this.state.params };
-    if(pagination){
+  handleTableChange = (pagination, nickName) => {
+    const params = {...this.state.params};
+    if (pagination) {
       params.page = pagination.current;
-    }else{
+    } else {
       params.page = 1;
-      params.nickName=nickName;
+      params.nickName = nickName;
     }
-    this.setState({ params: params }, this.getUserList);
+    this.setState({params: params}, this.getUserList);
   }
   /**
    * @desc 新增用户
    */
-  onAddUser = () =>{
-    this.setState({modalVisible:true,newUser:{},modalTitle:'新增'},()=>{
+  onAddUser = () => {
+    this.setState({modalVisible: true, newUser: {}, modalTitle: '新增'}, () => {
       this.props.form.setFieldsValue({
-        username:'',
-        password:'',
-        psw:'',
-        nickName:'',
-        email:'',
-        mobile:'',
-        projectCode:'',
-        roleIdList:[],
-        status:1
+        username: '',
+        password: '',
+        psw: '',
+        nickName: '',
+        email: '',
+        mobile: '',
+        projectCode: '',
+        roleIdList: [],
+        status: 1
       })
     })
   }
@@ -243,18 +246,18 @@ class UserManager extends Component {
   /**
    * @desc 确认密码是否正确
    */
-  pswConfirm = (rule, value, callback) =>{
-    if(value===this.props.form.getFieldValue("password")||!value){
+  pswConfirm = (rule, value, callback) => {
+    if (value === this.props.form.getFieldValue("password") || !value) {
       callback();
       return;
     }
     callback("请确认密码是否正确");
   }
 
-  passwordConfirm = (rule, value, callback) =>{
-    let psw=this.props.form.getFieldValue("psw")
-    if(psw) {
-      this.props.form.validateFields(['psw'], { force: true })
+  passwordConfirm = (rule, value, callback) => {
+    let psw = this.props.form.getFieldValue("psw")
+    if (psw) {
+      this.props.form.validateFields(['psw'], {force: true})
     }
     callback();
     return;
@@ -262,26 +265,28 @@ class UserManager extends Component {
   /**
    * @desc 新增用户/修改用户
    */
-  onCreateUser = () =>{
-    let successMsg="新增成功"
-    let fields=this.state.modalTitle==='新增'?['username','psw','password','mobile','nickName','projectCode','email','roleIdList','status']:['username','psw','password','mobile','nickName','email','roleIdList','status']
-    this.props.form.validateFields(fields,(err, values) => {
-      if(values.password&&!values.psw){
+  onCreateUser = () => {
+    let successMsg = "新增成功"
+    let fields = this.state.modalTitle === '新增' ? ['username', 'psw', 'password', 'mobile', 'nickName', 'projectCode', 'email', 'roleIdList', 'status'] : ['username', 'psw', 'password', 'mobile', 'nickName', 'email', 'roleIdList', 'status']
+    this.props.form.validateFields(fields, (err, values) => {
+      if (values.password && !values.psw) {
         message.error("请填写确认密码")
         return
       }
       if (!err) {
-        let user= this.state.newUser,postUrl='/sys/user/save'
-        if(user.userId){
-          postUrl='/sys/user/update'
-          successMsg="修改成功"
-          values.userId=user.userId
+        let user = this.state.newUser, postUrl = '/sys/user/save'
+        if (user.userId) {
+          postUrl = '/sys/user/update'
+          successMsg = "修改成功"
+          values.userId = user.userId
         }
-        reqPost(postUrl,values).then(res => {
-          if(res.code === 0){
+        reqPost(postUrl, values).then(res => {
+          if (res.code === 0) {
             message.success(successMsg)
-            this.setState({modalVisible:false},()=>{this.getUserList()})
-          }else{
+            this.setState({modalVisible: false}, () => {
+              this.getUserList()
+            })
+          } else {
             message.error(res.msg);
           }
         })
@@ -290,16 +295,16 @@ class UserManager extends Component {
   }
 
   render() {
-    const {columns, userList,loading, newUser, modalVisible, modalTitle, pagination, selectedRowKeys, plainOptions,confirmLoading} = this.state
-    const { getFieldDecorator } = this.props.form;
+    const {columns, userList, loading, newUser, modalVisible, modalTitle, pagination, selectedRowKeys, plainOptions, confirmLoading} = this.state
+    const {getFieldDecorator} = this.props.form;
     const fromItemLayout = {
       labelCol: {
-        xs: { span: 24 },
-        sm: { span: 4 }
+        xs: {span: 24},
+        sm: {span: 4}
       },
       wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 20 }
+        xs: {span: 24},
+        sm: {span: 20}
       }
     };
     return (
@@ -315,12 +320,16 @@ class UserManager extends Component {
                 <Search
                   placeholder="昵称"
                   enterButton="查询"
-                  onSearch={value => this.handleTableChange('',value)}
+                  onSearch={value => this.handleTableChange('', value)}
                 />
               </Col>
               <Col span={18}>
-                <Button type="primary" onClick={()=>{this.onAddUser()}} style={{marginLeft:16}}>新增</Button>
-                <Button type="danger" onClick={()=>{this.deleteUser(this.state.selectedRowKeys)}} style={{marginLeft:16}}>批量删除</Button>
+                <Button type="primary" onClick={() => {
+                  this.onAddUser()
+                }} style={{marginLeft: 16}}>新增</Button>
+                <Button type="danger" onClick={() => {
+                  this.deleteUser(this.state.selectedRowKeys)
+                }} style={{marginLeft: 16}}>批量删除</Button>
               </Col>
             </Row>
             <Table
@@ -344,32 +353,36 @@ class UserManager extends Component {
           width={700}
           visible={modalVisible}
           confirmLoading={confirmLoading}
-          onOk={()=>{this.onCreateUser()}}
-          onCancel={()=>{this.onCloseModal()}}>
+          onOk={() => {
+            this.onCreateUser()
+          }}
+          onCancel={() => {
+            this.onCloseModal()
+          }}>
           <Form>
             <FormItem {...fromItemLayout} label="用户名">
               {
-                getFieldDecorator('username',{
+                getFieldDecorator('username', {
                   rules: [{
                     required: true, message: '请填写用户名'
                   }],
-                  initialValue:newUser.username
+                  initialValue: newUser.username
                 })(
                   <Input/>
                 )
               }
             </FormItem>
             {
-              modalTitle=== '新增' &&
+              modalTitle === '新增' &&
               <FormItem {...fromItemLayout} label="密码">
                 {
-                  getFieldDecorator('password',{
+                  getFieldDecorator('password', {
                     rules: [{
-                      validator:this.passwordConfirm
-                    },{
+                      validator: this.passwordConfirm
+                    }, {
                       required: true, message: '请填写密码'
                     }],
-                    initialValue:newUser.password
+                    initialValue: newUser.password
                   })(
                     <Input type="password"/>
                   )
@@ -377,12 +390,12 @@ class UserManager extends Component {
               </FormItem>
             }
             {
-              modalTitle=== '修改' &&
+              modalTitle === '修改' &&
               <FormItem {...fromItemLayout} label="密码">
                 {
-                  getFieldDecorator('password',{
+                  getFieldDecorator('password', {
                     rules: [{
-                      validator:this.passwordConfirm
+                      validator: this.passwordConfirm
                     }]
                   })(
                     <Input type="password"/>
@@ -394,13 +407,13 @@ class UserManager extends Component {
               modalTitle === '新增' &&
               <FormItem {...fromItemLayout} label="确认密码">
                 {
-                  getFieldDecorator('psw',{
+                  getFieldDecorator('psw', {
                     rules: [{
-                      validator:this.pswConfirm
-                    },{
+                      validator: this.pswConfirm
+                    }, {
                       required: true, message: '请填写确认密码'
                     }],
-                    initialValue:newUser.psw
+                    initialValue: newUser.psw
                   })(
                     <Input type="password"/>
                   )
@@ -411,9 +424,9 @@ class UserManager extends Component {
               modalTitle === '修改' &&
               <FormItem {...fromItemLayout} label="确认密码">
                 {
-                  getFieldDecorator('psw',{
+                  getFieldDecorator('psw', {
                     rules: [{
-                      validator:this.pswConfirm
+                      validator: this.pswConfirm
                     }]
                   })(
                     <Input type="password"/>
@@ -423,11 +436,11 @@ class UserManager extends Component {
             }
             <FormItem {...fromItemLayout} label="昵称">
               {
-                getFieldDecorator('nickName',{
+                getFieldDecorator('nickName', {
                   rules: [{
                     required: true, message: '请填写昵称'
                   }],
-                  initialValue:newUser.nickName
+                  initialValue: newUser.nickName
                 })(
                   <Input/>
                 )
@@ -435,8 +448,8 @@ class UserManager extends Component {
             </FormItem>
             <FormItem {...fromItemLayout} label="邮箱">
               {
-                getFieldDecorator('email',{
-                  initialValue:newUser.email
+                getFieldDecorator('email', {
+                  initialValue: newUser.email
                 })(
                   <Input/>
                 )
@@ -444,11 +457,11 @@ class UserManager extends Component {
             </FormItem>
             <FormItem {...fromItemLayout} label="手机号码">
               {
-                getFieldDecorator('mobile',{
-                  rules: [{pattern:'^1[34578]\\d{9}$',message: '请确认手机号码是否正确'},{
+                getFieldDecorator('mobile', {
+                  rules: [{pattern: '^1[34578]\\d{9}$', message: '请确认手机号码是否正确'}, {
                     required: true, message: '请填写手机号码'
                   }],
-                  initialValue:newUser.mobile
+                  initialValue: newUser.mobile
                 })(
                   <Input/>
                 )
@@ -466,10 +479,16 @@ class UserManager extends Component {
             }
             <FormItem {...fromItemLayout} label="角色">
               {
-                getFieldDecorator('roleIdList',{initialValue:newUser.roleIdList})(
-                  <CheckboxGroup>
+                getFieldDecorator('roleIdList', {initialValue: newUser.roleIdList})(
+                  <CheckboxGroup style={{width: '100%'}}>
                     <Row>
-                      {plainOptions.map((item,index)=><Col span={6} style={{marginTop:8}} key={index}><Checkbox value={item.roleId}>{item.roleName}</Checkbox></Col>)}
+                      {
+                        plainOptions.map((item, index) =>
+                          <Col span={6} style={{marginTop: 8}} key={index}>
+                            <Checkbox value={item.roleId}>{item.roleName}</Checkbox>
+                          </Col>
+                        )
+                      }
                     </Row>
                   </CheckboxGroup>
                 )
@@ -477,7 +496,7 @@ class UserManager extends Component {
             </FormItem>
             <FormItem {...fromItemLayout} label="状态">
               {
-                getFieldDecorator('status',{initialValue:newUser.status})(
+                getFieldDecorator('status', {initialValue: newUser.status})(
                   <RadioGroup>
                     <Radio value={0}>禁用</Radio>
                     <Radio value={1}>正常</Radio>
@@ -491,6 +510,7 @@ class UserManager extends Component {
     )
   }
 }
+
 const UserManagerForm = Form.create()(UserManager);
 export default connect(state => {
   return {

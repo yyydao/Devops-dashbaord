@@ -9,6 +9,7 @@ import './index.scss'
 const BreadcrumbItem = Breadcrumb.Item
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
+const confirm = Modal.confirm;
 
 class MenuManager extends Component {
   constructor() {
@@ -155,14 +156,21 @@ class MenuManager extends Component {
    * @desc 删除菜单
    */
   deleteMenu = (menuId) =>{
-    reqPost(`/sys/menu/delete/${menuId}`,{}).then(res => {
-      if(res.code === 0){
-        message.success("删除成功")
-        this.getMenuList()
-      }else{
-        message.error(res.msg);
+    confirm({
+      title: '',
+      content: '该配置中可能存在重要数据，是否继续删除？（请谨慎操作！）',
+      onOk: () => {
+        reqPost(`/sys/menu/delete/${menuId}`,{}).then(res => {
+          if(res.code === 0){
+            message.success("删除成功")
+            this.getMenuList()
+          }else{
+            message.error(res.msg);
+          }
+        })
       }
-    })
+    });
+
   }
   /**
    * @desc 给每个选项都添加一个父级集合
