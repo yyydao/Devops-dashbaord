@@ -3,19 +3,20 @@ import qs from 'qs'
 import { message, Modal } from 'antd'
 import utilConfig from './config'
 
+import { generateHexString } from '@/utils/utils'
 
 const confirm = Modal.confirm
 
 axios.defaults.baseURL = utilConfig.baseUrl
 axios.defaults.headers['X-Requested-With'] = 'XMLHttpRequest'
 
-
 axios.interceptors.request.use(
   config => {
     const token = localStorage.getItem('token')
+    config.headers['X-B3-TraceId'] = config.headers['X-B3-SpanId'] = generateHexString(16)
     if (token) {
       config.headers.token = token
-    }else{
+    } else {
 
     }
 
@@ -29,13 +30,12 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
   response => {
     if (response.data.code === 401) {
-      window.localStorage.setItem('oldUrl',window.location.href)
-      setTimeout(()=>{
+      window.localStorage.setItem('oldUrl', window.location.href)
+      setTimeout(() => {
         window.location.href = '#/login'
-      },0)
+      }, 0)
       return
     }
-
 
     if (response.data.code === 495) {
       confirm({
@@ -143,11 +143,10 @@ export async function checkPermission (url) {
   return data
 }
 
-
 export async function auth (data) {
-  return axios.post('/sys/login',data).then(res=>{
+  return axios.post('/sys/login', data).then(res => {
     const d = res.data
-    if(d.code !== 0){
+    if (d.code !== 0) {
       throw d
     }
     return d
