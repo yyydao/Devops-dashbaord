@@ -58,7 +58,7 @@ class Hotfixs extends Component {
       projectId: this.props.projectId
     }).then(res => {
       if (res.code === 0) {
-        this.setState({tableData:res.data})
+        this.setState({tableData:res.data||[]})
       } else {
         message.error(res.msg);
       }
