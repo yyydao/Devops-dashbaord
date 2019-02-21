@@ -297,3 +297,16 @@ export function checkPermission (permissionUrl, permissionList) {
   })
   return result.includes(true)
 }
+
+/**
+ * kabina 采集头用随机16位hex生成
+ * @param length
+ * @returns {string}
+ */
+export function generateHexString (length) {
+  let ret = ''
+  while (ret.length < length) {
+    ret += Math.random().toString(16).substring(2)
+  }
+  return ret.substring(0, length)
+}

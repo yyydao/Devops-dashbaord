@@ -8,6 +8,7 @@ import {
   checkPermission,
   transSecond,
   formatSecond,
+  generateHexString,
 } from './utils'
 
 describe('utils', () => {
@@ -405,6 +406,14 @@ describe('utils', () => {
   it('should return 2h0min0s',()=>{
     const time = 7200
     expect(formatSecond(time)).toBe(`2小时0分钟0秒`)
+  })
+
+  it('should generate 16 bit hex',()=>{
+    const mockMath = Object.create(global.Math)
+    mockMath.random = () => 0.5
+    global.Math = mockMath
+    const sixteenBitHex = generateHexString(16)
+    expect(sixteenBitHex).toBe('8888888888888888')
   })
 
 })
