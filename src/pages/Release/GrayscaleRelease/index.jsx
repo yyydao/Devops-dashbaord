@@ -168,6 +168,7 @@ class GrayscaleRelease extends Component {
     reqGet('/distribute/queryRule', {projectId: this.props.projectId}).then(res => {
       if (res.code === 0) {
         if (res.data) {
+          console.log(res.data)
           res.data.areas = res.data.areas?res.data.areas.split(','):[]
           res.data.devices = res.data.devices?res.data.devices.split(','):[]
           this.setState({rules: res.data, newRules: res.data})
@@ -197,7 +198,9 @@ class GrayscaleRelease extends Component {
   getAreaInfo = () => {
     reqGet('/distribute/queryArea', {projectId: this.props.projectId}).then(res => {
       if (res.code === 0) {
-        this.setState({areaList: res.data})
+        if(res.data){
+          this.setState({areaList: res.data})
+        }
       } else {
         message.error(res.msg)
       }
@@ -526,8 +529,14 @@ class GrayscaleRelease extends Component {
                     }]
                   })(
                     <div className="area-checkbox-container">
+                      {areaList.length>0&&
                       <Checkbox checked={checkAllArea}
                                 onChange={e => this.onCheckAllChange(e.target.checked)}>全部</Checkbox>
+                      }
+                      {
+                        areaList.length===0&&
+                        <p>未获取到区域信息</p>
+                      }
                       <CheckboxGroup value={newRules.areas} onChange={(e) => {
                         this.onAreaChange(e)
                       }}>
