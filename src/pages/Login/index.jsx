@@ -26,37 +26,6 @@ class Login extends Component {
   handleSubmit (e) {
     e.preventDefault()
     let data = this.props.form.getFieldsValue()
-    // let { setToken } = this.props
-    // reqPost('/sys/login', {
-    //   username: data.username,
-    //   password: data.password,
-    // }).then(res => {
-    //   if (res.code === 0) {
-    //     setToken(res.token)
-    //     this.props.history.push('/')
-    //   } else {
-    //     message.error(res.msg)
-    //   }
-    // })
-    // this.props.login(data.username, data.password).payload.then(res => {
-    //   console.log(res)
-    //   this.setState({
-    //     loading: false
-    //   });
-    //   if (res.code!==0) {
-    //     message.error(res.msg);
-    //   }
-    //   if (res.code=== 0 )  {
-    //     message.success('Welcome ' + res.nickName).then(
-    //
-    //     );
-    //     this.props.history.replace('/');
-    //   }
-    // }).catch(err => {
-    //   this.setState({
-    //     loading: false
-    //   });
-    // })
     this.props.login(data.username, data.password).then((response) => {
       let res = response.value
 
@@ -67,18 +36,14 @@ class Login extends Component {
         message.error(res.msg)
       }
       if (res.code === 0) {
-        message.success('Welcome ' + res.nickName)
-          .then(() => {
-            let oldUrl = window.localStorage.getItem('oldUrl')
-            if (oldUrl) {
-              window.localStorage.removeItem('oldUrl')
-              window.location.href = oldUrl
-            } else {
-              this.props.history.replace('/')
-            }
-
-          })
-
+        message.success('Welcome ' + res.nickName, 2)
+        let oldUrl = window.localStorage.getItem('oldUrl')
+        if (oldUrl) {
+          window.localStorage.removeItem('oldUrl')
+          window.location.href = oldUrl
+        } else {
+          this.props.history.replace('/')
+        }
       }
     }).catch(err => {
       console.log(err)
