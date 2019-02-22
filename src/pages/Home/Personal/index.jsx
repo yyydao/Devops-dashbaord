@@ -97,7 +97,7 @@ class Personal extends Component {
           <BreadcrumbItem>个人信息</BreadcrumbItem>
         </Breadcrumb>
         <Card title="个人信息" style={{ marginTop: 30 }}>
-          <Form style={{ width: 500 }} onSubmit={this.saveUserInfo}>
+          <Form style={{ width: 500 }}>
             <FormItem {...fromItemLayout} label="昵称">
               {
                 getFieldDecorator('name',{
@@ -148,7 +148,7 @@ class Personal extends Component {
               }
             </FormItem>
             <FormItem {...tailFormItemLayout}>
-              <Button type="primary" htmlType="submit">保存</Button>
+              <Button type="primary" onClick={()=>{this.saveUserInfo()}}>保存</Button>
             </FormItem>
           </Form>
         </Card>
