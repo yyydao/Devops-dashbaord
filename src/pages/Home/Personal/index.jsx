@@ -36,7 +36,7 @@ class Personal extends Component {
     })
   }
   saveUserInfo = () => {
-    const { userInfo } = this.state
+    let userInfo = JSON.parse(JSON.stringify(this.state.userInfo))
     this.props.form.validateFields(['name','mobile','email','password'],(err, values) => {
       if (!err) {
         userInfo.nickName=values.name
