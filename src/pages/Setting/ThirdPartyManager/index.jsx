@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Breadcrumb, Card, Form, Input, Button, message } from 'antd';
+import { Breadcrumb, Card, Form, Input, Button, message, InputNumber } from 'antd';
 
 import { reqPost, reqGet} from '@/api/api';
 
@@ -208,10 +208,11 @@ class ThirdPartyManager extends Component{
   stfSubmit = (e)=>{
     const {stf} = this.state
     e.preventDefault();
-    this.props.form.validateFields(['stf_accessUrl','stf_token'],(err, values) => {
+    this.props.form.validateFields(['stf_accessUrl','stf_token','stf_timeout'],(err, values) => {
       if (!err) {
         stf.accessUrl=values.stf_accessUrl
         stf.token=values.stf_token
+        stf.timeout=values.stf_timeout
         this.setState({stf})
         this.saveConfig(stf)
       }
@@ -225,6 +226,7 @@ class ThirdPartyManager extends Component{
     this.props.form.setFieldsValue({
       stf_accessUrl: stf.accessUrl,
       stf_token: stf.token,
+      stf_timeout:stf.timeout
     })
   }
 
@@ -540,6 +542,16 @@ class ThirdPartyManager extends Component{
                     <Input type="password"/>
                   )
                 }
+              </FormItem>
+              <FormItem {...fromItemLayout} label="timeout">
+                {
+                  getFieldDecorator('stf_timeout',{
+                    initialValue:stf.timeout
+                  })(
+                      <InputNumber min={0}/>
+                  )
+                }
+                <span style={{paddingLeft:8}}>秒</span>
               </FormItem>
               <FormItem {...tailFormItemLayout}>
                 <Button onClick={this.stfReset}>重置</Button>
