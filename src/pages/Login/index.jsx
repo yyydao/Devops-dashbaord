@@ -34,13 +34,17 @@ class Login extends Component {
       })
       if (res.code !== 0) {
         message.error(res.msg)
-      }
-      if (res.code === 0) {
+      } else if (res.code === 0) {
         message.success('Welcome ' + res.nickName, 2)
         let oldUrl = window.localStorage.getItem('oldUrl')
+
         if (oldUrl) {
           window.localStorage.removeItem('oldUrl')
-          window.location.href = oldUrl
+          if (!oldUrl.match('login')) {
+            window.location.href = oldUrl
+          } else {
+            this.props.history.replace('/')
+          }
         } else {
           this.props.history.replace('/')
         }
@@ -123,7 +127,6 @@ function mapStateToProps (state) {
       user: auth.user,
       loggingIn: auth.loggingIn,
       authErrors: '',
-      // userInfo: JSON.parse(JSON.stringify(auth.userInfo))
     }
   }
 
@@ -137,15 +140,8 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     login: bindActionCreators(login, dispatch),
-    // setUserInfo: bindActionCreators(setUserInfo, dispatch),
     forceLogout: bindActionCreators(forceLogout, dispatch)
   }
 }
-
-// export default withRouter(connect(state => {
-//   return {
-//     loginInfo: state.loginInfo
-//   }
-// }, { setToken, setLoginInfo })(Login))
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Login))
