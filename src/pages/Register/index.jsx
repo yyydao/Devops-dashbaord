@@ -86,21 +86,21 @@ class Login extends Component {
               </h3>
               <Form onSubmit={this.handleSubmit.bind(this)} className="register-form">
                 <FormItem
-                  label={'昵称'}>
+                  label={'姓名'}>
                   {getFieldDecorator('nickName', {
                     rules: [{ required: true, message: '请输入' }]
                   })(
                     <Input prefix={<Icon type="user" style={{ color: 'rgba(0, 0, 0, .25)' }}></Icon>}
-                           placeholder="昵称"/>
+                           placeholder="姓名"/>
                   )}
                 </FormItem>
                 <FormItem
-                  label={'用户名'}>
+                  label={'工号'}>
                   {getFieldDecorator('username', {
                     rules: [{ required: true, message: '请输入' }]
                   })(
                     <Input prefix={<Icon type="user" style={{ color: 'rgba(0, 0, 0, .25)' }}></Icon>}
-                           placeholder="用户名"/>
+                           placeholder="工号"/>
                   )}
                 </FormItem>
                 <FormItem

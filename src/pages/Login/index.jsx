@@ -19,18 +19,24 @@ class LoginOld extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      loading: false
+      loading: false,
+      disabled: false
     }
   }
 
   handleSubmit (e) {
     e.preventDefault()
     let data = this.props.form.getFieldsValue()
+    this.setState({
+      disabled: true,
+      loading: true
+    })
     this.props.login(data.username, data.password).then((response) => {
       let res = response.value
 
       this.setState({
-        loading: false
+        loading: false,
+        disabled: false,
       })
       if (res.code !== 0) {
         message.error(res.msg)
@@ -50,6 +56,10 @@ class LoginOld extends Component {
         }
       }
     }).catch(err => {
+      this.setState({
+        loading: false,
+        disabled: false,
+      })
       console.log(err)
       message.error(err.msg)
     })
@@ -60,7 +70,7 @@ class LoginOld extends Component {
   }
 
   render () {
-
+    const { disabled, loading } = this.state
     const { getFieldDecorator } = this.props.form
     return (
       <div className="layouts-user-layout">
@@ -88,7 +98,7 @@ class LoginOld extends Component {
                       rules: [{ required: true, message: '请输入' }]
                     })(
                       <Input prefix={<Icon type="user" style={{ color: 'rgba(0, 0, 0, .25)' }}></Icon>}
-                             placeholder="用户名"/>
+                             placeholder="工号"/>
                     )}
                   </FormItem>
                   <FormItem>
@@ -102,7 +112,8 @@ class LoginOld extends Component {
                   <FormItem>
 
                     {/*<a className="login-form-forgot" href="#/forgetpassword">忘记密码</a>*/}
-                    <Button type="primary" htmlType="submit" className="login-form-button">
+                    <Button disabled={disabled} loading={loading} type="primary" htmlType="submit"
+                            className="login-form-button">
                       登录
                     </Button>
                     <a className="login-form-toRegister" href="#/register">注册账户</a>

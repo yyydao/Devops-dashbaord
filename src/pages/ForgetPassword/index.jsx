@@ -90,7 +90,7 @@ class ForgetPassword extends Component {
                           rules: [{message: 'Please input the captcha you got!' }],
                         })(
                           <Input
-                            placeholder="用户名"
+                            placeholder="工号"
                           />
                         )}
                       </Col>

@@ -98,11 +98,11 @@ class Personal extends Component {
         </Breadcrumb>
         <Card title="个人信息" style={{ marginTop: 30 }}>
           <Form style={{ width: 500 }}>
-            <FormItem {...fromItemLayout} label="昵称">
+            <FormItem {...fromItemLayout} label="姓名">
               {
                 getFieldDecorator('name',{
                   rules: [{
-                    required: true, message: '昵称'
+                    required: true, message: '姓名'
                   }]
                 })(
                   <Input/>

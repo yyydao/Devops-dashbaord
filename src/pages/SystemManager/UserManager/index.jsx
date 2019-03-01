@@ -36,7 +36,7 @@ class UserManager extends Component {
           align: "center"
         },
         {
-          title: '昵称',
+          title: '姓名',
           dataIndex: 'nickName',
           key: 'nickName',
           width: "15%"
@@ -318,7 +318,7 @@ class UserManager extends Component {
             <Row>
               <Col span={6}>
                 <Search
-                  placeholder="昵称"
+                  placeholder="姓名"
                   enterButton="查询"
                   onSearch={value => this.handleTableChange('', value)}
                 />
@@ -360,11 +360,11 @@ class UserManager extends Component {
             this.onCloseModal()
           }}>
           <Form>
-            <FormItem {...fromItemLayout} label="用户名">
+            <FormItem {...fromItemLayout} label="工号">
               {
                 getFieldDecorator('username', {
                   rules: [{
-                    required: true, message: '请填写用户名'
+                    required: true, message: '请填写工号'
                   }],
                   initialValue: newUser.username
                 })(
@@ -434,11 +434,11 @@ class UserManager extends Component {
                 }
               </FormItem>
             }
-            <FormItem {...fromItemLayout} label="昵称">
+            <FormItem {...fromItemLayout} label="姓名">
               {
                 getFieldDecorator('nickName', {
                   rules: [{
-                    required: true, message: '请填写昵称'
+                    required: true, message: '请填写姓名'
                   }],
                   initialValue: newUser.nickName
                 })(
