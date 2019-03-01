@@ -98,7 +98,7 @@ class Login extends Component {
                       rules: [{ required: true, message: '请输入' }]
                     })(
                       <Input prefix={<Icon type="user" style={{ color: 'rgba(0, 0, 0, .25)' }}></Icon>}
-                             placeholder="用户名"/>
+                             placeholder="工号"/>
                     )}
                   </FormItem>
                   <FormItem>
