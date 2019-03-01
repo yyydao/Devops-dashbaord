@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useState, useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Form, Icon, Input, Button, message } from 'antd'
@@ -15,7 +15,7 @@ const propTypes = {
   loginErrors: PropTypes.string
 }
 
-class Login extends Component {
+class LoginOld extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -116,6 +116,83 @@ class Login extends Component {
     )
   }
 }
+
+
+function Login(props) {
+
+  const [loading, setLoading] = useState(false);
+  const [disabled, setDisabled] = useState(false);
+  const [content, setContent] = useState();
+
+  const handleDisabledChange = (value) => {
+    setDisabled(value);
+  }
+  const handleContentChange = (value) => {
+    setContent(value)
+  }
+  const autoFocusInt = useRef();
+
+  useEffect(() => {
+    this.props.forceLogout()
+  });
+
+  return (
+    <div className="layouts-user-layout">
+      <div className="layouts-user-layout-content">
+        <div className="login-wrapper">
+          <div className="content">
+            <div className="top">
+              <div className="header">
+                <a href="/">
+                  <img alt="logo"
+                       className="logo"
+                       src={require('@/assets/favicon.ico')}
+                  />
+
+                  <span className="title">DevOps</span>
+                </a>
+              </div>
+              <div className="desc"></div>
+            </div>
+
+            <div className="login-form-card">
+              <Form onSubmit={this.handleSubmit.bind(this)} className="login-form">
+                <FormItem>
+                  {getFieldDecorator('username', {
+                    rules: [{ required: true, message: '请输入' }]
+                  })(
+                    <Input prefix={<Icon type="user" style={{ color: 'rgba(0, 0, 0, .25)' }}></Icon>}
+                           placeholder="用户名"/>
+                  )}
+                </FormItem>
+                <FormItem>
+                  {getFieldDecorator('password', {
+                    rules: [{ required: true, message: '请输入' }]
+                  })(
+                    <Input prefix={<Icon type="lock" style={{ color: 'rgba(0, 0, 0, .25)' }}></Icon>} type="password"
+                           placeholder="密码"/>
+                  )}
+                </FormItem>
+                <FormItem>
+
+                  {/*<a className="login-form-forgot" href="#/forgetpassword">忘记密码</a>*/}
+                  <Button type="primary" htmlType="submit" className="login-form-button">
+                    登录
+                  </Button>
+                  <a className="login-form-toRegister" href="#/register">注册账户</a>
+                </FormItem>
+              </Form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const TextareaItemExampleWrapper = createForm()(TextareaItemExample);
+
+export default TextareaItemExampleWrapper;
 
 Login.propTypes = propTypes
 Login = Form.create()(Login)
