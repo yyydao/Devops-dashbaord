@@ -9,6 +9,8 @@ import './index.scss'
 
 const FormItem = Form.Item
 
+const { useForm } = Form;
+
 const propTypes = {
   user: PropTypes.object,
   loggingIn: PropTypes.bool,
@@ -129,8 +131,8 @@ class LoginOld extends Component {
 }
 
 
-function Login(props) {
-
+const Login =(props) =>{
+  const LoginForm = useForm()
   const [loading, setLoading] = useState(false);
   const [disabled, setDisabled] = useState(false);
   const [content, setContent] = useState();
@@ -169,7 +171,7 @@ function Login(props) {
             <div className="login-form-card">
               <Form onSubmit={this.handleSubmit.bind(this)} className="login-form">
                 <FormItem>
-                  {getFieldDecorator('username', {
+                  {LoginForm.getFieldDecorator('username', {
                     rules: [{ required: true, message: '请输入' }]
                   })(
                     <Input prefix={<Icon type="user" style={{ color: 'rgba(0, 0, 0, .25)' }}></Icon>}
@@ -177,7 +179,7 @@ function Login(props) {
                   )}
                 </FormItem>
                 <FormItem>
-                  {getFieldDecorator('password', {
+                  {LoginForm.getFieldDecorator('password', {
                     rules: [{ required: true, message: '请输入' }]
                   })(
                     <Input prefix={<Icon type="lock" style={{ color: 'rgba(0, 0, 0, .25)' }}></Icon>} type="password"
@@ -201,12 +203,8 @@ function Login(props) {
   );
 }
 
-const TextareaItemExampleWrapper = createForm()(TextareaItemExample);
-
-export default TextareaItemExampleWrapper;
-
-Login.propTypes = propTypes
-Login = Form.create()(Login)
+// Login.propTypes = propTypes
+// Login = Form.create()(Login)
 
 function mapStateToProps (state) {
   const { auth } = state
