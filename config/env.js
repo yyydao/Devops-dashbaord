@@ -5,6 +5,10 @@ const path = require('path');
 const paths = require('./paths');
 const version = require('../package').version
 
+const commitHash = require('child_process')
+  .execSync('git rev-parse --short HEAD')
+  .toString();
+
 // Make sure that including paths.js after env.js will read .env variables.
 delete require.cache[require.resolve('./paths')];
 
@@ -79,6 +83,8 @@ function getClientEnvironment(publicUrl) {
         // images into the `src` and `import` them in code to get their paths.
         PUBLIC_URL: publicUrl,
         VERSION: version,
+        COMMIT_HASH:commitHash
+
       }
     );
   // Stringify all values so we can feed into Webpack DefinePlugin

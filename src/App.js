@@ -7,10 +7,8 @@ import Route from './router'
 
 class App extends Component {
   componentWillMount () {
-    // let projectId = localStorage.getItem('projectId')
-    // const userInfo = JSON.parse(localStorage.getItem('userInfo'))
-    // this.props.setProjectId(projectId)
-    // this.props.setUserInfo(userInfo)
+    console.log(`Devops    
+Build Version：${process.env.COMMIT_HASH}`)
   }
   render () {
     return (
