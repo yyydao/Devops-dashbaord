@@ -22,6 +22,7 @@ import {
   Popconfirm, Tabs
 } from 'antd'
 import PanelContent from './panelContent'
+import CustomTree from '@/components/CustomTree'
 
 const BreadcrumbItem = Breadcrumb.Item
 const Panel = Collapse.Panel
@@ -36,6 +37,7 @@ class Performance extends Component {
       addVisible: false,
       addConfirmLoading: false,
       branchList: [],
+      sceneDataList: [],
 
       //场景选择-变化选择框
       changeParentSceneItem: [],
@@ -227,7 +229,8 @@ class Performance extends Component {
               checked: false
             }
           }),
-          sceneData: res.data
+          sceneData: res.data,
+          sceneDataList:res.data
         }, () => {
           console.log(this.state.parentsSceneList)
         })
@@ -655,7 +658,9 @@ class Performance extends Component {
       }
     })
   }
-
+  onSceneChange= (a)=>{
+    console.log(a)
+  }
   componentWillMount () {
     window.localStorage.setItem('detailBreadcrumbPath', JSON.stringify([{
       path: '/performanceConfig',
@@ -734,7 +739,9 @@ class Performance extends Component {
               </div>
             </div>
           }
-
+          <div className="performance-modal-item">
+            <CustomTree data={this.state.sceneDataList} onSceneChange={this.onSceneChange}/>
+          </div>
           <div className="performance-modal-item">
             <label className="performance-modal-item-label">执行场景：</label>
             <br/>
