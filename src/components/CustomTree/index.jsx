@@ -164,7 +164,6 @@ class CustomTree extends Component {
   }
 
   checkAllSceneChange = (checked) =>{
-    console.log(checked)
     let {data} = this.state
     let currentParentsScene=[]
     data.map(item=>{
