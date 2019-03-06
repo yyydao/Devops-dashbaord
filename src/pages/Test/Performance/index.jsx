@@ -4,8 +4,6 @@ import { connect } from 'react-redux'
 import './index.scss'
 import { reqGet, reqPost } from '@/api/api'
 
-import { differenceArray, removeItemsByValue } from './arrayUtils'
-
 import {
   Breadcrumb,
   Icon,
@@ -13,11 +11,8 @@ import {
   Collapse,
   Modal,
   Select,
-  Checkbox,
   message,
   TimePicker,
-  Row,
-  Col,
   Pagination,
   Popconfirm, Tabs
 } from 'antd'
@@ -229,275 +224,12 @@ class Performance extends Component {
               checked: false
             }
           }),
-          sceneData: res.data,
           sceneDataList:res.data
         }, () => {
           console.log(this.state.parentsSceneList)
         })
       }
     })
-  }
-
-  getSceneByCheckAll = () => {
-    let tempArray = []
-    const sceneData = this.state.sceneData
-    for (let i = 0; i < sceneData.length; i++) {
-      const mockDatum = sceneData[i].children
-      for (let j = 0; j < mockDatum.length; j++) {
-        const mockDatumElement = mockDatum[j]
-        tempArray.push(mockDatumElement['id'])
-      }
-    }
-    return tempArray
-  }
-
-  //全选场景
-  checkAllSceneChange = (e) => {
-    console.log('choose all')
-    const oldList = this.state.parentsSceneList
-    const checked = e.target.checked
-    let resetParentIndeterminateList
-    let chosen
-
-    resetParentIndeterminateList = oldList && oldList.length > 0 && oldList.map(item => {
-      item.indeterminate = false
-      return item
-    })
-    if (checked) {
-      chosen = this.getSceneByCheckAll()
-      resetParentIndeterminateList.map(item => {
-        item.checked = true
-        return item
-      })
-    } else {
-      resetParentIndeterminateList.map(item => {
-        item.checked = false
-        return item
-      })
-      chosen = []
-    }
-
-    this.setState({ currentChildrenSceneList: [] })
-
-    this.setState({
-      currentParentsScene: checked ? this.state.parentsSceneList.map(item => {
-        return item.id
-      }) : [],
-      checkAllSceneIndeterminate: false,
-      sceneCheckAll: e.target.checked,
-      parentsSceneList: resetParentIndeterminateList,
-      chooseSceneID: chosen
-    }, () => {
-      console.log(this.state.currentParentsScene)
-    })
-
-  }
-
-  //修改选父类中场景
-  changeParentsScene = (currentCheckedItem) => {
-    console.group('changeParentsScene')
-    const sceneData = this.state.sceneData
-    // console.log('choose parents')
-    // console.log(`currentCheckedItem ${currentCheckedItem}`)
-    const previousParentsScene = this.state.currentParentsScene
-    // console.log(`previousParentsScene ${previousParentsScene}`)
-    const previousParentsSceneList = this.state.parentsSceneList
-    const diff = differenceArray(currentCheckedItem, this.state.currentParentsScene)
-    // console.log(`diff ${diff}`)
-    // console.log(`previousParentsSceneList ${JSON.stringify(previousParentsSceneList)}`)
-    let previousChosen = this.state.chooseSceneID || []
-    console.log(`previousChosen ${previousChosen}`)
-
-    let childrenList = sceneData.find(x => x.id + '' === diff.toString())['children']
-    let previousIndeterminate = previousParentsSceneList.find(x => x.id + '' === diff.toString())['indeterminate']
-    // console.log(`previousIndeterminate ${previousIndeterminate}`)
-
-    if (currentCheckedItem.length > previousParentsScene.length) {
-      console.log('新增或子项目改变了父项的indeterminate')
-      previousParentsSceneList.map(item => {
-        if (item.id + '' === diff.toString()) {
-          item.checked = true
-          item.indeterminate = false
-        }
-        return item
-      })
-      const getChild = childrenList.map(item => item.id)
-      // console.log(`after map previousParentsSceneList ${JSON.stringify(previousParentsSceneList)}`)
-      let finalChosen = previousChosen.concat(getChild)
-      this.setState({
-        parentsSceneList: previousParentsSceneList,
-        currentParentsScene: currentCheckedItem,
-        currentChildScene: getChild,
-        chooseSceneID: finalChosen
-      }, () => {
-        console.log(`chooseSceneID ${this.state.chooseSceneID}`)
-      })
-    } else {
-      console.log('取消indeterminate或者更新checked')
-
-      if (previousIndeterminate) {
-        console.log(`处于子项indeterminate`)
-        console.log(`重置回全选`)
-        previousParentsSceneList.map(item => {
-          console.log(item.indeterminate)
-          if (item.id + '' === diff.toString() && item.indeterminate === true) {
-            item.indeterminate = false
-            item.checked = true
-          }
-          return item
-        })
-        const getChild = childrenList.map(item => item.id)
-        let finalChosen = previousChosen.concat(getChild)
-        console.log(finalChosen)
-        let chosenSet = new Set(finalChosen)
-        console.log('chosenSet')
-        console.dir(chosenSet)
-        this.setState({
-          parentsSceneList: previousParentsSceneList,
-          // 父场景无变化
-          currentParentsScene: previousParentsScene,
-          currentChildScene: getChild,
-          chooseSceneID: [...chosenSet]
-        }, () => {
-          console.log(`chooseSceneID ${this.state.chooseSceneID}`)
-        })
-      } else {
-        console.log('取消diff checked')
-        console.log(`无indeterminate`)
-        previousParentsSceneList.map(item => {
-          if (item.id + '' === diff.toString() && item.indeterminate !== true) {
-            item.checked = false
-          }
-          return item
-        })
-        const shouldRemoveChild = childrenList.map(item => item.id)
-        console.log(shouldRemoveChild)
-        console.log(previousChosen)
-        const afterRemoveChoose = differenceArray(previousChosen, shouldRemoveChild)
-        console.log(afterRemoveChoose)
-        this.setState({
-          parentsSceneList: previousParentsSceneList,
-          currentParentsScene: currentCheckedItem,
-          currentChildScene: [],
-          chooseSceneID: afterRemoveChoose
-        }, () => {
-          console.log(`chooseSceneID ${this.state.chooseSceneID}`)
-        })
-      }
-
-    }
-    let indeterminateList = [], hasIndeterminate, checkAllIndeterminateStatus
-    for (let i = 0; i < this.state.parentsSceneList.length; i++) {
-      const parentsSceneElement = this.state.parentsSceneList[i]
-      indeterminateList.push(parentsSceneElement.indeterminate)
-    }
-    // console.log(`indeterminateList ${indeterminateList}`)
-    hasIndeterminate = indeterminateList.includes(true)
-    if (currentCheckedItem.length === 0) {
-      checkAllIndeterminateStatus = false
-    } else {
-      checkAllIndeterminateStatus = hasIndeterminate || currentCheckedItem.length < this.state.parentsSceneList.length
-    }
-    this.setState({
-
-      checkAllSceneIndeterminate: checkAllIndeterminateStatus,
-      sceneCheckAll: !hasIndeterminate && currentCheckedItem.length === this.state.parentsSceneList.length,
-      changeParentSceneItem: diff,
-      currentChildrenSceneList: childrenList,
-
-    }, () => {
-
-      console.dir(this.state.parentsSceneList)
-      console.groupEnd()
-    })
-  }
-  //修改选中子类场景
-  childSceneChangeScene = (currentChildScene) => {
-    console.group('childSceneChangeScene')
-    console.log(`currentChildScene ${currentChildScene}`)
-    // 改变的父项 []
-    const changeParentSceneItem = this.state.changeParentSceneItem
-    //
-    const fullCurrentChildScene = this.state.currentChildrenSceneList.map(item => item.id)
-    console.log(`fullCurrentChildScene ${fullCurrentChildScene}`)
-    // 未选中子项
-    let notChooseChildScene
-    // 父项options
-    let parentSceneList = this.state.parentsSceneList
-    // 当前 Indeterminate
-    let currentIndeterminate = currentChildScene.length > 0 && (currentChildScene.length < this.state.currentChildrenSceneList.length)
-    // 旧选中子项ID
-    let previousChosen = this.state.chooseSceneID || []
-    let finalChangeChoose
-    // 缓存改变后父场景
-    let currentParentsScene = []
-    let indeterminateList = [], //父级indeterminate 查找表
-      parentsCheckList = [], // 父级 checked    查找表
-      hasIndeterminate,     // 父级是否存在 Indeterminate
-      parentsCheckListHasFalse // 父级是否存在 check 为false
-
-    //改变相应父级
-    parentSceneList.map(item => {
-      if (item.id + '' === changeParentSceneItem.toString()) {
-        item.indeterminate = currentIndeterminate
-        item.checked = currentChildScene.length === this.state.currentChildrenSceneList.length
-      }
-      return item
-    })
-
-    notChooseChildScene = differenceArray(currentChildScene, fullCurrentChildScene)
-    console.log(`未选中子项 ${notChooseChildScene}`)
-    console.log(`原有全部子项 ${previousChosen}`)
-    if (notChooseChildScene.length > 0) {
-      console.log('移除了子项')
-      if (previousChosen.length === 0) {
-        console.log('原有全部子项为空')
-        finalChangeChoose = currentChildScene
-      } else {
-        finalChangeChoose = removeItemsByValue(previousChosen, notChooseChildScene)
-      }
-
-    } else {
-      console.log('新加了子项')
-      let finalChosen = previousChosen.concat(currentChildScene)
-      console.log(finalChosen)
-      let chosenSet = new Set(finalChosen)
-      console.log('chosenSet')
-      console.dir(chosenSet)
-      finalChangeChoose = [...chosenSet]
-    }
-    console.log(`修改后全部子项 ${finalChangeChoose}`)
-    for (let i = 0; i < parentSceneList.length; i++) {
-      const parentSceneListElement = parentSceneList[i]
-      if (parentSceneListElement.checked || parentSceneListElement.indeterminate) {
-        currentParentsScene.push(parentSceneListElement['id'])
-      }
-    }
-
-    for (let i = 0; i < this.state.parentsSceneList.length; i++) {
-      const parentsSceneElement = this.state.parentsSceneList[i]
-      indeterminateList.push(parentsSceneElement.indeterminate)
-      parentsCheckList.push(parentsSceneElement.checked)
-    }
-    // console.log(`indeterminateList ${indeterminateList}`)
-    // console.log(`currentParentsScene ${currentParentsScene}`)
-    hasIndeterminate = indeterminateList.includes(true)
-    parentsCheckListHasFalse = parentsCheckList.includes(false)
-
-    this.setState({
-      checkAllSceneIndeterminate: hasIndeterminate || (currentParentsScene.length > 0 && currentParentsScene.length < this.state.parentsSceneList.length),
-      currentParentsScene: currentParentsScene,
-      parentsSceneList: parentSceneList,
-      currentChildScene: currentChildScene,
-      childSceneIndeterminate: !!currentChildScene && (currentChildScene.length < this.state.currentChildrenSceneList.length),
-      sceneCheckAll: !parentsCheckListHasFalse,
-      chooseSceneID: finalChangeChoose
-    }, () => {
-      console.log(`final chose ${this.state.chooseSceneID}`)
-      console.dir(this.state.parentsSceneList)
-      console.groupEnd()
-    })
-
   }
 
   //修改新建定时时间
@@ -659,7 +391,7 @@ class Performance extends Component {
     })
   }
   onSceneChange= (a)=>{
-    console.log(a)
+    this.setState({chooseSceneID:a})
   }
   componentWillMount () {
     window.localStorage.setItem('detailBreadcrumbPath', JSON.stringify([{
@@ -687,11 +419,6 @@ class Performance extends Component {
       addVisible,
       addConfirmLoading,
       typeValue,
-      checkAllSceneIndeterminate,
-      sceneCheckAll,
-      parentsSceneList,
-      currentParentsScene,
-      currentChildScene,
       taskListVisible,
       taskList,
       taskListTotalCount,
@@ -741,53 +468,6 @@ class Performance extends Component {
           }
           <div className="performance-modal-item">
             <CustomTree data={this.state.sceneDataList} onSceneChange={this.onSceneChange}/>
-          </div>
-          <div className="performance-modal-item">
-            <label className="performance-modal-item-label">执行场景：</label>
-            <br/>
-            <Checkbox
-              indeterminate={checkAllSceneIndeterminate}
-              onChange={this.checkAllSceneChange}
-              checked={sceneCheckAll}
-            >
-              全部
-            </Checkbox>
-            <Checkbox.Group
-              // options={parentsSceneList}
-              style={{ width: '100%' }}
-              value={currentParentsScene} onChange={this.changeParentsScene}>
-
-              <Row>
-                {
-                  parentsSceneList.map((item, index) => {
-                    return <Col key={index} span={8}> <Checkbox
-                      indeterminate={item.indeterminate}
-                      key={index}
-                      value={item.id}
-                    >
-                      {item.name}</Checkbox></Col>
-                  })
-                }
-              </Row>
-            </Checkbox.Group>
-            <Checkbox.Group
-              style={{ width: '100%', background: '#eee' }}
-              value={currentChildScene}
-              onChange={this.childSceneChangeScene}
-            >
-              <Row>
-                {
-                  this.state.currentChildrenSceneList.map((item, index) => {
-                    return <Col style={{ padding: '20px' }}
-                                key={index}
-                                span={8}><Checkbox
-                      value={item.id}
-                    >
-                      {item.name}</Checkbox></Col>
-                  })
-                }
-              </Row>
-            </Checkbox.Group>
           </div>
         </Modal>
 
