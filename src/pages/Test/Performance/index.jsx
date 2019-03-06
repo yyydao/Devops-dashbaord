@@ -29,12 +29,17 @@ class Performance extends Component {
         </Breadcrumb>
         <Row gutter={16}>
           <Col span={8}>
-            <Card title="分支测试" bordered={false}>
-              所有远程分支，任你选择，随时检测选定分支性能数据</Card>
+            <Link to={'/performanceConfig/branch'}>
+              <Card title="分支测试" bordered={false}>
+                所有远程分支，任你选择，随时检测选定分支性能数据</Card>
+            </Link>
+
           </Col>
           <Col span={8}>
+            <Link to={'/performanceConfig/timer'}>
             <Card title="定时测试" bordered={false}>
               定时自动执行配置任务，一次配置，循环使用，简单、及时的搜集分支性能数据</Card>
+            </Link>
           </Col>
 
         </Row>

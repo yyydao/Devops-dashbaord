@@ -17,6 +17,7 @@ import pipelineTaskEdit from '@/pages/Pipeline/editTask'
 import Performance from '@/pages/Test/Performance/index'
 import PerformanceBranch from '@/pages/Test/Performance/Branch'
 import PerformanceTimer from '@/pages/Test/Performance/Timer'
+import PerformanceAdd from '@/pages/Test/Performance/Add'
 
 import Package from '@/pages/Package'
 import Dashboard from '@/pages/Dashboard'
@@ -92,14 +93,21 @@ export default [
     path: '/performanceConfig',
     name: 'performance',
     component: Performance
-  },{
-    path: '/performance/branch',
+  },
+  {
+    path: '/performanceConfig/branch',
     name: 'PerformanceBranch',
     component: PerformanceBranch
-  },{
-    path: '/performance/timer',
+  },
+  {
+    path: '/performanceConfig/timer',
     name: 'PerformanceTimer',
     component: PerformanceTimer
+  },
+  {
+    path: '/performanceConfig/add',
+    name: 'PerformanceAdd',
+    component: PerformanceAdd
   },
   {
     path: '/package',

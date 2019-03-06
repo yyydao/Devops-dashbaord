@@ -6,29 +6,31 @@ import { reqGet, reqPost } from '@/api/api'
 
 import {
   Breadcrumb,
-  Icon,
+  Steps,
   Button,
-  Collapse,
-  Modal,
   Select,
   message,
   TimePicker,
   Pagination,
-  Popconfirm, Tabs
+  Popconfirm,
+  Modal,
+  Form,  Radio,
 } from 'antd'
-import PanelContent from './panelContent'
+
+
 import CustomTree from '@/components/CustomTree'
 
 const BreadcrumbItem = Breadcrumb.Item
-const Panel = Collapse.Panel
 const Option = Select.Option
-const TabPane = Tabs.TabPane
+const Step = Steps.Step;
 
-class Performance extends Component {
+class PerformanceAdd extends Component {
   constructor (props) {
     super(props)
 
     this.state = {
+      current: 0,
+
       addVisible: false,
       addConfirmLoading: false,
       branchList: [],
@@ -147,16 +149,6 @@ class Performance extends Component {
     })
   }
 
-
-  //显示新建窗口
-  goToAdd = () => {
-    this.props.history.push({
-      pathname: '/performanceConfig/add',
-      state: {
-        type: 'branch'
-      }
-    })
-  }
 
   //获取分支列表
   getBranchList = (value = '') => {
@@ -382,11 +374,23 @@ class Performance extends Component {
     this.setState({ chooseSceneID: a })
   }
 
+  next() {
+    const current = this.state.current + 1;
+    this.setState({ current });
+  }
+
+  prev() {
+    const current = this.state.current - 1;
+    this.setState({ current });
+  }
+
   componentWillMount () {
     window.localStorage.setItem('detailBreadcrumbPath', JSON.stringify([{
       path: '/performanceConfig',
       name: '性能测试管理'
     }]))
+    this.getBranchList()
+    this.getSceneList()
   }
 
   componentDidMount () {
@@ -404,6 +408,7 @@ class Performance extends Component {
 
   render () {
     const {
+      current,
       branchList,
       addVisible,
       addConfirmLoading,
@@ -413,6 +418,94 @@ class Performance extends Component {
       taskListTotalCount,
       typeList, buildingList, successList, failureList, formDataBranch
     } = this.state
+
+
+
+    const formItemLayout = {
+      labelCol: { span: 6 },
+      wrapperCol: { span: 14 },
+    };
+
+    const FirstStep = <React.Fragment>
+        <Form.Item
+          label="编译环境"
+          {...formItemLayout}
+        >
+          <Radio.Group>
+            <Radio value="a">测试环境</Radio>
+            <Radio value="b">灰度环境</Radio>
+            <Radio value="c">正式环境</Radio>
+          </Radio.Group>
+        </Form.Item>
+        <Form.Item
+          label="构建账号"
+          {...formItemLayout}
+        >
+          <span className="ant-form-text">China</span>
+        </Form.Item>
+        <Form.Item
+          label="测试机型"
+          {...formItemLayout}
+        >
+          <Select placeholder="测试机型"
+                  style={{ width: 300 }}
+                  showSearch
+                  value={formDataBranch}>
+            {
+              branchList.map((item) => {
+                return <Option value={item.name} key={item.id}
+                               title={item.name}>{item.name}</Option>
+              })
+            }
+          </Select>
+        </Form.Item>
+        <Form.Item
+          label="开发分支"
+          {...formItemLayout}
+        >
+          <Select placeholder="开发分支"
+                  style={{ width: 300 }}
+                  showSearch
+                  value={formDataBranch}
+                  onSearch={this.getBranchList}
+                  onChange={this.changeBranch}>
+            {
+              branchList.map((item) => {
+                return <Option value={item.name} key={item.id}
+                               title={item.name}>{item.name}</Option>
+              })
+            }
+          </Select>
+        </Form.Item>
+    </React.Fragment>
+
+    const SecondStep = <React.Fragment>
+        <Form.Item
+          label="源码分支"
+          {...formItemLayout}
+        >
+          <span className="ant-form-text">China</span>
+        </Form.Item>
+        <Form.Item
+          label="测试场景"
+          {...formItemLayout}
+        >
+          <CustomTree data={this.state.sceneDataList} onSceneChange={this.onSceneChange}/>
+        </Form.Item>
+    </React.Fragment>
+
+    const BranchSteps = [{
+      title: 'First',
+      content: FirstStep,
+    }, {
+      title: 'Second',
+      content: SecondStep,
+    }, {
+      title: 'Last',
+      content: 'Last-content',
+    }];
+
+
 
     return (
       <div className="performance">
@@ -429,19 +522,7 @@ class Performance extends Component {
           <div className="performance-modal-item">
             <label className="performance-modal-item-label">开发分支：</label>
             <div className="performance-modal-item-content">
-              <Select placeholder="开发分支"
-                      style={{ width: 300 }}
-                      showSearch
-                      value={formDataBranch}
-                      onSearch={this.getBranchList}
-                      onChange={this.changeBranch}>
-                {
-                  branchList.map((item) => {
-                    return <Option value={item.name} key={item.id}
-                                   title={item.name}>{item.name}</Option>
-                  })
-                }
-              </Select>
+
             </div>
           </div>
 
@@ -456,7 +537,7 @@ class Performance extends Component {
             </div>
           }
           <div className="performance-modal-item">
-            <CustomTree data={this.state.sceneDataList} onSceneChange={this.onSceneChange}/>
+
           </div>
         </Modal>
 
@@ -496,69 +577,36 @@ class Performance extends Component {
         <Breadcrumb className="devops-breadcrumb">
           <BreadcrumbItem><Link to="/home">首页</Link></BreadcrumbItem>
           <BreadcrumbItem><Link to="/performanceConfig">性能测试管理</Link></BreadcrumbItem>
+          {/*@todo：根据状态显示面包屑*/}
           <BreadcrumbItem>分支测试</BreadcrumbItem>
+          <BreadcrumbItem>新增测试</BreadcrumbItem>
         </Breadcrumb>
 
         <div className="devops-main-wrapper">
-          <Tabs className="package-tab" onChange={this.changeType} tabBarExtraContent=
-            {<div>
-              {typeValue < 3 &&
-                <Button type="primary" onClick={this.goToAdd}>新增测试</Button>}
-            </div>}>
-            {
-              typeList.map((item, index) => {
-                return <TabPane tab={item.name} key={index}></TabPane>
-              })
-            }
 
-          </Tabs>
           <div className="performance-main">
-            <Collapse defaultActiveKey={['0', '1', '2']}>
-
-              {/*正在构建*/}
-              <Panel header={buildingList.title} key="0" className="performance-container">
-
-                <PanelContent list={buildingList.list} handlerTaskCancel={this.cancelTask}
-                              handlerToDetail={this.toDetail} showDetail={typeValue === 3}/>
-                <div className={`performance-container-load ${buildingList.loading ? 'act' : ''}`} onClick={
-                  () => {
-                    this.getList('buildingList', 1)
-                  }
-                }>{buildingList.loading ? <Icon type="loading" theme="outlined"/> : <Icon type="reload"
-                                                                                          theme="outlined"/>} 加载更多
-                </div>
-              </Panel>
-            </Collapse>
-            <Collapse defaultActiveKey={['0', '1', '2']}>
-              {/*构建成功*/}
-              <Panel header={successList.title} key="1" className="performance-container">
-
-                <PanelContent list={successList.list} handlerToDetail={this.toDetail}
-                              showDetail={typeValue === 3}/>
-                <div className={`performance-container-load ${successList.loading ? 'act' : ''}`} onClick={
-                  () => {
-                    this.getList('successList', 1)
-                  }
-                }>{successList.loading ? <Icon type="loading" theme="outlined"/> : <Icon type="reload"
-                                                                                         theme="outlined"/>} 加载更多
-                </div>
-              </Panel>
-            </Collapse>
-            <Collapse defaultActiveKey={['0', '1', '2']}>
-              {/*构建失败*/}
-              <Panel header={failureList.title} key="2" className="performance-container">
-
-                <PanelContent list={failureList.list} handlerToDetail={this.toDetail}
-                              showDetail={typeValue === 3}/>
-                <div className={`performance-container-load ${failureList.loading ? 'act' : ''}`} onClick={
-                  () => {
-                    this.getList('failureList', 1)
-                  }
-                }>{failureList.loading ? <Icon type="loading" theme="outlined"/> : <Icon type="reload"
-                                                                                         theme="outlined"/>} 加载更多
-                </div>
-              </Panel>
-            </Collapse>
+            <Steps current={current}>
+              {BranchSteps.map(item => <Step key={item.title} title={item.title} />)}
+            </Steps>
+            <div className="steps-content">{BranchSteps[current].content}</div>
+            <div className="steps-action">
+              {
+                current < BranchSteps.length - 1
+                && <Button type="primary" onClick={() => this.next()}>Next</Button>
+              }
+              {
+                current === BranchSteps.length - 1
+                && <Button type="primary" onClick={() => message.success('Processing complete!')}>Done</Button>
+              }
+              {
+                current > 0
+                && (
+                  <Button style={{ marginLeft: 8 }} onClick={() => this.prev()}>
+                    Previous
+                  </Button>
+                )
+              }
+            </div>
           </div>
         </div>
 
@@ -568,10 +616,10 @@ class Performance extends Component {
   }
 }
 
-Performance = connect((state) => {
+PerformanceAdd = connect((state) => {
   return {
     projectId: state.project.projectId
   }
-})(Performance)
+})(PerformanceAdd)
 
-export default Performance
+export default PerformanceAdd

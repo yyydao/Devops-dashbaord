@@ -506,7 +506,8 @@ class Performance extends Component {
 
         <Breadcrumb className="devops-breadcrumb">
           <BreadcrumbItem><Link to="/home">首页</Link></BreadcrumbItem>
-          <BreadcrumbItem>性能测试管理</BreadcrumbItem>
+          <BreadcrumbItem><Link to="/performanceConfig">性能测试管理</Link></BreadcrumbItem>
+          <BreadcrumbItem>定时测试</BreadcrumbItem>
         </Breadcrumb>
 
         <div className="devops-main-wrapper">
