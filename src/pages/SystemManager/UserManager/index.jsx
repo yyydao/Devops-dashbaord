@@ -39,13 +39,19 @@ class UserManager extends Component {
           title: '姓名',
           dataIndex: 'nickName',
           key: 'nickName',
-          width: "15%"
+          width: "10%"
+        },
+        {
+          title: '工号',
+          dataIndex: 'username',
+          key: 'username',
+          width: "10%"
         },
         {
           title: '邮箱',
           dataIndex: 'email',
           key: 'email',
-          width: "22%",
+          width: "20%",
         },
         {
           title: '手机号',
@@ -73,7 +79,7 @@ class UserManager extends Component {
           title: '创建时间',
           dataIndex: 'createTime',
           key: 'createTime',
-          width: "20%",
+          width: "17%",
         },
         {
           title: '操作',
