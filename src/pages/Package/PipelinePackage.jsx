@@ -260,14 +260,13 @@ class PipelinePackage extends Component {
                       <Col span={4}>
                         <div className="list-item-control">
                           <Col>
-                            {!item.active &&
                             <Button size="small"
                                     type="primary"
                                     style={{ marginRight: '24px' }}
-                                    onClick={(e) => {this.onDownloadClick(e, item.filePath)}}>下载</Button>}
+                                    onClick={(e) => {this.onDownloadClick(e, item.filePath)}}>下载</Button>
                           </Col>
                           <Col>
-                            {!item.active && <Icon type="right"/>}
+                            <Icon type="right"/>
                           </Col>
                         </div>
                       </Col>
