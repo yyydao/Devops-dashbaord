@@ -304,7 +304,7 @@ class packageDetail extends Component {
     if (status === 0) {
       cardTitle = fileName
       downloadButton =
-        <Button key={1} ghost type="primary" icon="download"><a href={appUrl} target="_blank">下载</a></Button>
+        <Button key={1} type="primary" icon="download"><a href={appUrl} target="_blank" style={{color:"#fff"}}>下载</a></Button>
       actionArray.push(downloadButton)
     }
     if (status === 1 || status === 2) {

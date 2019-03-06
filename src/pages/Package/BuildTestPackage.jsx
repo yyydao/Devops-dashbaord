@@ -793,10 +793,10 @@ class BuildTestPackage extends Component {
                         <Col span={4}>
                           <div className="list-item-control">
                             <Col>
-                              {!item.active && button}
+                              {button}
                             </Col>
                             <Col>
-                              {!item.active && <Icon type="right"/>}
+                              <Icon type="right"/>
                             </Col>
                           </div>
                         </Col>
