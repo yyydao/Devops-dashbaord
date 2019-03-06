@@ -19,7 +19,8 @@ import PerformanceBranch from '@/pages/Test/Performance/Branch'
 import PerformanceTimer from '@/pages/Test/Performance/Timer'
 import PerformanceAdd from '@/pages/Test/Performance/Add'
 
-import Package from '@/pages/Package'
+import Package from '@/pages/Package/PackageManager'
+import PackageMonitor from '@/pages/Package/PackageMonitor'
 import Dashboard from '@/pages/Dashboard'
 import ThirdParty from '@/pages/Setting/ThirdPartyManager'
 import NoticeManager from '@/pages/Setting/NoticeManager'
@@ -217,5 +218,9 @@ export default [
     path: '/system/filterManager',
     name:'filterManager',
     component:FilterManager
+  },{
+    path: '/packageMonitor',
+    name:'packageMonitor',
+    component:PackageMonitor
   }
 ]

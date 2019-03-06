@@ -47,6 +47,7 @@ class Package extends Component {
         <Breadcrumb className="devops-breadcrumb">
           <BreadcrumbItem><Link to="/home">首页</Link></BreadcrumbItem>
           <BreadcrumbItem>安装包</BreadcrumbItem>
+          <BreadcrumbItem>包管理</BreadcrumbItem>
         </Breadcrumb>
 
         <div className="devops-main-wrapper">
