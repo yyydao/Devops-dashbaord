@@ -10,16 +10,15 @@ import { Link } from 'react-router-dom'
 
 const BreadcrumbItem = Breadcrumb.Item
 
-class Performance extends Component {
+class PerformanceIndex extends Component {
   constructor (props) {
     super(props)
-
+    this.state = {
+      projectId: props.projectId,
+    }
   }
 
-
-
   render () {
-
     return (
       <div className="performance">
 
@@ -41,19 +40,16 @@ class Performance extends Component {
               定时自动执行配置任务，一次配置，循环使用，简单、及时的搜集分支性能数据</Card>
             </Link>
           </Col>
-
         </Row>
-
-
       </div>
     )
   }
 }
 
-Performance = connect((state) => {
+PerformanceIndex = connect((state) => {
   return {
     projectId: state.project.projectId
   }
-})(Performance)
+})(PerformanceIndex)
 
-export default Performance
+export default PerformanceIndex

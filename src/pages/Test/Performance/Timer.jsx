@@ -29,27 +29,8 @@ class Performance extends Component {
     super(props)
 
     this.state = {
-      addVisible: false,
-      addConfirmLoading: false,
       branchList: [],
-      sceneDataList: [],
 
-      //场景选择-变化选择框
-      changeParentSceneItem: [],
-      //场景选择-全体一级Option
-      parentsSceneList: [],
-      //场景选择-当前二级Option
-      currentChildrenSceneList: [],
-      // 场景选择-全选Indeterminate状态
-      checkAllSceneIndeterminate: false,
-      // 全选
-      sceneCheckAll: false,
-      // 场景选择-当前一级id数组
-      currentParentsScene: [],
-      //  场景选择-当前二级id数组
-      currentChildScene: [],
-      // 所有选中子ID
-      chooseSceneID: [],
 
       formDataBranch: null,
       formDataTime: '',
@@ -62,16 +43,8 @@ class Performance extends Component {
       typeValue: 1,
       typeList: [
         {
-          name: '分支测试',
-          value: 1
-        },
-        {
           name: '定时测试',
           value: 2
-        },
-        {
-          name: '提测包测试',
-          value: 3
         }
       ],
 
@@ -104,69 +77,14 @@ class Performance extends Component {
     }
   }
 
-  //新建构建任务
-  addItem = () => {
-    const { typeValue, formDataBranch, chooseSceneID, formDataTime } = this.state
-    console.log(chooseSceneID)
-    if (!formDataBranch) {
-      message.error('请选择“开发分支”')
-      return
-    } else if (chooseSceneID.length < 1) {
-      message.error('请选择“执行场景”')
-      return
-    } else if (this.state.typeValue === 2 && !formDataTime) {
-      message.error('请选择“定时时间”')
-      return
-    }
 
-    this.setState({
-      addConfirmLoading: true
-    })
-
-    reqPost('/task/addSubmit', {
-      projectId: Number(this.props.projectId),
-      buildType: typeValue,
-      branchName: formDataBranch,
-      sceneId: chooseSceneID.join(','),
-      fixTime: formDataTime
-    }).then(res => {
-      this.hideModal()
-
-      if (res.code === 0) {
-        this.getList('buildingList')
-      } else {
-        Modal.info({
-          title: '提示',
-          content: (
-            <p>{res.msg}</p>
-          ),
-          onOk () {}
-        })
+  //新建测试
+  goToAdd = () => {
+    this.props.history.push({
+      pathname: '/performanceConfig/add',
+      state: {
+        type: 'branch'
       }
-
-    })
-  }
-
-  //显示新建窗口
-  showModal = () => {
-    this.getBranchList()
-    this.getSceneList()
-
-    this.setState({
-      addVisible: true
-    })
-  }
-
-  //隐藏新建窗口
-  hideModal = () => {
-    this.setState({
-      addVisible: false,
-      addConfirmLoading: false,
-      checkAllSceneIndeterminate: false,
-      sceneCheckAll: false,
-      formDataBranch: null,
-      currentParentsScene: [],
-      formDataTime: ''
     })
   }
 
@@ -211,26 +129,6 @@ class Performance extends Component {
     })
   }
 
-  //获取场景列表
-  getSceneList = () => {
-    reqGet('/testScene/list/' + this.props.projectId).then(res => {
-      if (res.code*1 === 0) {
-        this.setState({
-          parentsSceneList: res.data.map(item => {
-            return {
-              name: item.name,
-              id: item.id,
-              indeterminate: false,
-              checked: false
-            }
-          }),
-          sceneDataList:res.data
-        }, () => {
-          console.log(this.state.parentsSceneList)
-        })
-      }
-    })
-  }
 
   //修改新建定时时间
   changeTime = (moment) => {
@@ -390,9 +288,10 @@ class Performance extends Component {
       }
     })
   }
-  onSceneChange= (a)=>{
-    this.setState({chooseSceneID:a})
+  onSceneChange = (a) => {
+    this.setState({ chooseSceneID: a })
   }
+
   componentWillMount () {
     window.localStorage.setItem('detailBreadcrumbPath', JSON.stringify([{
       path: '/performanceConfig',
@@ -409,9 +308,6 @@ class Performance extends Component {
     })
   }
 
-  componentWillUnmount () {
-    clearTimeout(this.state.timer)
-  }
 
   render () {
     const {
@@ -511,9 +407,9 @@ class Performance extends Component {
         </Breadcrumb>
 
         <div className="devops-main-wrapper">
-          <Tabs className="package-tab" onChange={this.changeType} tabBarExtraContent={<div>{typeValue < 3 &&
-          <Button type="primary" onClick={this.showModal}>新增测试</Button>}
-            {typeValue === 2 && <Button type="primary" onClick={this.showTaskList}>定时任务列表</Button>}</div>}>
+          <Tabs className="package-tab" onChange={this.changeType} tabBarExtraContent={<div>
+          <Button type="primary" onClick={this.showModal}>新增测试</Button>
+          <Button type="primary" onClick={this.showTaskList}>定时任务列表</Button></div>}>
             {
               typeList.map((item, index) => {
                 return <TabPane tab={item.name} key={index}></TabPane>
