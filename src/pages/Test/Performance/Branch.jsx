@@ -124,33 +124,6 @@ class PerformanceBranchTest extends Component {
   }
 
   /**
-   * @desc 获取某个任务的数据
-   */
-  getRequirement = () => {
-    if (!this.state.searchTapdId) {
-      message.info('请填入Tapd关联的父需求id')
-      return
-    }
-    this.setState({ searchLoading: true }, () => {
-      reqGet('/demand/tapd/stories', {
-        demandIDs: this.state.searchTapdId,
-        projectID: this.props.projectId
-      }).then(res => {
-        if (res.code === 0) {
-          if (res.data === null) {
-            message.info(`未查询到"${this.state.searchTapdId}"对应的需求，请确认输入的TAPD_ID是否正确`)
-            this.setState({ searchRequirement: {}, searchLoading: false })
-          } else {
-            this.setState({ searchRequirement: res.data[0], searchLoading: false })
-          }
-        } else {
-          message.error(res.msg)
-        }
-      })
-    })
-  }
-
-  /**
    * @desc  新建测试
    */
   goToAdd = () => {

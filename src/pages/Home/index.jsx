@@ -194,8 +194,6 @@ class Home extends Component {
               }
               {showSysSetting && <Link to={'/system/systemManager'}><span className="jurisdiction-icon"><Icon
                 style={{ fontSize: '14px', paddingRight: 4 }} component={() => <DataSvg/>}/>系统管理</span></Link>}
-              {/*<span className="user-icon" >用户管理</span>*/}
-              {/*<Link to="/personal" className="person-icon" >个人信息</Link>*/}
             </p>
           </div>
           <Table columns={this.state.columns} rowKey={record => record.id} dataSource={this.state.data}
