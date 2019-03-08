@@ -12,8 +12,7 @@ import CpuChart from './chart/CpuChart'
 import { reqGet } from '@/api/api'
 import './index.scss'
 import DataSet from '@antv/data-set'
-// import { setProjectId } from '@/store/action'
-import { setProjectId } from '@/store/actions/project'
+import { setProjectId,setPlatform } from '@/store/actions/project'
 import moment from 'moment'
 import { bindActionCreators } from 'redux'
 
@@ -26,6 +25,7 @@ class Dashboard extends Component {
     super(props)
     this.state = {
       projectId: props.projectId,
+      platform:props.platform,
       currentTaskId: '',
       taskList: [],
       basicInformation: {},
@@ -59,11 +59,18 @@ class Dashboard extends Component {
 
   componentWillMount () {
     let id = this.props.match.params.id
+    let platform = this.props.location.state && this.props.location.state.platform
     if (id) {
       this.props.setProjectId(id)
     } else {
       id = window.localStorage.getItem('projectId')
       this.props.setProjectId(id)
+    }
+    if (platform) {
+      this.props.setPlatform(platform)
+    } else {
+      id = window.localStorage.getItem('platform')
+      this.props.setPlatform(platform)
     }
     this.setState({
       startTime: moment().subtract(13, 'days'),
@@ -506,26 +513,22 @@ function mapStateToProps (state) {
   const { project } = state
   if (project.projectId) {
     return {
-      projectId: project.projectId
+      projectId: project.projectId,
+      platform: project.platform
     }
   }
 
   return {
-    // permissionList: null,
     projectId: null,
+    platform:null
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
     setProjectId: bindActionCreators(setProjectId, dispatch),
+    setPlatform: bindActionCreators(setPlatform, dispatch),
   }
 }
 
-// const DashboardForm = Form.create()(Dashboard);
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Dashboard))
-// export default connect(state => {
-//   return {
-//     // projectId: state.projectId
-//   }
-// }, { setProjectId })(Dashboard)

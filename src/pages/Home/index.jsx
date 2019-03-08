@@ -16,7 +16,7 @@ class Home extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      showSysSetting:false,
+      showSysSetting: false,
       proModalVisible: false,
       formData: {
         projectName: '',
@@ -29,7 +29,10 @@ class Home extends Component {
           title: '项目名称',
           dataIndex: 'name',
           key: 'name',
-          render: (text, record) => <Link to={`/dashboard/${record.id}`}>{text}</Link>
+          render: (text, record) => <Link to={{
+            pathname: `/dashboard/${record.id}`,
+            state: { platform: `${record.platform}` }
+          }}>{text}</Link>
         },
         {
           title: '创建者',
@@ -75,9 +78,9 @@ class Home extends Component {
     this.getSysSetting()
   }
 
-  async getSysSetting (){
+  async getSysSetting () {
     const res = await reqGet('/sys/user/getUserInfo')
-    if(res.code === 0){
+    if (res.code === 0) {
       this.setState({
         showSysSetting: res.user.showSysSetting
       })

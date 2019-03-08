@@ -10,7 +10,7 @@ import SideBar from '@/components/SideBar'
 import Routers from '@/router/routerMap'
 import { reqPost } from '@/api/api'
 import { fetchProfile, logout, setToken,setUserInfo } from '@/store/actions/auth'
-import { setProjectId } from '@/store/actions/project'
+import { setProjectId,setPlatform } from '@/store/actions/project'
 
 class Layout extends Component {
   constructor (props) {
@@ -128,6 +128,7 @@ const mapStateToProps = (state) => {
       userInfo:JSON.parse(JSON.stringify(auth.userInfo)),
       token: auth.token,
       projectId: project.projectId,
+      platform:project.platform
     }
   }
 
@@ -135,6 +136,7 @@ const mapStateToProps = (state) => {
     userInfo:JSON.parse(JSON.stringify(auth.userInfo)),
     auth: null,
     projectId: null,
+    platform:null
   }
 }
 
@@ -144,14 +146,9 @@ const mapDispatchToProps = (dispatch) =>{
     logout: bindActionCreators(logout, dispatch),
     setToken: bindActionCreators(setToken, dispatch),
     setProjectId: bindActionCreators(setProjectId, dispatch),
+    setPlatform: bindActionCreators(setPlatform, dispatch),
     setUserInfo:bindActionCreators(setUserInfo,dispatch),
   }
 }
 
-//
-// export default connect(state => {
-//   return {
-//     projectId: state.projectId
-//   }
-// }, { setToken, setUserInfo, setProjectId })(Layout)
 export default connect(mapStateToProps, mapDispatchToProps)(Layout)
