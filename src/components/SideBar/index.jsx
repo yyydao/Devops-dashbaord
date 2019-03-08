@@ -38,6 +38,7 @@ class SideBar extends Component {
     super(props)
     this.state = {
       projectId: props.projectId,
+      platform: props.platform,
       menuList: [],
       projectList: [],
       currentMenu: '',
@@ -54,11 +55,11 @@ class SideBar extends Component {
   componentWillReceiveProps (nextProps) {
     this.setState({
       projectId: nextProps.projectId,
+      platform: nextProps.platform,
     })
   }
 
   componentWillUnmount () {
-    // this.props.setProjectId(null)
     this.setState({
       defaultCurrentMenu: [],
       currentMenu: '',
@@ -66,10 +67,11 @@ class SideBar extends Component {
     })
   }
 
-  selectChange = (value) => {
+  selectChange = (value,option) => {
     sessionStorage.clear()
-    // this.props.setProjectId(value)
-    this.props.projectIdChange(value)
+    const platformNumber = option.props && option.props['data-platform']
+    this.props.projectIdChange(value,platformNumber)
+    this.props.platFormChange(platformNumber)
     const currentMenu = sessionStorage.getItem('currentMenu')
     const menuOpenKeys = JSON.parse(sessionStorage.getItem('menuOpenKeys'))
     this.setState({ currentMenu })
@@ -87,8 +89,6 @@ class SideBar extends Component {
   }
 
   getPermissionList () {
-    // let { setPermissionList } = this.props
-
     reqPost('/permission/list').then(res => {
       if (parseInt(res.code, 0) === 0) {
 
@@ -158,7 +158,8 @@ class SideBar extends Component {
           list.push({
             icon: icon,
             id: item.id,
-            name: item.name
+            name: item.name,
+            platform:item.platform
           })
         }
         this.setState({ projectList: list })
@@ -183,7 +184,7 @@ class SideBar extends Component {
               <Select value={projectId} className="dropdown-select" onChange={this.selectChange}>
                 {
                   projectList.map((item) => {
-                    return <Option key={item.id} className="sideBar-option"><span
+                    return <Option data-platform={item.platform} key={item.id}  className="sideBar-option"><span
                       className="icon">{item.icon}</span><span className="project">{item.name}</span></Option>
                   })
                 }
@@ -207,12 +208,7 @@ class SideBar extends Component {
 
 export default connect(state => {
   return {
-    projectId: state.project.projectId
+    projectId: state.project.projectId,
+    platform: state.project.platform
   }
 }, {})(SideBar)
-//
-// export default connect(state => {
-//   return {
-//     projectId: state.projectId
-//   }
-// }, { setPermissionList, setProjectId })(SideBar)

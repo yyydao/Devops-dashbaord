@@ -28,8 +28,8 @@ class Layout extends Component {
   componentWillMount () {
     const token = window.localStorage.getItem('token')
     const projectId = window.localStorage.getItem('projectId')
+    const platformString = window.localStorage.getItem('platform')
     const parsedHash = qs.parse(this.props.location.search.slice(1))
-
     if(token !== null){
       this.props.setToken(token)
     }else{
@@ -37,6 +37,9 @@ class Layout extends Component {
     }
     if(projectId !== 'undefined' || projectId !== null){
       this.props.setProjectId(projectId)
+    }
+    if(platformString !== 'undefined' && platformString !==null){
+      this.props.setPlatform(platformString)
     }
 
     if (parsedHash.project) {
@@ -52,11 +55,26 @@ class Layout extends Component {
       this.setState({userInfo:nextProps.userInfo})
   }
 
-  projectIdChange = (value) => {
+  /**
+   * sidebar改变项目时
+   * @param value
+   */
+  projectIdChange = (value,platformNumber) => {
     this.setState({ isRender: false }, () => {
       this.setState({ isRender: true })
-      this.props.history.replace(`/dashboard/${value}`)
+      this.props.history.replace({
+        pathname:`/dashboard/${value}`,
+        state: { platform: `${platformNumber}`}
+      })
     })
+  }
+
+  /**
+   * sidebar改变项目时并更新平台信息记录
+   * @param value
+   */
+  platFormChange = (value) => {
+    this.props.setPlatform(value)
   }
 
   getExcludeSideBarPath = () => {
@@ -107,7 +125,9 @@ class Layout extends Component {
       <div className="layout">
         <Header userInfo={this.state.userInfo} showSideBar={sideBarShow}/>
 
-        {sideBarShow && <SideBar projectIdChange={this.projectIdChange} pathName={this.props.location.pathname}/>}
+        {sideBarShow && <SideBar projectIdChange={this.projectIdChange}
+                                 platFormChange={this.platFormChange}
+                                 pathName={this.props.location.pathname}/>}
 
         {
           this.state.isRender && <div className={sideBarShow ? 'main-container' : 'index-container'}>

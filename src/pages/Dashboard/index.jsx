@@ -69,7 +69,7 @@ class Dashboard extends Component {
     if (platform) {
       this.props.setPlatform(platform)
     } else {
-      id = window.localStorage.getItem('platform')
+      platform = window.localStorage.getItem('platform')
       this.props.setPlatform(platform)
     }
     this.setState({
@@ -274,7 +274,6 @@ class Dashboard extends Component {
    * @param e 是否选择
    */
   onDateTypeChange = (e) => {
-    console.log(e)
     this.setState({ isCheckCustomDate: e })
   }
   /**
