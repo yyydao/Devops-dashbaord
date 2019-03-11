@@ -254,7 +254,7 @@ class PerformanceAdd extends Component {
       console.log(selectedModalItems)
       console.log(!selectedModalItems.includes(o.code))
       if (selectedModalItems.includes('-1')) {
-        return selectedModalItems.includes(o.code)
+        return false
       } else {
         return !selectedModalItems.includes(o.code)
       }
