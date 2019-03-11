@@ -21,11 +21,10 @@ const BreadcrumbItem = Breadcrumb.Item
 const Option = Select.Option
 const Step = Steps.Step
 
-
 class PerformanceAdd extends Component {
   constructor (props) {
     super(props)
-       console.log(props)
+    console.log(props)
     this.state = {
       //测试类型
       testType: props.location.type,
@@ -48,7 +47,7 @@ class PerformanceAdd extends Component {
       // 场景列表
       sceneDataList: [],
       chooseSceneID: [],
-      buildType: props.type === 'branch'? '1':'2'
+      buildType: props.type === 'branch' ? '1' : '2'
     }
   }
 
@@ -85,9 +84,9 @@ class PerformanceAdd extends Component {
       phoneKeys: selectedModalItems.join(','),
     }).then(res => {
       if (res.code === 0) {
-        Modal.success({content:`构建成功`})
+        Modal.success({ content: `构建成功` })
         buildType === '1' ?
-          this.props.history.replace('/performanceConfig/branch'):
+          this.props.history.replace('/performanceConfig/branch') :
           this.props.history.replace('/performanceConfig/timer')
 
       } else {
@@ -239,6 +238,8 @@ class PerformanceAdd extends Component {
   render () {
     const {
       current,
+      platform,
+
       envList,
       selectedEnvID,
       branchList,
@@ -278,6 +279,7 @@ class PerformanceAdd extends Component {
 
         </Radio.Group>
       </Form.Item>
+      {platform === 2 &&
       <Form.Item
         label="构建账号"
         {...formItemLayout}
@@ -289,6 +291,7 @@ class PerformanceAdd extends Component {
                prefix={<Icon type="lock" style={{ color: 'rgba(0, 0, 0, .25)' }}></Icon>} type="password"
                placeholder="构建账号密码"/>
       </Form.Item>
+      }
       <Form.Item
         label="测试机型"
         {...formItemLayout}
