@@ -117,9 +117,10 @@ class PerformanceAdd extends Component {
    * @param e
    */
   changeEnv = (e) => {
-    console.log('radio checked', e.target.value)
     this.setState({
       selectedEnvID: e.target.value,
+    },()=>{
+      this.getSceneList()
     })
   }
 
@@ -152,7 +153,10 @@ class PerformanceAdd extends Component {
    * @desc 获取场景列表
    */
   getSceneList = () => {
-    reqGet('/testScene/list/' + this.props.projectId).then(res => {
+    reqGet('/testScene/performance/records' ,{
+      projectID:this.props.projectId,
+      envID: this.state.selectedEnvID
+    }).then(res => {
       if (res.code * 1 === 0) {
         this.setState({
           parentsSceneList: res.data.map(item => {
@@ -201,6 +205,10 @@ class PerformanceAdd extends Component {
    * @desc 机型变化
    */
   changeModal = (selectedModalItems) => {
+    console.log(selectedModalItems)
+    if(selectedModalItems.includes('-1')){
+      selectedModalItems = ["-1"]
+    }
     this.setState({ selectedModalItems })
   }
 
@@ -226,7 +234,6 @@ class PerformanceAdd extends Component {
     this.getEnvList()
     this.getModalList()
     this.getBranchList()
-    this.getSceneList()
   }
 
   componentDidMount () {
@@ -271,7 +278,8 @@ class PerformanceAdd extends Component {
         label="编译环境"
         {...formItemLayout}
       >
-        <Radio.Group value={selectedEnvID} onChange={this.changeEnv}>
+        <Radio.Group value={selectedEnvID}
+          onChange={this.changeEnv}>
           {envList.map((item) => {
             return <Radio value={item.code}>{item.text}</Radio>
           })
@@ -279,7 +287,7 @@ class PerformanceAdd extends Component {
 
         </Radio.Group>
       </Form.Item>
-      {platform === 2 &&
+      {platform === '2' &&
       <Form.Item
         label="构建账号"
         {...formItemLayout}
@@ -288,7 +296,8 @@ class PerformanceAdd extends Component {
                prefix={<Icon type="user" style={{ color: 'rgba(0, 0, 0, .25)' }}></Icon>}
                placeholder="构建账号"/>
         <Input style={{ width: 300 }}
-               prefix={<Icon type="lock" style={{ color: 'rgba(0, 0, 0, .25)' }}></Icon>} type="password"
+               prefix={<Icon type="lock" style={{ color: 'rgba(0, 0, 0, .25)' }}></Icon>}
+               type="password"
                placeholder="构建账号密码"/>
       </Form.Item>
       }
@@ -296,14 +305,15 @@ class PerformanceAdd extends Component {
         label="测试机型"
         {...formItemLayout}
       >
-        <Select placeholder="测试机型"
+        <Select placeholder="选择测试机型"
                 mode="multiple"
+                allowClear={true}
+                autoClearSearchValue={true}
                 style={{ width: 300 }}
-                showSearc
                 onChange={this.changeModal}
         >
           {filteredOptions.map(item => (
-            <Select.Option value={item.code} key={item.code}>
+            <Select.Option value={item.code} key={item.text}>
               {item.text}
             </Select.Option>
           ))}

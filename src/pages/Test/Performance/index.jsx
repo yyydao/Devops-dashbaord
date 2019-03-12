@@ -3,8 +3,7 @@ import { connect } from 'react-redux'
 import './index.scss'
 
 import {
-  Breadcrumb,
-  Card, Col, Row
+  Breadcrumb, Card, Col, Row,
 } from 'antd'
 import { Link } from 'react-router-dom'
 
@@ -26,21 +25,25 @@ class PerformanceIndex extends Component {
           <BreadcrumbItem><Link to="/home">首页</Link></BreadcrumbItem>
           <BreadcrumbItem>性能测试管理</BreadcrumbItem>
         </Breadcrumb>
-        <Row gutter={16}>
-          <Col span={8}>
+        <main className='performance-index-main'>
+        <Row gutter={24} type='flex'>
+          <Col>
             <Link to={'/performanceConfig/branch'}>
-              <Card title="分支测试" bordered={false}>
+              <Card  style={{ width: 364 }}
+                title={<span><img className={'title-icon'} src={require('@/assets/img/test_icon.png')} alt=""/>分支测试</span>} bordered={false}>
                 所有远程分支，任你选择，随时检测选定分支性能数据</Card>
             </Link>
 
           </Col>
-          <Col span={8}>
+          <Col>
             <Link to={'/performanceConfig/timer'}>
-            <Card title="定时测试" bordered={false}>
-              定时自动执行配置任务，一次配置，循环使用，简单、及时的搜集分支性能数据</Card>
+              <Card   style={{ width: 364 }}
+                title={<span><img className={'title-icon'} src={require('@/assets/img/time_test_icon.png')} alt=""/>定时测试</span>} bordered={false}>
+                定时自动执行配置任务，一次配置，循环使用，简单、及时的搜集分支性能数据</Card>
             </Link>
           </Col>
         </Row>
+        </main>
       </div>
     )
   }
