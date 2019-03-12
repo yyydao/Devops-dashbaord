@@ -312,7 +312,7 @@ class PackageMonitor extends Component {
                 <Popover content={<p style={{width: 180, marginBottom: 0}}>【资源】：此处资源，仅表示图片，包括png、jpg</p>}
                          trigger="hover">
                   <Button type="primary" ghost={true} shape="circle" icon="question"
-                          style={{fontSize: 14, marginRight: 24}}/>
+                          style={{fontSize: 12, marginRight: 24,width:20,height:20}}/>
                 </Popover>
                 <Button type="primary"><Link to="/packageSelfCheck">包体自检</Link></Button>
               </div>

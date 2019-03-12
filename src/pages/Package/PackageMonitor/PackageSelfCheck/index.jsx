@@ -127,6 +127,7 @@ class PackageSelfCheck extends Component {
    * @desc 拖拽文件的改变事件
    */
   onDraggerChange = (info) => {
+    this.setState({uploading:true})
     const status = info.file.status;
     let fileList = info.fileList;
     console.log(info)
@@ -143,7 +144,7 @@ class PackageSelfCheck extends Component {
     } else if (!status) {
       fileList = []
     }
-    this.setState({fileList})
+    this.setState({fileList,uploading:false})
   }
 
   /**

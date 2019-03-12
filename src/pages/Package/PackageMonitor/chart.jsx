@@ -17,8 +17,8 @@ class packageChart extends React.Component {
         // formatter: () => {}, // 格式化文本内容
       },
       size:{
-        alias:'占用(MB)',
-        min:0
+        min:0,
+        formatter: value => value+'MB', // 格式化文本内容
       }
     };
     const titles={
@@ -36,8 +36,6 @@ class packageChart extends React.Component {
           <Axis name="version" title={titles} label={label}/>
           <Axis
             name="size"
-            title
-            label={{autoRotate: false}}
           />
           <Tooltip
             crosshairs={{
