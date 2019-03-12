@@ -6,114 +6,129 @@ import { reqGet, reqPost } from '@/api/api'
 
 import {
   Breadcrumb,
-  Icon,
   Button,
-  Collapse,
   Modal,
   Select,
-  message,
-  TimePicker,
-  Pagination,
-  Popconfirm, Tabs
+  Row,
+  Col,
+  Table,
+  message
 } from 'antd'
-import PanelContent from './panelContent'
-import CustomTree from '@/components/CustomTree'
 
 const BreadcrumbItem = Breadcrumb.Item
-const Panel = Collapse.Panel
 const Option = Select.Option
-const TabPane = Tabs.TabPane
 
-class Performance extends Component {
+class PerformanceTimerTest extends Component {
   constructor (props) {
     super(props)
 
     this.state = {
-      branchList: [],
+      projectId: props.projectId,
 
-
-      formDataBranch: null,
-      formDataTime: '',
-
-      taskListVisible: false,
-      taskListTotalCount: 1,
-      taskListPage: 1,
-      taskList: [],
-
-      typeValue: 1,
-      typeList: [
+      columns: [
         {
-          name: '定时测试',
-          value: 2
+          title: 'ID',
+          width: '8%',
+          key: 'demandID'
+        },
+        {
+          title: '分支',
+          dataIndex: 'branch',
+          key: 'branch',
+          width: '30%'
+        },
+        {
+          title: '版本',
+          dataIndex: 'version',
+          key: 'version',
+          width: '8%'
+        },
+        {
+          title: '环境',
+          dataIndex: 'env',
+          key: 'env',
+          width: '10%',
+        },
+        {
+          title: '场景',
+          dataIndex: 'scene',
+          key: 'scene',
+          width: '8%'
+        },
+        {
+          title: '创建人',
+          dataIndex: 'creator',
+          key: 'creator',
+          width: '6%'
+        },
+        {
+          title: '时间',
+          dataIndex: 'time',
+          key: 'time',
+          width: '10%'
+        },
+        {
+          title: '状态',
+          dataIndex: 'status',
+          key: 'status',
+          width: '10%'
+        }, {
+          title: '机型',
+          dataIndex: 'type',
+          key: 'type',
+          width: '10%'
+        },
+        {
+          title: '操作',
+          width: '10%',
+          key: 'edit'
+        },
+        {
+          title: '操作',
+          width: '10%',
+          render: (text, record) => {
+            if (record.id) {
+              return <div><a onClick={() => this.showConfirm(record.demandID)}>删除</a><span
+                style={{ color: '#eee' }}> | </span><Link
+                to={{ pathname: '/package', query: { tapdID: record.id } }}>提测</Link></div>
+            }
+          }
         }
       ],
+      listData: [],
 
-      timer: null,
-      timerStart: null,
-      buildingOldSize: 0,
-      buildingList: {
-        title: '正在构建',
-        url: '/task/building/list',
-        loading: false,
-        page: 1,
-        list: []
-      },
-
-      successList: {
-        title: '构建成功',
-        url: '/task/success/list',
-        loading: false,
-        page: 1,
-        list: []
-      },
-
-      failureList: {
-        title: '构建失败',
-        url: '/task/failure/list',
-        loading: false,
-        page: 1,
-        list: []
-      }
+      // 分支列表
+      branchList: [],
+      branchID: 0,
+      //环境列表
+      envList: [],
+      envID: 0,
+      //版本列表
+      versionList: [],
+      versionID: 0,
+      //状态集合
+      statusList: [],
+      status: '全部',
+      // 机型列表
+      modalList: ['全部'],
+      modal: '全部'
     }
   }
 
-
-  //新建测试
+  /**
+   * @desc  新建测试，跳转到新增页面
+   */
   goToAdd = () => {
     this.props.history.push({
       pathname: '/performanceConfig/add',
       state: {
-        type: 'branch'
+        type: 'timer'
       }
     })
   }
 
-  //获取分支列表
-  getBranchList = (value = '') => {
-    reqPost('/branch/selectBranch', {
-      projectId: this.props.projectId,
-      branchName: value,
-      pageSize: 100,
-      pageNum: 1,
-      type: 2,
-      search: value ? 1 : ''
-    }).then(res => {
-      if (res.code === 0) {
-        this.setState({
-          branchList: res.data
-        })
-      }
-    })
-  }
 
-  //修改选中分支
-  changeBranch = (formDataBranch) => {
-    this.setState({
-      formDataBranch
-    })
-  }
-
-  //显示定时任务列表
+  // 显示定时任务列表
   showTaskList = () => {
     this.setState({
       taskListVisible: true
@@ -128,7 +143,6 @@ class Performance extends Component {
       taskListVisible: false
     })
   }
-
 
   //修改新建定时时间
   changeTime = (moment) => {
@@ -166,96 +180,149 @@ class Performance extends Component {
     })
   }
 
-  //修改类型
-  changeType = (e) => {
-    let typeValue = e * 1 + 1
-    clearTimeout(this.state.timer)
+  /**
+   * @desc 获取环境列表
+   */
+  getEnvList = () => {
+    const { projectId } = this.state
+    reqGet('/performance/env/listall', { projectID: projectId }).then(res => {
+      if (res.code === 0) {
+        let id = ''
+        //钉钉进入该页面时，会带来一个envID，否则默认为全部
+        if (this.state.envID) {
+          id = this.state.envID
+        } else {
+          res.data.map(item => {
+            if (item.code === -1) {id = item.code}
+            return item
+          })
+        }
+        this.setState({
+          envList: res.data,
+          envID: id
+        }, () => {this.getVersionList()})
+      } else {
+        message.error(res.msg)
+      }
+    })
+  }
 
+  /**
+   * @desc 获取分支列表
+   */
+  getBranchList = (value = '') => {
+    reqGet('/performance/task/branchs', {
+      projectID: this.props.projectId,
+      buildType: 1
+    }).then(res => {
+      if (res.code === 0) {
+        this.setState({
+          branchList: res.data
+        })
+      }
+    })
+  }
+
+  /**
+   * @desc 修改选中分支
+   */
+  changeBranch = (branchID) => {
     this.setState({
-      typeValue: typeValue,
-      buildingList: {
-        ...this.state.buildingList,
-        list: []
-      },
-      successList: {
-        ...this.state.successList,
-        list: []
-      },
-      failureList: {
-        ...this.state.failureList,
-        list: []
-      },
-      timer: null
-    }, () => {
-      this.getList('buildingList')
-      this.getList('successList')
-      this.getList('failureList')
+      branchID
+    })
+  }
+
+  /**
+   * @desc 获取版本列表
+   */
+  getVersionList = () => {
+    const { projectId, envID, selectDisabled } = this.state
+    reqGet('/performance/package/versionlist', {
+      projectID: projectId,
+      envID: envID
+    }).then(res => {
+      if (res.code === 0) {
+        let buildVersion = ''
+        if (this.state.buildId) {
+          buildVersion = this.state.versionID
+        } else {
+          if (res.data.length > 0 && !selectDisabled) {
+            buildVersion = res.data[0].buildVersion
+          }
+        }
+        this.setState({
+          versionList: res.data,
+          versionID: buildVersion
+        })
+      } else {
+        message.error(res.msg)
+      }
+    })
+  }
+
+  /**
+   * @desc 获取状态列表
+   */
+  getStatusList = () => {
+    reqGet('performance/task/statuslist', {
+      projectID: this.props.projectId,
+    }).then(res => {
+      if (res.code === 0) {
+        this.setState({
+          statusList: res.data
+        })
+      }
+    })
+  }
+
+  /**
+   * @desc 切换状态
+   * @param status
+   */
+  changeStatus =(status)=>{
+    this.setState({
+      status
+    })
+  }
+
+  /**
+   * @desc 获取机型列表
+   */
+  getModalList = () => {
+    reqGet('/performance/task/phones', {
+      projectID: this.props.projectId,
+      buildType: 1
+    }).then(res => {
+      if (res.code === 0) {
+        this.setState({
+          modalList: res.data
+        })
+      }
+    })
+  }
+
+  /**
+   * @desc 切换机型
+   * @param modal
+   */
+  changeModal = (modal)=>{
+    this.setState({
+      modal
+    })
+  }
+
+  /**
+   * @desc 获取提测列表
+   */
+  getPackageList = () => {
+    const { projectId, envID, status, versionID, curPage } = this.state
+    console.log({
+      projectId, envID, status, versionID, curPage
     })
   }
 
   //获取主列表数据
-  getList = (type, loadMore = 0) => {
-    if (this.state[type].loading) {
-      return
-    }
-
-    if (this.state.timer) {
-      clearTimeout(this.state.timer)
-      this.setState({
-        timer: null
-      })
-    }
-
-    const tabType = this.state.typeValue
-    const newState = {}
-    newState[type] = {
-      ...this.state[type],
-      loading: true
-    }
-    this.setState(newState)
-
-    reqPost(this.state[type].url, {
-      projectId: Number(this.props.projectId),
-      type: this.state.typeValue,
-      page: loadMore === 0 ? 1 : this.state[type].page + 1,
-      count: type === 'buildingList' ? 20 : 3
-    }).then(res => {
-      if (res.code === 0) {
-        const newState = {},
-          dataSize = res.data.length,
-          nextPage = dataSize > 0 ? this.state[type].page + 1 : this.state[type].page
-
-        newState[type] = {
-          ...this.state[type],
-          list: loadMore === 0 ? res.data : this.state[type].list.concat(res.data),
-          page: loadMore === 0 ? 1 : nextPage
-        }
-
-        if (type === 'buildingList') {
-          if (this.state.buildingOldSize !== dataSize) {
-            newState.buildingOldSize = dataSize
-
-            if (this.state.buildingOldSize > dataSize) {
-              this.getList('successList')
-              this.getList('failureList')
-            }
-          }
-
-          if (dataSize > 0 && tabType === this.state.typeValue && new Date().getTime() - this.state.timerStart < 3600000) {
-            newState.timer = setTimeout(this.getList.bind(this, 'buildingList'), 10e3)
-          }
-        }
-
-        this.setState(newState)
-      }
-    }).finally(() => {
-      const newState = {}
-      newState[type] = {
-        ...this.state[type],
-        loading: false
-      }
-      this.setState(newState)
-    })
+  getList = () => {
   }
 
   //取消正在构建任务
@@ -278,128 +345,109 @@ class Performance extends Component {
     })
   }
 
-  //转到包详情页
-  toDetail = (buildId) => {
-    reqPost('/task/getBuildId', {
-      buildId
-    }).then((res) => {
-      if (res.code === 0) {
-        this.props.history.push(`/package/detail/${res.data.id}`)
-      }
-    })
-  }
-  onSceneChange = (a) => {
-    this.setState({ chooseSceneID: a })
-  }
-
   componentWillMount () {
-    window.localStorage.setItem('detailBreadcrumbPath', JSON.stringify([{
-      path: '/performanceConfig',
-      name: '性能测试管理'
-    }]))
+    this.getEnvList()
+    this.getBranchList()
   }
 
   componentDidMount () {
-    this.getList('successList')
-    this.getList('failureList')
-    this.getList('buildingList')
-    this.setState({
-      timerStart: new Date().getTime()
-    })
   }
-
 
   render () {
     const {
+      listData,
+      columns,
+      pagination,
+      loading,
+
+      envID,
+      envList,
+      versionList,
+      versionID,
       branchList,
-      addVisible,
-      addConfirmLoading,
-      typeValue,
-      taskListVisible,
-      taskList,
-      taskListTotalCount,
-      typeList, buildingList, successList, failureList, formDataBranch
+      branchID,
+      statusList,
+      status,
+      modalList,
+      modal
     } = this.state
+
+    const expandedRowRender = (record) => {
+      console.log(record)
+      const columns = [
+        {
+          title: 'ID',
+          width: '8%',
+          key: 'demandID'
+        },
+        {
+          title: '分支',
+          dataIndex: 'branch',
+          key: 'branch',
+          width: '30%'
+        },
+        {
+          title: '版本',
+          dataIndex: 'version',
+          key: 'version',
+          width: '8%'
+        },
+        {
+          title: '环境',
+          dataIndex: 'env',
+          key: 'env',
+          width: '10%',
+        },
+        {
+          title: '场景',
+          dataIndex: 'scene',
+          key: 'scene',
+          width: '8%'
+        },
+        {
+          title: '创建人',
+          dataIndex: 'creator',
+          key: 'creator',
+          width: '6%'
+        },
+        {
+          title: '时间',
+          dataIndex: 'time',
+          key: 'time',
+          width: '10%'
+        },
+        {
+          title: '状态',
+          dataIndex: 'status',
+          key: 'status',
+          width: '10%'
+        }, {
+          title: '机型',
+          dataIndex: 'type',
+          key: 'type',
+          width: '10%'
+        },
+        {
+          title: '操作',
+          width: '10%',
+          key: 'edit'
+        }
+      ]
+      return (
+        <Table
+          columns={columns}
+          dataSource={record.list}
+          pagination={false}
+          showHeader={false}
+          indentSize={0}
+          rowClassName="rowClass"
+          rowKey={record => record.id}
+        />
+      )
+    }
 
     return (
       <div className="performance">
-        <Modal title="新增提测性能测试"
-               visible={addVisible}
-               centered
-               onOk={this.addItem}
-               confirmLoading={addConfirmLoading}
-               onCancel={this.hideModal}
-               maskClosable={false}
-               destroyOnClose={true}
-               width={720}
-        >
-          <div className="performance-modal-item">
-            <label className="performance-modal-item-label">开发分支：</label>
-            <div className="performance-modal-item-content">
-              <Select placeholder="开发分支"
-                      style={{ width: 300 }}
-                      showSearch
-                      value={formDataBranch}
-                      onSearch={this.getBranchList}
-                      onChange={this.changeBranch}>
-                {
-                  branchList.map((item) => {
-                    return <Option value={item.name} key={item.id}
-                                   title={item.name}>{item.name}</Option>
-                  })
-                }
-              </Select>
-            </div>
-          </div>
-
-          {
-            typeValue === 2 && <div className="performance-modal-item">
-              <label className="performance-modal-item-label">定时时间：</label>
-              <div className="performance-modal-item-content">
-                {
-                  addVisible && <TimePicker onChange={this.changeTime}/>
-                }
-              </div>
-            </div>
-          }
-          <div className="performance-modal-item">
-            <CustomTree data={this.state.sceneDataList} onSceneChange={this.onSceneChange}/>
-          </div>
-        </Modal>
-
-        <Modal
-          title="定时任务列表"
-          visible={taskListVisible}
-          onCancel={this.hideTaskList}
-          wrapClassName="performance-task-list"
-          width={740}
-        >
-          <div className="performance-task-list-container">
-            {
-              taskList.map((item, index) => {
-                return <div className="performance-task-list-item" key={item.id}>
-                  <img src={require('@/assets/favicon.ico')} alt={'icon'}/>
-                  <p className="performance-task-list-item-content">
-                    <span>分支:{item.branchName}</span>
-                    <span>场景:{item.scene}</span>
-                    <span>定时时间:{item.fixTime}</span>
-                  </p>
-                  <Popconfirm placement="top" title="确定删除该项吗？" onConfirm={() => {
-                    this.deleteTask(item.id)
-                  }} okText="Yes" cancelText="No">
-                    <Button type="danger">删除</Button>
-                  </Popconfirm>
-                </div>
-              })
-            }
-          </div>
-          <div className="performance-task-list-pagination">
-            <Pagination pageSize={10} defaultCurrent={1} total={taskListTotalCount}
-                        onChange={this.getTimerList}/>
-          </div>
-        </Modal>
-
-
         <Breadcrumb className="devops-breadcrumb">
           <BreadcrumbItem><Link to="/home">首页</Link></BreadcrumbItem>
           <BreadcrumbItem><Link to="/performanceConfig">性能测试管理</Link></BreadcrumbItem>
@@ -407,76 +455,88 @@ class Performance extends Component {
         </Breadcrumb>
 
         <div className="devops-main-wrapper">
-          <Tabs className="package-tab" onChange={this.changeType} tabBarExtraContent={<div>
-          <Button type="primary" onClick={this.showModal}>新增测试</Button>
-          <Button type="primary" onClick={this.showTaskList}>定时任务列表</Button></div>}>
-            {
-              typeList.map((item, index) => {
-                return <TabPane tab={item.name} key={index}></TabPane>
-              })
-            }
+          <Row>
+            <Col>
+              <span style={{ paddingRight: 0 }}>环境：</span>
+              <Select value={envID}
+                      style={{ width: 150, marginRight: 32 }}
+                      onChange={(e) => {this.filterChange(e, 'envID')}}>
+                {envList.length > 0 && envList.map((item, index) => {
+                  return <Option value={item.code} key={index}>{item.text}</Option>
+                })}
+              </Select>
+              <span style={{ paddingRight: 0 }}>版本：</span>
+              <Select value={versionID}
+                      style={{ width: 150 }}
+                      onChange={(e) => {this.filterChange(e, 'version')}}>
+                {versionList.length > 0 && versionList.map((item, index) => {
+                  return <Option value={item.code} key={index}>{item.text}</Option>
+                })}
+              </Select>
+              <span style={{ paddingRight: 0, paddingLeft: 32 }}>开发分支：</span>
+              <Select placeholder="开发分支"
+                      style={{ width: 120 }}
+                      showSearch
+                      value={branchID}
+                      onSearch={this.getBranchList}
+                      onChange={this.changeBranch}>
+                {
+                  branchList.map((item) => {
+                    return <Option value={item.code} key={item.code}
+                    >{item.text}</Option>
+                  })
+                }
+              </Select>
+              <span style={{ paddingRight: 0, paddingLeft: 32 }}>状态：</span>
+              <Select placeholder="状态"
+                      style={{ width: 120 }}
+                      showSearch
+                      value={status}
+                      onSearch={this.getStatusList}
+                      onChange={this.changeStatus}>
+                {
+                  statusList.map((item) => {
+                    return <Option value={item.code} key={item.code}>{item.text}</Option>
+                  })
+                }
+              </Select>
+              <span style={{ paddingRight: 0, paddingLeft: 32 }}>机型：</span>
+              <Select placeholder="机型"
+                      style={{ width: 120 }}
+                      showSearch
+                      value={modal}
+                      onSearch={this.getModalList}
+                      onChange={this.changeModal}>
+                {
+                  modalList.map((item) => {
+                    return <Option value={item.code} key={item.code}>{item.text}</Option>
+                  })
+                }
+              </Select>
+              <Button type="primary" onClick={this.goToAdd}>新增测试</Button>
+            </Col>
+          </Row>
 
-          </Tabs>
-          <div className="performance-main">
-            <Collapse defaultActiveKey={['0', '1', '2']}>
-
-              {/*正在构建*/}
-              <Panel header={buildingList.title} key="0" className="performance-container">
-
-                <PanelContent list={buildingList.list} handlerTaskCancel={this.cancelTask}
-                              handlerToDetail={this.toDetail} showDetail={typeValue === 3}/>
-                <div className={`performance-container-load ${buildingList.loading ? 'act' : ''}`} onClick={
-                  () => {
-                    this.getList('buildingList', 1)
-                  }
-                }>{buildingList.loading ? <Icon type="loading" theme="outlined"/> : <Icon type="reload"
-                                                                                          theme="outlined"/>} 加载更多
-                </div>
-              </Panel>
-            </Collapse>
-            <Collapse defaultActiveKey={['0', '1', '2']}>
-              {/*构建成功*/}
-              <Panel header={successList.title} key="1" className="performance-container">
-
-                <PanelContent list={successList.list} handlerToDetail={this.toDetail}
-                              showDetail={typeValue === 3}/>
-                <div className={`performance-container-load ${successList.loading ? 'act' : ''}`} onClick={
-                  () => {
-                    this.getList('successList', 1)
-                  }
-                }>{successList.loading ? <Icon type="loading" theme="outlined"/> : <Icon type="reload"
-                                                                                         theme="outlined"/>} 加载更多
-                </div>
-              </Panel>
-            </Collapse>
-            <Collapse defaultActiveKey={['0', '1', '2']}>
-              {/*构建失败*/}
-              <Panel header={failureList.title} key="2" className="performance-container">
-
-                <PanelContent list={failureList.list} handlerToDetail={this.toDetail}
-                              showDetail={typeValue === 3}/>
-                <div className={`performance-container-load ${failureList.loading ? 'act' : ''}`} onClick={
-                  () => {
-                    this.getList('failureList', 1)
-                  }
-                }>{failureList.loading ? <Icon type="loading" theme="outlined"/> : <Icon type="reload"
-                                                                                         theme="outlined"/>} 加载更多
-                </div>
-              </Panel>
-            </Collapse>
-          </div>
+          <Table
+            columns={columns}
+            rowKey={record => record.id}
+            expandedRowRender={expandedRowRender}
+            dataSource={listData}
+            indentSize={0}
+            pagination={pagination}
+            loading={loading}
+            onChange={this.handleTableChange}/>
         </div>
-
-
       </div>
     )
   }
 }
 
-Performance = connect((state) => {
+PerformanceTimerTest = connect((state) => {
   return {
+    token: state.token,
     projectId: state.project.projectId
   }
-})(Performance)
+})(PerformanceTimerTest)
 
-export default Performance
+export default PerformanceTimerTest
