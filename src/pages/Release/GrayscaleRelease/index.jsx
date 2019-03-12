@@ -17,7 +17,8 @@ import {
   Form,
   Divider,
   Select,
-  InputNumber
+  InputNumber,
+  Spin
 } from 'antd'
 import './index.scss'
 
@@ -34,61 +35,112 @@ class GrayscaleRelease extends Component {
       projectId: '',
       platform: '',
       projectName: '',
-      columns: [
+      performanceColumns: [
         {
-          title: '版本',
-          dataIndex: 'appVersion',
-          key: 'appVersion',
+          title: '域名',
+          dataIndex: 'domain',
+          key: 'domain',
         },
         {
-          title: 'Build',
-          dataIndex: 'id',
-          key: 'id'
+          title: '请求量',
+          dataIndex: 'requestNum',
+          key: 'requestNum'
         },
         {
-          title: '大小',
-          dataIndex: 'fileSize',
-          key: 'fileSize'
+          title: '平均响应时间(ms)',
+          dataIndex: 'avgAllTime',
+          key: 'avgAllTime'
         },
         {
-          title: '下载次数',
-          dataIndex: 'downloadCount',
-          key: 'downloadCount'
+          title: 'DNS响应时间(ms)',
+          dataIndex: 'avgDnsTime',
+          key: 'avgDnsTime'
         },
         {
-          title: '更新时间',
-          dataIndex: 'updateTime',
-          key: 'updateTime'
+          title: '服务器响应时间(ms)',
+          dataIndex: 'avgResponseTime',
+          key: 'avgResponseTime'
         },
         {
-          title: '操作',
-          render: (text, record) => <div><Link
-            to={{pathname: '/addGrayscale', query: {packageID: record.packageID, versionID: record.id}}}>编辑</Link><span
-            style={{color: "#eee"}}> | </span><a href={`${record.filePath}`}>下载</a></div>
+          title: '吞吐率(次/分钟)',
+          dataIndex: 'throughput',
+          key: 'throughput'
+        },
+        {
+          title: '错误率',
+          dataIndex: 'errorRate',
+          key: 'errorRate'
         }
       ],
-      listData: [],
-      pagination: {
-        pageSize: 7,
-        total: 0,
-        showTotal: null
-      },
-      loading: false,
-      params: {
-        limit: 7,
-        page: 1,
-        bundleID: 'com.tuandai.client'
-      },
-      downloadPath: '',
-
-      //灰度发布-android
+      collapseCloumns: [
+        {
+          title: '系统版本',
+          dataIndex: 'xitong',
+          key: 'xitong',
+        },
+        {
+          title: '用户崩溃率',
+          dataIndex: 'bengkui',
+          key: 'bengkui'
+        },
+        {
+          title: '影响用户',
+          dataIndex: 'yingxiang',
+          key: 'yingxiang'
+        },
+        {
+          title: '联网用户',
+          dataIndex: 'lianwang',
+          key: 'lianwang'
+        }
+      ],
+      performanceData: [],
+      collapseData: [
+        {
+          id: 1,
+          xitong: 'Android 5.1.1,level 22',
+          bengkui: '0.65%',
+          yingxiang: '22',
+          lianwang: '3358'
+        },
+        {
+          id: 2,
+          xitong: 'Android 5.1.1,level 22',
+          bengkui: '0.65%',
+          yingxiang: '22',
+          lianwang: '3358'
+        },
+        {
+          id: 3,
+          xitong: 'Android 5.1.1,level 22',
+          bengkui: '0.65%',
+          yingxiang: '22',
+          lianwang: '3358'
+        },
+        {
+          id: 4,
+          xitong: 'Android 5.1.1,level 22',
+          bengkui: '0.65%',
+          yingxiang: '22',
+          lianwang: '3358'
+        }
+      ],
       modalVisible: false,
+      performanceTitle:'',
+      collapseTitle:'',
       areaList: [],
       checkAllArea: false,
-      androidData: {},//分发数
-      grayRules: ['规则0：关闭下发', '规则1：按区域下发', '规则2：按流量下发', '规则3：按设备下发', '规则4：按区域&流量下发'],
+      distributeData: {},//分发数
+      grayRules: [
+        '规则0：关闭下发',
+        '规则1：按区域下发',
+        '规则2：按流量下发',
+        '规则3：按设备下发',
+        '规则4：按区域&流量下发'
+      ],
       rules: {},
-      newRules: {}
+      newRules: {},
+      refreshLoading:false
     }
   }
 
@@ -98,7 +150,6 @@ class GrayscaleRelease extends Component {
 
   /**
    * @desc 获取项目详情为了获取platform，区分是ios,还是Android
-   * @params {int} [page] 页数，默认为1
    */
   getPlatForm = () => {
     reqPost('/project/projectInfo', {
@@ -109,70 +160,28 @@ class GrayscaleRelease extends Component {
           platform: res.data.platform,
           projectName: res.data.description
         }, () => {
-          if (res.data.platform === 1) {
-            this.getDistributeNum()
-            this.getAndroidGrayScaleRules()
-            this.getAreaInfo()
-          }
-          if (res.data.platform === 2) {
-            this.getTableData()
-          }
+          this.getGrayScaleRules()
+          this.getAreaInfo()
         })
       }
     })
   }
 
   /**
-   * @desc 表格页数改变事件
+   * @desc 获取灰度发布主页数据
    */
-  handleTableChange = (pagination) => {
-    const params = {...this.state.params};
-    params.page = pagination.current;
-    this.setState({params: params}, this.getTableData);
-  }
-
-  /**
-   * @desc 获取ios表格数据
-   */
-  getTableData = () => {
-    this.setState({loading: true});
-    reqGet('/deploy/versionlist', this.state.params).then(res => {
-      if (res.code === 0) {
-        const pagination = {...this.state.pagination};
-        const params = {...this.state.params};
-        params.bundleID = res.package.bundleID;
-        pagination.total = res.data.totalCount;
-        pagination.showTotal = () => {
-          return '共 ' + res.data.totalCount + ' 条';
-        };
-
-        this.setState({
-          loading: false,
-          listData: res.data.list,
-          projectName: res.package.appName,
-          downloadPath: res.package.downloadPath,
-          pagination,
-          params
-        });
-      } else {
-        this.setState({loading: false});
-        message.error(res.msg);
-      }
-    })
-  }
-
-  /**
-   * @desc 获取android灰度发布主页数据
-   */
-  getAndroidGrayScaleRules = () => {
+  getGrayScaleRules = () => {
     reqGet('/distribute/queryRule', {projectId: this.props.projectId}).then(res => {
-      if (res.code === 0) {
-        if (res.data) {
-          console.log(res.data)
-          res.data.areas = res.data.areas?res.data.areas.split(','):[]
-          res.data.devices = res.data.devices?res.data.devices.split(','):[]
-          this.setState({rules: res.data, newRules: res.data})
-        }
+      if (res.code === 0 && res.data) {
+        res.data.areas = res.data.areas ? res.data.areas.split(',') : []
+        res.data.devices = res.data.devices ? res.data.devices.split(',') : []
+        this.setState({
+          rules: res.data,
+          newRules: res.data,
+          performanceTitle:res.data.versionName?`灰度评估（网络性能、12小时内、v${res.data.versionName}）`:''
+        },()=>{
+          this.getAssessment()
+        })
       } else {
         message.error(res.msg)
       }
@@ -180,15 +189,15 @@ class GrayscaleRelease extends Component {
   }
 
   /**
-   * @desc 灰度部署 / Android灰度分发-获取分发数
+   * @desc 灰度部署 /获取分发数
    */
   getDistributeNum = () => {
     reqGet('/distribute/getDistributeNum', {projectId: this.props.projectId}).then(res => {
       if (res.code === 0) {
-        this.setState({androidData: res.data})
-      } else {
-        message.error(res.msg)
+        this.setState({distributeData: res.data})
+        return
       }
+      message.error(res.msg)
     })
   }
 
@@ -196,14 +205,32 @@ class GrayscaleRelease extends Component {
    * @desc 获取地区信息
    */
   getAreaInfo = () => {
-    reqGet('/distribute/queryArea', {projectId: this.props.projectId}).then(res => {
-      if (res.code === 0) {
-        if(res.data){
-          this.setState({areaList: res.data})
-        }
-      } else {
-        message.error(res.msg)
+    reqGet('/distribute/queryArea',
+      {
+        projectId: this.props.projectId
       }
+    ).then(res => {
+      if (res.code === 0 && res.data) {
+        this.setState({areaList: res.data})
+        return
+      }
+      message.error(res.msg)
+    })
+  }
+
+  /**
+   * @desc 灰度评估接口 /distribute/getAssessment
+   */
+  getAssessment = () => {
+    this.setState({refreshLoading:true},()=>{
+      reqGet('/distribute/getAssessment', {projectId: this.props.projectId}).then(res => {
+        if (res.code === 0 && res.data) {
+          this.setState({performanceData: res.data})
+        } else {
+          message.error(res.msg)
+        }
+        this.setState({refreshLoading:false})
+      })
     })
   }
 
@@ -217,7 +244,7 @@ class GrayscaleRelease extends Component {
   }
 
   /**
-   * @desc
+   * @desc 编辑规则
    */
   addRules = () => {
     let {rules} = this.state
@@ -266,6 +293,7 @@ class GrayscaleRelease extends Component {
         break
     }
     if (newRules.type !== 0) {
+      fieldsValue.maxQuantity = newRules.maxQuantity
       fieldsValue.version = newRules.version
       fieldsValue.versionName = newRules.versionName
       fieldsValue.name = newRules.name
@@ -275,9 +303,9 @@ class GrayscaleRelease extends Component {
     return fieldsValue
   }
   /**
-   * @desc 保存Android灰度发布
+   * @desc 保存灰度发布
    */
-  saveAndroidGrayScaleRules = () => {
+  saveGrayScaleRules = () => {
     let fields = this.getReturnFieldsValues()
     this.props.form.validateFields(Object.keys(fields), (err, values) => {
       if (!err) {
@@ -289,7 +317,7 @@ class GrayscaleRelease extends Component {
         if (values.devices) {
           values.devices = values.devices.split('\n').join(',')
         }
-        values.projectId = newRules.projectId||this.props.projectId
+        values.projectId = newRules.projectId || this.props.projectId
         values.type = newRules.type
 
         //不提交的数据都置为''
@@ -303,7 +331,7 @@ class GrayscaleRelease extends Component {
           if (res.code === 0) {
             message.success("保存成功")
             this.setState({modalVisible: false})
-            this.getAndroidGrayScaleRules()
+            this.getGrayScaleRules()
           } else {
             message.error(res.msg)
           }
@@ -368,24 +396,36 @@ class GrayscaleRelease extends Component {
     const {
       platform,
       projectName,
-      listData,
-      columns,
-      pagination,
-      loading,
-      params,
-      downloadPath,
-      androidData,
+      collapseCloumns,
+      collapseData,
+      collapseTitle,
+      distributeData,
       areaList,
       modalVisible,
       checkAllArea,
       grayRules,
       rules,
-      newRules
+      newRules,
+      performanceData,
+      performanceColumns,
+      performanceTitle,
+      refreshLoading
     } = this.state
     const {getFieldDecorator} = this.props.form;
+    const fromItemLayout = {
+      labelCol: {
+        xs: {span: 24},
+        sm: {span: 6}
+      },
+      wrapperCol: {
+        xs: {span: 24},
+        sm: {span: 18}
+      }
+    };
+
     const infoItem = {
       left: 4,
-      right: 20
+      right: 10
     }
     let flowList = () => {
       let list = []
@@ -400,7 +440,6 @@ class GrayscaleRelease extends Component {
           <BreadcrumbItem><Link to="/home">首页</Link></BreadcrumbItem>
           <BreadcrumbItem>灰度发布</BreadcrumbItem>
         </Breadcrumb>
-        {platform === 1 &&
         <div>
           <div className="button-container">
             <span>{projectName}</span>
@@ -419,12 +458,23 @@ class GrayscaleRelease extends Component {
                 </Button>
               }>
               <Row className="info-item">
-                <Col span={infoItem.left}><span onClick={this.showTips} style={{cursor: 'pointer'}}>灰度规则<Icon
-                  type="question-circle" style={{paddingLeft: 8}}/></span></Col>
+                <Col span={infoItem.left}>
+                  <span onClick={this.showTips} style={{cursor: 'pointer'}}>
+                    灰度规则
+                    <Icon type="question-circle" style={{paddingLeft: 8}}/>
+                  </span>
+                </Col>
                 <Col span={infoItem.right}>{grayRules[rules.type] || '-'}</Col>
               </Row>
               {
-                 rules.areaName &&
+                rules.maxQuantity &&
+                <Row className="info-item">
+                  <Col span={infoItem.left}>灰度下发最大数</Col>
+                  <Col span={infoItem.right}>{rules.maxQuantity==='-1'?'不限':rules.maxQuantity|| '-'}</Col>
+                </Row>
+              }
+              {
+                rules.areaName &&
                 <Row className="info-item">
                   <Col span={infoItem.left}>灰度下发区域</Col>
                   <Col span={infoItem.right}>{rules.areaName || '-'}</Col>
@@ -438,27 +488,31 @@ class GrayscaleRelease extends Component {
                 </Row>
               }
               {
-                rules.devices&&rules.devices.length>0 &&
+                rules.devices && rules.devices.length > 0 &&
                 <Row className="info-item">
                   <Col span={infoItem.left}>灰度下发设备</Col>
                   <Col span={infoItem.right}>
-                    {rules.devices.map((item,index) => <p key={index} style={{marginBottom:4}}>{item}</p>)}
+                    {rules.devices.map((item, index) => <p key={index} style={{marginBottom: 4}}>{item}</p>)}
                   </Col>
                 </Row>
               }
               <Divider/>
+              {platform === 1 &&
               <Row className="info-item">
                 <Col span={infoItem.left}>version</Col>
                 <Col span={infoItem.right}>{rules.version || '-'}</Col>
               </Row>
+              }
               <Row className="info-item">
                 <Col span={infoItem.left}>versionName</Col>
                 <Col span={infoItem.right}>{rules.versionName || '-'}</Col>
               </Row>
+              {platform === 1 &&
               <Row className="info-item">
                 <Col span={infoItem.left}>name</Col>
                 <Col span={infoItem.right}>{rules.name || '-'}</Col>
               </Row>
+              }
               <Row className="info-item">
                 <Col span={infoItem.left}>url</Col>
                 <Col span={infoItem.right}><a href={rules.url}>{rules.url || '-'}</a></Col>
@@ -470,58 +524,57 @@ class GrayscaleRelease extends Component {
             </Card>
             <Card title="分布情况" style={{marginTop: 24}}>
               <p>
-                <span style={{paddingRight: 8, marginBottom: 0}}>实际分发数/预计分发数(昨天)：</span>
-                {JSON.stringify(androidData.beforeActualQuantity) || '--'}/{JSON.stringify(androidData.beforeExpectQuantitty) || '--'}
-              </p>
-              <p>
-                <span style={{paddingRight: 8, marginBottom: 0}}>实际分发数/预计分发数(今天)：</span>
-                {JSON.stringify(androidData.actualQuantity) || '--'}/{JSON.stringify(androidData.expectQuantitty) || '--'}
+                <span style={{paddingRight: 8, marginBottom: 0}}>安装数/推送数：</span>
+                {JSON.stringify(rules.installQuantity) || '--'}/{JSON.stringify(rules.pushQuantity) || '--'}
               </p>
             </Card>
-          </div>
-        </div>
-        }
-        {platform === 2 &&
-        <div>
-          <div className="button-container">
-            <span>{projectName}</span>
-            <Button type="primary"><Link to="/addGrayscale">新发布</Link></Button>
-            <Button>停止发布</Button>
-          </div>
-          <Row className="button-container">
-            <Col span={8}><span className="item-name">Bundle ID：</span><span
-              className="item-value">{params.bundleID}</span></Col>
-            <Col span={8}><span className="item-name">下载地址：</span><a href={downloadPath} className="item-value">点击下载</a></Col>
-          </Row>
-          <div className="content-container">
-            <Card title="版本信息">
-              <Table columns={columns} rowKey={record => record.id} dataSource={listData} pagination={pagination}
-                     loading={loading} onChange={this.handleTableChange}/>
+            <Card
+              title={performanceTitle||`灰度评估`}
+              style={{marginTop: 24}}
+              className="gray-feature"
+              extra={<Button type="primary" onClick={()=>{this.getAssessment()}}>刷新</Button>}>
+              <Spin spinning={refreshLoading}>
+              <Table
+                columns={performanceColumns}
+                dataSource={performanceData}
+                rowKey={(record,index) => index}
+                pagination={false}/>
+              </Spin>
             </Card>
+            {/*<Card*/}
+              {/*title={collapseTitle||`灰度评估（今天）`}*/}
+              {/*style={{marginTop: 24}}*/}
+              {/*className="gray-feature"*/}
+              {/*extra={<Button type="primary">刷新</Button>}>*/}
+              {/*<Table*/}
+                {/*columns={collapseCloumns}*/}
+                {/*dataSource={collapseData}*/}
+                {/*rowKey={record => record.id}*/}
+                {/*pagination={false}/>*/}
+            {/*</Card>*/}
           </div>
         </div>
-        }
         <Modal
           title='编辑灰度策略'
           visible={modalVisible}
-          onOk={this.saveAndroidGrayScaleRules}
+          onOk={this.saveGrayScaleRules}
           onCancel={() => {
             this.setState({modalVisible: false})
           }}
           okText="确认"
           cancelText="取消">
-          <Select value={newRules.type} style={{width: "100%"}}
+          <Select value={newRules.type} style={{width: "100%", marginBottom: 16}}
                   onChange={e => this.onNewRulesChange(e)}>
             {grayRules.map((item, index) => <Option value={index} key={index}>{item}</Option>)}
           </Select>
           {
             newRules.type === 0 &&
-            <p style={{fontSize: 24, color: '#ccc', textAlign: "center", marginTop: 24}}>【关闭灰度下发】</p>
+            <p className="close-distribute">【关闭灰度下发】</p>
           }
-          <Form className="editRules-active">
+          <Form className="form-container">
             {
               (newRules.type === 1 || newRules.type === 4) &&
-              <FormItem label="灰度下发区域">
+              <FormItem {...fromItemLayout} label="灰度下发区域">
                 {
                   getFieldDecorator('areas', {
                     rules: [{
@@ -529,12 +582,12 @@ class GrayscaleRelease extends Component {
                     }]
                   })(
                     <div className="area-checkbox-container">
-                      {areaList.length>0&&
+                      {areaList.length > 0 &&
                       <Checkbox checked={checkAllArea}
                                 onChange={e => this.onCheckAllChange(e.target.checked)}>全部</Checkbox>
                       }
                       {
-                        areaList.length===0&&
+                        areaList.length === 0 &&
                         <p>未获取到区域信息</p>
                       }
                       <CheckboxGroup value={newRules.areas} onChange={(e) => {
@@ -557,7 +610,7 @@ class GrayscaleRelease extends Component {
             }
             {
               (newRules.type === 2 || newRules.type === 4) &&
-              <FormItem label="灰度下发百分百">
+              <FormItem {...fromItemLayout} label="灰度下发百分百">
                 {
                   getFieldDecorator('flows', {
                     rules: [{
@@ -573,7 +626,7 @@ class GrayscaleRelease extends Component {
             }
             {
               newRules.type === 3 &&
-              <FormItem label="灰度下发设备">
+              <FormItem {...fromItemLayout} label="灰度下发设备">
                 {
                   getFieldDecorator('devices', {
                     rules: [{
@@ -585,21 +638,28 @@ class GrayscaleRelease extends Component {
                 }
               </FormItem>
             }
-          </Form>
-          {
-            newRules.type !== 0 &&
-            <div>
-              <Form className="editRules">
-                <FormItem label="version">
+            {
+              newRules.type !== 0 &&
+              <div>
+                <FormItem {...fromItemLayout} label="最大下发数">
+                  {
+                    getFieldDecorator('maxQuantity', {
+                      rules: [{
+                        required: true, message: '请填写最大下发数'
+                      }]
+                    })(<InputNumber min={-1} placeholder='0-1000000,-1表示"不设限"' style={{width: '100%'}}/>)
+                  }
+                </FormItem>
+                <FormItem {...fromItemLayout} label="version">
                   {
                     getFieldDecorator('version', {
                       rules: [{
                         required: true, message: '请填写version'
                       }]
-                    })(<InputNumber />)
+                    })(<InputNumber style={{width: '100%'}}/>)
                   }
                 </FormItem>
-                <FormItem label="versionName">
+                <FormItem {...fromItemLayout} label="versionName">
                   {
                     getFieldDecorator('versionName', {
                       rules: [{
@@ -608,7 +668,7 @@ class GrayscaleRelease extends Component {
                     })(<Input/>)
                   }
                 </FormItem>
-                <FormItem label="name">
+                <FormItem {...fromItemLayout} label="name">
                   {
                     getFieldDecorator('name', {
                       rules: [{
@@ -617,7 +677,7 @@ class GrayscaleRelease extends Component {
                     })(<Input/>)
                   }
                 </FormItem>
-                <FormItem label="url">
+                <FormItem {...fromItemLayout} label="url">
                   {
                     getFieldDecorator('url', {
                       rules: [{
@@ -626,15 +686,15 @@ class GrayscaleRelease extends Component {
                     })(<Input/>)
                   }
                 </FormItem>
-                <FormItem label="desc">
+                <FormItem {...fromItemLayout} label="desc">
                   {
                     getFieldDecorator('desc')(<TextArea
                       style={{marginTop: 4, height: 100}}/>)
                   }
                 </FormItem>
-              </Form>
-            </div>
-          }
+              </div>
+            }
+          </Form>
         </Modal>
       </div>
     )
