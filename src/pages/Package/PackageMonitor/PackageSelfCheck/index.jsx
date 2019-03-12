@@ -2,10 +2,8 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
 import {reqPost, reqGet} from '@/api/api'
-import Chart from './chart'
 import {
   Breadcrumb,
-  Collapse,
   Card,
   Button,
   Icon,
@@ -14,139 +12,18 @@ import {
   Checkbox,
   Row,
   Col,
-  Popover
+  Upload,
+  message
 } from 'antd'
-import './index.scss'
+import '././index.scss'
 
 const BreadcrumbItem = Breadcrumb.Item;
-const Panel = Collapse.Panel;
+const Dragger = Upload.Dragger;
 
-class PackageMonitor extends Component {
+class PackageSelfCheck extends Component {
   constructor() {
     super();
     this.state = {
-      chartData: [
-        {
-          version: 'V3.3.1',
-          name: '包大小',
-          size: 20
-        },
-        {
-          version: 'V3.3.2',
-          name: '包大小',
-          size: 10
-        },
-        {
-          version: 'V3.3.3',
-          name: '包大小',
-          size: 15
-        },
-        {
-          version: 'V3.3.4',
-          name: '包大小',
-          size: 25
-        },
-        {
-          version: 'V3.3.1',
-          name: '加固包大小',
-          size: 5
-        },
-        {
-          version: 'V3.3.2',
-          name: '加固包大小',
-          size: 13
-        },
-        {
-          version: 'V3.3.3',
-          name: '加固包大小',
-          size: 10
-        },
-        {
-          version: 'V3.3.4',
-          name: '加固包大小',
-          size: 8
-        },
-        {
-          version: 'V3.3.1',
-          name: '总资源大小',
-          size: 50
-        },
-        {
-          version: 'V3.3.2',
-          name: '总资源大小',
-          size: 30
-        },
-        {
-          version: 'V3.3.3',
-          name: '总资源大小',
-          size: 40
-        },
-        {
-          version: 'V3.3.4',
-          name: '总资源大小',
-          size: 80
-        },
-        {
-          version: 'V3.3.1',
-          name: '重复资源总大小',
-          size: 20
-        },
-        {
-          version: 'V3.3.2',
-          name: '重复资源总大小',
-          size: 22
-        },
-        {
-          version: 'V3.3.3',
-          name: '重复资源总大小',
-          size: 35
-        },
-        {
-          version: 'V3.3.4',
-          name: '重复资源总大小',
-          size: 25
-        },
-        {
-          version: 'V3.3.1',
-          name: '超大图片总大小',
-          size: 34
-        },
-        {
-          version: 'V3.3.2',
-          name: '超大图片总大小',
-          size: 23
-        },
-        {
-          version: 'V3.3.3',
-          name: '超大图片总大小',
-          size: 10
-        },
-        {
-          version: 'V3.3.4',
-          name: '超大图片总大小',
-          size: 30
-        },
-        {
-          version: 'V3.3.1',
-          name: '无用资源总大小',
-          size: 2
-        },
-        {
-          version: 'V3.3.2',
-          name: '无用资源总大小',
-          size: 20
-        },
-        {
-          version: 'V3.3.3',
-          name: '无用资源总大小',
-          size: 12
-        },
-        {
-          version: 'V3.3.4',
-          name: '无用资源总大小',
-          size: 8
-        }
-      ],
       modalVisible: false,
       columns: [
         {
@@ -237,15 +114,50 @@ class PackageMonitor extends Component {
         unUseRate: '13.7%',
         unUseNum: '19',
         unUseMark: '16'
-      }
+      },
+      fileList: [],
+      uploading: false
     }
   }
 
   componentWillMount() {
   }
 
+  /**
+   * @desc 拖拽文件的改变事件
+   */
+  onDraggerChange = (info) => {
+    const status = info.file.status;
+    let fileList = info.fileList;
+    console.log(info)
+    if (status === 'done') {
+      if (info.file.response.code === 0) {
+
+      } else {
+        fileList = []
+        message.error(info.file.response.msg)
+      }
+    } else if (status === 'error') {
+      fileList = []
+      message.error(`${info.file.name}  文件上传失败`)
+    } else if (!status) {
+      fileList = []
+    }
+    this.setState({fileList})
+  }
+
+  /**
+   * @desc ipa上传之前的操作
+   */
+  beforeUpload = (file, fileList) => {
+    if (fileList.length !== 1) {
+      message.error("只支持上传一个文件")
+      return false
+    }
+  }
+
   render() {
-    const {chartData, modalVisible, columns, tableData, pagination, currentData, keyName} = this.state
+    const {fileList, modalVisible, columns, tableData, pagination, currentData, keyName, uploading} = this.state
     let dataList = (data) => {
       let list = [[], [], [], []], color = ['red', 'yellow', 'green', 'blue']
       for (let i in keyName) {
@@ -301,48 +213,43 @@ class PackageMonitor extends Component {
         <Breadcrumb className="devops-breadcrumb">
           <BreadcrumbItem><Link to="/home">首页</Link></BreadcrumbItem>
           <BreadcrumbItem>安装包</BreadcrumbItem>
-          <BreadcrumbItem>包体监测</BreadcrumbItem>
+          <BreadcrumbItem><Link to="/packageMonitor">包体监测</Link></BreadcrumbItem>
         </Breadcrumb>
         <div className="content-container">
           <Card
-            title="最近一次监测（Merge-Request流水线、v5.4.6、origin/develop_td）"
-            className="gray-feature"
-            extra={
-              <div>
-                <Popover content={<p style={{width: 180, marginBottom: 0}}>【资源】：此处资源，仅表示图片，包括png、jpg</p>}
-                         trigger="hover">
-                  <Button type="primary" ghost={true} shape="circle" icon="question"
-                          style={{fontSize: 14, marginRight: 24}}/>
-                </Popover>
-                <Button type="primary"><Link to="/packageSelfCheck">包体自检</Link></Button>
-              </div>
-            }>
-            {dataList(currentData)}
+            title="包体自检 ">
+            <Dragger style={{padding: "40px 0px"}}
+                     name='file'
+                     disabled={uploading}
+              // action='/deploy/upload'
+              // data={{projectID:this.props.projectId,envID:62}}
+                     onChange={(info) => {
+                       this.onDraggerChange(info)
+                     }}
+                     beforeUpload={(file, fileList) => this.beforeUpload(file, fileList)}
+                     accept=".ipa"
+                     fileList={fileList}
+              // headers={{token:this.props.token}}
+            >
+              <Button type="primary" size="large" disabled={uploading}><Icon type="upload"/>立即上传</Button>
+              {!uploading &&
+              <p style={{fontSize: 16, color: "#262626", paddingTop: 20, marginBottom: 4}}>上传安装包，即可自动分析</p>
+              }
+              {
+                uploading &&
+                <p style={{fontSize: 16, color: "#262626", paddingTop: 20, marginBottom: 4}}>
+                  <Icon type="loading-3-quarters" spin style={{marginRight: 8}}/>
+                  分析中，请勿离开当前页
+                </p>
+              }
+              <span style={{color: 'rgba(0,0,0,0.43)'}}>支持ipa文件</span>
+            </Dragger>
           </Card>
           <Card
-            title="各版本最后一次数据对比"
+            title="包体监测结果 "
             style={{marginTop: 24}}>
-            <Chart data={chartData}/>
+            {dataList(currentData)}
           </Card>
-          <Collapse
-            defaultActiveKey={['1']}
-            className='panel-container'>
-            <Panel header="This is panel header 1" key="1">
-              {dataList(currentData)}
-            </Panel>
-          </Collapse>
-          <Collapse
-            className='panel-container'>
-            <Panel header="This is panel header 1" key="1">
-              {dataList(currentData)}
-            </Panel>
-          </Collapse>
-          <Collapse
-            className='panel-container'>
-            <Panel header="This is panel header 1" key="1">
-              {dataList(currentData)}
-            </Panel>
-          </Collapse>
         </div>
         <Modal
           title='重复资源列表'
@@ -367,11 +274,11 @@ class PackageMonitor extends Component {
   }
 }
 
-PackageMonitor = connect((state) => {
+PackageSelfCheck = connect((state) => {
   return {
+    token: state.auth.token,
     projectId: state.project.projectId
   }
-})(PackageMonitor)
+})(PackageSelfCheck)
 
-export default PackageMonitor
-
+export default PackageSelfCheck

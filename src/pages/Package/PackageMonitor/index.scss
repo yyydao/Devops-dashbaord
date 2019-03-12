@@ -1,0 +1,68 @@
+.tips{
+  cursor: pointer;
+  margin-right: 24px;
+  width:24px;
+  height:24px;
+  display:inline-block;
+  vertical-align: middle;
+}
+.panel-container.ant-collapse .ant-collapse-item .ant-collapse-header .anticon {
+  left: initial;
+  right: 32px;
+}
+.panel-container.ant-collapse > .ant-collapse-item > .ant-collapse-header{
+  padding: 12px 0 12px 32px;
+}
+.panel-container{
+  .ant-collapse-content.ant-collapse-content-active{
+    padding: 16px;
+  }
+  margin-top: 24px;
+}
+.data-item{
+  &-white{
+    background: #ffffff;
+    color:#ffffff;
+  }
+  &-blue{
+    background: #DAEDF7;
+    color: #3688b0;
+  }
+  &-green{
+    background: #DFF0D8;
+    color: #4C8A60;
+  }
+   &-yellow{
+     background: #FCF8E4;
+     color: #c4892e;
+   }
+  &-red{
+    background: #F2DEDE;
+    color: #B74B4C;
+  }
+}
+.data-item-red,.data-item-yellow,.data-item-green,.data-item-blue,.data-item-white{
+  width: 80%;
+  padding: 8px 16px;
+  p{
+    margin-bottom: 0px;
+  }
+  p:nth-child(2){
+    font-size: 24px;
+  }
+  margin-bottom: 16px;
+  position: relative;
+  .click-icon{
+    font-size: 16px;
+    position: absolute;
+    top:50%;
+    right:8px;
+    margin-top: -8px;
+  }
+}
+.can-click{
+  cursor: pointer;
+}
+.can-click:hover{
+  transform:scale(1.1,1.1);
+}

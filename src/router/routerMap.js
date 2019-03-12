@@ -21,6 +21,7 @@ import PerformanceAdd from '@/pages/Test/Performance/Add'
 
 import Package from '@/pages/Package/PackageManager'
 import PackageMonitor from '@/pages/Package/PackageMonitor'
+import PackageSelfCheck from '@/pages/Package/PackageMonitor/PackageSelfCheck'
 import Dashboard from '@/pages/Dashboard'
 import ThirdParty from '@/pages/Setting/ThirdPartyManager'
 import NoticeManager from '@/pages/Setting/NoticeManager'
@@ -222,5 +223,9 @@ export default [
     path: '/packageMonitor',
     name:'packageMonitor',
     component:PackageMonitor
+  },{
+    path: '/packageSelfCheck',
+    name:'packageSelfCheck',
+    component:PackageSelfCheck
   }
 ]
