@@ -327,19 +327,19 @@ class PackageMonitor extends Component {
           <Collapse
             defaultActiveKey={['1']}
             className='panel-container'>
-            <Panel header="This is panel header 1" key="1">
+            <Panel header="2019-02-25 11:59:33（Merge-Request流水线、v5.4.6、origin/develop_td）" key="1">
               {dataList(currentData)}
             </Panel>
           </Collapse>
           <Collapse
             className='panel-container'>
-            <Panel header="This is panel header 1" key="1">
+            <Panel header="2019-02-25 11:59:33（Merge-Request流水线、v5.4.6、origin/develop_td）" key="1">
               {dataList(currentData)}
             </Panel>
           </Collapse>
           <Collapse
             className='panel-container'>
-            <Panel header="This is panel header 1" key="1">
+            <Panel header="2019-02-25 11:57:49（Merge-Request流水线、v5.4.6、origin/develop_td）" key="1">
               {dataList(currentData)}
             </Panel>
           </Collapse>

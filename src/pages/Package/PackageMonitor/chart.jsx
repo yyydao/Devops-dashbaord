@@ -10,18 +10,18 @@ import {
 
 class packageChart extends React.Component {
   render() {
-    const { data } = this.props
+    const {data} = this.props
     const scale = {
       version: {
-        alias:'版本'
+        alias: '版本'
         // formatter: () => {}, // 格式化文本内容
       },
-      size:{
-        min:0,
-        formatter: value => value+'MB', // 格式化文本内容
+      size: {
+        min: 0,
+        formatter: value => value + 'MB', // 格式化文本内容
       }
     };
-    const titles={
+    const titles = {
       autoRotate: false,
       position: 'end',
       offset: 20
@@ -32,7 +32,7 @@ class packageChart extends React.Component {
     return (
       <div>
         <Chart height={400} data={data} scale={scale} padding="auto" forceFit>
-          <Legend />
+          <Legend/>
           <Axis name="version" title={titles} label={label}/>
           <Axis
             name="size"
@@ -46,12 +46,12 @@ class packageChart extends React.Component {
             type="line"
             position="version*size"
             size={2}
-            color={['name',['#20b0ba', '#26c770', '#f8c517', '#f78e63', '#f4493d', '#f65896', '#c95afe', '#6170f2', '#2096f3']]}
-            tooltip={['name*size*version', (name, size,version) => {
+            color={['name', ['#20b0ba', '#26c770', '#f8c517', '#f78e63', '#f4493d', '#f65896', '#c95afe', '#6170f2', '#2096f3']]}
+            tooltip={['name*size*version', (name, size, version) => {
               return {
                 //自定义 tooltip 上显示的 title 显示内容等。
                 name: name,
-                value: size+'MB'
+                value: size + 'MB'
               };
             }]}
           />
@@ -60,16 +60,16 @@ class packageChart extends React.Component {
             position="version*size"
             size={4}
             shape={"circle"}
-            color={['name',['#20b0ba', '#26c770', '#f8c517', '#f78e63', '#f4493d', '#f65896', '#c95afe', '#6170f2', '#2096f3']]}
+            color={['name', ['#20b0ba', '#26c770', '#f8c517', '#f78e63', '#f4493d', '#f65896', '#c95afe', '#6170f2', '#2096f3']]}
             style={{
               stroke: "#fff",
               lineWidth: 1
             }}
-            tooltip={['name*size*version', (name, size,version) => {
+            tooltip={['name*size*version', (name, size, version) => {
               return {
                 //自定义 tooltip 上显示的 title 显示内容等。
                 name: name,
-                value: size+'MB'
+                value: size + 'MB'
               };
             }]}
           />
