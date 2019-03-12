@@ -234,7 +234,7 @@ class PerformanceBranchTest extends Component {
    * @desc 切换状态
    * @param status
    */
-  changeStatus =(status)=>{
+  changeStatus = (status) => {
     this.setState({
       status
     })
@@ -260,7 +260,7 @@ class PerformanceBranchTest extends Component {
    * @desc 切换机型
    * @param modal
    */
-  changeModal = (modal)=>{
+  changeModal = (modal) => {
     this.setState({
       modal
     })
@@ -417,78 +417,81 @@ class PerformanceBranchTest extends Component {
         </Breadcrumb>
 
         <div className="devops-main-wrapper">
-          <Row>
-            <Col>
-              <span style={{ paddingRight: 0 }}>环境：</span>
-              <Select value={envID}
-                      style={{ width: 150, marginRight: 32 }}
-                      onChange={(e) => {this.filterChange(e, 'envID')}}>
-                {envList.length > 0 && envList.map((item, index) => {
-                  return <Option value={item.code} key={index}>{item.text}</Option>
-                })}
-              </Select>
-              <span style={{ paddingRight: 0 }}>版本：</span>
-              <Select value={versionID}
-                      style={{ width: 150 }}
-                      onChange={(e) => {this.filterChange(e, 'version')}}>
-                {versionList.length > 0 && versionList.map((item, index) => {
-                  return <Option value={item.code} key={index}>{item.text}</Option>
-                })}
-              </Select>
-              <span style={{ paddingRight: 0, paddingLeft: 32 }}>开发分支：</span>
-              <Select placeholder="开发分支"
-                      style={{ width: 120 }}
-                      showSearch
-                      value={branchID}
-                      onSearch={this.getBranchList}
-                      onChange={this.changeBranch}>
-                {
-                  branchList.map((item) => {
-                    return <Option value={item.code} key={item.code}
-                    >{item.text}</Option>
-                  })
-                }
-              </Select>
-              <span style={{ paddingRight: 0, paddingLeft: 32 }}>状态：</span>
-              <Select placeholder="状态"
-                      style={{ width: 120 }}
-                      showSearch
-                      value={status}
-                      onSearch={this.getStatusList}
-                      onChange={this.changeStatus}>
-                {
-                  statusList.map((item) => {
-                    return <Option value={item.code} key={item.code}>{item.text}</Option>
-                  })
-                }
-              </Select>
-              <span style={{ paddingRight: 0, paddingLeft: 32 }}>机型：</span>
-              <Select placeholder="机型"
-                      style={{ width: 120 }}
-                      showSearch
-                      value={modal}
-                      onSearch={this.getModalList}
-                      onChange={this.changeModal}>
-                {
-                  modalList.map((item) => {
-                    return <Option value={item.code} key={item.code}>{item.text}</Option>
-                  })
-                }
-              </Select>
-              <Button type="primary" onClick={this.goToAdd}>新增测试</Button>
-            </Col>
-          </Row>
+          <main className='performance-list-main'>
+            <Row>
+              <Col>
+                <span style={{ paddingRight: 0 }}>环境：</span>
+                <Select value={envID}
+                        style={{ width: 150, marginRight: 32 }}
+                        onChange={(e) => {this.filterChange(e, 'envID')}}>
+                  {envList.length > 0 && envList.map((item, index) => {
+                    return <Option value={item.code} key={index}>{item.text}</Option>
+                  })}
+                </Select>
+                <span style={{ paddingRight: 0 }}>版本：</span>
+                <Select value={versionID}
+                        style={{ width: 150 }}
+                        onChange={(e) => {this.filterChange(e, 'version')}}>
+                  {versionList.length > 0 && versionList.map((item, index) => {
+                    return <Option value={item.code} key={index}>{item.text}</Option>
+                  })}
+                </Select>
+                <span style={{ paddingRight: 0, paddingLeft: 32 }}>开发分支：</span>
+                <Select placeholder="开发分支"
+                        style={{ width: 120 }}
+                        showSearch
+                        value={branchID}
+                        onSearch={this.getBranchList}
+                        onChange={this.changeBranch}>
+                  {
+                    branchList.map((item) => {
+                      return <Option value={item.code} key={item.code}
+                      >{item.text}</Option>
+                    })
+                  }
+                </Select>
+                <span style={{ paddingRight: 0, paddingLeft: 32 }}>状态：</span>
+                <Select placeholder="状态"
+                        style={{ width: 120 }}
+                        showSearch
+                        value={status}
+                        onSearch={this.getStatusList}
+                        onChange={this.changeStatus}>
+                  {
+                    statusList.map((item) => {
+                      return <Option value={item.code} key={item.code}>{item.text}</Option>
+                    })
+                  }
+                </Select>
+                <span style={{ paddingRight: 0, paddingLeft: 32 }}>机型：</span>
+                <Select placeholder="机型"
+                        style={{ width: 120 }}
+                        showSearch
+                        value={modal}
+                        onSearch={this.getModalList}
+                        onChange={this.changeModal}>
+                  {
+                    modalList.map((item) => {
+                      return <Option value={item.code} key={item.code}>{item.text}</Option>
+                    })
+                  }
+                </Select>
+                <Button type="primary" onClick={this.goToAdd}>新增测试</Button>
+              </Col>
+            </Row>
 
-          <Table
-            columns={columns}
-            rowKey={record => record.id}
-            expandedRowRender={expandedRowRender}
-            dataSource={listData}
-            indentSize={0}
-            pagination={pagination}
-            loading={loading}
-            onChange={this.handleTableChange}/>
+            <Table
+              columns={columns}
+              rowKey={record => record.id}
+              expandedRowRender={expandedRowRender}
+              dataSource={listData}
+              indentSize={0}
+              pagination={pagination}
+              loading={loading}
+              onChange={this.handleTableChange}/>
+          </main>
         </div>
+
       </div>
     )
   }

@@ -119,7 +119,7 @@ class PerformanceAdd extends Component {
   changeEnv = (e) => {
     this.setState({
       selectedEnvID: e.target.value,
-    },()=>{
+    }, () => {
       this.getSceneList()
     })
   }
@@ -153,8 +153,8 @@ class PerformanceAdd extends Component {
    * @desc 获取场景列表
    */
   getSceneList = () => {
-    reqGet('/testScene/performance/records' ,{
-      projectID:this.props.projectId,
+    reqGet('/testScene/performance/records', {
+      projectID: this.props.projectId,
       envID: this.state.selectedEnvID
     }).then(res => {
       if (res.code * 1 === 0) {
@@ -206,8 +206,8 @@ class PerformanceAdd extends Component {
    */
   changeModal = (selectedModalItems) => {
     console.log(selectedModalItems)
-    if(selectedModalItems.includes('-1')){
-      selectedModalItems = ["-1"]
+    if (selectedModalItems.includes('-1')) {
+      selectedModalItems = ['-1']
     }
     this.setState({ selectedModalItems })
   }
@@ -279,7 +279,7 @@ class PerformanceAdd extends Component {
         {...formItemLayout}
       >
         <Radio.Group value={selectedEnvID}
-          onChange={this.changeEnv}>
+                     onChange={this.changeEnv}>
           {envList.map((item) => {
             return <Radio value={item.code}>{item.text}</Radio>
           })
@@ -287,19 +287,29 @@ class PerformanceAdd extends Component {
 
         </Radio.Group>
       </Form.Item>
-      {platform === '2' &&
-      <Form.Item
-        label="构建账号"
-        {...formItemLayout}
-      >
-        <Input style={{ width: 300 }}
-               prefix={<Icon type="user" style={{ color: 'rgba(0, 0, 0, .25)' }}></Icon>}
-               placeholder="构建账号"/>
-        <Input style={{ width: 300 }}
-               prefix={<Icon type="lock" style={{ color: 'rgba(0, 0, 0, .25)' }}></Icon>}
-               type="password"
-               placeholder="构建账号密码"/>
-      </Form.Item>
+      {
+        platform === '2' &&
+        <React.Fragment>
+          <Form.Item
+            label="构建账号"
+            {...formItemLayout}
+          >
+            <Input style={{ width: 450 }}
+                   prefix={<Icon type="user" style={{ color: 'rgba(0, 0, 0, .25)' }}></Icon>}
+                   placeholder="构建账号"/>
+
+          </Form.Item>
+          <Form.Item
+            label="构建账号"
+            {...formItemLayout}
+          >
+            <Input style={{ width: 450 }}
+                   prefix={<Icon type="lock" style={{ color: 'rgba(0, 0, 0, .25)' }}></Icon>}
+                   type="password"
+                   placeholder="构建账号密码"/>
+
+          </Form.Item>
+        </React.Fragment>
       }
       <Form.Item
         label="测试机型"
@@ -309,7 +319,7 @@ class PerformanceAdd extends Component {
                 mode="multiple"
                 allowClear={true}
                 autoClearSearchValue={true}
-                style={{ width: 300 }}
+                style={{ width: 450 }}
                 onChange={this.changeModal}
         >
           {filteredOptions.map(item => (
@@ -324,7 +334,7 @@ class PerformanceAdd extends Component {
         {...formItemLayout}
       >
         <Select placeholder="开发分支"
-                style={{ width: 300 }}
+                style={{ width: 450 }}
                 showSearch
                 value={selectedBranchName}
                 onSearch={this.getBranchList}
@@ -339,97 +349,121 @@ class PerformanceAdd extends Component {
       </Form.Item>
     </React.Fragment>
 
-    const SceneStep = <React.Fragment>
-      <Form.Item
-        label="源码分支"
-        {...formItemLayout}
-      >
-        <span className="ant-form-text">{this.state.selectedBranchName}</span>
-      </Form.Item>
-      <Form.Item
-        label="测试场景"
-        {...formItemLayout}
-      >
-        <CustomTree data={this.state.sceneDataList} onSceneChange={this.onSceneChange}/>
-      </Form.Item>
-    </React.Fragment>
+  const SceneStep = <React.Fragment>
+    <Form.Item
+      label="源码分支"
+      {...formItemLayout}
+    >
+      <span className="ant-form-text">{this.state.selectedBranchName}</span>
+    </Form.Item>
+    <Form.Item
+      label="测试场景"
+      {...formItemLayout}
+    >
+      <CustomTree data={this.state.sceneDataList} onSceneChange={this.onSceneChange}/>
+    </Form.Item>
+  </React.Fragment>
 
-    const TimerStep = <React.Fragment>
-      <label className="performance-modal-item-label">定时时间：</label>
-      <div className="performance-modal-item-content">
-        {
-          addVisible && <TimePicker onChange={this.changeTime}/>
-        }
-      </div>
-    </React.Fragment>
-
-    const BasicStep = [{
-      title: '选择测试分支',
-      content: BranchStep,
-    }, {
-      title: '配置测试场景',
-      content: SceneStep,
-    }, {
-      title: '提交测试',
-      content: 'Last-content',
-    }]
-
-    const TimerOptionsStep = [
+  const
+  TimerStep = <React.Fragment>
+    <label className="performance-modal-item-label">定时时间：</label>
+    <div className="performance-modal-item-content">
       {
-        title: '配置定时时间',
-        content: TimerStep,
+        addVisible && <TimePicker onChange={this.changeTime}/>
       }
-    ]
+    </div>
+  </React.Fragment>
 
-    let TestSteps = BasicStep
-    if (this.state.testType === 'branch') {
-      BasicStep.splice(2, 0, TimerOptionsStep)
+  const
+  BasicStep = [{
+    title: '选择测试分支',
+    content: BranchStep,
+  }, {
+    title: '配置测试场景',
+    content: SceneStep,
+  }, {
+    title: '提交测试',
+    content: 'Last-content',
+  }]
+
+  const
+  TimerOptionsStep = [
+    {
+      title: '配置定时时间',
+      content: TimerStep,
     }
+  ]
 
-    return (
-      <div className="performance">
-        <Breadcrumb className="devops-breadcrumb">
-          <BreadcrumbItem><Link to="/home">首页</Link></BreadcrumbItem>
-          <BreadcrumbItem><Link to="/performanceConfig">性能测试管理</Link></BreadcrumbItem>
-          {this.state.testType === 'branch' ?
-            <BreadcrumbItem><Link to="/performanceConfig/branch">分支测试</Link></BreadcrumbItem> :
-            <BreadcrumbItem><Link to="/performanceConfig/timer">定时测试</Link></BreadcrumbItem>
+  let
+  TestSteps = BasicStep
+
+  if (
+
+  this
+.
+  state
+.
+  testType
+===
+  'branch'
+) {
+  BasicStep
+.
+
+  splice (
+
+  2
+,
+  0
+,
+  TimerOptionsStep
+)
+}
+
+return (
+  <div className="performance">
+    <Breadcrumb className="devops-breadcrumb">
+      <BreadcrumbItem><Link to="/home">首页</Link></BreadcrumbItem>
+      <BreadcrumbItem><Link to="/performanceConfig">性能测试管理</Link></BreadcrumbItem>
+      {this.state.testType === 'branch' ?
+        <BreadcrumbItem><Link to="/performanceConfig/branch">分支测试</Link></BreadcrumbItem> :
+        <BreadcrumbItem><Link to="/performanceConfig/timer">定时测试</Link></BreadcrumbItem>
+      }
+      <BreadcrumbItem>新增测试</BreadcrumbItem>
+    </Breadcrumb>
+
+    <div className="devops-main-wrapper">
+
+      <div className="performance-add-main">
+        <Steps current={current}>
+          {TestSteps.map(item => <Step key={item.title} title={item.title}/>)}
+        </Steps>
+        <div className="steps-content">{TestSteps[current].content}</div>
+        <div className="steps-action">
+          {
+            current < TestSteps.length - 1
+            && <Button type="primary" onClick={() => this.next()}>下一步</Button>
           }
-          <BreadcrumbItem>新增测试</BreadcrumbItem>
-        </Breadcrumb>
-
-        <div className="devops-main-wrapper">
-
-          <div className="performance-main">
-            <Steps current={current}>
-              {TestSteps.map(item => <Step key={item.title} title={item.title}/>)}
-            </Steps>
-            <div className="steps-content">{TestSteps[current].content}</div>
-            <div className="steps-action">
-              {
-                current < TestSteps.length - 1
-                && <Button type="primary" onClick={() => this.next()}>下一步</Button>
-              }
-              {
-                current === TestSteps.length - 1
-                && <Button type="primary" onClick={this.addItem}>开始构建</Button>
-              }
-              {
-                current > 0
-                && (
-                  <Button style={{ marginLeft: 8 }} onClick={() => this.prev()}>
-                    上一步
-                  </Button>
-                )
-              }
-            </div>
-          </div>
+          {
+            current === TestSteps.length - 1
+            && <Button type="primary" onClick={this.addItem}>开始构建</Button>
+          }
+          {
+            current > 0
+            && (
+              <Button style={{ marginLeft: 8 }} onClick={() => this.prev()}>
+                上一步
+              </Button>
+            )
+          }
         </div>
-
-
       </div>
-    )
-  }
+    </div>
+
+
+  </div>
+)
+}
 }
 
 PerformanceAdd = connect((state) => {

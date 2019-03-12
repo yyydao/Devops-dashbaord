@@ -455,6 +455,7 @@ class PerformanceTimerTest extends Component {
         </Breadcrumb>
 
         <div className="devops-main-wrapper">
+          <main className='performance-list-main'>
           <Row>
             <Col>
               <span style={{ paddingRight: 0 }}>环境：</span>
@@ -526,6 +527,7 @@ class PerformanceTimerTest extends Component {
             pagination={pagination}
             loading={loading}
             onChange={this.handleTableChange}/>
+          </main>
         </div>
       </div>
     )
