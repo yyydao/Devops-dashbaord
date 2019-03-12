@@ -647,7 +647,7 @@ class GrayscaleRelease extends Component {
                       rules: [{
                         required: true, message: '请填写最大下发数'
                       }]
-                    })(<InputNumber min={-1} placeholder='0-1000000,-1表示"不设限"' style={{width: '100%'}}/>)
+                    })(<InputNumber min={-1} max={1000000} placeholder='0-1000000,-1表示"不设限"' style={{width: '100%'}}/>)
                   }
                 </FormItem>
                 <FormItem {...fromItemLayout} label="version">
