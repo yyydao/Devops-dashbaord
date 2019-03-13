@@ -12,7 +12,8 @@ import {
   message,
   TimePicker,
   Modal,
-  Form, Radio, Input, Icon,
+  Form, Radio, Input,
+  Icon,
 } from 'antd'
 
 import CustomTree from '@/components/CustomTree'
@@ -32,8 +33,6 @@ class PerformanceAdd extends Component {
 
       platform: props.platform,
 
-      addVisible: false,
-      addConfirmLoading: false,
       //测试环境
       envList: [],
       selectedEnvID: '',
@@ -47,6 +46,9 @@ class PerformanceAdd extends Component {
       // 场景列表
       sceneDataList: [],
       chooseSceneID: [],
+      //时间
+      timeType: '',
+      timeText:'',
       buildType: props.testBuildType === 'branch' ? '1' : '2'
     }
   }
@@ -55,7 +57,16 @@ class PerformanceAdd extends Component {
    * @desc 新建构建任务
    */
   addItem = () => {
-    const { buildType, selectedBranchName, chooseSceneID, formDataTime, selectedEnvID, selectedModalItems } = this.state
+    const {
+      buildType,
+      selectedBranchName,
+      chooseSceneID,
+      formDataTime,
+      selectedEnvID,
+      selectedModalItems,
+      timeType,
+      timeText,
+    } = this.state
     console.log(chooseSceneID)
     if (!selectedBranchName) {
       message.error('请选择“开发分支”')
@@ -66,30 +77,29 @@ class PerformanceAdd extends Component {
     } else if (chooseSceneID.length < 1) {
       message.error('请选择“执行场景”')
       return
-    } else if (this.state.typeValue === 2 && !formDataTime) {
+    } else if (this.state.buildType === '2' && !timeType) {
+      message.error('请选择“定时类型”')
+      return
+    } else if (this.state.buildType === '2' && !timeText) {
       message.error('请选择“定时时间”')
       return
     }
 
-    this.setState({
-      addConfirmLoading: true
-    })
-
-    reqPost('/performance/task/submit', {
+    let postData = {
       projectID: Number(this.props.projectId),
       envID: selectedEnvID,
       buildType: buildType,
       branchName: selectedBranchName,
       sceneIds: chooseSceneID.join(','),
       phoneKeys: selectedModalItems.join(','),
-    }).then(res => {
+    }
+    if(buildType === '2'){
+      Object.assign(postData,{timeType,timeText})
+    }
+    reqPost('/performance/task/submit', postData).then(res => {
       if (res.code === 0) {
         Modal.success({ content: `构建成功` })
         this.next()
-        // buildType === '1' ?
-        //   this.props.history.replace('/performanceConfig/branch') :
-        //   this.props.history.replace('/performanceConfig/timer')
-
       } else {
         Modal.info({
           title: '提示',
@@ -198,8 +208,18 @@ class PerformanceAdd extends Component {
    */
   changeTime = (moment) => {
     this.setState({
-      formDataTime: moment.format('HH:mm:ss')
+      timeText: moment.format('HH:mm:ss')
     })
+  }
+
+  /**
+   * 选择时间
+   * @param e
+   */
+  onTimerTypeChange = (e) => {
+    this.setState({
+      timeType: e.target.value,
+    });
   }
 
   /**
@@ -271,7 +291,7 @@ class PerformanceAdd extends Component {
       selectedBranchName,
       modalList,
       selectedModalItems,
-      addVisible,
+      timeType,
     } = this.state
 
     const filteredOptions = modalList.filter((o) => {
@@ -338,7 +358,7 @@ class PerformanceAdd extends Component {
                 onChange={this.changeModal}
         >
           {filteredOptions.map(item => (
-            <Select.Option value={item.code} key={item.text}>
+            <Select.Option value={item.code} key={item.code}>
               {item.text}
             </Select.Option>
           ))}
@@ -383,11 +403,26 @@ class PerformanceAdd extends Component {
 
     const TimerStep = <React.Fragment>
       <Form.Item
+        label="定时类型：："
+        {...formItemLayout}
+      >
+        <Radio.Group onChange={this.onTimerTypeChange} value={timeType}>
+          <Radio value={1}>每天</Radio>
+          <Radio value={2}>固定日前</Radio>
+        </Radio.Group>
+      </Form.Item>
+      <Form.Item
         label="定时时间："
         {...formItemLayout}
       >
         <TimePicker onChange={this.changeTime}/>
       </Form.Item>
+    </React.Fragment>
+
+    const FinalStep = <React.Fragment>
+
+      <h2>测试任务已经提交</h2>
+      <p>您可以点击下方"查看任务"按钮，进入测试列表查看测试进度</p>
     </React.Fragment>
 
     const BasicStep = [{
@@ -398,7 +433,7 @@ class PerformanceAdd extends Component {
       content: SceneStep,
     }, {
       title: '提交测试',
-      content: 'Last-content',
+      content: FinalStep,
     }]
 
     const TimerOptionsStep = { title: '配置定时时间', content: TimerStep }
@@ -407,7 +442,6 @@ class PerformanceAdd extends Component {
 
     if (this.state.testType !== 'branch') {
       BasicStep.splice(2, 0, TimerOptionsStep)
-      console.log(BasicStep)
     }
 
     return (
