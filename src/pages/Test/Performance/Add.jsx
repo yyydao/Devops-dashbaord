@@ -151,6 +151,21 @@ class PerformanceAdd extends Component {
   }
 
   /**
+   * @desc 刷新分支
+   */
+  refreshBranch = ()=>{
+    reqGet('/performance/branch/refresh', {
+      projectID: this.props.projectId
+    }).then(res => {
+      if (res.code === 0) {
+        this.setState({
+          branchList: res.data
+        })
+      }
+    })
+  }
+
+  /**
    * @desc 获取场景列表
    */
   getSceneList = () => {
@@ -347,6 +362,7 @@ class PerformanceAdd extends Component {
             })
           }
         </Select>
+        <Button type={'default'} onClick={this.refreshBranch}>拉取分支</Button>
       </Form.Item>
     </React.Fragment>
 
@@ -365,8 +381,7 @@ class PerformanceAdd extends Component {
       </Form.Item>
     </React.Fragment>
 
-    const
-      TimerStep = <React.Fragment>
+    const TimerStep = <React.Fragment>
         <label className="performance-modal-item-label">定时时间：</label>
         <div className="performance-modal-item-content">
           {
@@ -375,8 +390,7 @@ class PerformanceAdd extends Component {
         </div>
       </React.Fragment>
 
-    const
-      BasicStep = [{
+    const BasicStep = [{
         title: '选择测试分支',
         content: BranchStep,
       }, {
