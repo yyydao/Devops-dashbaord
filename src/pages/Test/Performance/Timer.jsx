@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import './index.scss'
 import { reqGet, reqPost } from '@/api/api'
+import {setTestBuildType} from '@/store/actions/project'
 
 import {
   Breadcrumb,
@@ -14,6 +15,7 @@ import {
   Table,
   message
 } from 'antd'
+import { bindActionCreators } from 'redux'
 
 const BreadcrumbItem = Breadcrumb.Item
 const Option = Select.Option
@@ -346,6 +348,7 @@ class PerformanceTimerTest extends Component {
   }
 
   componentWillMount () {
+    this.props.setTestBuildType('timer')
     this.getEnvList()
     this.getBranchList()
   }
@@ -534,11 +537,25 @@ class PerformanceTimerTest extends Component {
   }
 }
 
-PerformanceTimerTest = connect((state) => {
-  return {
-    token: state.token,
-    projectId: state.project.projectId
+function mapStateToProps (state) {
+  const { project } = state
+  if (project.projectId) {
+    return {
+      projectId: project.projectId,
+      testBuildType:project.testBuildType
+    }
   }
-})(PerformanceTimerTest)
 
-export default PerformanceTimerTest
+  return {
+    projectId: null,
+    testBuildType:null
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    setTestBuildType: bindActionCreators(setTestBuildType, dispatch),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PerformanceTimerTest)

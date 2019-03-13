@@ -7,7 +7,7 @@ import {
 const initialState = {
   permissionList: null,
   projectId: null,
-  buildType:null,
+  testBuildType:null,
 }
 
 
@@ -20,8 +20,8 @@ export default function project(state = initialState, action = {}) {
       window.localStorage.setItem('platform', action.payload)
       return Object.assign({}, state, { platform: action.payload})
     case SET_TESTBUILDTYPE:
-      window.localStorage.setItem('buildType', action.payload)
-      return Object.assign({}, state, { buildType: action.payload})
+      window.localStorage.setItem('testBuildType', action.payload)
+      return Object.assign({}, state, { testBuildType: action.payload})
     default:
       return state
   }
