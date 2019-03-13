@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import './index.scss'
 import { reqGet, reqPost } from '@/api/api'
+import {setTestBuildType} from '@/store/actions/project'
 
 import {
   Breadcrumb,
@@ -14,9 +15,12 @@ import {
   Table,
   message
 } from 'antd'
+import { bindActionCreators } from 'redux'
 
 const BreadcrumbItem = Breadcrumb.Item
 const Option = Select.Option
+
+
 
 class PerformanceBranchTest extends Component {
   constructor (props) {
@@ -24,6 +28,7 @@ class PerformanceBranchTest extends Component {
 
     this.state = {
       projectId: props.projectId,
+      testBuildType: 'branch',
 
       columns: [
         {
@@ -301,11 +306,7 @@ class PerformanceBranchTest extends Component {
   }
 
   componentWillMount () {
-    window.localStorage.setItem('detailBreadcrumbPath', JSON.stringify([{
-      path: '/performanceConfig',
-      name: '性能测试管理'
-    }]))
-
+    this.props.setTestBuildType('branch')
     this.getEnvList()
     this.getBranchList()
   }
@@ -497,11 +498,25 @@ class PerformanceBranchTest extends Component {
   }
 }
 
-PerformanceBranchTest = connect((state) => {
-  return {
-    token: state.token,
-    projectId: state.project.projectId
+function mapStateToProps (state) {
+  const { project } = state
+  if (project.projectId) {
+    return {
+      projectId: project.projectId,
+      testBuildType:project.testBuildType
+    }
   }
-})(PerformanceBranchTest)
 
-export default PerformanceBranchTest
+  return {
+    projectId: null,
+    testBuildType:null
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    setTestBuildType: bindActionCreators(setTestBuildType, dispatch),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PerformanceBranchTest)

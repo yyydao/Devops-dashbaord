@@ -19,9 +19,9 @@ export function setPlatform (platform) {
   }
 }
 
-export function setTestBuildType (buildType) {
+export function setTestBuildType (testBuildType) {
   return {
     type: 'SET_TESTBUILDTYPE',
-    payload: buildType
+    payload: testBuildType
   }
 }

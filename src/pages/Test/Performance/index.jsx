@@ -51,7 +51,8 @@ class PerformanceIndex extends Component {
 
 PerformanceIndex = connect((state) => {
   return {
-    projectId: state.project.projectId
+    projectId: state.project.projectId,
+    testBuildType: state.project.testBuildType
   }
 })(PerformanceIndex)
 
