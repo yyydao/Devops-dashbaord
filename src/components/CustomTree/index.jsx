@@ -197,19 +197,22 @@ class CustomTree extends Component {
 
   dataChange = () => {
     let {data} = this.state
-    let selectedKeys = []
+    let childrenKeys = [],parentKeys=[]
     data.map(item=>{
       if(item.children.length>0){
         item.children.map(item1=>{
           if(item1.checked){
-            selectedKeys.push(item1.id)
+            childrenKeys.push(item1.id)
           }
           return item1
         })
       }
+      if(item.checked||item.indeterminate){
+        parentKeys.push(item.id)
+      }
       return item
     })
-    this.props.onSceneChange(selectedKeys)
+    this.props.onSceneChange(childrenKeys,parentKeys)
   }
 
   render() {

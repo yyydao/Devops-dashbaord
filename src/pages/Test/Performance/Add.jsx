@@ -216,8 +216,8 @@ class PerformanceAdd extends Component {
    * @desc 改变场景
    * @param a
    */
-  onSceneChange = (a) => {
-    this.setState({ chooseSceneID: a })
+  onSceneChange = (childrenKeys,parentKeys) => {
+    this.setState({ chooseSceneID: childrenKeys })
   }
 
   next () {
