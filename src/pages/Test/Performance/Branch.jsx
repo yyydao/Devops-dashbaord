@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import './index.scss'
 import { reqGet, reqPost } from '@/api/api'
-import {setTestBuildType} from '@/store/actions/project'
+import { setTestBuildType } from '@/store/actions/project'
 
 import {
   Breadcrumb,
@@ -19,8 +19,6 @@ import { bindActionCreators } from 'redux'
 
 const BreadcrumbItem = Breadcrumb.Item
 const Option = Select.Option
-
-
 
 class PerformanceBranchTest extends Component {
   constructor (props) {
@@ -416,71 +414,91 @@ class PerformanceBranchTest extends Component {
           <BreadcrumbItem><Link to="/performanceConfig">性能测试管理</Link></BreadcrumbItem>
           <BreadcrumbItem>分支测试</BreadcrumbItem>
         </Breadcrumb>
+        <div className={'devops-main-controlArea'}>
+          <Row>
+            <Col>
+              <span>环境：</span>
+              <Select value={envID}
+                      style={{ width: 100, marginRight: 40 }}
+                      onChange={(e) => {this.filterChange(e, 'envID')}}>
+                {envList.length > 0 && envList.map((item, index) => {
+                  return <Option value={item.code} key={index}>{item.text}</Option>
+                })}
+              </Select>
+              <span>版本：</span>
+              <Select value={versionID}
+                      style={{ width: 100 }}
+                      onChange={(e) => {this.filterChange(e, 'version')}}>
+                {versionList.length > 0 && versionList.map((item, index) => {
+                  return <Option value={item.code} key={index}>{item.text}</Option>
+                })}
+              </Select>
+              <span style={{ paddingRight: 0, paddingLeft: 40 }}>开发分支：</span>
+              <Select placeholder="开发分支"
+                      style={{ width: 100 }}
+                      showSearch
+                      value={branchID}
+                      onSearch={this.getBranchList}
+                      onChange={this.changeBranch}>
+                {
+                  branchList.map((item) => {
+                    return <Option value={item.code} key={item.code}
+                    >{item.text}</Option>
+                  })
+                }
+              </Select>
+              <span style={{ paddingRight: 0, paddingLeft: 40 }}>状态：</span>
+              <Select placeholder="状态"
+                      style={{ width: 100 }}
+                      showSearch
+                      value={status}
+                      onSearch={this.getStatusList}
+                      onChange={this.changeStatus}>
+                {
+                  statusList.map((item) => {
+                    return <Option value={item.code} key={item.code}>{item.text}</Option>
+                  })
+                }
+              </Select>
+              <span style={{ paddingRight: 0, paddingLeft: 40 }}>机型：</span>
+              <Select placeholder="机型"
+                      style={{ width: 100 }}
+                      showSearch
+                      value={modal}
+                      onSearch={this.getModalList}
+                      onChange={this.changeModal}>
+                {
+                  modalList.map((item) => {
+                    return <Option value={item.code} key={item.code}>{item.text}</Option>
+                  })
+                }
+              </Select>
+
+            </Col>
+          </Row>
+        </div>
+
+
 
         <div className="devops-main-wrapper">
           <main className='performance-list-main'>
-            <Row>
-              <Col>
-                <span style={{ paddingRight: 0 }}>环境：</span>
-                <Select value={envID}
-                        style={{ width: 150, marginRight: 32 }}
-                        onChange={(e) => {this.filterChange(e, 'envID')}}>
-                  {envList.length > 0 && envList.map((item, index) => {
-                    return <Option value={item.code} key={index}>{item.text}</Option>
-                  })}
-                </Select>
-                <span style={{ paddingRight: 0 }}>版本：</span>
-                <Select value={versionID}
-                        style={{ width: 150 }}
-                        onChange={(e) => {this.filterChange(e, 'version')}}>
-                  {versionList.length > 0 && versionList.map((item, index) => {
-                    return <Option value={item.code} key={index}>{item.text}</Option>
-                  })}
-                </Select>
-                <span style={{ paddingRight: 0, paddingLeft: 32 }}>开发分支：</span>
-                <Select placeholder="开发分支"
-                        style={{ width: 120 }}
-                        showSearch
-                        value={branchID}
-                        onSearch={this.getBranchList}
-                        onChange={this.changeBranch}>
-                  {
-                    branchList.map((item) => {
-                      return <Option value={item.code} key={item.code}
-                      >{item.text}</Option>
-                    })
-                  }
-                </Select>
-                <span style={{ paddingRight: 0, paddingLeft: 32 }}>状态：</span>
-                <Select placeholder="状态"
-                        style={{ width: 120 }}
-                        showSearch
-                        value={status}
-                        onSearch={this.getStatusList}
-                        onChange={this.changeStatus}>
-                  {
-                    statusList.map((item) => {
-                      return <Option value={item.code} key={item.code}>{item.text}</Option>
-                    })
-                  }
-                </Select>
-                <span style={{ paddingRight: 0, paddingLeft: 32 }}>机型：</span>
-                <Select placeholder="机型"
-                        style={{ width: 120 }}
-                        showSearch
-                        value={modal}
-                        onSearch={this.getModalList}
-                        onChange={this.changeModal}>
-                  {
-                    modalList.map((item) => {
-                      return <Option value={item.code} key={item.code}>{item.text}</Option>
-                    })
-                  }
-                </Select>
+            <div role="tablist" className="ant-tabs-bar ant-tabs-top-bar">
+              <div className="ant-tabs-extra-content" style={{ float: 'right',paddingRight: '35px' }}>
                 <Button type="primary" onClick={this.goToAdd}>新增测试</Button>
-              </Col>
-            </Row>
-
+              </div>
+              <div className="ant-tabs-nav-container">
+                <div className="ant-tabs-nav-wrap">
+                  <div className="ant-tabs-nav-scroll">
+                    <div className="ant-tabs-nav">
+                      <div>
+                        <div className="ant-tabs-tab" style={{'fontWeight':'500'}}>分支测试
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
             <Table
               columns={columns}
               rowKey={record => record.id}
@@ -503,13 +521,13 @@ function mapStateToProps (state) {
   if (project.projectId) {
     return {
       projectId: project.projectId,
-      testBuildType:project.testBuildType
+      testBuildType: project.testBuildType
     }
   }
 
   return {
     projectId: null,
-    testBuildType:null
+    testBuildType: null
   }
 }
 
