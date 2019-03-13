@@ -124,8 +124,6 @@ class RoleManager extends Component {
     reqGet('/sys/menu/list').then(res => {
       if (res.code === 0) {
         let AllMenuList = res.menuList
-        let aaa=this.treeExchangeArray(res.menuList)
-        console.log(aaa)
         this.setState({AllMenuList})
       } else {
         message.error(res.msg);
