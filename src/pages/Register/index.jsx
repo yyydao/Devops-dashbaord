@@ -158,7 +158,9 @@ class Login extends Component {
                     {getFieldDecorator('projectCode', {
                       // rules: [{ required: true, message: '请输入' }]
                     })(
-                      <Select style={{width: "100%"}}>
+                      <Select
+                        mode="multiple"
+                        style={{width: "100%"}}>
                         {
                           projectCodes.map((item, index) => <Option value={item.projectCode} key={index}>{item.name}</Option>)
                         }
@@ -170,8 +172,8 @@ class Login extends Component {
                     {
                       getFieldDecorator('roleIdList', {initialValue: newUser.roleIdList})(
                         <RadioGroup>
-                          <Row type='flex' align='space-around' justify='middle' className='task-item-row'>
-                            {rolelist.map((item, index) => <Col style={{marginTop: 8}} key={index}><Radio
+                          <Row className='task-item-row' justify='start' type='flex'>
+                            {rolelist.map((item, index) => <Col key={index}><Radio
                               value={item.roleId}>{item.roleName}</Radio></Col>)}
                           </Row>
                         </RadioGroup>

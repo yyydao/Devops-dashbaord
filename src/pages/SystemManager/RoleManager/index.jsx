@@ -1,9 +1,9 @@
 import React, {Component} from 'react'
 import {Link} from 'react-router-dom'
 import {connect} from 'react-redux'
-import {Breadcrumb, Table, message, Modal, Tree, Button, Row, Col, Form, Input, Switch } from 'antd'
+import {Breadcrumb, Table, message, Modal, Tree, Button, Row, Col, Form, Input, Switch} from 'antd'
 
-import {reqGet,reqPost} from '@/api/api'
+import {reqGet, reqPost} from '@/api/api'
 import './index.scss'
 
 const BreadcrumbItem = Breadcrumb.Item
@@ -17,11 +17,11 @@ class RoleManager extends Component {
     super()
     this.state = {
       roleList: [],
-      newRole:{},
+      newRole: {},
       AllMenuList: [],
       loading: false,
-      modalVisible:false,
-      modalTitle:'新增',
+      modalVisible: false,
+      modalTitle: '新增',
       params: {
         limit: 10,
         page: 1,
@@ -33,7 +33,7 @@ class RoleManager extends Component {
           dataIndex: 'roleId',
           key: 'roleId',
           width: "10%",
-          align:"center"
+          align: "center"
         },
         {
           title: '名称',
@@ -57,7 +57,11 @@ class RoleManager extends Component {
           title: '操作',
           width: "10%",
           render: (text, record) => {
-            return <div><a onClick={()=>{this.updateRole(record.roleId)}}>修改</a><span style={{color: "#eee"}}> | </span><a onClick={()=>{this.deleteRole([record.roleId])}}>删除</a></div>
+            return <div><a onClick={() => {
+              this.updateRole(record.roleId)
+            }}>修改</a><span style={{color: "#eee"}}> | </span><a onClick={() => {
+              this.deleteRole([record.roleId])
+            }}>删除</a></div>
           }
         }
       ],
@@ -66,9 +70,9 @@ class RoleManager extends Component {
         total: 0,
         showTotal: null
       },
-      selectedRowKeys:[],
-      halfCheckedKeys:[],
-      expandedKeys:[],
+      selectedRowKeys: [],
+      halfCheckedKeys: [],
+      expandedKeys: [],
     }
   }
 
@@ -80,25 +84,25 @@ class RoleManager extends Component {
   /**
    * @desc 获取角色列表
    */
-  getRoleList = () =>{
-    this.setState({ loading: true });
-    reqGet('/sys/role/list',this.state.params).then(res => {
-      if(res.code === 0){
-        const pagination = { ...this.state.pagination };
-        const params = { ...this.state.params };
+  getRoleList = () => {
+    this.setState({loading: true});
+    reqGet('/sys/role/list', this.state.params).then(res => {
+      if (res.code === 0) {
+        const pagination = {...this.state.pagination};
+        const params = {...this.state.params};
         pagination.total = res.page.totalCount;
         pagination.current = res.page.currPage;
         pagination.showTotal = () => {
-          return '共 ' + res.page.totalCount+ ' 条';
+          return '共 ' + res.page.totalCount + ' 条';
         };
         this.setState({
-          roleList:res.page.list,
+          roleList: res.page.list,
           pagination,
           params,
-          loading:false,
-          selectedRowKeys:[]
+          loading: false,
+          selectedRowKeys: []
         })
-      }else{
+      } else {
         message.error(res.msg);
       }
     })
@@ -106,18 +110,18 @@ class RoleManager extends Component {
   /**
    * @desc 表格选择栏改变事件
    */
-  onSelectedRowKeys = (selectedRowKeys) =>{
+  onSelectedRowKeys = (selectedRowKeys) => {
     this.setState({selectedRowKeys})
   }
   /**
    * @desc 获取菜单列表
    */
-  getMenuList = () =>{
+  getMenuList = () => {
     reqGet('/sys/menu/list').then(res => {
-      if(res.code === 0){
-        let AllMenuList=res.menuList
+      if (res.code === 0) {
+        let AllMenuList = res.menuList
         this.setState({AllMenuList})
-      }else{
+      } else {
         message.error(res.msg);
       }
     })
@@ -125,52 +129,52 @@ class RoleManager extends Component {
   /**
    * @desc 关闭弹窗
    */
-  onCloseModal = () =>{
-    this.setState({modalVisible:false})
+  onCloseModal = () => {
+    this.setState({modalVisible: false})
   }
   /**
    * @desc 修改角色
    */
-  updateRole = (roleId) =>{
+  updateRole = (roleId) => {
     reqGet(`/sys/role/info/${roleId}`).then(res => {
-      if(res.code === 0){
-        let role=res.role
-        if(role.unSelect){
-          let halfcheck=role.unSelect.split(',')
-          this.setState({halfCheckedKeys:halfcheck})
-          halfcheck.map(item=>{
-            let index=role.menuIdList.indexOf(parseInt(item,0))
-            if(index>-1){
-              role.menuIdList.splice(index,1)
+      if (res.code === 0) {
+        let role = res.role
+        if (role.unSelect) {
+          let halfcheck = role.unSelect.split(',')
+          this.setState({halfCheckedKeys: halfcheck})
+          halfcheck.map(item => {
+            let index = role.menuIdList.indexOf(parseInt(item, 0))
+            if (index > -1) {
+              role.menuIdList.splice(index, 1)
             }
             return item
           })
         }
         this.setState({
-          newRole:role,
-          modalTitle:'修改',
-          modalVisible:true,
-          expandedKeys:[]
-        },()=>{
-          this.props.form.setFieldsValue({roleName:res.role.roleName})
+          newRole: role,
+          modalTitle: '修改',
+          modalVisible: true,
+          expandedKeys: []
+        }, () => {
+          this.props.form.setFieldsValue({roleName: res.role.roleName})
           // this.dealTreeData(JSON.parse(JSON.stringify(this.state.AllMenuList)))
         })
-      }else{
+      } else {
         message.error(res.msg);
       }
     })
   }
-  dealTreeData = (data) =>{
-    let menuIdList =JSON.parse(JSON.stringify(this.state.newRole.menuIdList))
-    data.map(item=>{
-      if(menuIdList.indexOf(item.menuId)>-1){
-        if(item.list){
-          for(let i=0;i<item.list.length;i++){
-            if(menuIdList.indexOf(item.list[i].menuId)<0){
-              menuIdList.splice(menuIdList.indexOf(item.menuId),1)
-              let newRole=JSON.parse(JSON.stringify(this.state.newRole))
-              newRole.menuIdList=menuIdList
-              this.setState({newRole},()=>{
+  dealTreeData = (data) => {
+    let menuIdList = JSON.parse(JSON.stringify(this.state.newRole.menuIdList))
+    data.map(item => {
+      if (menuIdList.indexOf(item.menuId) > -1) {
+        if (item.list) {
+          for (let i = 0; i < item.list.length; i++) {
+            if (menuIdList.indexOf(item.list[i].menuId) < 0) {
+              menuIdList.splice(menuIdList.indexOf(item.menuId), 1)
+              let newRole = JSON.parse(JSON.stringify(this.state.newRole))
+              newRole.menuIdList = menuIdList
+              this.setState({newRole}, () => {
                 this.dealTreeData(JSON.parse(JSON.stringify(item.list)))
               })
               break;
@@ -184,20 +188,20 @@ class RoleManager extends Component {
   /**
    * @desc 删除角色
    */
-  deleteRole = (roleIds) =>{
-    if(roleIds.length===0){
+  deleteRole = (roleIds) => {
+    if (roleIds.length === 0) {
       message.warning("请选择删除的角色")
       return
     }
     confirm({
       title: '',
       content: '该配置中可能存在重要数据，是否继续删除？（请谨慎操作！）',
-      onOk:()=> {
-        reqPost(`/sys/role/delete`,roleIds).then(res => {
-          if(res.code === 0){
+      onOk: () => {
+        reqPost(`/sys/role/delete`, roleIds).then(res => {
+          if (res.code === 0) {
             message.success("删除成功")
             this.getRoleList()
-          }else{
+          } else {
             message.error(res.msg);
           }
         })
@@ -207,27 +211,27 @@ class RoleManager extends Component {
   /**
    * @desc 表格页数改变事件
    */
-  handleTableChange = (pagination,roleName) => {
-    const params = { ...this.state.params };
-    if(pagination){
+  handleTableChange = (pagination, roleName) => {
+    const params = {...this.state.params};
+    if (pagination) {
       params.page = pagination.current;
-    }else{
+    } else {
       params.page = 1;
-      params.roleName=roleName;
+      params.roleName = roleName;
     }
-    this.setState({ params: params }, this.getRoleList);
+    this.setState({params: params}, this.getRoleList);
   }
   /**
    * @desc 新增角色
    */
-  onAddRole = () =>{
+  onAddRole = () => {
     this.setState({
-      modalVisible:true,
-      modalTitle:'新增',
-      newRole:{},
-      expandedKeys:[]
-      },()=>{
-      this.props.form.setFieldsValue({roleName:''})
+      modalVisible: true,
+      modalTitle: '新增',
+      newRole: {menuIdList: []},
+      expandedKeys: []
+    }, () => {
+      this.props.form.setFieldsValue({roleName: ''})
     })
   }
   /**
@@ -235,7 +239,7 @@ class RoleManager extends Component {
    */
   renderTreeNodes = (data) => {
     return data.map((item) => {
-      if (item.list && item.list.length>0) {
+      if (item.list && item.list.length > 0) {
         return (
           <TreeNode title={item.name} key={item.menuId} dataRef={item}>
             {this.renderTreeNodes(item.list)}
@@ -248,15 +252,15 @@ class RoleManager extends Component {
   /**
    * @desc 授权改变事件
    */
-  menuIdListChanged = (checkedKeys,e) =>{
+  menuIdListChanged = (checkedKeys, e) => {
     let newRole = this.state.newRole
     newRole.menuIdList = checkedKeys
-    this.setState({newRole,halfCheckedKeys:e.halfCheckedKeys})
+    this.setState({newRole, halfCheckedKeys: e.halfCheckedKeys})
   }
   /**
    * @desc 备注改变事件
    */
-  onRemarkChanged = (e) =>{
+  onRemarkChanged = (e) => {
     let newRole = this.state.newRole
     newRole.remark = e.target.value
     this.setState({newRole})
@@ -264,7 +268,7 @@ class RoleManager extends Component {
   /**
    * @desc 是否用于Switch改变事件
    */
-  onSwitchChanged = (e,index) =>{
+  onSwitchChanged = (e, index) => {
     let newRole = this.state.newRole
     newRole[index] = e
     this.setState({newRole})
@@ -272,25 +276,28 @@ class RoleManager extends Component {
   /**
    * @desc 新增角色/修改角色
    */
-  onCreateRole = () =>{
-    let successMsg="新增成功"
-    this.props.form.validateFields(['roleName'],(err, values) => {
+  onCreateRole = () => {
+    let successMsg = "新增成功"
+    this.props.form.validateFields(['roleName'], (err, values) => {
       if (!err) {
-        let role= JSON.parse(JSON.stringify(this.state.newRole)),postUrl='/sys/role/save'
-        if(role.roleId){
-          postUrl='/sys/role/update'
-          successMsg="修改成功"
+        let role = JSON.parse(JSON.stringify(this.state.newRole)), postUrl = '/sys/role/save'
+        if (role.roleId) {
+          postUrl = '/sys/role/update'
+          successMsg = "修改成功"
         }
-        role.roleName=values.roleName
-        role.useRegister=this.state.newRole.useRegister||false
-        role.admin=this.state.newRole.admin||false
-        role.unSelect=this.state.halfCheckedKeys.join(',')
-        role.menuIdList=[...this.state.newRole.menuIdList,...this.state.halfCheckedKeys]
-        reqPost(postUrl,role).then(res => {
-          if(res.code === 0){
+        role.roleName = values.roleName
+        role.useRegister = this.state.newRole.useRegister || false
+        role.admin = this.state.newRole.admin || false
+        role.remark = this.state.newRole.remark || ''
+          role.unSelect = this.state.halfCheckedKeys.join(',')
+        role.menuIdList = [...this.state.newRole.menuIdList, ...this.state.halfCheckedKeys]
+        reqPost(postUrl, role).then(res => {
+          if (res.code === 0) {
             message.success(successMsg)
-            this.setState({modalVisible:false},()=>{this.getRoleList()})
-          }else{
+            this.setState({modalVisible: false}, () => {
+              this.getRoleList()
+            })
+          } else {
             message.error(res.msg);
           }
         })
@@ -299,16 +306,16 @@ class RoleManager extends Component {
   }
 
   render() {
-    const {columns, roleList,loading, newRole, modalVisible, pagination, selectedRowKeys, AllMenuList, modalTitle, expandedKeys} = this.state
-    const { getFieldDecorator } = this.props.form;
+    const {columns, roleList, loading, newRole, modalVisible, pagination, selectedRowKeys, AllMenuList, modalTitle, expandedKeys} = this.state
+    const {getFieldDecorator} = this.props.form;
     const fromItemLayout = {
       labelCol: {
-        xs: { span: 24 },
-        sm: { span: 6 }
+        xs: {span: 24},
+        sm: {span: 6}
       },
       wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 18 }
+        xs: {span: 24},
+        sm: {span: 18}
       }
     };
     return (
@@ -324,12 +331,16 @@ class RoleManager extends Component {
                 <Search
                   placeholder="角色名称"
                   enterButton="查询"
-                  onSearch={value => this.handleTableChange('',value)}
+                  onSearch={value => this.handleTableChange('', value)}
                 />
               </Col>
               <Col span={18}>
-                <Button type="primary" onClick={()=>{this.onAddRole()}} style={{marginLeft:16}}>新增</Button>
-                <Button type="danger" onClick={()=>{this.deleteRole(this.state.selectedRowKeys)}} style={{marginLeft:16}}>批量删除</Button>
+                <Button type="primary" onClick={() => {
+                  this.onAddRole()
+                }} style={{marginLeft: 16}}>新增</Button>
+                <Button type="danger" onClick={() => {
+                  this.deleteRole(this.state.selectedRowKeys)
+                }} style={{marginLeft: 16}}>批量删除</Button>
               </Col>
             </Row>
             <Table
@@ -352,38 +363,52 @@ class RoleManager extends Component {
         <Modal
           title={modalTitle}
           visible={modalVisible}
-          onOk={()=>{this.onCreateRole()}}
-          onCancel={()=>{this.onCloseModal()}}>
+          onOk={() => {
+            this.onCreateRole()
+          }}
+          onCancel={() => {
+            this.onCloseModal()
+          }}>
           <Form>
             <FormItem {...fromItemLayout} label="角色名称">
               {
-                getFieldDecorator('roleName',{
+                getFieldDecorator('roleName', {
                   rules: [{
                     required: true, message: '请填写角色名称'
                   }],
-                  initialValue:newRole.roleName
+                  initialValue: newRole.roleName
                 })(
                   <Input/>
                 )
               }
             </FormItem>
             <FormItem {...fromItemLayout} label="备注">
-              <Input value={newRole.remark} onChange={(e)=>{this.onRemarkChanged(e)}}/>
+              <Input value={newRole.remark} onChange={(e) => {
+                this.onRemarkChanged(e)
+              }}/>
             </FormItem>
             <FormItem {...fromItemLayout} label="是否用于注册">
-            <Switch checked={newRole.useRegister} onChange={(e)=>{this.onSwitchChanged(e,'useRegister')}}/>
-          </FormItem>
+              <Switch checked={newRole.useRegister} onChange={(e) => {
+                this.onSwitchChanged(e, 'useRegister')
+              }}/>
+            </FormItem>
             <FormItem {...fromItemLayout} label="是否管理员角色">
-              <Switch checked={newRole.admin} onChange={(e)=>{this.onSwitchChanged(e,'admin')}}/>
+              <Switch checked={newRole.admin} onChange={(e) => {
+                this.onSwitchChanged(e, 'admin')
+              }}/>
             </FormItem>
             <FormItem {...fromItemLayout} label="授权">
               <div className="tree-container">
                 <Tree
                   checkable
-                  onCheck={(checkedKeys,e)=>{this.menuIdListChanged(checkedKeys,e)}}
+                  onCheck={(checkedKeys, e) => {
+                    this.menuIdListChanged(checkedKeys, e)
+                  }}
                   checkedKeys={newRole.menuIdList}
                   expandedKeys={expandedKeys}
-                  onExpand={(expandedKeys)=>{this.setState({expandedKeys})}}
+                  onExpand={(expandedKeys) => {
+                    this.setState({expandedKeys})
+                  }}
                 >
                   {this.renderTreeNodes(AllMenuList)}
                 </Tree>
@@ -395,6 +420,7 @@ class RoleManager extends Component {
     )
   }
 }
+
 const RoleManagerForm = Form.create()(RoleManager);
 export default connect(state => {
   return {
