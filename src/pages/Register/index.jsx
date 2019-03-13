@@ -155,7 +155,7 @@ class Login extends Component {
                   </FormItem>
                   <FormItem
                     label={'项目识别码'}>
-                    {getFieldDecorator('projectCode', {
+                    {getFieldDecorator('projectCodes', {
                       // rules: [{ required: true, message: '请输入' }]
                     })(
                       <Select
