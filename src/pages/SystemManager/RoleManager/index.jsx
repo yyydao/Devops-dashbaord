@@ -73,12 +73,16 @@ class RoleManager extends Component {
       selectedRowKeys: [],
       halfCheckedKeys: [],
       expandedKeys: [],
+      arrayTree:{},
+      allMenuIds:[],
+      confirmLoading:false
     }
   }
 
   componentWillMount() {
     this.getRoleList()
     this.getMenuList()
+    this.getArrayMenuList()
   }
 
   /**
@@ -120,12 +124,67 @@ class RoleManager extends Component {
     reqGet('/sys/menu/list').then(res => {
       if (res.code === 0) {
         let AllMenuList = res.menuList
+        let aaa=this.treeExchangeArray(res.menuList)
+        console.log(aaa)
         this.setState({AllMenuList})
       } else {
         message.error(res.msg);
       }
     })
   }
+
+  /**
+   * @desc 获取数组菜单
+   */
+  getArrayMenuList = () =>{
+    reqGet('/sys/menu/getAllMenus').then(res => {
+      if (res.code === 0) {
+        let allMenuIds=[]
+        res.data.map(item=>{
+          allMenuIds.push(item.menuId)
+          return item
+        })
+        this.setState({arrayTree:res.data,allMenuIds})
+      } else {
+        message.error(res.msg);
+      }
+    })
+  }
+  /**
+   * @desc 对比两个数组的不同部分
+   */
+  differenceArray = (arr1, arr2) => {
+    return arr1
+      .filter(x => !arr2.includes(x))
+      .concat(arr2.filter(x => !arr1.includes(x)))
+  }
+  /**
+   * 将一维的扁平数组转换为多层级对象
+   */
+  buildTree =()=> {
+    let {newRole,arrayTree,allMenuIds} =this.state
+
+    let unselectKeys=this.differenceArray(allMenuIds,newRole.menuIdList)
+    let parents=[]
+    unselectKeys.map(item=>{
+      parents.push(item)
+      let parentId=arrayTree[allMenuIds.indexOf(item)].parentId
+      if(parentId){
+        parents.push(parentId)
+      }
+      while (parentId){
+        parentId=arrayTree[allMenuIds.indexOf(parentId)].parentId
+        if(parentId){
+          parents.push(parentId)
+        }
+      }
+    })
+    parents=Array.from(new Set(parents))
+    let selectedKeys=this.differenceArray(allMenuIds,parents)
+    newRole.menuIdList=selectedKeys
+    this.setState({newRole,confirmLoading:false})
+  }
+
   /**
    * @desc 关闭弹窗
    */
@@ -136,53 +195,36 @@ class RoleManager extends Component {
    * @desc 修改角色
    */
   updateRole = (roleId) => {
-    reqGet(`/sys/role/info/${roleId}`).then(res => {
-      if (res.code === 0) {
-        let role = res.role
-        if (role.unSelect) {
-          let halfcheck = role.unSelect.split(',')
-          this.setState({halfCheckedKeys: halfcheck})
-          halfcheck.map(item => {
-            let index = role.menuIdList.indexOf(parseInt(item, 0))
-            if (index > -1) {
-              role.menuIdList.splice(index, 1)
-            }
-            return item
-          })
-        }
-        this.setState({
-          newRole: role,
-          modalTitle: '修改',
-          modalVisible: true,
-          expandedKeys: []
-        }, () => {
-          this.props.form.setFieldsValue({roleName: res.role.roleName})
-          // this.dealTreeData(JSON.parse(JSON.stringify(this.state.AllMenuList)))
-        })
-      } else {
-        message.error(res.msg);
-      }
-    })
-  }
-  dealTreeData = (data) => {
-    let menuIdList = JSON.parse(JSON.stringify(this.state.newRole.menuIdList))
-    data.map(item => {
-      if (menuIdList.indexOf(item.menuId) > -1) {
-        if (item.list) {
-          for (let i = 0; i < item.list.length; i++) {
-            if (menuIdList.indexOf(item.list[i].menuId) < 0) {
-              menuIdList.splice(menuIdList.indexOf(item.menuId), 1)
-              let newRole = JSON.parse(JSON.stringify(this.state.newRole))
-              newRole.menuIdList = menuIdList
-              this.setState({newRole}, () => {
-                this.dealTreeData(JSON.parse(JSON.stringify(item.list)))
-              })
-              break;
-            }
+    this.setState({
+      confirmLoading:true,
+      modalTitle: '修改',
+      modalVisible: true,
+    },()=>{
+      reqGet(`/sys/role/info/${roleId}`).then(res => {
+        if (res.code === 0){
+          let role = res.role
+          if (role.unSelect) {
+            let halfcheck = role.unSelect.split(',')
+            this.setState({halfCheckedKeys: halfcheck})
+            halfcheck.map(item => {
+              let index = role.menuIdList.indexOf(parseInt(item, 0))
+              if (index > -1) {
+                role.menuIdList.splice(index, 1)
+              }
+              return item
+            })
           }
+          this.setState({
+            newRole: role,
+            expandedKeys: []
+          }, () => {
+            this.props.form.setFieldsValue({roleName: res.role.roleName})
+            this.buildTree()
+          })
+        } else {
+          message.error(res.msg);
         }
-      }
-      return item
+      })
     })
   }
   /**
@@ -306,7 +348,7 @@ class RoleManager extends Component {
   }
 
   render() {
-    const {columns, roleList, loading, newRole, modalVisible, pagination, selectedRowKeys, AllMenuList, modalTitle, expandedKeys} = this.state
+    const {columns, roleList, loading, newRole, modalVisible, pagination, selectedRowKeys, AllMenuList, modalTitle, expandedKeys,confirmLoading} = this.state
     const {getFieldDecorator} = this.props.form;
     const fromItemLayout = {
       labelCol: {
@@ -363,6 +405,7 @@ class RoleManager extends Component {
         <Modal
           title={modalTitle}
           visible={modalVisible}
+          confirmLoading={confirmLoading}
           onOk={() => {
             this.onCreateRole()
           }}

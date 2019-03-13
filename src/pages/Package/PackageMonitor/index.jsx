@@ -14,7 +14,8 @@ import {
   Checkbox,
   Row,
   Col,
-  Popover
+  Popover,
+  Divider
 } from 'antd'
 import './index.scss'
 
@@ -343,6 +344,7 @@ class PackageMonitor extends Component {
               {dataList(currentData)}
             </Panel>
           </Collapse>
+          <Divider><Button type="primary" style={{margin:'24px auto'}}>加载更多</Button></Divider>
         </div>
         <Modal
           title='重复资源列表'
