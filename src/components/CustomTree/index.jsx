@@ -7,7 +7,8 @@ class CustomTree extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      data: props.data,
+      senceList: props.senceList,
+      selectedChildren:props.selectedChildren,
       currentParentsIndex: 0,
       checkAllSceneIndeterminate: false,
       sceneCheckAll: false,
@@ -18,12 +19,14 @@ class CustomTree extends Component {
   }
 
   propTypes: {
-    data: PropTypes.array.isRequired
+    senceList: PropTypes.array.isRequired,
+    selectedChildren: PropTypes.array.isRequired,
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      data: nextProps.data
+      senceList: nextProps.senceList,
+      selectedChildren: nextProps.selectedChildren
     }, () => this.initData())
   }
 
@@ -31,27 +34,46 @@ class CustomTree extends Component {
     this.initData()
   }
 
+  /**
+   * @desc 初始化数据
+   */
   initData = () => {
-    let {data} = this.state
-    if (data.length > 0) {
-      data.map(item => {
-        item.indeterminate = false
-        item.checked = false
-        item.active = false
+    let {senceList,selectedChildren} = this.state
+    let currentParentsScene=[]
+    if (senceList.length > 0) {
+      senceList.map(item => {
+        let existChecked=false,existUnchecked=false
         if (item.children.length > 0) {
           let children = item.children
-          children.map(item1 => item1.checked = false)
+          children.map(item1 => {
+            if(selectedChildren.indexOf(item1.id)>-1){
+              existChecked = true
+            }else{
+              existUnchecked=true
+            }
+          })
+        }
+        item.indeterminate = existChecked&&existUnchecked
+        item.checked = existChecked&&!existUnchecked
+        item.active = false
+        if(existChecked&&!existUnchecked){
+          currentParentsScene.push(item.id)
         }
         return item
       })
     }
-    this.setState({data})
+    this.setState({senceList,currentParentsScene},()=>{
+      this.judgeAllChecked()
+    })
   }
 
+  /**
+   * @desc label点击事件
+   */
   onItemLabelClick = (index1, children) => {
-    let {data} = this.state
+    let {senceList} = this.state
     let currentChildScene = []
-    data.map((item, index) => item.active = index === index1)
+    senceList.map((item, index) => item.active = index === index1)
 
     children.map(item => {
       if (item.checked) {
@@ -62,16 +84,19 @@ class CustomTree extends Component {
     this.setState({
       currentParentsIndex: index1,
       currentChildrenSceneList: children,
-      data,
+      senceList,
       currentChildScene
     },()=>{
       this.judgeAllChecked()
     })
   }
 
+  /**
+   * @desc 子场景改变事件
+   */
   childSceneChangeScene = (currentChildScene) => {
-    let {currentParentsIndex, data, currentParentsScene} = this.state
-    data[currentParentsIndex].children.map(item => {
+    let {currentParentsIndex, senceList, currentParentsScene} = this.state
+    senceList[currentParentsIndex].children.map(item => {
       if (currentChildScene.indexOf(item.id) > -1) {
         item.checked = true
       } else {
@@ -81,43 +106,46 @@ class CustomTree extends Component {
     })
     //判断父级半选
     if (currentChildScene.length === 0) {
-      if (currentParentsScene.indexOf(data[currentParentsIndex].id) > -1) {
-        currentParentsScene.splice(currentParentsScene.indexOf(data[currentParentsIndex].id), 1)
+      if (currentParentsScene.indexOf(senceList[currentParentsIndex].id) > -1) {
+        currentParentsScene.splice(currentParentsScene.indexOf(senceList[currentParentsIndex].id), 1)
       }
-      data[currentParentsIndex].indeterminate = false
-      data[currentParentsIndex].checked = false
+      senceList[currentParentsIndex].indeterminate = false
+      senceList[currentParentsIndex].checked = false
     }
-    else if (currentChildScene.length !== 0 && currentChildScene.length < data[currentParentsIndex].children.length) {
-      data[currentParentsIndex].indeterminate = true
-      data[currentParentsIndex].checked = false
-      if (currentParentsScene.indexOf(data[currentParentsIndex].id) > -1) {
-        currentParentsScene.splice(currentParentsScene.indexOf(data[currentParentsIndex].id), 1)
+    else if (currentChildScene.length !== 0 && currentChildScene.length < senceList[currentParentsIndex].children.length) {
+      senceList[currentParentsIndex].indeterminate = true
+      senceList[currentParentsIndex].checked = false
+      if (currentParentsScene.indexOf(senceList[currentParentsIndex].id) > -1) {
+        currentParentsScene.splice(currentParentsScene.indexOf(senceList[currentParentsIndex].id), 1)
       }
     } else {
-      currentParentsScene.push(data[currentParentsIndex].id)
-      data[currentParentsIndex].indeterminate = false
-      data[currentParentsIndex].checked = true
+      currentParentsScene.push(senceList[currentParentsIndex].id)
+      senceList[currentParentsIndex].indeterminate = false
+      senceList[currentParentsIndex].checked = true
     }
-    this.setState({currentChildScene, data, currentParentsScene}, () =>{
+    this.setState({currentChildScene, senceList, currentParentsScene}, () =>{
       this.dataChange()
       this.judgeAllChecked()
     })
   }
 
+  /**
+   * @desc 判断是否选中全部
+   */
   judgeAllChecked = () => {
-    let {data, currentParentsScene, sceneCheckAll, checkAllSceneIndeterminate} = this.state
+    let {senceList, currentParentsScene, sceneCheckAll, checkAllSceneIndeterminate} = this.state
     //是否存在半选
     let isexistIndeterminate = false
-    data.map(item => {
+    senceList.map(item => {
       if (item.indeterminate) {
         isexistIndeterminate = true
       }
       return item
     })
-    if (data.length === currentParentsScene.length) {
+    if (senceList.length === currentParentsScene.length) {
       sceneCheckAll = true
       checkAllSceneIndeterminate = false
-    }else if (data.length > currentParentsScene.length && currentParentsScene.length > 0) {
+    }else if (senceList.length > currentParentsScene.length && currentParentsScene.length > 0) {
       checkAllSceneIndeterminate = true
       sceneCheckAll = false
     }else if (currentParentsScene.length === 0 && !isexistIndeterminate) {
@@ -130,11 +158,14 @@ class CustomTree extends Component {
     this.setState({sceneCheckAll, checkAllSceneIndeterminate})
   }
 
+  /**
+   * @desc 父场景改变事件
+   */
   changeParentsScene = (changeParentsScene1) =>{
-    let {data,currentParentsScene} = this.state
+    let {senceList,currentParentsScene} = this.state
     let diff=this.differenceArray(changeParentsScene1,currentParentsScene)
     let checkedIndex=0,children=[]
-    data.map((item,index)=>{
+    senceList.map((item,index)=>{
       if(item.id===diff[0]){
         if(item.checked){
           item.checked=false
@@ -150,23 +181,28 @@ class CustomTree extends Component {
       }
       return item
     })
-    this.setState({currentParentsScene:changeParentsScene1,data},()=>{
+    this.setState({currentParentsScene:changeParentsScene1,senceList},()=>{
       this.onItemLabelClick(checkedIndex,children)
       this.dataChange()
     })
   }
 
+  /**
+   * @desc 对比两个数组的不同部分
+   */
   differenceArray = (arr1, arr2) => {
     return arr1
       .filter(x => !arr2.includes(x))
       .concat(arr2.filter(x => !arr1.includes(x)))
-    // return  arr1.filter(x => !arr2.includes(x));
   }
 
+  /**
+   * @desc 选择全部的事件
+   */
   checkAllSceneChange = (checked) =>{
-    let {data} = this.state
+    let {senceList} = this.state
     let currentParentsScene=[]
-    data.map(item=>{
+    senceList.map(item=>{
       if(checked){
         currentParentsScene.push(item.id)
       }
@@ -181,24 +217,27 @@ class CustomTree extends Component {
     //处理子集
     let currentChildScene=[]
     if(checked){
-      data[this.state.currentParentsIndex].children.map(item=>{
+      senceList[this.state.currentParentsIndex].children.map(item=>{
         currentChildScene.push(item.id)
         return item
       })
     }
     this.setState({
       sceneCheckAll:checked,
-      data,
+      senceList,
       checkAllSceneIndeterminate:false,
       currentParentsScene,
       currentChildScene
     },()=>{this.dataChange()})
   }
 
+  /**
+   * @desc 数据改变事件
+   */
   dataChange = () => {
-    let {data} = this.state
+    let {senceList} = this.state
     let childrenKeys = [],parentKeys=[]
-    data.map(item=>{
+    senceList.map(item=>{
       if(item.children.length>0){
         item.children.map(item1=>{
           if(item1.checked){
@@ -216,7 +255,7 @@ class CustomTree extends Component {
   }
 
   render() {
-    const {data, checkAllSceneIndeterminate, sceneCheckAll, currentParentsScene, currentChildScene, currentChildrenSceneList} = this.state;
+    const {senceList, checkAllSceneIndeterminate, sceneCheckAll, currentParentsScene, currentChildScene, currentChildrenSceneList} = this.state;
     return (
       <div className="ctree">
         <Checkbox
@@ -235,7 +274,7 @@ class CustomTree extends Component {
 
           <Row>
             {
-              data.map((item, index) => {
+              senceList.map((item, index) => {
                 return <Col key={index} span={8} style={{paddingBottom:8}}>
                   <Checkbox
                     indeterminate={item.indeterminate}
