@@ -48,7 +48,9 @@ class PerformanceAdd extends Component {
       chooseSceneID: [],
       //时间
       timeType: '',
-      timeText:'',
+      timeText: '',
+      buildName:'',
+      buildPwd:'',
       buildType: props.testBuildType === 'branch' ? '1' : '2'
     }
   }
@@ -61,11 +63,12 @@ class PerformanceAdd extends Component {
       buildType,
       selectedBranchName,
       chooseSceneID,
-      formDataTime,
       selectedEnvID,
       selectedModalItems,
       timeType,
       timeText,
+      buildName,
+      buildPwd,
     } = this.state
     console.log(chooseSceneID)
     if (!selectedBranchName) {
@@ -83,6 +86,12 @@ class PerformanceAdd extends Component {
     } else if (this.state.buildType === '2' && !timeText) {
       message.error('请选择“定时时间”')
       return
+    }else if (this.state.platform === '2' && !buildName) {
+      message.error('请输入构建账号')
+      return
+    } else if (this.state.platform === '2' && !buildPwd) {
+      message.error('请输入构建密码')
+      return
     }
 
     let postData = {
@@ -93,10 +102,14 @@ class PerformanceAdd extends Component {
       sceneIds: chooseSceneID.join(','),
       phoneKeys: selectedModalItems.join(','),
     }
-    if(buildType === '2'){
-      Object.assign(postData,{timeType,timeText})
+    if (buildType === '2') {
+      Object.assign(postData, { timeType, timeText })
     }
-    reqPost('/performance/task/submit', postData).then(res => {
+    if (this.state.platform === '2'){
+      Object.assign(postData, { buildName, buildPwd })
+    }
+
+      reqPost('/performance/task/submit', postData).then(res => {
       if (res.code === 0) {
         Modal.success({ content: `构建成功` })
         this.next()
@@ -219,7 +232,7 @@ class PerformanceAdd extends Component {
   onTimerTypeChange = (e) => {
     this.setState({
       timeType: e.target.value,
-    });
+    })
   }
 
   /**
@@ -258,7 +271,39 @@ class PerformanceAdd extends Component {
     this.setState({ chooseSceneID: childrenKeys })
   }
 
+  /**
+   * @desc  输入构建账号
+   */
+  onChangeBuildName = (e)=>{
+    this.setState({ buildName: e.target.value });
+  }
+
+  /**
+   * @desc 输入构建密码
+   */
+  onChangeBuildPwd = (e) =>{
+    this.setState({ buildPwd: e.target.value });
+  }
+
   next () {
+    const {
+      selectedEnvID,
+      buildName,
+      buildPwd,
+    } = this.state
+    if (this.state.current === 0) {
+      if (selectedEnvID.length < 1) {
+        message.error('请选择“测试环境”')
+        return
+      }else if (this.state.platform === '2' && !buildName) {
+        message.error('请输入构建账号')
+        return
+      } else if (this.state.platform === '2' && !buildPwd) {
+        message.error('请输入构建密码')
+        return
+      }
+
+    }
     const current = this.state.current + 1
     this.setState({ current })
   }
@@ -292,6 +337,8 @@ class PerformanceAdd extends Component {
       modalList,
       selectedModalItems,
       timeType,
+      buildName,
+      buildPwd,
     } = this.state
 
     const filteredOptions = modalList.filter((o) => {
@@ -330,18 +377,21 @@ class PerformanceAdd extends Component {
             {...formItemLayout}
           >
             <Input style={{ width: 450 }}
+                   value={buildName}
+                   onChange={this.onChangeBuildName}
                    prefix={<Icon type="user" style={{ color: 'rgba(0, 0, 0, .25)' }}></Icon>}
                    placeholder="构建账号"/>
 
           </Form.Item>
           <Form.Item
-            label="构建账号"
+            label="构建密码"
             {...formItemLayout}
           >
-            <Input style={{ width: 450 }}
-                   prefix={<Icon type="lock" style={{ color: 'rgba(0, 0, 0, .25)' }}></Icon>}
-                   type="password"
-                   placeholder="构建账号密码"/>
+            <Input.Password style={{ width: 450 }}
+                            value={buildPwd}
+                            onChange={this.onChangeBuildPwd}
+                            prefix={<Icon type="lock" style={{ color: 'rgba(0, 0, 0, .25)' }}></Icon>}
+                            placeholder="构建账号密码"/>
 
           </Form.Item>
         </React.Fragment>

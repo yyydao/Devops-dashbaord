@@ -141,10 +141,10 @@ class PerformanceBranchTest extends Component {
       versionID: 0,
       //状态集合
       statusList: [],
-      status: '全部',
+      status: '',
       // 机型列表
-      modalList: ['全部'],
-      modal: '全部'
+      modalList: [],
+      modal: ''
     }
   }
 
@@ -229,7 +229,7 @@ class PerformanceBranchTest extends Component {
    */
   getVersionList = () => {
     const {projectId, envID, selectDisabled} = this.state
-    reqGet('/performance/package/versionlist', {
+    reqGet('/performance/task/package/versions', {
       projectID: projectId,
       envID: envID
     }).then(res => {
@@ -342,6 +342,8 @@ class PerformanceBranchTest extends Component {
     this.props.setTestBuildType('branch')
     this.getEnvList()
     this.getBranchList()
+    this.getStatusList()
+    this.getModalList()
   }
 
   componentDidMount() {
