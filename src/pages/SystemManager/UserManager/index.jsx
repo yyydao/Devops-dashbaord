@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {Link} from 'react-router-dom'
 import {connect} from 'react-redux'
-import {Breadcrumb, Table, message, Modal, Checkbox, Button, Row, Col, Form, Input, Radio, Tag} from 'antd'
+import {Breadcrumb, Table, message, Modal, Checkbox, Button, Row, Col, Form, Input, Radio, Tag, Select} from 'antd'
 
 import {reqGet, reqPost} from '@/api/api'
 import './index.scss'
@@ -12,6 +12,7 @@ const Search = Input.Search;
 const CheckboxGroup = Checkbox.Group;
 const confirm = Modal.confirm;
 const RadioGroup = Radio.Group;
+const Option = Select.Option
 
 class UserManager extends Component {
   constructor() {
@@ -105,13 +106,15 @@ class UserManager extends Component {
         {label: '项目管理员', value: 2},
         {label: 'developer', value: 3},
         {label: '测试人员', value: 4}
-      ]
+      ],
+      projectCodes:[]
     }
   }
 
   componentWillMount() {
     this.getUserList()
     this.getRoleList()
+    this.getAllProjects()
   }
 
   /**
@@ -152,6 +155,18 @@ class UserManager extends Component {
         })
       } else {
         message.error(res.msg);
+      }
+    })
+  }
+
+  /**
+   * @desc 获取项目识别码列表
+   */
+  getAllProjects = () => {
+    reqGet('/project/getAllProjects').then(res => {
+      console.log(res)
+      if (res.code === 0) {
+        this.setState({projectCodes: res.data || []})
       }
     })
   }
@@ -242,7 +257,7 @@ class UserManager extends Component {
         nickName: '',
         email: '',
         mobile: '',
-        projectCode: '',
+        projectCodes: [],
         roleIdList: [],
         status: 1
       })
@@ -273,7 +288,7 @@ class UserManager extends Component {
    */
   onCreateUser = () => {
     let successMsg = "新增成功"
-    let fields = this.state.modalTitle === '新增' ? ['username', 'psw', 'password', 'mobile', 'nickName', 'projectCode', 'email', 'roleIdList', 'status'] : ['username', 'psw', 'password', 'mobile', 'nickName', 'email', 'roleIdList', 'status']
+    let fields = this.state.modalTitle === '新增' ? ['username', 'psw', 'password', 'mobile', 'nickName', 'projectCodes', 'email', 'roleIdList', 'status'] : ['username', 'psw', 'password', 'mobile', 'nickName', 'email', 'roleIdList', 'status']
     this.props.form.validateFields(fields, (err, values) => {
       if (values.password && !values.psw) {
         message.error("请填写确认密码")
@@ -301,7 +316,7 @@ class UserManager extends Component {
   }
 
   render() {
-    const {columns, userList, loading, newUser, modalVisible, modalTitle, pagination, selectedRowKeys, plainOptions, confirmLoading} = this.state
+    const {columns, userList, loading, newUser, modalVisible, modalTitle, pagination, selectedRowKeys, plainOptions, confirmLoading, projectCodes} = this.state
     const {getFieldDecorator} = this.props.form;
     const fromItemLayout = {
       labelCol: {
@@ -475,12 +490,18 @@ class UserManager extends Component {
             </FormItem>
             {
               modalTitle === '新增' &&
-              <FormItem {...fromItemLayout} label="项目编码">
-                {
-                  getFieldDecorator('projectCode', {initialValue: newUser.projectCode})(
-                    <Input/>
-                  )
-                }
+              <FormItem {...fromItemLayout} label={'项目识别码'}>
+                {getFieldDecorator('projectCodes', {
+                  // rules: [{ required: true, message: '请输入' }]
+                })(
+                  <Select
+                    mode="multiple"
+                    style={{width: "100%"}}>
+                    {
+                      projectCodes.map((item, index) => <Option value={item.projectCode} key={index}>{item.name}</Option>)
+                    }
+                  </Select>
+                )}
               </FormItem>
             }
             <FormItem {...fromItemLayout} label="角色">
