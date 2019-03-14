@@ -154,20 +154,6 @@ class ProjectInfo extends Component {
                   )
                 }
               </FormItem>
-              <FormItem {...fromItemLayout} label="Gitlab地址">
-                {
-                  getFieldDecorator('gitUrl')(
-                    <Input/>
-                  )
-                }
-              </FormItem>
-              <FormItem {...fromItemLayout} label="Jenkins地址" style={{ marginBottom: 10 }}>
-                {
-                  getFieldDecorator('jenkinsAddr')(
-                    <Input/>
-                  )
-                }
-              </FormItem>
               <FormItem {...fromItemLayout} label="项目平台" style={{ marginBottom: 0 }}>
                 <span>{platform}</span>
               </FormItem>
