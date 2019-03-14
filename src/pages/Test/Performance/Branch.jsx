@@ -1,9 +1,9 @@
-import React, {Component} from 'react'
-import {Link} from 'react-router-dom'
-import {connect} from 'react-redux'
+import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
 import './index.scss'
-import {reqGet, reqPost} from '@/api/api'
-import {setTestBuildType} from '@/store/actions/project'
+import { reqGet, reqPost } from '@/api/api'
+import { setTestBuildType } from '@/store/actions/project'
 
 import {
   Breadcrumb,
@@ -16,18 +16,19 @@ import {
   message,
   Popover
 } from 'antd'
-import {bindActionCreators} from 'redux'
+import { bindActionCreators } from 'redux'
 
 const BreadcrumbItem = Breadcrumb.Item
 const Option = Select.Option
 
 class PerformanceBranchTest extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
       projectId: props.projectId,
       testBuildType: 'branch',
+      curPage: 1,
 
       columns: [
         {
@@ -59,10 +60,10 @@ class PerformanceBranchTest extends Component {
           dataIndex: 'scene',
           key: 'scene',
           width: '8%',
-          render: (text) => <Popover content={<p style={{width: 180, marginBottom: 0}}>{text}</p>}
+          render: (text) => <Popover content={<p style={{ width: 180, marginBottom: 0 }}>{text}</p>}
                                      trigger="hover">
             <Button type="primary" ghost={true} shape="circle" icon="info"
-                    style={{fontSize: 12, marginRight: 24, width: 20, height: 20}}/>
+                    style={{ fontSize: 12, marginRight: 24, width: 20, height: 20 }}/>
           </Popover>
         },
         {
@@ -91,7 +92,7 @@ class PerformanceBranchTest extends Component {
         {
           title: '操作',
           width: '10%',
-          render: (text, record) => <div><a>删除</a><span style={{color: '#eee'}}> | </span><a>下载</a></div>
+          render: (text, record) => <div><a>删除</a><span style={{ color: '#eee' }}> | </span><a>下载</a></div>
         }
       ],
       listData: [{
@@ -152,7 +153,7 @@ class PerformanceBranchTest extends Component {
    * @desc 获取表格数据
    */
   getTableData = () => {
-    this.setState({loading: true})
+    this.setState({ loading: true })
 
   }
 
@@ -172,20 +173,15 @@ class PerformanceBranchTest extends Component {
    * @desc 获取环境列表
    */
   getEnvList = () => {
-    const {projectId} = this.state
-    reqGet('/performance/env/listall', {projectID: projectId}).then(res => {
+    const { projectId } = this.state
+    reqGet('/performance/env/listall', { projectID: projectId }).then(res => {
       if (res.code === 0) {
         let id = ''
         //钉钉进入该页面时，会带来一个envID，否则默认为全部
         if (this.state.envID) {
           id = this.state.envID
         } else {
-          res.data.map(item => {
-            if (item.code === -1) {
-              id = item.code
-            }
-            return item
-          })
+          id = res.data && res.data[0] && res.data[0].code
         }
         this.setState({
           envList: res.data,
@@ -198,6 +194,16 @@ class PerformanceBranchTest extends Component {
       }
     })
   }
+  /**
+   * @desc 修改环境
+   */
+  changeEnv = (envID) => {
+    this.setState({
+      envID
+    }, () => {
+      this.getList()
+    })
+  }
 
   /**
    * @desc 获取分支列表
@@ -208,8 +214,17 @@ class PerformanceBranchTest extends Component {
       buildType: 1
     }).then(res => {
       if (res.code === 0) {
+        let id = ''
+        //钉钉进入该页面时，会带来一个envID，否则默认为全部
+        if (this.state.branchID) {
+          id = this.state.branchID
+        } else {
+          id = res.data && res.data[0] && res.data[0].code
+        }
+
         this.setState({
-          branchList: res.data
+          branchList: res.data,
+          branchID: id,
         })
       }
     })
@@ -221,6 +236,8 @@ class PerformanceBranchTest extends Component {
   changeBranch = (branchID) => {
     this.setState({
       branchID
+    }, () => {
+      this.getList()
     })
   }
 
@@ -228,28 +245,37 @@ class PerformanceBranchTest extends Component {
    * @desc 获取版本列表
    */
   getVersionList = () => {
-    const {projectId, envID, selectDisabled} = this.state
+    const { projectId, envID } = this.state
     reqGet('/performance/task/package/versions', {
       projectID: projectId,
       envID: envID
     }).then(res => {
       if (res.code === 0) {
-        let buildVersion = ''
-        if (this.state.buildId) {
-          buildVersion = this.state.versionID
+        let id = ''
+        if (this.state.versionID) {
+          id = this.state.versionID
         } else {
-          if (res.data.length > 0 && !selectDisabled) {
-            buildVersion = res.data[0].buildVersion
-          }
+          id = res.data && res.data[0] && res.data[0].code
         }
         this.setState({
           versionList: res.data,
-          versionID: buildVersion
+          versionID: id
         })
       } else {
         message.error(res.msg)
       }
     })
+  }
+
+  /**
+   * @desc 修改版本
+   * @param versionID
+   */
+  changeVersion = (versionID) => {
+    this.setState({
+      versionID
+    }, () => {})
+    this.getList()
   }
 
   /**
@@ -260,8 +286,15 @@ class PerformanceBranchTest extends Component {
       projectID: this.props.projectId,
     }).then(res => {
       if (res.code === 0) {
+        let id = ''
+        if (this.state.status) {
+          id = this.state.status
+        } else {
+          id = res.data && res.data[0] && res.data[0].code
+        }
         this.setState({
-          statusList: res.data
+          statusList: res.data,
+          status: id,
         })
       }
     })
@@ -274,6 +307,8 @@ class PerformanceBranchTest extends Component {
   changeStatus = (status) => {
     this.setState({
       status
+    }, () => {
+      this.getList()
     })
   }
 
@@ -286,8 +321,15 @@ class PerformanceBranchTest extends Component {
       buildType: 1
     }).then(res => {
       if (res.code === 0) {
+        let id = ''
+        if (this.state.modal) {
+          id = this.state.modal
+        } else {
+          id = res.data && res.data[0] && res.data[0].code
+        }
         this.setState({
-          modalList: res.data
+          modalList: res.data,
+          modal: id
         })
       }
     })
@@ -300,21 +342,43 @@ class PerformanceBranchTest extends Component {
   changeModal = (modal) => {
     this.setState({
       modal
+    }, () => {
+      this.getList()
     })
   }
 
   /**
-   * @desc 获取提测列表
+   * @desc 获取列表
    */
-  getPackageList = () => {
-    const {projectId, envID, status, versionID, curPage} = this.state
-    console.log({
-      projectId, envID, status, versionID, curPage
-    })
-  }
-
-  //获取主列表数据
   getList = () => {
+    const { projectId, envID, status, versionID, branchID, modal, buildType, curPage } = this.state
+    console.log({
+      projectId, envID, status, versionID, branchID, modal, buildType, curPage
+    })
+    reqGet('/performance/task/list', {
+      'projectID': projectId,
+      'envID': envID,
+      'versionLong': versionID,
+      'branchName': branchID,
+      'status': status,
+      'phoneKey': modal,
+      'buildType': 1,
+      'page': curPage,
+      'limit': 10
+    }).then(res => {
+      if (res.code === 0) {
+
+      } else {
+        Modal.info({
+          title: '提示',
+          content: (
+            <p>{res.msg}</p>
+          ),
+          onOk () {
+          }
+        })
+      }
+    })
   }
 
   //取消正在构建任务
@@ -331,14 +395,14 @@ class PerformanceBranchTest extends Component {
           content: (
             <p>{res.msg}</p>
           ),
-          onOk() {
+          onOk () {
           }
         })
       }
     })
   }
 
-  componentWillMount() {
+  componentWillMount () {
     this.props.setTestBuildType('branch')
     this.getEnvList()
     this.getBranchList()
@@ -346,13 +410,13 @@ class PerformanceBranchTest extends Component {
     this.getModalList()
   }
 
-  componentDidMount() {
+  componentDidMount () {
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
   }
 
-  render() {
+  render () {
     const {
       listData,
       columns,
@@ -457,27 +521,23 @@ class PerformanceBranchTest extends Component {
             <Col>
               <span>环境：</span>
               <Select value={envID}
-                      style={{width: 100, marginRight: 40}}
-                      onChange={(e) => {
-                        this.filterChange(e, 'envID')
-                      }}>
+                      style={{ width: 100, marginRight: 40 }}
+                      onChange={this.changeEnv}>
                 {envList.length > 0 && envList.map((item, index) => {
                   return <Option value={item.code} key={index}>{item.text}</Option>
                 })}
               </Select>
               <span>版本：</span>
               <Select value={versionID}
-                      style={{width: 100}}
-                      onChange={(e) => {
-                        this.filterChange(e, 'version')
-                      }}>
+                      style={{ width: 100 }}
+                      onChange={this.changeVersion}>
                 {versionList.length > 0 && versionList.map((item, index) => {
                   return <Option value={item.code} key={index}>{item.text}</Option>
                 })}
               </Select>
-              <span style={{paddingRight: 0, paddingLeft: 40}}>开发分支：</span>
+              <span style={{ paddingRight: 0, paddingLeft: 40 }}>开发分支：</span>
               <Select placeholder="开发分支"
-                      style={{width: 100}}
+                      style={{ width: 100 }}
                       showSearch
                       value={branchID}
                       onSearch={this.getBranchList}
@@ -489,9 +549,9 @@ class PerformanceBranchTest extends Component {
                   })
                 }
               </Select>
-              <span style={{paddingRight: 0, paddingLeft: 40}}>状态：</span>
+              <span style={{ paddingRight: 0, paddingLeft: 40 }}>状态：</span>
               <Select placeholder="状态"
-                      style={{width: 100}}
+                      style={{ width: 100 }}
                       showSearch
                       value={status}
                       onSearch={this.getStatusList}
@@ -502,9 +562,9 @@ class PerformanceBranchTest extends Component {
                   })
                 }
               </Select>
-              <span style={{paddingRight: 0, paddingLeft: 40}}>机型：</span>
+              <span style={{ paddingRight: 0, paddingLeft: 40 }}>机型：</span>
               <Select placeholder="机型"
-                      style={{width: 100}}
+                      style={{ width: 100 }}
                       showSearch
                       value={modal}
                       onSearch={this.getModalList}
@@ -524,7 +584,7 @@ class PerformanceBranchTest extends Component {
         <div className="devops-main-wrapper">
           <main className='performance-list-main'>
             <div role="tablist" className="ant-tabs-bar ant-tabs-top-bar">
-              <div className="ant-tabs-extra-content" style={{float: 'right', paddingRight: '35px'}}>
+              <div className="ant-tabs-extra-content" style={{ float: 'right', paddingRight: '35px' }}>
                 <Button type="primary" onClick={this.goToAdd}>新增测试</Button>
               </div>
               <div className="ant-tabs-nav-container">
@@ -532,7 +592,7 @@ class PerformanceBranchTest extends Component {
                   <div className="ant-tabs-nav-scroll">
                     <div className="ant-tabs-nav">
                       <div>
-                        <div className="ant-tabs-tab" style={{'fontWeight': '500'}}>分支测试
+                        <div className="ant-tabs-tab" style={{ 'fontWeight': '500' }}>分支测试
                         </div>
                       </div>
                     </div>
@@ -557,8 +617,8 @@ class PerformanceBranchTest extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  const {project} = state
+function mapStateToProps (state) {
+  const { project } = state
   if (project.projectId) {
     return {
       projectId: project.projectId,
@@ -572,7 +632,7 @@ function mapStateToProps(state) {
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     setTestBuildType: bindActionCreators(setTestBuildType, dispatch),
   }
