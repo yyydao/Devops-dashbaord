@@ -105,7 +105,7 @@ class Login extends Component {
                     {getFieldDecorator('password', {
                       rules: [{ required: true, message: '请输入' }]
                     })(
-                      <Input prefix={<Icon type="lock" style={{ color: 'rgba(0, 0, 0, .25)' }}></Icon>} type="password"
+                      <Input.Password prefix={<Icon type="lock" style={{ color: 'rgba(0, 0, 0, .25)' }}></Icon>} type="password"
                              placeholder="密码"/>
                     )}
                   </FormItem>
