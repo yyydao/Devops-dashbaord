@@ -351,10 +351,7 @@ class PerformanceBranchTest extends Component {
    * @desc 获取列表
    */
   getList = () => {
-    const { projectId, envID, status, versionID, branchID, modal, buildType, curPage } = this.state
-    console.log({
-      projectId, envID, status, versionID, branchID, modal, buildType, curPage
-    })
+    const { projectId, envID, status, versionID, branchID, modal, curPage } = this.state
     reqGet('/performance/task/list', {
       'projectID': projectId,
       'envID': envID,
