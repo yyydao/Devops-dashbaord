@@ -133,19 +133,19 @@ class PerformanceBranchTest extends Component {
 
       // 分支列表
       branchList: [],
-      branchID: 0,
+      branchID: "-1",
       //环境列表
       envList: [],
-      envID: 0,
+      envID: -1,
       //版本列表
       versionList: [],
-      versionID: 0,
+      versionID: -1,
       //状态集合
       statusList: [],
-      status: '',
+      status: -2,
       // 机型列表
       modalList: [],
-      modal: ''
+      modal: '-1'
     }
   }
 
@@ -381,33 +381,13 @@ class PerformanceBranchTest extends Component {
     })
   }
 
-  //取消正在构建任务
-  cancelTask = (buildId) => {
-    reqPost('/task/cancel', {
-      buildId: buildId,
-      type: this.state.typeValue
-    }).then(res => {
-      if (res.code === 0) {
-        this.getList('buildingList')
-      } else {
-        Modal.info({
-          title: '提示',
-          content: (
-            <p>{res.msg}</p>
-          ),
-          onOk () {
-          }
-        })
-      }
-    })
-  }
-
   componentWillMount () {
     this.props.setTestBuildType('branch')
     this.getEnvList()
     this.getBranchList()
     this.getStatusList()
     this.getModalList()
+    this.getList()
   }
 
   componentDidMount () {
