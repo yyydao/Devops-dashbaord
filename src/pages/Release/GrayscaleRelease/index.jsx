@@ -192,7 +192,8 @@ class GrayscaleRelease extends Component {
    * @desc 跳转APM
    */
   gotoAPM = (data) =>{
-    let url=`http://10.100.14.152:8082/#/networkPerformance?appVersion=${data.appVersion}&appDomain=${data.domain}&retrieveTimeStart=${data.retrieveTimeStart}&retrieveTimeEnd=${data.retrieveTimeEnd}`
+    // let url=`http://10.100.14.152:8082/#/networkPerformance?appVersion=${data.appVersion}&appDomain=${data.domain}&retrieveTimeStart=${data.retrieveTimeStart}&retrieveTimeEnd=${data.retrieveTimeEnd}`
+    let url=`http://10.100.14.152:8082/#/networkPerformance?params={appVersion:${data.appVersion},appDomain:${data.domain},retrieveTimeStart:${data.retrieveTimeStart},retrieveTimeEnd:${data.retrieveTimeEnd}}`
     window.open(url, '_blank')
   }
   /**
