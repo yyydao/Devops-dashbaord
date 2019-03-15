@@ -40,6 +40,7 @@ class GrayscaleRelease extends Component {
           title: '域名',
           dataIndex: 'domain',
           key: 'domain',
+          render: (text, record) => <div><a onClick={()=>{this.gotoAPM(record)}}>{text}</a></div>
         },
         {
           title: '请求量',
@@ -187,20 +188,13 @@ class GrayscaleRelease extends Component {
       }
     })
   }
-
   /**
-   * @desc 灰度部署 /获取分发数
+   * @desc 跳转APM
    */
-  getDistributeNum = () => {
-    reqGet('/distribute/getDistributeNum', {projectId: this.props.projectId}).then(res => {
-      if (res.code === 0) {
-        this.setState({distributeData: res.data})
-        return
-      }
-      message.error(res.msg)
-    })
+  gotoAPM = (data) =>{
+    let url=`http://10.100.14.152:8082/#/networkPerformance?appVersion=${data.appVersion}&appDomain=${data.domain}&retrieveTimeStart=${data.retrieveTimeStart}&retrieveTimeEnd=${data.retrieveTimeEnd}`
+    window.open(url, '_blank')
   }
-
   /**
    * @desc 获取地区信息
    */
@@ -317,6 +311,7 @@ class GrayscaleRelease extends Component {
         if (values.devices) {
           values.devices = values.devices.split('\n').join(',')
         }
+
         values.projectId = newRules.projectId || this.props.projectId
         values.type = newRules.type
 
@@ -396,10 +391,6 @@ class GrayscaleRelease extends Component {
     const {
       platform,
       projectName,
-      collapseCloumns,
-      collapseData,
-      collapseTitle,
-      distributeData,
       areaList,
       modalVisible,
       checkAllArea,
