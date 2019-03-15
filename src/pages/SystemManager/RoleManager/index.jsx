@@ -176,6 +176,7 @@ class RoleManager extends Component {
           parents.push(parentId)
         }
       }
+      return item
     })
     parents=Array.from(new Set(parents))
     let selectedKeys=this.differenceArray(allMenuIds,parents)

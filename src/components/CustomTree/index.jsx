@@ -51,6 +51,7 @@ class CustomTree extends Component {
             }else{
               existUnchecked=true
             }
+            return item1
           })
         }
         item.indeterminate = existChecked&&existUnchecked
