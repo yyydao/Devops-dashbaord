@@ -143,7 +143,7 @@ class Personal extends Component {
             <FormItem {...fromItemLayout} label="角色">
               {
                 getFieldDecorator('roleName')(
-                  <Input disabled/>
+                  <Input disabled={true}/>
                 )
               }
             </FormItem>

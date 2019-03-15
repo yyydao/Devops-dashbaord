@@ -33,32 +33,32 @@ class PerformanceBranchTest extends Component {
       columns: [
         {
           title: 'ID',
-          dataIndex: 'demandID',
+          dataIndex: 'rowNum',
           width: '8%',
-          key: 'demandID'
+          key: 'rowNum'
         },
         {
           title: '分支',
-          dataIndex: 'branch',
-          key: 'branch',
+          dataIndex: 'branchName',
+          key: 'branchName',
           width: '20%'
         },
         {
           title: '版本',
-          dataIndex: 'version',
-          key: 'version',
+          dataIndex: 'appVersion',
+          key: 'appVersion',
           width: '8%'
         },
         {
           title: '环境',
-          dataIndex: 'env',
-          key: 'env',
+          dataIndex: 'envName',
+          key: 'envName',
           width: '10%',
         },
         {
           title: '场景',
-          dataIndex: 'scene',
-          key: 'scene',
+          dataIndex: 'sceneTexts',
+          key: 'sceneTexts',
           width: '8%',
           render: (text) => <Popover content={<p style={{ width: 180, marginBottom: 0 }}>{text}</p>}
                                      trigger="hover">
@@ -68,72 +68,43 @@ class PerformanceBranchTest extends Component {
         },
         {
           title: '创建人',
-          dataIndex: 'creator',
-          key: 'creator',
+          dataIndex: 'nickName',
+          key: 'nickName',
           width: '6%'
         },
         {
           title: '时间',
-          dataIndex: 'time',
-          key: 'time',
+          dataIndex: 'createTime',
+          key: 'createTime',
           width: '10%'
         },
         {
           title: '状态',
-          dataIndex: 'status',
-          key: 'status',
+          dataIndex: 'statusText',
+          key: 'statusText',
           width: '10%'
         }, {
           title: '机型',
-          dataIndex: 'type',
-          key: 'type',
-          width: '10%'
+          dataIndex: 'phones',
+          key: 'phones',
+          width: '10%',
+          render: (text, record) => <div>
+            {console.log(text.length)}
+            {/*{console.log(record)}*/}
+            {(text && text.length>1)? '组合': text[0].phoneName}
+          </div>
         },
         {
           title: '操作',
           width: '10%',
-          render: (text, record) => <div><a>删除</a><span style={{ color: '#eee' }}> | </span><a>下载</a></div>
+          render: () => <div><a>删除</a><span style={{ color: '#eee' }}> | </span><a>下载</a></div>
         }
       ],
-      listData: [{
-        demandID: '110',
-        branch: 'origin/developer/developer_main',
-        version: '5.4.2',
-        env: '测试',
-        scene: '检查各一级页面，登录相关，签到',
-        creator: '林淼润',
-        time: '2019-01-19 20:00:00',
-        status: '等待中',
-        type: '组合',
-        list: [
-          {
-            demandID: '',
-            branch: '',
-            version: '',
-            env: '',
-            scene: '',
-            creator: '',
-            time: '',
-            status: '',
-            type: 'iphone6',
-          },
-          {
-            demandID: '',
-            branch: '',
-            version: '',
-            env: '',
-            scene: '',
-            creator: '',
-            time: '',
-            status: '',
-            type: 'iphone7',
-          }
-        ]
-      }],
+      listData: [],
 
       // 分支列表
       branchList: [],
-      branchID: "-1",
+      branchID: '-1',
       //环境列表
       envList: [],
       envID: -1,
@@ -364,6 +335,11 @@ class PerformanceBranchTest extends Component {
       'limit': 10
     }).then(res => {
       if (res.code === 0) {
+        if(res.data && res.data !==null){
+          this.setState({ listData: res.data })
+        }else{
+
+        }
 
       } else {
         Modal.info({
@@ -414,75 +390,31 @@ class PerformanceBranchTest extends Component {
 
     const expandedRowRender = (record) => {
       console.log(record)
-      const columns = [
+      const expandedColumns = [
         {
-          title: 'ID',
-          width: '8%',
-          key: 'demandID'
-        },
-        {
-          title: '分支',
-          dataIndex: 'branch',
-          key: 'branch',
-          width: '20%'
-        },
-        {
-          title: '版本',
-          dataIndex: 'version',
-          key: 'version',
-          width: '8%'
-        },
-        {
-          title: '环境',
-          dataIndex: 'env',
-          key: 'env',
-          width: '10%',
-        },
-        {
-          title: '场景',
-          dataIndex: 'scene',
-          key: 'scene',
-          width: '8%'
-        },
-        {
-          title: '创建人',
-          dataIndex: 'creator',
-          key: 'creator',
-          width: '6%'
-        },
-        {
-          title: '时间',
-          dataIndex: 'time',
-          key: 'time',
-          width: '10%'
-        },
-        {
-          title: '状态',
-          dataIndex: 'status',
-          key: 'status',
-          width: '10%'
+          title: 'buildNum',
+          dataIndex: 'buildNum',
+          key: 'buildNum'
         }, {
           title: '机型',
-          dataIndex: 'type',
-          key: 'type',
-          width: '10%'
+          dataIndex: 'phoneName',
+          key: 'phoneName',
         },
         {
           title: '操作',
-          width: '10%',
           key: 'edit',
           render: (text, record) => <div><a>查看报告</a></div>
         }
       ]
       return (
         <Table
-          columns={columns}
-          dataSource={record.list}
+          columns={expandedColumns}
+          dataSource={record.phones}
           pagination={false}
           showHeader={false}
           indentSize={0}
           rowClassName="rowClass"
-          rowKey={record => record.id}
+          rowKey={record => record.buildNum}
         />
       )
     }
@@ -579,8 +511,8 @@ class PerformanceBranchTest extends Component {
             </div>
             <Table
               columns={columns}
-              rowKey={record => record.id}
               expandedRowRender={expandedRowRender}
+              rowKey={record => record.rowNum}
               dataSource={listData}
               indentSize={0}
               pagination={pagination}
