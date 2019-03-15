@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
-import {reqPost, reqGet} from '@/api/api'
+import {reqPost} from '@/api/api'
 import {
   Breadcrumb,
   Card,
@@ -13,7 +13,8 @@ import {
   Row,
   Col,
   Upload,
-  message
+  message,
+  Popover
 } from 'antd'
 import '././index.scss'
 
@@ -115,50 +116,60 @@ class PackageSelfCheck extends Component {
         unUseNum: '19',
         unUseMark: '16'
       },
-      fileList: [],
+      fileList: {
+        ipa: [],
+        apk: [],
+        txt: []
+      },
+      platform: '',
       uploading: false
     }
   }
 
   componentWillMount() {
+    this.getPlatForm()
   }
 
   /**
-   * @desc 拖拽文件的改变事件
+   * @desc 获取项目详情为了获取platform，区分是ios,还是Android
    */
-  onDraggerChange = (info) => {
-    this.setState({uploading:true})
-    const status = info.file.status;
-    let fileList = info.fileList;
-    console.log(info)
-    if (status === 'done') {
-      if (info.file.response.code === 0) {
-
-      } else {
-        fileList = []
-        message.error(info.file.response.msg)
+  getPlatForm = () => {
+    reqPost('/project/projectInfo', {
+      projectId: this.props.projectId
+    }).then(res => {
+      if (parseInt(res.code, 0) === 0) {
+        this.setState({
+          platform: res.data.platform,
+        })
       }
-    } else if (status === 'error') {
-      fileList = []
-      message.error(`${info.file.name}  文件上传失败`)
-    } else if (!status) {
-      fileList = []
-    }
-    this.setState({fileList,uploading:false})
+    })
   }
-
   /**
-   * @desc ipa上传之前的操作
+   * @desc 文件上传（判断是否一个文件）
    */
-  beforeUpload = (file, fileList) => {
-    if (fileList.length !== 1) {
+  beforeUpload = (file, fileList1, type) => {
+    let {fileList, uploading} = this.state
+    if (fileList[type].length === 1) {
       message.error("只支持上传一个文件")
       return false
     }
+    fileList[type].push(file)
+    uploading = type === 'ipa'
+    this.setState({fileList, uploading})
+  }
+
+  /**
+   * @desc 文件移除事件
+   */
+  onRemove = (file, type) => {
+    let fileList = JSON.parse(JSON.stringify(this.state.fileList))
+    const index = fileList[type].indexOf(file);
+    fileList[type].splice(index, 1)
+    this.setState({fileList});
   }
 
   render() {
-    const {fileList, modalVisible, columns, tableData, pagination, currentData, keyName, uploading} = this.state
+    const {fileList, modalVisible, columns, tableData, pagination, currentData, keyName, uploading, platform} = this.state
     let dataList = (data) => {
       let list = [[], [], [], []], color = ['red', 'yellow', 'green', 'blue']
       for (let i in keyName) {
@@ -209,6 +220,39 @@ class PackageSelfCheck extends Component {
       console.log(list)
       return list
     }
+    let getDraggerContext = (type) => {
+      let textTips = '', fileTips = ''
+      switch (type) {
+        case 'ipa':
+          textTips = '上传安装包，即可自动分析'
+          fileTips = '支持ipa文件'
+          break
+        case 'apk':
+          textTips = '上传安装包，点击"开始分析"'
+          fileTips = '支持apk文件'
+          break
+        case 'txt':
+          textTips = '上传R.txt文件'
+          fileTips = '可选择上传，用于分析"无用资源"'
+          break
+        default:
+          break
+      }
+      return <div>
+        <Button type="primary" size="large" disabled={uploading}><Icon type="upload"/>立即上传</Button>
+        {!uploading &&
+        <p style={{fontSize: 16, color: "#262626", paddingTop: 20, marginBottom: 4}}>{textTips}</p>
+        }
+        {
+          uploading &&
+          <p style={{fontSize: 16, color: "#262626", paddingTop: 20, marginBottom: 4}}>
+            <Icon type="loading-3-quarters" spin style={{marginRight: 8}}/>
+            分析中，请勿离开当前页
+          </p>
+        }
+        <span style={{color: 'rgba(0,0,0,0.43)'}}>{fileTips}</span>
+      </div>
+    }
     return (
       <div>
         <Breadcrumb className="devops-breadcrumb">
@@ -217,35 +261,75 @@ class PackageSelfCheck extends Component {
           <BreadcrumbItem><Link to="/packageMonitor">包体监测</Link></BreadcrumbItem>
         </Breadcrumb>
         <div className="content-container">
-          <Card
-            title="包体自检 ">
-            <Dragger style={{padding: "40px 0px"}}
-                     name='file'
-                     disabled={uploading}
-              // action='/deploy/upload'
-              // data={{projectID:this.props.projectId,envID:62}}
-                     onChange={(info) => {
-                       this.onDraggerChange(info)
-                     }}
-                     beforeUpload={(file, fileList) => this.beforeUpload(file, fileList)}
-                     accept=".ipa"
-                     fileList={fileList}
-              // headers={{token:this.props.token}}
-            >
-              <Button type="primary" size="large" disabled={uploading}><Icon type="upload"/>立即上传</Button>
-              {!uploading &&
-              <p style={{fontSize: 16, color: "#262626", paddingTop: 20, marginBottom: 4}}>上传安装包，即可自动分析</p>
-              }
-              {
-                uploading &&
-                <p style={{fontSize: 16, color: "#262626", paddingTop: 20, marginBottom: 4}}>
-                  <Icon type="loading-3-quarters" spin style={{marginRight: 8}}/>
-                  分析中，请勿离开当前页
-                </p>
-              }
-              <span style={{color: 'rgba(0,0,0,0.43)'}}>支持ipa文件</span>
-            </Dragger>
+          {platform === 2 &&
+            <Card title="包体自检 ">
+              <Dragger style={{padding: "40px 0px"}}
+                       name='file'
+                       disabled={uploading}
+                       accept=".ipa"
+                       beforeUpload={(file, fileList) => {
+                         this.beforeUpload(file, fileList, 'ipa')
+                       }}
+                       onRemove={(file) => {
+                         this.onRemove(file, 'ipa')
+                       }}
+                       fileList={fileList.api}
+              >
+                {getDraggerContext('ipa')}
+              </Dragger>
+            </Card>
+          }
+          {platform === 1 &&
+          <Card title={<div>
+            <span>包体自检</span>
+            <Popover
+              content={<p className='package-info'>【R.txt文件】：app\build\intermediates\symbols\normal\debug\R.txt</p>}
+              trigger="hover">
+              <Button
+                type="primary"
+                ghost={true}
+                shape="circle"
+                icon="info"
+                style={{fontSize: 12, marginLeft: 16, width: 18, height: 18}}/>
+            </Popover>
+          </div>}>
+            <Row>
+              <Col span={11}>
+                <Dragger style={{padding: "40px 0px"}}
+                         name='file'
+                         disabled={uploading}
+                         accept=".apk"
+                         beforeUpload={(file, fileList) => {
+                           this.beforeUpload(file, fileList, 'apk')
+                         }}
+                         onRemove={(file) => {
+                           this.onRemove(file, 'apk')
+                         }}
+                         fileList={fileList.apk}
+                >
+                  {getDraggerContext('apk')}
+                </Dragger>
+              </Col>
+              <Col span={11} offset={2}>
+                <Dragger style={{padding: "40px 0px"}}
+                         name='file'
+                         disabled={uploading}
+                         accept=".txt"
+                         beforeUpload={(file, fileList) => {
+                           this.beforeUpload(file, fileList, 'txt')
+                         }}
+                         onRemove={(file) => {
+                           this.onRemove(file, 'txt')
+                         }}
+                         fileList={fileList.txt}
+                >
+                  {getDraggerContext('txt')}
+                </Dragger>
+              </Col>
+            </Row>
+            <Button type="primary" className='analysis-btn'>开始分析</Button>
           </Card>
+          }
           <Card
             title="包体监测结果 "
             style={{marginTop: 24}}>
