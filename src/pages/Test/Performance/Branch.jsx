@@ -105,7 +105,7 @@ class PerformanceBranchTest extends Component {
             record.phones && record.phones.length === 1 &&
             record.status === 1 &&
             (record.result === 1 ?
-              <a href={`${window.location.origin}/performance/task/report?phoneID=${record.phones[0].phoneID}`} target='_blank'>查看报告<span
+              <a href={`${window.location.origin}/performance/task/phone/report?phoneID=${record.phones[0].phoneID}`} target='_blank'>查看报告<span
                 style={{ color: '#eee' }}> | </span></a>
               : <a onClick={() => this.showLog(record.phones[0].phoneID)}>查看日志<span
                 style={{ color: '#eee' }}> | </span></a>)}
@@ -405,7 +405,7 @@ class PerformanceBranchTest extends Component {
 
   showReport = (phoneID) => {
     this.setState({ logModalVisible: true, logLoading: true, logData: '', logType: 0 }, () => {
-      reqGet('/performance/task/report', { phoneID }).then((res) => {
+      reqGet('/performance/task/phone/report', { phoneID }).then((res) => {
         if (res.code === 0) {
           this.setState({ logData: res.data, logLoading: false })
         } else {
@@ -419,7 +419,7 @@ class PerformanceBranchTest extends Component {
   showLog = (phoneID) => {
 
     this.setState({ logModalVisible: true, logLoading: true, logData: '', logType: 1 }, () => {
-      reqGet('/performance/task/error/logs', { phoneID }).then((res) => {
+      reqGet('/performance/task/phone/logs', { phoneID }).then((res) => {
         if (res.code === 0) {
           this.setState({ logData: res.data, logLoading: false })
         } else {
@@ -488,7 +488,7 @@ class PerformanceBranchTest extends Component {
             {record &&
             record.status === 1 &&
             (record.result === 1 ?
-              <a href={`${window.location.origin}/performance/task/report?phoneID=${record.phoneID}`} target='_blank'>查看报告</a>
+              <a href={`${window.location.origin}/performance/task/phone/report?phoneID=${record.phoneID}`} target='_blank'>查看报告</a>
               : <a onClick={() => this.showLog(record.phoneID)}>查看日志</a>)}
           </div>
         }
