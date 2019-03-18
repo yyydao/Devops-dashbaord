@@ -265,8 +265,9 @@ class PerformanceBranchTest extends Component {
   changeVersion = (versionID) => {
     this.setState({
       versionID
-    }, () => {})
-    this.getList()
+    }, () => {
+      this.getList()
+    })
   }
 
   /**
