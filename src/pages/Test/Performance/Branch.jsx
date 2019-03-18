@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import './index.scss'
-import { reqGet, reqPost } from '@/api/api'
+import { reqGet } from '@/api/api'
 import { setTestBuildType } from '@/store/actions/project'
 
 import {
@@ -89,9 +89,8 @@ class PerformanceBranchTest extends Component {
           key: 'phones',
           width: '10%',
           render: (text, record) => <div>
-            {console.log(text.length)}
             {/*{console.log(record)}*/}
-            {(text && text.length>1)? '组合': text[0].phoneName}
+            {(text && text.length > 1) ? '组合' : text && text[0] && text[0].phoneName}
           </div>
         },
         {
@@ -335,9 +334,9 @@ class PerformanceBranchTest extends Component {
       'limit': 10
     }).then(res => {
       if (res.code === 0) {
-        if(res.data && res.data !==null){
+        if (res.data && res.data !== null) {
           this.setState({ listData: res.data })
-        }else{
+        } else {
 
         }
 
