@@ -49,8 +49,8 @@ class PerformanceAdd extends Component {
       //时间
       timeType: '',
       timeText: '',
-      buildName:'',
-      buildPwd:'',
+      buildName: '',
+      buildPwd: '',
       buildType: props.testBuildType === 'branch' ? '1' : '2'
     }
   }
@@ -86,7 +86,7 @@ class PerformanceAdd extends Component {
     } else if (this.state.buildType === '2' && !timeText) {
       message.error('请选择“定时时间”')
       return
-    }else if (this.state.platform === '2' && !buildName) {
+    } else if (this.state.platform === '2' && !buildName) {
       message.error('请输入构建账号')
       return
     } else if (this.state.platform === '2' && !buildPwd) {
@@ -105,11 +105,11 @@ class PerformanceAdd extends Component {
     if (buildType === '2') {
       Object.assign(postData, { timeType, timeText })
     }
-    if (this.state.platform === '2'){
+    if (this.state.platform === '2') {
       Object.assign(postData, { buildName, buildPwd })
     }
 
-      reqPost('/performance/task/submit', postData).then(res => {
+    reqPost('/performance/task/submit', postData).then(res => {
       if (res.code === 0) {
         Modal.success({ content: `构建成功` })
         this.next()
@@ -274,15 +274,15 @@ class PerformanceAdd extends Component {
   /**
    * @desc  输入构建账号
    */
-  onChangeBuildName = (e)=>{
-    this.setState({ buildName: e.target.value });
+  onChangeBuildName = (e) => {
+    this.setState({ buildName: e.target.value })
   }
 
   /**
    * @desc 输入构建密码
    */
-  onChangeBuildPwd = (e) =>{
-    this.setState({ buildPwd: e.target.value });
+  onChangeBuildPwd = (e) => {
+    this.setState({ buildPwd: e.target.value })
   }
 
   next () {
@@ -295,7 +295,7 @@ class PerformanceAdd extends Component {
       if (selectedEnvID.length < 1) {
         message.error('请选择“测试环境”')
         return
-      }else if (this.state.platform === '2' && !buildName) {
+      } else if (this.state.platform === '2' && !buildName) {
         message.error('请输入构建账号')
         return
       } else if (this.state.platform === '2' && !buildPwd) {
@@ -524,7 +524,10 @@ class PerformanceAdd extends Component {
               }
               {
                 current === TestSteps.length - 1
-                && <Button type="primary" onClick={this.addItem}>查看任务</Button>
+                && <Button type="primary" onClick={
+                  this.state.testType === 'branch'
+                    ? () => this.props.history.replace('/performanceConfig/branch')
+                    : () => this.props.history.replace('/performanceConfig/timer')}>查看任务</Button>
               }
               {
                 current > 0 && current !== TestSteps.length - 1
