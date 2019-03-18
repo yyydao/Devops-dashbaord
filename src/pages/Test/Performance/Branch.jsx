@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import './index.scss'
-import { reqGet } from '@/api/api'
+import { reqGet, reqDelete } from '@/api/api'
 import { setTestBuildType } from '@/store/actions/project'
 
 import {
@@ -14,7 +14,8 @@ import {
   Col,
   Table,
   message,
-  Popover
+  Popover,
+  Popconfirm,
 } from 'antd'
 import { bindActionCreators } from 'redux'
 
@@ -89,14 +90,19 @@ class PerformanceBranchTest extends Component {
           key: 'phones',
           width: '10%',
           render: (text, record) => <div>
-            {/*{console.log(record)}*/}
             {(text && text.length > 1) ? '组合' : text && text[0] && text[0].phoneName}
           </div>
         },
         {
           title: '操作',
           width: '10%',
-          render: () => <div><a>删除</a><span style={{ color: '#eee' }}> | </span><a>下载</a></div>
+          dataIndex: 'result',
+          render: (text, record) => <div>
+            {console.log({ record })}
+            <Popconfirm title="删除构建任务?" onConfirm={() => this.handleDeleteTask(record.taskID)}>
+              <a href="javascript:;">删除</a>
+            </Popconfirm>
+            <span style={{ color: '#eee' }}> | </span><a onClick={()=>this.handleDownload(record.taskID)}>下载</a></div>
         }
       ],
       listData: [],
@@ -351,6 +357,33 @@ class PerformanceBranchTest extends Component {
         })
       }
     })
+  }
+
+  /**
+   * @desc 删除构建任务
+   */
+  handleDeleteTask = (taskID) => {
+    reqDelete(`/performance/task/delete/${taskID}`).then(res => {
+      if (res.code === 0) {
+        Modal.success({
+          title: '成功',
+          content: (
+            <p>{`删除成功`}</p>
+          ),
+          onOk () {
+            this.getList()
+          }
+        })
+      }
+    })
+  }
+
+  /**
+   * @desc 下载
+   * @param taskID
+   */
+  handleDownload = (taskID) =>{
+    reqGet(`/performance/task/package/download`,{taskID:taskID})
   }
 
   componentWillMount () {

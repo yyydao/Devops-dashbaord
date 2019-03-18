@@ -35,13 +35,14 @@ class PerformanceIndex extends Component {
             </Link>
 
           </Col>
-          <Col>
-            <Link to={'/performanceConfig/timer'}>
-              <Card   style={{ width: 364 }}
-                title={<span><img className={'title-icon'} src={require('@/assets/img/time_test_icon.png')} alt=""/>定时测试</span>} bordered={false}>
-                定时自动执行配置任务，一次配置，循环使用，简单、及时的搜集分支性能数据</Card>
-            </Link>
-          </Col>
+          {/*@todo:下个版本再开放*/}
+          {/*<Col>*/}
+            {/*<Link to={'/performanceConfig/timer'}>*/}
+              {/*<Card   style={{ width: 364 }}*/}
+                {/*title={<span><img className={'title-icon'} src={require('@/assets/img/time_test_icon.png')} alt=""/>定时测试</span>} bordered={false}>*/}
+                {/*定时自动执行配置任务，一次配置，循环使用，简单、及时的搜集分支性能数据</Card>*/}
+            {/*</Link>*/}
+          {/*</Col>*/}
         </Row>
         </main>
       </div>
