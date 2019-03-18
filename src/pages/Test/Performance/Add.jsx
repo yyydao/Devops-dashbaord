@@ -25,7 +25,6 @@ const Step = Steps.Step
 class PerformanceAdd extends Component {
   constructor (props) {
     super(props)
-    console.log(props)
     this.state = {
       //测试类型
       testType: props.testBuildType,
@@ -120,7 +119,6 @@ class PerformanceAdd extends Component {
             <p>{res.msg}</p>
           ),
           onOk () {
-
           }
         })
       }
@@ -322,6 +320,13 @@ class PerformanceAdd extends Component {
   }
 
   componentWillMount () {
+    const buildType = window.localStorage.getItem('testBuildType')
+    if (this.props && this.props.testBuildType === null) {
+      this.setState({
+        testType: buildType,
+        buildType: buildType === 'branch' ? '1' : '2'
+      })
+    }
     this.getEnvList()
     this.getModalList()
     this.getBranchList()
@@ -331,6 +336,7 @@ class PerformanceAdd extends Component {
   }
 
   componentWillUnmount () {
+    window.localStorage.removeItem('testBuildType')
   }
 
   render () {

@@ -432,6 +432,7 @@ class PerformanceBranchTest extends Component {
 
   componentWillMount () {
     this.props.setTestBuildType('branch')
+    window.localStorage.setItem('testBuildType','branch')
     this.getEnvList()
     this.getBranchList()
     this.getStatusList()
