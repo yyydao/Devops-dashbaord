@@ -288,12 +288,20 @@ class PerformanceAdd extends Component {
   next () {
     const {
       selectedEnvID,
+      selectedBranchName,
+      selectedModalItems,
       buildName,
       buildPwd,
     } = this.state
     if (this.state.current === 0) {
       if (selectedEnvID.length < 1) {
         message.error('请选择“测试环境”')
+        return
+      } else if (selectedModalItems.length < 1) {
+        message.error('请选择测试机型')
+        return
+      } else if (selectedBranchName.length < 1) {
+        message.error('请选择开发分支')
         return
       } else if (this.state.platform === '2' && !buildName) {
         message.error('请输入构建账号')
