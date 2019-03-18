@@ -397,12 +397,21 @@ class PerformanceBranchTest extends Component {
   }
 
   showReport = (phoneID) => {
-    reqGet('/performance/task/report', { phoneID })
+    this.setState({ logModalVisible: true, logLoading: true, logData: '',logType:0 }, () => {
+      reqGet('/performance/task/report', { phoneID }).then((res) => {
+        if (res.code === 0) {
+          this.setState({ logData: res.data, logLoading: false })
+        } else {
+          this.setState({ logLoading: false })
+          message.error(res.msg)
+        }
+      })
+    })
   }
 
   showLog = (phoneID) => {
 
-    this.setState({ logModalVisible: true, logLoading: true, logData: '' }, () => {
+    this.setState({ logModalVisible: true, logLoading: true, logData: '',logType:1 }, () => {
       reqGet('/performance/task/error/logs', { phoneID }).then((res) => {
         if (res.code === 0) {
           this.setState({ logData: res.data, logLoading: false })
@@ -450,6 +459,7 @@ class PerformanceBranchTest extends Component {
       logModalVisible,
       logLoading,
       logData,
+      logType,
     } = this.state
 
     const expandedRowRender = (record) => {
@@ -490,7 +500,7 @@ class PerformanceBranchTest extends Component {
     return (
       <div className="performance">
         <Modal
-          title="查看日志"
+          title={logType === 1? '查看日志': '查看报告'}
           className="logModal"
           width="80%"
           visible={logModalVisible}
