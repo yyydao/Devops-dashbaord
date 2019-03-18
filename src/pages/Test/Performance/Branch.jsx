@@ -379,6 +379,7 @@ class PerformanceBranchTest extends Component {
    * @desc 删除构建任务
    */
   handleDeleteTask = (taskID) => {
+    const self = this
     reqDelete(`/performance/task/delete/${taskID}`).then(res => {
       if (res.code === 0) {
         Modal.success({
@@ -387,7 +388,7 @@ class PerformanceBranchTest extends Component {
             <p>{`删除成功`}</p>
           ),
           onOk () {
-            this.getList()
+            return self.getList()
           }
         })
       }
