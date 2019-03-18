@@ -105,7 +105,7 @@ class PerformanceBranchTest extends Component {
             record.phones && record.phones.length === 1 &&
             record.status === 1 &&
             (record.result === 1 ?
-              <a onClick={() => this.showReport(record.phones[0].phoneID)}>查看报告<span
+              <a href={`${window.location.origin}/performance/task/report?phoneID=${record.phones[0].phoneID}`} target='_blank'>查看报告<span
                 style={{ color: '#eee' }}> | </span></a>
               : <a onClick={() => this.showLog(record.phones[0].phoneID)}>查看日志<span
                 style={{ color: '#eee' }}> | </span></a>)}
@@ -488,7 +488,7 @@ class PerformanceBranchTest extends Component {
             {record &&
             record.status === 1 &&
             (record.result === 1 ?
-              <a href={`${window.location.origin}/performance/task/package/download?taskID=${record.phoneID}`}>查看报告</a>
+              <a href={`${window.location.origin}/performance/task/report?phoneID=${record.phoneID}`} target='_blank'>查看报告</a>
               : <a onClick={() => this.showLog(record.phoneID)}>查看日志</a>)}
           </div>
         }
