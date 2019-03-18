@@ -359,7 +359,7 @@ class PerformanceBranchTest extends Component {
         if (res.data && res.data !== null) {
           this.setState({ listData: res.data })
         } else {
-
+          this.setState({ listData: null })
         }
 
       } else {
