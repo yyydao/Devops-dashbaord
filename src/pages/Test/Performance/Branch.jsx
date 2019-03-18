@@ -112,7 +112,12 @@ class PerformanceBranchTest extends Component {
             <Popconfirm title="删除构建任务?" onConfirm={() => this.handleDeleteTask(record.taskID)}>
               <a href="javascript:;">删除</a>
             </Popconfirm>
-            <span style={{ color: '#eee' }}> | </span><a onClick={() => this.handleDownload(record.taskID)}>下载</a></div>
+            {record.status === 1 &&
+            record.result === 1 &&
+            <a href={`${window.location.origin}/performance/task/package/download?taskID=${record.taskID}`}><span
+              style={{ color: '#eee' }}> | </span>下载</a>
+            }
+          </div>
         }
       ],
       listData: [],
@@ -397,7 +402,7 @@ class PerformanceBranchTest extends Component {
   }
 
   showReport = (phoneID) => {
-    this.setState({ logModalVisible: true, logLoading: true, logData: '',logType:0 }, () => {
+    this.setState({ logModalVisible: true, logLoading: true, logData: '', logType: 0 }, () => {
       reqGet('/performance/task/report', { phoneID }).then((res) => {
         if (res.code === 0) {
           this.setState({ logData: res.data, logLoading: false })
@@ -411,7 +416,7 @@ class PerformanceBranchTest extends Component {
 
   showLog = (phoneID) => {
 
-    this.setState({ logModalVisible: true, logLoading: true, logData: '',logType:1 }, () => {
+    this.setState({ logModalVisible: true, logLoading: true, logData: '', logType: 1 }, () => {
       reqGet('/performance/task/error/logs', { phoneID }).then((res) => {
         if (res.code === 0) {
           this.setState({ logData: res.data, logLoading: false })
@@ -500,7 +505,7 @@ class PerformanceBranchTest extends Component {
     return (
       <div className="performance">
         <Modal
-          title={logType === 1? '查看日志': '查看报告'}
+          title={logType === 1 ? '查看日志' : '查看报告'}
           className="logModal"
           width="80%"
           visible={logModalVisible}
