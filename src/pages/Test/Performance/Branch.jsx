@@ -31,11 +31,14 @@ class PerformanceBranchTest extends Component {
       testBuildType: 'branch',
       curPage: 1,
 
+      logModalVisible: false,
+      logLoading: false,
+      logData: '',
+
       columns: [
         {
           title: 'ID',
           dataIndex: 'rowNum',
-          width: '8%',
           key: 'rowNum'
         },
         {
@@ -48,13 +51,13 @@ class PerformanceBranchTest extends Component {
           title: '版本',
           dataIndex: 'appVersion',
           key: 'appVersion',
-          width: '8%'
+          width: '5%'
         },
         {
           title: '环境',
           dataIndex: 'envName',
           key: 'envName',
-          width: '10%',
+          width: '5%',
         },
         {
           title: '场景',
@@ -71,7 +74,7 @@ class PerformanceBranchTest extends Component {
           title: '创建人',
           dataIndex: 'nickName',
           key: 'nickName',
-          width: '6%'
+          width: '5%'
         },
         {
           title: '时间',
@@ -83,7 +86,7 @@ class PerformanceBranchTest extends Component {
           title: '状态',
           dataIndex: 'statusText',
           key: 'statusText',
-          width: '10%'
+          width: '5%'
         }, {
           title: '机型',
           dataIndex: 'phones',
@@ -95,14 +98,21 @@ class PerformanceBranchTest extends Component {
         },
         {
           title: '操作',
-          width: '10%',
+          width: '20%',
           dataIndex: 'result',
           render: (text, record) => <div>
-            {console.log({ record })}
+            {record &&
+            record.phones && record.phones.length === 1 &&
+            record.status === 1 &&
+            (record.result === 1 ?
+              <a onClick={() => this.showReport(record.phones[0].phoneID)}>查看报告<span
+                style={{ color: '#eee' }}> | </span></a>
+              : <a onClick={() => this.showLog(record.phones[0].phoneID)}>查看日志<span
+                style={{ color: '#eee' }}> | </span></a>)}
             <Popconfirm title="删除构建任务?" onConfirm={() => this.handleDeleteTask(record.taskID)}>
               <a href="javascript:;">删除</a>
             </Popconfirm>
-            <span style={{ color: '#eee' }}> | </span><a onClick={()=>this.handleDownload(record.taskID)}>下载</a></div>
+            <span style={{ color: '#eee' }}> | </span><a onClick={() => this.handleDownload(record.taskID)}>下载</a></div>
         }
       ],
       listData: [],
@@ -382,8 +392,26 @@ class PerformanceBranchTest extends Component {
    * @desc 下载
    * @param taskID
    */
-  handleDownload = (taskID) =>{
-    reqGet(`/performance/task/package/download`,{taskID:taskID})
+  handleDownload = (taskID) => {
+    reqGet(`/performance/task/package/download`, { taskID: taskID })
+  }
+
+  showReport = (phoneID) => {
+    reqGet('/performance/task/report', { phoneID })
+  }
+
+  showLog = (phoneID) => {
+
+    this.setState({ logModalVisible: true, logLoading: true, logData: '' }, () => {
+      reqGet('/performance/task/error/logs', { phoneID }).then((res) => {
+        if (res.code === 0) {
+          this.setState({ logData: res.data, logLoading: false })
+        } else {
+          this.setState({ logLoading: false })
+          message.error(res.msg)
+        }
+      })
+    })
   }
 
   componentWillMount () {
@@ -417,11 +445,14 @@ class PerformanceBranchTest extends Component {
       statusList,
       status,
       modalList,
-      modal
+      modal,
+
+      logModalVisible,
+      logLoading,
+      logData,
     } = this.state
 
     const expandedRowRender = (record) => {
-      console.log(record)
       const expandedColumns = [
         {
           title: 'buildNum',
@@ -435,7 +466,13 @@ class PerformanceBranchTest extends Component {
         {
           title: '操作',
           key: 'edit',
-          render: (text, record) => <div><a>查看报告</a></div>
+          render: (text, record) => <div>
+            {record &&
+            record.status === 1 &&
+            (record.result === 1 ?
+              <a onClick={() => this.showReport(record.phoneID)}>查看报告</a>
+              : <a onClick={() => this.showLog(record.phoneID)}>查看日志</a>)}
+          </div>
         }
       ]
       return (
@@ -452,6 +489,15 @@ class PerformanceBranchTest extends Component {
     }
     return (
       <div className="performance">
+        <Modal
+          title="查看日志"
+          className="logModal"
+          width="80%"
+          visible={logModalVisible}
+          onCancel={() => {this.setState({ logModalVisible: false, logLoading: false })}}
+          confirmLoading={logLoading}>
+          <div dangerouslySetInnerHTML={{ __html: logData }} style={{ maxHeight: 600, overflowY: 'scroll' }}/>
+        </Modal>
         <Breadcrumb className="devops-breadcrumb">
           <BreadcrumbItem><Link to="/home">首页</Link></BreadcrumbItem>
           <BreadcrumbItem><Link to="/performanceConfig">性能测试管理</Link></BreadcrumbItem>
