@@ -432,7 +432,7 @@ class PerformanceBranchTest extends Component {
 
   componentWillMount () {
     this.props.setTestBuildType('branch')
-    window.localStorage.setItem('testBuildType','branch')
+    window.localStorage.setItem('testBuildType', 'branch')
     this.getEnvList()
     this.getBranchList()
     this.getStatusList()
@@ -488,7 +488,7 @@ class PerformanceBranchTest extends Component {
             {record &&
             record.status === 1 &&
             (record.result === 1 ?
-              <a onClick={() => this.showReport(record.phoneID)}>查看报告</a>
+              <a href={`${window.location.origin}/performance/task/package/download?taskID=${record.phoneID}`}>查看报告</a>
               : <a onClick={() => this.showLog(record.phoneID)}>查看日志</a>)}
           </div>
         }
