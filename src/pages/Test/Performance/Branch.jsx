@@ -4,12 +4,14 @@ import { connect } from 'react-redux'
 import './index.scss'
 import { reqGet, reqDelete } from '@/api/api'
 import { setTestBuildType } from '@/store/actions/project'
+import {truncate} from '@/utils/utils'
 
 import {
   Breadcrumb,
   Button,
   Modal,
   Select,
+  Icon,
   Row,
   Col,
   Table,
@@ -63,11 +65,10 @@ class PerformanceBranchTest extends Component {
           title: '场景',
           dataIndex: 'sceneTexts',
           key: 'sceneTexts',
-          width: '8%',
+          width: '20',
           render: (text) => <Popover content={<p style={{ width: 180, marginBottom: 0 }}>{text}</p>}
                                      trigger="hover">
-            <Button type="primary" ghost={true} shape="circle" icon="info"
-                    style={{ fontSize: 12, marginRight: 24, width: 20, height: 20 }}/>
+            {truncate(text,10)}<Icon type="exclamation-circle" />
           </Popover>
         },
         {

@@ -310,3 +310,14 @@ export function generateHexString (length) {
   }
   return ret.substring(0, length)
 }
+
+
+/**
+ * 将字符串省略并加入
+ * @param str 字符串
+ * @param n 长度
+ * @return {string}
+ */
+export function truncate(str, n) {
+  return (str.length > n) ? str.substr(0, n - 1) + '...' : str;
+}
