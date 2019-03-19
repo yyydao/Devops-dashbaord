@@ -516,9 +516,6 @@ class PackageMonitor extends Component {
       }
       return '最近一次监测'
     }
-    let panelTitle = () => {
-
-    }
     return (
       <div>
         <Breadcrumb className="devops-breadcrumb">
@@ -565,8 +562,11 @@ class PackageMonitor extends Component {
             this.loadMorePackage()
           }}>加载更多</Button></Divider>
           }
+          {(currentPage >= totalPage) && !moreLoading && totalPage!==0&&
+          <Divider><p style={{margin: '24px 0px',color:'#ccc'}}>我是有底线的~</p></Divider>
+          }
           {moreLoading &&
-          <Divider><Icon type="loading-3-quarters" spin/></Divider>
+          <Divider style={{margin: '24px 0px'}}><Icon type="loading-3-quarters" spin/></Divider>
           }
         </div>
         <Modal
