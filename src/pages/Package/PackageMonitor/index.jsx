@@ -202,15 +202,15 @@ class PackageMonitor extends Component {
         repeatResourceSize: '重复资源总大小',
         repeatResourceRatio: '重复资源占比',
         repeatResourcesQuantity: '重复资源个数',
-        repeatResourcesMark: '重复资源已标注',
+        alreadyMarkRepeatResQuantity: '重复资源已标注',
         imageSize: '超大图片总大小',
         imageRatio: '超大图片占比',
         imageResourcesQuantity: '超大图片个数',
-        imageResourcesMark: '超大图片已标注',
+        alreadyMarkImageResQuantity: '超大图片已标注',
         uselessResourceSize: '无用资源总大小',
         uselessResourceRatio: '无用资源占比',
         uselessResourcesQuantity: '无用资源个数',
-        uselessResourcesMark: '无用资源已标注'
+        alreadyMarkUselessResQuantity: '无用资源已标注'
       },
       currentData: null,
       //列表分页参数
@@ -223,7 +223,8 @@ class PackageMonitor extends Component {
         page: 1,
         //资源文件类型：1-重复资源；2-超大图片资源；3-无用资源
         resourceType: 1,
-        packageId: ''
+        packageId: '',
+        status: 0
       },
       confirmLoading: false,
       markChangedList: [],
@@ -365,14 +366,20 @@ class PackageMonitor extends Component {
   /**
    * @desc 显示资源modal事件
    */
-  showResourceList = (type, id) => {
+  showResourceList = (type, id, isMark) => {
     let resourceParams = this.state.resourceParams
     resourceParams.resourceType = type
     resourceParams.packageId = id
+    if (isMark) {
+      resourceParams.status = 1
+    } else {
+      delete resourceParams.status
+    }
     this.setState({
       resourceParams,
       modalVisible: true,
       confirmLoading: true,
+      markChangedList:[],
       modalTitle: this.state.modalTitleList[type - 1]
     }, () => {
       this.getResourceList()
@@ -421,11 +428,27 @@ class PackageMonitor extends Component {
    * @desc 提交标记数据
    */
   updateMarkStatus = () => {
+    let {markChangedList, packageList, currentData, resourceParams} = this.state
+    let markNameList = ['alreadyMarkRepeatResQuantity', 'alreadyMarkImageResQuantity', 'alreadyMarkUselessResQuantity']
+    let count=0
+    markChangedList.map(item => {
+        item.status? count++ : count--
+      return item
+    })
+    packageList.map(item => {
+      if (item.id === resourceParams.packageId) {
+        item[markNameList[resourceParams.resourceType - 1]] += count
+      }
+      return item
+    })
+    if (currentData.id === resourceParams.packageId) {
+      currentData[markNameList[resourceParams.resourceType - 1]] += count
+    }
     this.setState({confirmLoading: true}, () => {
       reqPost('/packageBody/updateMarkStatus', this.state.markChangedList).then(res => {
         if (res.code === 0) {
           message.success('标记成功');
-          this.setState({modalVisible: false})
+          this.setState({modalVisible: false,currentData,packageList})
         } else {
           message.error(res.msg);
         }
@@ -465,6 +488,7 @@ class PackageMonitor extends Component {
       for (let i in keyName) {
         let index = 0,
           isClick = (keyName[i].indexOf("个数") > -1 || keyName[i].indexOf("已标注") > -1),
+          isMark = keyName[i].indexOf("已标注") > -1,
           isPercent = keyName[i].indexOf("占比") > -1 ? '%' : ''
         if (keyName[i].indexOf("重复资源") > -1) {
           index = 1
@@ -487,7 +511,7 @@ class PackageMonitor extends Component {
             list[index].push(
               <Col span={6} key={i}>
                 <div className={`data-item-${color[index]} can-click`} onClick={() => {
-                  this.showResourceList(index, data.id)
+                  this.showResourceList(index, data.id, isMark)
                 }}>
                   <p>{keyName[i]}</p>
                   <p>{data[i]}</p>
@@ -562,8 +586,8 @@ class PackageMonitor extends Component {
             this.loadMorePackage()
           }}>加载更多</Button></Divider>
           }
-          {(currentPage >= totalPage) && !moreLoading && currentPage!==1&&
-          <Divider><p style={{margin: '24px 0px',color:'#ccc'}}>我是有底线的~</p></Divider>
+          {(currentPage >= totalPage) && !moreLoading && currentPage !== 1 &&
+          <Divider><p style={{margin: '24px 0px', color: '#ccc'}}>我是有底线的~</p></Divider>
           }
           {moreLoading &&
           <Divider style={{margin: '24px 0px'}}><Icon type="loading-3-quarters" spin/></Divider>
