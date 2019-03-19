@@ -56,15 +56,15 @@ class PackageSelfCheck extends Component {
         repeatResourceSize: '重复资源总大小',
         repeatResourceRatio: '重复资源占比',
         repeatResourcesQuantity: '重复资源个数',
-        repeatResourcesMark: '重复资源已标注',
+        repeatResourcesMark: '重复资源已标记',
         imageSize: '超大图片总大小',
         imageRatio: '超大图片占比',
         imageResourcesQuantity: '超大图片个数',
-        imageResourcesMark: '超大图片已标注',
+        imageResourcesMark: '超大图片已标记',
         uselessResourceSize: '无用资源总大小',
         uselessResourceRatio: '无用资源占比',
         uselessResourcesQuantity: '无用资源个数',
-        uselessResourcesMark: '无用资源已标注'
+        uselessResourcesMark: '无用资源已标记'
       },
       currentData: null,
       fileList: {
@@ -254,7 +254,7 @@ class PackageSelfCheck extends Component {
       let list = [[], [], [], []], color = ['red', 'yellow', 'green', 'blue']
       for (let i in keyName) {
         let index = 0,
-          isClick = (keyName[i].indexOf("个数") > -1 || keyName[i].indexOf("已标注") > -1),
+          isClick = (keyName[i].indexOf("个数") > -1 || keyName[i].indexOf("已标记") > -1),
           isPercent = keyName[i].indexOf("占比") > -1 ? '%' : ''
         if (keyName[i].indexOf("重复资源") > -1) {
           index = 1
