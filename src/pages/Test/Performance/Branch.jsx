@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import './index.scss'
 import { reqGet, reqDelete } from '@/api/api'
 import { setTestBuildType } from '@/store/actions/project'
-import {truncate} from '@/utils/utils'
+import { truncate } from '@/utils/utils'
 
 import {
   Breadcrumb,
@@ -32,6 +32,10 @@ class PerformanceBranchTest extends Component {
       projectId: props.projectId,
       testBuildType: 'branch',
       curPage: 1,
+      pagination: {
+        pageSize: 10,
+        total: 10,
+      },
 
       logModalVisible: false,
       logLoading: false,
@@ -68,7 +72,7 @@ class PerformanceBranchTest extends Component {
           width: '20',
           render: (text) => <Popover content={<p style={{ width: 180, marginBottom: 0 }}>{text}</p>}
                                      trigger="hover">
-            {truncate(text,10)}<Icon type="exclamation-circle" />
+            {truncate(text, 10)}<Icon type="exclamation-circle"/>
           </Popover>
         },
         {
@@ -106,7 +110,8 @@ class PerformanceBranchTest extends Component {
             record.phones && record.phones.length === 1 &&
             record.status === 1 &&
             (record.result === 1 ?
-              <a href={`${window.location.origin}/performance/task/phone/report?phoneID=${record.phones[0].phoneID}`} target='_blank'>查看报告<span
+              <a href={`${window.location.origin}/performance/task/phone/report?phoneID=${record.phones[0].phoneID}`}
+                 target='_blank'>查看报告<span
                 style={{ color: '#eee' }}> | </span></a>
               : <a onClick={() => this.showLog(record.phones[0].phoneID)}>查看日志<span
                 style={{ color: '#eee' }}> | </span></a>)}
@@ -358,7 +363,12 @@ class PerformanceBranchTest extends Component {
     }).then(res => {
       if (res.code === 0) {
         if (res.data && res.data && res.data.list !== null) {
-          this.setState({ listData: res.data.list })
+          this.setState({
+            listData: res.data.list,
+            pagination: {
+              total: res.data.totalCount
+            }
+          })
         } else {
           this.setState({ listData: null })
         }
@@ -374,6 +384,13 @@ class PerformanceBranchTest extends Component {
         })
       }
     })
+  }
+
+  /**
+   * @desc 表格页数改变事件
+   */
+  handleTableChange = (pagination) => {
+    this.setState({ curPage: pagination.current },()=>this.getList() )
   }
 
   /**
@@ -395,28 +412,6 @@ class PerformanceBranchTest extends Component {
       }
     })
   }
-
-  /**
-   * @desc 下载
-   * @param taskID
-   */
-  handleDownload = (taskID) => {
-    reqGet(`/performance/task/package/download`, { taskID: taskID })
-  }
-
-  showReport = (phoneID) => {
-    this.setState({ logModalVisible: true, logLoading: true, logData: '', logType: 0 }, () => {
-      reqGet('/performance/task/phone/report', { phoneID }).then((res) => {
-        if (res.code === 0) {
-          this.setState({ logData: res.data, logLoading: false })
-        } else {
-          this.setState({ logLoading: false })
-          message.error(res.msg)
-        }
-      })
-    })
-  }
-
   showLog = (phoneID) => {
 
     this.setState({ logModalVisible: true, logLoading: true, logData: '', logType: 1 }, () => {
@@ -489,7 +484,8 @@ class PerformanceBranchTest extends Component {
             {record &&
             record.status === 1 &&
             (record.result === 1 ?
-              <a href={`${window.location.origin}/performance/task/phone/report?phoneID=${record.phoneID}`} target='_blank'>查看报告</a>
+              <a href={`${window.location.origin}/performance/task/phone/report?phoneID=${record.phoneID}`}
+                 target='_blank'>查看报告</a>
               : <a onClick={() => this.showLog(record.phoneID)}>查看日志</a>)}
           </div>
         }
