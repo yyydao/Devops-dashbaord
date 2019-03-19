@@ -16,7 +16,8 @@ import {
   Col,
   Popover,
   Divider,
-  message
+  message,
+  Spin
 } from 'antd'
 import './index.scss'
 
@@ -202,15 +203,15 @@ class PackageMonitor extends Component {
         repeatResourceSize: '重复资源总大小',
         repeatResourceRatio: '重复资源占比',
         repeatResourcesQuantity: '重复资源个数',
-        alreadyMarkRepeatResQuantity: '重复资源已标注',
+        alreadyMarkRepeatResQuantity: '重复资源已标记',
         imageSize: '超大图片总大小',
         imageRatio: '超大图片占比',
         imageResourcesQuantity: '超大图片个数',
-        alreadyMarkImageResQuantity: '超大图片已标注',
+        alreadyMarkImageResQuantity: '超大图片已标记',
         uselessResourceSize: '无用资源总大小',
         uselessResourceRatio: '无用资源占比',
         uselessResourcesQuantity: '无用资源个数',
-        alreadyMarkUselessResQuantity: '无用资源已标注'
+        alreadyMarkUselessResQuantity: '无用资源已标记'
       },
       currentData: null,
       //列表分页参数
@@ -379,7 +380,7 @@ class PackageMonitor extends Component {
       resourceParams,
       modalVisible: true,
       confirmLoading: true,
-      markChangedList:[],
+      markChangedList: [],
       modalTitle: this.state.modalTitleList[type - 1]
     }, () => {
       this.getResourceList()
@@ -429,10 +430,17 @@ class PackageMonitor extends Component {
    */
   updateMarkStatus = () => {
     let {markChangedList, packageList, currentData, resourceParams} = this.state
-    let markNameList = ['alreadyMarkRepeatResQuantity', 'alreadyMarkImageResQuantity', 'alreadyMarkUselessResQuantity']
-    let count=0
+
+    if (markChangedList.length === 0) {
+      this.setState({modalVisible: false,resourceList:[]})
+      return
+    }
+
+    //成功后数据处理
+    let count = 0,
+      markNameList = ['alreadyMarkRepeatResQuantity', 'alreadyMarkImageResQuantity', 'alreadyMarkUselessResQuantity']
     markChangedList.map(item => {
-        item.status? count++ : count--
+      item.status ? count++ : count--
       return item
     })
     packageList.map(item => {
@@ -444,11 +452,19 @@ class PackageMonitor extends Component {
     if (currentData.id === resourceParams.packageId) {
       currentData[markNameList[resourceParams.resourceType - 1]] += count
     }
+    //成功后数据处理结束
+
     this.setState({confirmLoading: true}, () => {
       reqPost('/packageBody/updateMarkStatus', this.state.markChangedList).then(res => {
         if (res.code === 0) {
           message.success('标记成功');
-          this.setState({modalVisible: false,currentData,packageList})
+          this.setState({
+            modalVisible: false,
+            confirmLoading: false,
+            currentData,
+            packageList,
+            resourceList:[]
+          })
         } else {
           message.error(res.msg);
         }
@@ -596,22 +612,23 @@ class PackageMonitor extends Component {
         <Modal
           title={modalTitle}
           visible={modalVisible}
-          confirmLoading={confirmLoading}
           width={1000}
           onOk={() => {
             this.updateMarkStatus()
           }}
           onCancel={() => {
-            this.setState({modalVisible: false, markChangedList: []})
+            this.setState({modalVisible: false, markChangedList: [],resourceList:[]})
           }}
           okText="确认"
           cancelText="取消">
+          <Spin spinning={confirmLoading}>
           <Table
             columns={columns}
             dataSource={resourceList}
             rowKey={record => record.id}
             pagination={pagination}
             onChange={this.handleTableChange}/>
+          </Spin>
         </Modal>
       </div>
     )
