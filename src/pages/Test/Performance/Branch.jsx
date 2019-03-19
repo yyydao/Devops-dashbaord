@@ -539,6 +539,7 @@ class PerformanceBranchTest extends Component {
               </Select>
               <span style={{ paddingRight: 0, paddingLeft: 40 }}>开发分支：</span>
               <Select placeholder="开发分支"
+                      dropdownMatchSelectWidth={false}
                       style={{ width: 100 }}
                       showSearch
                       value={branchID}
@@ -568,6 +569,7 @@ class PerformanceBranchTest extends Component {
               <Select placeholder="机型"
                       style={{ width: 100 }}
                       showSearch
+                      dropdownMatchSelectWidth={false}
                       value={modal}
                       onSearch={this.getModalList}
                       onChange={this.changeModal}>
