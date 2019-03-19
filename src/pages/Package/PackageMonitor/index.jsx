@@ -606,7 +606,7 @@ class PackageMonitor extends Component {
           <Divider><p style={{margin: '24px 0px',fontSize:12, color: '#ccc'}}>我可能是一条底线~</p></Divider>
           }
           {moreLoading &&
-          <Divider style={{margin: '24px 0px'}}><Icon type="loading-3-quarters" spin/></Divider>
+          <Divider><p style={{margin: '24px 0px', color: '#ccc'}}><Icon type="loading-3-quarters"  spin/></p></Divider>
           }
         </div>
         <Modal
