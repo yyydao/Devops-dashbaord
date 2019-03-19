@@ -42,17 +42,17 @@ export default class ConfigPanel extends Component{
           </Card>
           <Card title="性能测试配置" style={{marginTop:24}}>
             <div className="config-project-item">
-              <span className="name">常规任务Job名称：</span>
+              <span className="name">测试任务Job名称：</span>
               <Edit name='routineTaskName' panelIndex={panelIndex} defaultValue={envData.routineTaskName} handleConfirm={changeEdit}/>
             </div>
             <div className="config-project-item">
-              <span className="name">定时任务Job名称：</span>
+              <span className="name">打包任务Job名称：</span>
               <Edit name='timedTaskName' panelIndex={panelIndex} defaultValue={envData.timedTaskName} handleConfirm={changeEdit}/>
             </div>
-            <div className="config-project-item">
-              <span className="name">提测包任务Job名称：</span>
-              <Edit name='submitTestTaskName' panelIndex={panelIndex} defaultValue={envData.submitTestTaskName} handleConfirm={changeEdit}/>
-            </div>
+            {/*<div className="config-project-item">*/}
+              {/*<span className="name">提测包任务Job名称：</span>*/}
+              {/*<Edit name='submitTestTaskName' panelIndex={panelIndex} defaultValue={envData.submitTestTaskName} handleConfirm={changeEdit}/>*/}
+            {/*</div>*/}
           </Card>
           <Card title="场景管理"
                 className="jsonInput"
