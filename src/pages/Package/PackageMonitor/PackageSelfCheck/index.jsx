@@ -146,7 +146,7 @@ class PackageSelfCheck extends Component {
       formData.append('projectId', this.props.projectId)
       reqPostFormData('/packageBody/selfCheck', formData).then(res => {
         if (parseInt(res.code, 0) === 0) {
-          message.success("自检成功")
+          message.success("分析成功")
           this.setState({currentData: res.data})
         } else {
           message.error(res.msg)
