@@ -503,8 +503,8 @@ class PackageMonitor extends Component {
       let list = [[], [], [], []], color = ['red', 'yellow', 'green', 'blue']
       for (let i in keyName) {
         let index = 0,
-          isClick = (keyName[i].indexOf("个数") > -1 || keyName[i].indexOf("已标注") > -1),
-          isMark = keyName[i].indexOf("已标注") > -1,
+          isClick = (keyName[i].indexOf("个数") > -1 || keyName[i].indexOf("已标记") > -1),
+          isMark = keyName[i].indexOf("已标记") > -1,
           isPercent = keyName[i].indexOf("占比") > -1 ? '%' : ''
         if (keyName[i].indexOf("重复资源") > -1) {
           index = 1
