@@ -562,7 +562,7 @@ class PackageMonitor extends Component {
             this.loadMorePackage()
           }}>加载更多</Button></Divider>
           }
-          {(currentPage >= totalPage) && !moreLoading && totalPage!==0&&
+          {(currentPage >= totalPage) && !moreLoading && currentPage!==1&&
           <Divider><p style={{margin: '24px 0px',color:'#ccc'}}>我是有底线的~</p></Divider>
           }
           {moreLoading &&
