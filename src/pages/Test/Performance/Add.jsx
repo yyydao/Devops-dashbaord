@@ -441,7 +441,7 @@ class PerformanceAdd extends Component {
         {...formItemLayout}
       >
         <Select placeholder="开发分支"
-                style={{ width: 450 }}
+                style={{ width: 354 }}
                 showSearch
                 value={selectedBranchName}
                 onSearch={this.getBranchList}
@@ -453,7 +453,7 @@ class PerformanceAdd extends Component {
             })
           }
         </Select>
-        <Button type={'default'} onClick={this.refreshBranch}>拉取分支</Button>
+        <Button type={'default'} style={{marginLeft:'8px'}} onClick={this.refreshBranch}>拉取分支</Button>
       </Form.Item>
     </React.Fragment>
 
