@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
-import {reqPost} from '@/api/api'
+import {reqPost, reqPostFormData} from '@/api/api'
 import {
   Breadcrumb,
   Card,
@@ -9,12 +9,12 @@ import {
   Icon,
   Modal,
   Table,
-  Checkbox,
   Row,
   Col,
   Upload,
   message,
-  Popover
+  Popover,
+  Spin
 } from 'antd'
 import '././index.scss'
 
@@ -29,100 +29,62 @@ class PackageSelfCheck extends Component {
       columns: [
         {
           title: '资源名称',
-          dataIndex: 'xitong',
-          key: 'xitong',
+          dataIndex: 'resourcePath',
+          key: 'resourcePath',
+          width: '80%',
+          render: (text) => <p style={{wordBreak: 'break-all', marginBottom: 0}}>{text}</p>
         },
         {
           title: '大小(KB)',
-          dataIndex: 'bengkui',
-          key: 'bengkui'
-        },
-        {
-          title: '次数',
-          dataIndex: 'yingxiang',
-          key: 'yingxiang'
-        },
-        {
-          title: '标记',
-          dataIndex: 'lianwang',
-          key: 'lianwang',
-          render: (text) => <Checkbox/>
-        },
-        {
-          title: '标记时间',
-          dataIndex: 'biaoji',
-          key: 'biaoji'
+          dataIndex: 'resourceSize',
+          key: 'resourceSize',
+          width: '20%',
+          align: 'center'
         }
       ],
-      tableData: [
-        {
-          xitong: 'res\\drawable-xxhdpi-v4\\loanrecordbiz_icon_reward.png',
-          bengkui: '19.08',
-          yingxiang: '2',
-          lianwang: '',
-          biaoji: '2019/03/07'
-        },
-        {
-          xitong: 'res\\drawable-xxhdpi-v4\\loanrecordbiz_icon_reward.png',
-          bengkui: '19.08',
-          yingxiang: '2',
-          lianwang: '',
-          biaoji: '2019/03/07'
-        },
-        {
-          xitong: 'res\\drawable-xxhdpi-v4\\loanrecordbiz_icon_reward.png',
-          bengkui: '19.08',
-          yingxiang: '2',
-          lianwang: '',
-          biaoji: '2019/03/07'
-        }
-      ],
+      resourceList: [],
       pagination: {
         pageSize: 10,
         total: 0,
         showTotal: null
       },
       keyName: {
-        packageSize: '包大小',
-        jiaGuSize: '加固包大小',
-        totalResSize: '总资源大小',
-        totalResRate: '资源总占比',
-        repeatResSize: '重复资源总大小',
-        repeatResRate: '重复资源占比',
-        repeatResNum: '重复资源个数',
-        repeatResMark: '重复资源已标注',
-        picSize: '超大图片总大小',
-        picRate: '超大图片占比',
-        picNum: '超大图片个数',
-        picMark: '超大图片已标注',
-        unUseSize: '无用资源总大小',
-        unUseRate: '无用资源占比',
-        unUseNum: '无用资源个数',
-        unUseMark: '无用资源已标注'
+        totalSize: '包大小',
+        reinforceSize: '加固包大小',
+        resourceSize: '总资源大小',
+        resourceRatio: '资源总占比',
+        repeatResourceSize: '重复资源总大小',
+        repeatResourceRatio: '重复资源占比',
+        repeatResourcesQuantity: '重复资源个数',
+        repeatResourcesMark: '重复资源已标注',
+        imageSize: '超大图片总大小',
+        imageRatio: '超大图片占比',
+        imageResourcesQuantity: '超大图片个数',
+        imageResourcesMark: '超大图片已标注',
+        uselessResourceSize: '无用资源总大小',
+        uselessResourceRatio: '无用资源占比',
+        uselessResourcesQuantity: '无用资源个数',
+        uselessResourcesMark: '无用资源已标注'
       },
-      currentData: {
-        packageSize: '36.6MB',
-        jiaGuSize: '38.9MB',
-        totalResSize: '21.2MB',
-        totalResRate: '57.9%',
-        repeatResSize: '8MB',
-        repeatResRate: '21.9%',
-        repeatResNum: '19',
-        picSize: '5MB',
-        picRate: '13.7%',
-        picNum: '19',
-        unUseSize: '5MB',
-        unUseRate: '13.7%',
-        unUseNum: '19',
-        unUseMark: '16'
-      },
+      currentData: null,
       fileList: {
         ipa: [],
         apk: [],
         txt: []
       },
       platform: '',
-      uploading: false
+      uploading: false,
+      showLoading: false,
+      //资源列表参数
+      resourceParams: {
+        limit: 10,
+        page: 1,
+        //资源文件类型：1-重复资源；2-超大图片资源；3-无用资源
+        resourceType: 1,
+      },
+      confirmLoading: false,
+      modalTitle: '',
+      modalTitleList: ['重复资源列表', '超大图片列表', '无用资源列表']
     }
   }
 
@@ -151,11 +113,12 @@ class PackageSelfCheck extends Component {
     let {fileList, uploading} = this.state
     if (fileList[type].length === 1) {
       message.error("只支持上传一个文件")
-      return false
+    } else {
+      fileList[type].push(file)
+      uploading = type === 'ipa'
+      this.setState({fileList, uploading})
     }
-    fileList[type].push(file)
-    uploading = type === 'ipa'
-    this.setState({fileList, uploading})
+    return false
   }
 
   /**
@@ -168,13 +131,131 @@ class PackageSelfCheck extends Component {
     this.setState({fileList});
   }
 
+  /**
+   * @desc android自检
+   */
+  onPackageSelfCheck = () => {
+    if (this.state.fileList.apk.length === 0) {
+      message.warning('请上传安装包')
+      return
+    }
+    this.setState({showLoading: true}, () => {
+      let formData = new FormData();
+      formData.append('files', this.state.fileList.apk[0])
+      formData.append('files', this.state.fileList.txt[0])
+      formData.append('projectId', this.props.projectId)
+      reqPostFormData('/packageBody/selfCheck', formData).then(res => {
+        if (parseInt(res.code, 0) === 0) {
+          message.success("自检成功")
+          this.setState({currentData: res.data})
+        } else {
+          message.error(res.msg)
+        }
+        this.setState({showLoading: false})
+      })
+    })
+  }
+
+  /**
+   * @desc ios自检
+   */
+  onIOSPackageSelfCheck = () => {
+    if (this.state.fileList.ipa.length === 0) {
+      message.warning('请上传安装包')
+    }
+    this.setState({uploading: true}, () => {
+      let formData = new FormData();
+      formData.append('files', this.state.fileList.ipa[0])
+      formData.append('projectId', this.props.projectId)
+      reqPostFormData('/packageBody/selfCheck', formData).then(res => {
+        if (parseInt(res.code, 0) === 0) {
+          message.success("自检成功")
+          this.setState({currentData: res.data})
+        } else {
+          message.error(res.msg)
+        }
+        this.setState({uploading: false})
+      })
+    })
+  }
+  /**
+   * @desc 显示资源modal事件
+   */
+  showResourceList = (type) => {
+    let resourceParams = this.state.resourceParams
+    resourceParams.resourceType = type
+    resourceParams.page = 1
+    this.setState({
+      resourceParams,
+      modalVisible: true,
+      confirmLoading: true,
+      modalTitle: this.state.modalTitleList[type - 1]
+    }, () => {
+      this.getResourceList()
+    })
+  }
+  /**
+   * @desc 包体监控/资源文件分页列表查询
+   */
+  getResourceList = () => {
+    let {pagination, resourceParams, currentData} = this.state
+    let total = 0, current = resourceParams.page, resourceList = []
+    if (resourceParams.resourceType === 1) {
+      total = currentData.repeatResources.length
+      resourceList = currentData.repeatResources.slice((current - 1) * 10, (current - 1) * 10 + 10)
+    } else if (resourceParams.resourceType === 2) {
+      total = currentData.imageResources.length
+      resourceList = currentData.imageResources.slice((current - 1) * 10, (current - 1) * 10 + 10)
+    } else {
+      total = currentData.uselessResources.length
+      resourceList = currentData.uselessResources.slice((current - 1) * 10, (current - 1) * 10 + 10)
+    }
+    pagination.total = total;
+    pagination.current = current
+    pagination.showTotal = () => {
+      return '共 ' + total + ' 条';
+    };
+    this.setState({
+      pagination,
+      resourceParams,
+      resourceList,
+      confirmLoading: false
+    })
+  }
+  /**
+   * @desc 资源列表分页改变事件
+   */
+  handleTableChange = (pagination) => {
+    const resourceParams = {...this.state.resourceParams};
+    if (pagination) {
+      resourceParams.page = pagination.current;
+    } else {
+      resourceParams.page = 1;
+    }
+    this.setState({resourceParams}, this.getResourceList);
+  }
+
   render() {
-    const {fileList, modalVisible, columns, tableData, pagination, currentData, keyName, uploading, platform} = this.state
+    const {
+      fileList,
+      modalVisible,
+      columns,
+      modalTitle,
+      pagination,
+      currentData,
+      keyName,
+      uploading,
+      platform,
+      showLoading,
+      confirmLoading,
+      resourceList
+    } = this.state
     let dataList = (data) => {
       let list = [[], [], [], []], color = ['red', 'yellow', 'green', 'blue']
       for (let i in keyName) {
         let index = 0,
-          isClick = (keyName[i].indexOf("个数") > -1 || keyName[i].indexOf("已标注") > -1) ? true : false
+          isClick = (keyName[i].indexOf("个数") > -1 || keyName[i].indexOf("已标注") > -1),
+          isPercent = keyName[i].indexOf("占比") > -1 ? '%' : ''
         if (keyName[i].indexOf("重复资源") > -1) {
           index = 1
         } else if (keyName[i].indexOf("超大图片") > -1) {
@@ -182,7 +263,7 @@ class PackageSelfCheck extends Component {
         } else if (keyName[i].indexOf("无用资源") > -1) {
           index = 3
         }
-        if (!data[i]) {
+        if (data[i] !== 0 && !data[i]) {
           list[index].push(
             <Col span={6} key={i}>
               <div className="data-item-white">
@@ -192,11 +273,11 @@ class PackageSelfCheck extends Component {
             </Col>
           )
         } else {
-          if (index !== 0 && isClick) {
+          if (index !== 0 && isClick && data[i] !== 0) {
             list[index].push(
               <Col span={6} key={i}>
                 <div className={`data-item-${color[index]} can-click`} onClick={() => {
-                  this.setState({modalVisible: true})
+                  this.showResourceList(index)
                 }}>
                   <p>{keyName[i]}</p>
                   <p>{data[i]}</p>
@@ -209,7 +290,7 @@ class PackageSelfCheck extends Component {
               <Col span={6} key={i}>
                 <div className={`data-item-${color[index]}`}>
                   <p>{keyName[i]}</p>
-                  <p>{data[i]}</p>
+                  <p>{data[i]}{isPercent}</p>
                 </div>
               </Col>
             )
@@ -217,7 +298,6 @@ class PackageSelfCheck extends Component {
         }
       }
       list.map(item => <Row style={{width: "100%"}}>{item}</Row>)
-      console.log(list)
       return list
     }
     let getDraggerContext = (type) => {
@@ -262,22 +342,25 @@ class PackageSelfCheck extends Component {
         </Breadcrumb>
         <div className="content-container">
           {platform === 2 &&
-            <Card title="包体自检 ">
-              <Dragger style={{padding: "40px 0px"}}
-                       name='file'
-                       disabled={uploading}
-                       accept=".ipa"
-                       beforeUpload={(file, fileList) => {
-                         this.beforeUpload(file, fileList, 'ipa')
-                       }}
-                       onRemove={(file) => {
-                         this.onRemove(file, 'ipa')
-                       }}
-                       fileList={fileList.api}
-              >
-                {getDraggerContext('ipa')}
-              </Dragger>
-            </Card>
+          <Card title="包体自检 ">
+            <Dragger style={{padding: "40px 0px"}}
+                     name='file'
+                     disabled={uploading}
+                     accept=".ipa"
+                     beforeUpload={(file, fileList) => {
+                       this.beforeUpload(file, fileList, 'ipa')
+                     }}
+                     onRemove={(file) => {
+                       this.onRemove(file, 'ipa')
+                     }}
+                     customRequest={() => {
+                       this.onIOSPackageSelfCheck()
+                     }}
+                     fileList={fileList.api}
+            >
+              {getDraggerContext('ipa')}
+            </Dragger>
+          </Card>
           }
           {platform === 1 &&
           <Card title={<div>
@@ -293,53 +376,66 @@ class PackageSelfCheck extends Component {
                 style={{fontSize: 12, marginLeft: 16, width: 18, height: 18}}/>
             </Popover>
           </div>}>
-            <Row>
-              <Col span={11}>
-                <Dragger style={{padding: "40px 0px"}}
-                         name='file'
-                         disabled={uploading}
-                         accept=".apk"
-                         beforeUpload={(file, fileList) => {
-                           this.beforeUpload(file, fileList, 'apk')
-                         }}
-                         onRemove={(file) => {
-                           this.onRemove(file, 'apk')
-                         }}
-                         fileList={fileList.apk}
-                >
-                  {getDraggerContext('apk')}
-                </Dragger>
-              </Col>
-              <Col span={11} offset={2}>
-                <Dragger style={{padding: "40px 0px"}}
-                         name='file'
-                         disabled={uploading}
-                         accept=".txt"
-                         beforeUpload={(file, fileList) => {
-                           this.beforeUpload(file, fileList, 'txt')
-                         }}
-                         onRemove={(file) => {
-                           this.onRemove(file, 'txt')
-                         }}
-                         fileList={fileList.txt}
-                >
-                  {getDraggerContext('txt')}
-                </Dragger>
-              </Col>
-            </Row>
-            <Button type="primary" className='analysis-btn'>开始分析</Button>
+            <Spin
+              spinning={showLoading}
+              tip="分析中，请稍等...">
+              <Row>
+                <Col span={11}>
+                  <Dragger style={{padding: "40px 0px"}}
+                           name='file'
+                           disabled={uploading}
+                           accept=".apk"
+                           beforeUpload={(file, fileList) => {
+                             this.beforeUpload(file, fileList, 'apk')
+                           }}
+                           onRemove={(file) => {
+                             this.onRemove(file, 'apk')
+                           }}
+                           customRequest={() => {
+                           }}
+                           fileList={fileList.apk}
+                  >
+                    {getDraggerContext('apk')}
+                  </Dragger>
+                </Col>
+                <Col span={11} offset={2}>
+                  <Dragger style={{padding: "40px 0px"}}
+                           name='file'
+                           disabled={uploading}
+                           accept=".txt"
+                           beforeUpload={(file, fileList) => {
+                             this.beforeUpload(file, fileList, 'txt')
+                           }}
+                           onRemove={(file) => {
+                             this.onRemove(file, 'txt')
+                           }}
+                           fileList={fileList.txt}
+                           customRequest={() => {
+                           }}
+                  >
+                    {getDraggerContext('txt')}
+                  </Dragger>
+                </Col>
+              </Row>
+              <Button type="primary" className='analysis-btn' onClick={() => {
+                this.onPackageSelfCheck()
+              }}>开始分析</Button>
+            </Spin>
           </Card>
           }
+          {currentData &&
           <Card
             title="包体监测结果 "
             style={{marginTop: 24}}>
             {dataList(currentData)}
           </Card>
+          }
         </div>
         <Modal
-          title='重复资源列表'
+          title={modalTitle}
           visible={modalVisible}
-          width={800}
+          confirmLoading={confirmLoading}
+          width={1000}
           onOk={() => {
             this.setState({modalVisible: false})
           }}
@@ -350,9 +446,10 @@ class PackageSelfCheck extends Component {
           cancelText="取消">
           <Table
             columns={columns}
-            dataSource={tableData}
-            rowKey={(record, index) => index}
-            pagination={pagination}/>
+            dataSource={resourceList}
+            rowKey={record => record.id}
+            pagination={pagination}
+            onChange={this.handleTableChange}/>
         </Modal>
       </div>
     )

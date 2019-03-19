@@ -153,3 +153,22 @@ export async function auth (data) {
   })
 }
 
+export function reqPostFormData (url, params) {
+  return new Promise((resolve, reject) => {
+
+    const data = params
+    const options = {
+      method: 'POST',
+      headers: { 'content-type': 'application/multipart/form-data' },
+      data: data,
+      url,
+    }
+    axios(options).then(res => {
+      resolve(res.data)
+    }, err => {
+      reject(err)
+    }).catch(error => {
+      console.error(error)
+    })
+  })
+}
