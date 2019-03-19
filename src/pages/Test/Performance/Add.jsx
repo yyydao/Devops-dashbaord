@@ -35,6 +35,7 @@ class PerformanceAdd extends Component {
       //测试环境
       envList: [],
       selectedEnvID: '',
+      selectedEnvName: '',
       //分支
       branchList: [],
       selectedBranchName: '',
@@ -63,13 +64,13 @@ class PerformanceAdd extends Component {
       selectedBranchName,
       chooseSceneID,
       selectedEnvID,
+      selectedEnvName,
       selectedModalItems,
       timeType,
       timeText,
       buildName,
       buildPwd,
     } = this.state
-    console.log(chooseSceneID)
     if (!selectedBranchName) {
       message.error('请选择“开发分支”')
       return
@@ -85,10 +86,10 @@ class PerformanceAdd extends Component {
     } else if (this.state.buildType === '2' && !timeText) {
       message.error('请选择“定时时间”')
       return
-    } else if (this.state.platform === '2' && !buildName) {
+    } else if (this.state.platform === '2' &&(selectedEnvName !== '测试环境' && selectedEnvName.length > 0) && !buildName) {
       message.error('请输入构建账号')
       return
-    } else if (this.state.platform === '2' && !buildPwd) {
+    } else if (this.state.platform === '2' && (selectedEnvName !== '测试环境' && selectedEnvName.length > 0) &&!buildPwd) {
       message.error('请输入构建密码')
       return
     }
@@ -141,8 +142,13 @@ class PerformanceAdd extends Component {
    * @param e
    */
   changeEnv = (e) => {
+    const list = this.state.envList
+    const v = e.target.value
+    const checkedItem = list.filter(item => item.code === v)[0]
+    const name = checkedItem['text']
     this.setState({
       selectedEnvID: e.target.value,
+      selectedEnvName: name,
     }, () => {
       this.getSceneList()
     })
@@ -254,7 +260,6 @@ class PerformanceAdd extends Component {
    * @desc 机型变化
    */
   changeModal = (selectedModalItems) => {
-    console.log(selectedModalItems)
     if (selectedModalItems.includes('-1')) {
       selectedModalItems = ['-1']
     }
@@ -286,6 +291,7 @@ class PerformanceAdd extends Component {
   next () {
     const {
       selectedEnvID,
+      selectedEnvName,
       selectedBranchName,
       selectedModalItems,
       buildName,
@@ -293,7 +299,7 @@ class PerformanceAdd extends Component {
     } = this.state
     if (this.state.current === 0) {
       if (selectedEnvID.length < 1) {
-        message.error('请选择“测试环境”')
+        message.error('请选择“编译环境”')
         return
       } else if (selectedModalItems.length < 1) {
         message.error('请选择测试机型')
@@ -301,10 +307,10 @@ class PerformanceAdd extends Component {
       } else if (selectedBranchName.length < 1) {
         message.error('请选择开发分支')
         return
-      } else if (this.state.platform === '2' && !buildName) {
+      } else if (this.state.platform === '2' && (selectedEnvName !== '测试环境' && selectedEnvName.length > 0) && !buildName) {
         message.error('请输入构建账号')
         return
-      } else if (this.state.platform === '2' && !buildPwd) {
+      } else if (this.state.platform === '2' && (selectedEnvName !== '测试环境' && selectedEnvName.length > 0) && !buildPwd) {
         message.error('请输入构建密码')
         return
       }
@@ -346,6 +352,7 @@ class PerformanceAdd extends Component {
 
       envList,
       selectedEnvID,
+      selectedEnvName,
       branchList,
       selectedBranchName,
       modalList,
@@ -385,6 +392,7 @@ class PerformanceAdd extends Component {
       </Form.Item>
       {
         platform === '2' &&
+        (selectedEnvName !== '测试环境' && selectedEnvName.length > 0) &&
         <React.Fragment>
           <Form.Item
             label="构建账号"
