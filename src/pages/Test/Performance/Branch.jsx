@@ -357,8 +357,8 @@ class PerformanceBranchTest extends Component {
       'limit': 10
     }).then(res => {
       if (res.code === 0) {
-        if (res.data && res.data !== null) {
-          this.setState({ listData: res.data })
+        if (res.data && res.data && res.data.list !== null) {
+          this.setState({ listData: res.data.list })
         } else {
           this.setState({ listData: null })
         }
