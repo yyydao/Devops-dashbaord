@@ -160,7 +160,7 @@ class UserManager extends Component {
   }
 
   /**
-   * @desc 获取项目识别码列表
+   * @desc 获取加入项目组列表
    */
   getAllProjects = () => {
     reqGet('/project/getAllProjects').then(res => {
@@ -490,7 +490,7 @@ class UserManager extends Component {
             </FormItem>
             {
               modalTitle === '新增' &&
-              <FormItem {...fromItemLayout} label={'项目识别码'}>
+              <FormItem {...fromItemLayout} label={'加入项目组'}>
                 {getFieldDecorator('projectCodes', {
                   // rules: [{ required: true, message: '请输入' }]
                 })(
