@@ -443,6 +443,7 @@ class PerformanceAdd extends Component {
         <Select placeholder="开发分支"
                 style={{ width: 354 }}
                 showSearch
+                dropdownMatchSelectWidth={false}
                 value={selectedBranchName}
                 onSearch={this.getBranchList}
                 onChange={this.changeBranch}>
