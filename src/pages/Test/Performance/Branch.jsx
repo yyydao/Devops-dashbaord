@@ -116,7 +116,7 @@ class PerformanceBranchTest extends Component {
               : <a onClick={() => this.showLog(record.phones[0].phoneID)}>查看日志<span
                 style={{ color: '#eee' }}> | </span></a>)}
             <Popconfirm title="删除构建任务?" onConfirm={() => this.handleDeleteTask(record.taskID)}>
-              <a href="javascript:;">删除</a>
+              <a>删除</a>
             </Popconfirm>
             {record.status === 1 &&
             record.result === 1 &&
