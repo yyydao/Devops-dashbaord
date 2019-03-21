@@ -40,9 +40,11 @@ class BuildTestPackage extends Component {
       currentBuild: '',
 
       //筛选条件
-      envID: props.envID,
+      propsEnvID: props.envID,
+      envID:'',
       status: 0,//默认显示成功列表
-      version: props.version,
+      propsVersion: props.version,
+      version:'',
       selectDisabled: false,//环境&版本是否可选择
       buildId:props.buildId,
       //正在构建的数量
@@ -117,8 +119,8 @@ class BuildTestPackage extends Component {
       if (res.code === 0) {
         let id = ''
         //钉钉进入该页面时，会带来一个envID，否则默认为测试环境
-        if(this.state.envID){
-          id=this.state.envID
+        if(this.state.propsEnvID){
+          id=this.state.propsEnvID
         }else{
           res.data.map(item => {
             if (item.name === '测试环境') {id = item.id}
@@ -167,7 +169,7 @@ class BuildTestPackage extends Component {
       if (res.code === 0) {
         let buildVersion = ''
         if(this.state.buildId){
-          buildVersion=this.state.version
+          buildVersion=this.state.propsVersion
         }else{
           if (res.data.length > 0 && !selectDisabled) {
             buildVersion = res.data[0].buildVersion
