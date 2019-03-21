@@ -37,7 +37,6 @@ import {
   Col,
 } from 'antd'
 import { bindActionCreators } from 'redux'
-import { PerformanceBranchTest } from '../Test/Performance/Branch'
 
 const BreadcrumbItem = Breadcrumb.Item
 const Step = Steps.Step

@@ -42,10 +42,10 @@ export default function project (state = initialState, action = {}) {
         localStorage.setItem('steps', JSON.stringify(action.payload))
         return Object.assign({}, initialState, { stepsList: action.payload })
       } else {
-        return  Object.assign({}, initialState)
         localStorage.setItem('steps', initialState.stepsList)
+        return  Object.assign({}, initialState)
+
       }
-      break
     case REMOVE_STEPS:
       if (action.payload) {
         let tempList = JSON.parse(localStorage.getItem('steps'))
