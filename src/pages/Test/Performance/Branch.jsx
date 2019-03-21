@@ -64,7 +64,7 @@ export class PerformanceBranchTest extends Component {
           title: '环境',
           dataIndex: 'envName',
           key: 'envName',
-          width: '70px',
+          width: '64px',
         },
         {
           title: '场景',
@@ -469,15 +469,63 @@ export class PerformanceBranchTest extends Component {
     const expandedRowRender = (record) => {
       const expandedColumns = [
         {
+          title: 'ID',
+          dataIndex: 'placeholder1',
+          key: 'placeholder1',
+          width:'40px'
+        },
+        {
+          title: '分支',
+          dataIndex: 'placeholder2',
+          key: 'placeholder2',
+          width: '240px'
+        },
+        {
+          title: '版本',
+          dataIndex: 'placeholder3',
+          key: 'placeholder3',
+          width: '70px'
+        },
+        {
+          title: '环境',
+          dataIndex: 'placeholder4',
+          key: 'placeholder4',
+          width: '64px',
+        },
+        {
+          title: 'placeholder5',
+          dataIndex: 'placeholder5',
+          key: 'placeholder5',
+          width: '150px',
+        },
+        {
+          title: '创建人',
+          dataIndex: 'placeholder6',
+          key: 'placeholder6',
+          width: '80px'
+        },
+        {
+          title: '时间',
+          dataIndex: 'placeholder7',
+          key: 'placeholder7',
+          width: '130px'
+        },
+        {
+          title: '状态',
+          dataIndex: 'placeholder8',
+          key: 'placeholder8',
+          width: '72px'
+        },
+        {
           title: '机型',
           dataIndex: 'phoneName',
           key: 'phoneName',
-          width: '1100px',
-          className:'nested-phone'
+          width: '300px',
         },
         {
           title: '操作',
           key: 'edit',
+          width: '20%',
           render: (text, record) => <div>
             {record &&
             record.status === 1 &&
