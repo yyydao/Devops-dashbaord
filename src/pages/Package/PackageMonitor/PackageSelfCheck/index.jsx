@@ -32,7 +32,25 @@ class PackageSelfCheck extends Component {
           dataIndex: 'resourcePath',
           key: 'resourcePath',
           width: '80%',
-          render: (text) => <p style={{wordBreak: 'break-all', marginBottom: 0}}>{text}</p>
+          render: (text) => {
+            let snArray=[];
+            snArray=text.split(",");
+
+            let br=<br></br>;
+            let result=null;
+            if(snArray.length<2){
+              return text;
+            }
+
+            for(let i=0;i<snArray.length;i++){
+              if(i===0){
+                result=snArray[i]
+              }else{
+                result=<span>{result}{br}{snArray[i]}</span>
+              }
+            }
+            return <div>{result}</div>
+          }
         },
         {
           title: '大小(KB)',
