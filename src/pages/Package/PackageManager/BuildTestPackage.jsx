@@ -169,7 +169,11 @@ class BuildTestPackage extends Component {
       if (res.code === 0) {
         let buildVersion = ''
         if(this.state.buildId){
-          buildVersion=this.state.propsVersion
+          if(this.state.propsVersion){
+            buildVersion=this.state.propsVersion
+          } else {
+            this.setState({status:3,selectDisabled: true })
+          }
         }else{
           if (res.data.length > 0 && !selectDisabled) {
             buildVersion = res.data[0].buildVersion
