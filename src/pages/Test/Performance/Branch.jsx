@@ -24,7 +24,7 @@ import { bindActionCreators } from 'redux'
 const BreadcrumbItem = Breadcrumb.Item
 const Option = Select.Option
 
-class PerformanceBranchTest extends Component {
+export class PerformanceBranchTest extends Component {
   constructor (props) {
     super(props)
 
