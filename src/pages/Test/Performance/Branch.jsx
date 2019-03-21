@@ -45,31 +45,32 @@ export class PerformanceBranchTest extends Component {
         {
           title: 'ID',
           dataIndex: 'rowNum',
-          key: 'rowNum'
+          key: 'rowNum',
+          width:'40px'
         },
         {
           title: '分支',
           dataIndex: 'branchName',
           key: 'branchName',
-          width: '20%'
+          width: '240px'
         },
         {
           title: '版本',
           dataIndex: 'appVersion',
           key: 'appVersion',
-          width: '5%'
+          width: '70px'
         },
         {
           title: '环境',
           dataIndex: 'envName',
           key: 'envName',
-          width: '5%',
+          width: '70px',
         },
         {
           title: '场景',
           dataIndex: 'sceneTexts',
           key: 'sceneTexts',
-          width: '20',
+          width: '180px',
           render: (text) => <Popover content={<p style={{ width: 180, marginBottom: 0 }}>{text}</p>}
                                      trigger="hover">
             {truncate(text, 10)}<Icon type="exclamation-circle"/>
@@ -79,24 +80,24 @@ export class PerformanceBranchTest extends Component {
           title: '创建人',
           dataIndex: 'nickName',
           key: 'nickName',
-          width: '5%'
+          width: '80px'
         },
         {
           title: '时间',
           dataIndex: 'createTime',
           key: 'createTime',
-          width: '10%'
+          width: '150px'
         },
         {
           title: '状态',
           dataIndex: 'statusText',
           key: 'statusText',
-          width: '5%'
+          width: '80px'
         }, {
           title: '机型',
           dataIndex: 'phones',
           key: 'phones',
-          width: '10%',
+          width: '300px',
           render: (text, record) => <div>
             {(text && text.length > 1) ? '组合' : text && text[0] && text[0].phoneName}
           </div>
@@ -390,7 +391,7 @@ export class PerformanceBranchTest extends Component {
    * @desc 表格页数改变事件
    */
   handleTableChange = (pagination) => {
-    this.setState({ curPage: pagination.current },()=>this.getList() )
+    this.setState({ curPage: pagination.current }, () => this.getList())
   }
 
   /**
@@ -469,13 +470,11 @@ export class PerformanceBranchTest extends Component {
     const expandedRowRender = (record) => {
       const expandedColumns = [
         {
-          title: 'buildNum',
-          dataIndex: 'buildNum',
-          key: 'buildNum'
-        }, {
           title: '机型',
           dataIndex: 'phoneName',
           key: 'phoneName',
+          width: '1100px',
+          className:'nested-phone'
         },
         {
           title: '操作',
@@ -492,11 +491,11 @@ export class PerformanceBranchTest extends Component {
       ]
       return (
         <Table
+          className="components-table-phone-nested"
           columns={expandedColumns}
           dataSource={record.phones}
           pagination={false}
           showHeader={false}
-          indentSize={0}
           rowClassName="rowClass"
           rowKey={record => record.buildNum}
         />
@@ -583,8 +582,6 @@ export class PerformanceBranchTest extends Component {
             </Col>
           </Row>
         </div>
-
-
         <div className="devops-main-wrapper">
           <main className='performance-list-main'>
             <div role="tablist" className="ant-tabs-bar ant-tabs-top-bar">
@@ -605,6 +602,7 @@ export class PerformanceBranchTest extends Component {
               </div>
             </div>
             <Table
+              className={'performance-table-list'}
               columns={columns}
               expandedRowRender={expandedRowRender}
               rowKey={record => record.rowNum}
@@ -615,7 +613,6 @@ export class PerformanceBranchTest extends Component {
               onChange={this.handleTableChange}/>
           </main>
         </div>
-
       </div>
     )
   }
