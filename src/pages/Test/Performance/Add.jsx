@@ -86,10 +86,10 @@ class PerformanceAdd extends Component {
     } else if (this.state.buildType === '2' && !timeText) {
       message.error('请选择“定时时间”')
       return
-    } else if (this.state.platform === '2' &&(selectedEnvName !== '测试环境' && selectedEnvName.length > 0) && !buildName) {
+    } else if (this.state.platform === '2' && (selectedEnvName !== '测试环境' && selectedEnvName.length > 0) && !buildName) {
       message.error('请输入构建账号')
       return
-    } else if (this.state.platform === '2' && (selectedEnvName !== '测试环境' && selectedEnvName.length > 0) &&!buildPwd) {
+    } else if (this.state.platform === '2' && (selectedEnvName !== '测试环境' && selectedEnvName.length > 0) && !buildPwd) {
       message.error('请输入构建密码')
       return
     }
@@ -454,7 +454,7 @@ class PerformanceAdd extends Component {
             })
           }
         </Select>
-        <Button type={'default'} style={{marginLeft:'8px'}} onClick={this.refreshBranch}>拉取分支</Button>
+        <Button type={'default'} style={{ marginLeft: '8px' }} onClick={this.refreshBranch}>拉取分支</Button>
       </Form.Item>
     </React.Fragment>
 
@@ -493,9 +493,11 @@ class PerformanceAdd extends Component {
     </React.Fragment>
 
     const FinalStep = <React.Fragment>
-
-      <h2>测试任务已经提交</h2>
-      <p>您可以点击下方"查看任务"按钮，进入测试列表查看测试进度</p>
+      <div className={'finalStep'}>
+        <img src={require('@/assets/img/check-circle.png')} alt="成功"/>
+        <h2 style={{ marginTop: '24px', marginBottom: '16px' }}>测试任务已经提交</h2>
+        <p style={{ marginBottom: '48px' }}>您可以点击下方"查看任务"按钮，进入测试列表查看测试进度</p>
+      </div>
     </React.Fragment>
 
     const BasicStep = [{

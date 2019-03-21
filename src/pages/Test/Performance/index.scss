@@ -1,28 +1,37 @@
 .performance {
-  .performance-index-main{
+  .performance-index-main {
     margin: 24px;
-    .title-icon{
+
+    .title-icon {
       margin-right: 16px;
     }
   }
 
-  .performance-list-main{
+  .performance-list-main {
     background: #fff;
   }
-  .performance-add-main{
+
+  .performance-add-main {
     background: #fff;
     padding: 50px 170px;
-    .steps-content{
+
+    .steps-content {
       margin-top: 50px;
     }
+
+    .finalStep {
+      text-align: center;
+    }
   }
-  .devops-main-controlArea{
+
+  .devops-main-controlArea {
     background: #fff;
     padding: 24px;
   }
-  .performance-table-list{
-    .components-table-phone-nested{
-      td.nested-phone{
+
+  .performance-table-list {
+    .components-table-phone-nested {
+      td.nested-phone {
         padding-left: 860px;
       }
     }
