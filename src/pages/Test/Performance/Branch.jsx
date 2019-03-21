@@ -109,8 +109,7 @@ export class PerformanceBranchTest extends Component {
           render: (text, record) => <div>
             {record &&
             record.phones && record.phones.length === 1 &&
-            record.status === 1 &&
-            (record.result === 1 ?
+            (record.status === 1 ?
               <a href={`${window.location.origin}/performance/task/phone/report?phoneID=${record.phones[0].phoneID}`}
                  target='_blank'>查看报告<span
                 style={{ color: '#eee' }}> | </span></a>
