@@ -46,7 +46,7 @@ class packageChart extends React.Component {
             type="line"
             position="version*size"
             size={2}
-            color={['name', ['#20b0ba', '#26c770', '#f8c517', '#f78e63', '#f4493d', '#f65896', '#c95afe', '#6170f2', '#2096f3']]}
+            color={['name', ['#F5222D ', '#1890FF', '#2FC25B', '#FACC14', '#8543E0', '#AD4E00', '#c95afe', '#6170f2', '#2096f3']]}
             tooltip={['name*size*version', (name, size, version) => {
               return {
                 //自定义 tooltip 上显示的 title 显示内容等。
@@ -60,7 +60,7 @@ class packageChart extends React.Component {
             position="version*size"
             size={4}
             shape={"circle"}
-            color={['name', ['#20b0ba', '#26c770', '#f8c517', '#f78e63', '#f4493d', '#f65896', '#c95afe', '#6170f2', '#2096f3']]}
+            color={['name', ['#F5222D ', '#1890FF', '#2FC25B', '#FACC14', '#8543E0', '#AD4E00', '#c95afe', '#6170f2', '#2096f3']]}
             style={{
               stroke: "#fff",
               lineWidth: 1
