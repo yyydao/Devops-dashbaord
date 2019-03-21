@@ -157,8 +157,26 @@ class PackageMonitor extends Component {
           title: '资源名称',
           dataIndex: 'resourcePath',
           key: 'resourcePath',
-          width: '50%',
-          render: (text) => <p style={{wordBreak: 'break-all', marginBottom: 0}}>{text}</p>
+          width: '60%',
+          render: (text) => {
+            let snArray=[];
+            snArray=text.split(",");
+
+            let br=<br></br>;
+            let result=null;
+            if(snArray.length<2){
+              return text;
+            }
+
+            for(let i=0;i<snArray.length;i++){
+              if(i===0){
+                result=snArray[i]
+              }else{
+                result=<span>{result}{br}{snArray[i]}</span>
+              }
+            }
+            return <div>{result}</div>
+          }
         },
         {
           title: '大小(KB)',
@@ -166,17 +184,17 @@ class PackageMonitor extends Component {
           key: 'resourceSize',
           width: '10%'
         },
-        {
-          title: '次数',
-          dataIndex: 'quantity',
-          key: 'quantity',
-          width: '10%'
-        },
+        // {
+        //   title: '次数',
+        //   dataIndex: 'quantity',
+        //   key: 'quantity',
+        //   width: '10%'
+        // },
         {
           title: '标记',
           dataIndex: 'status',
           key: 'status',
-          width: '10%',
+          width: '8%',
           render: (text, record, index) => <Checkbox checked={text} onChange={(e) => {
             this.onMarkChanged(e.target.checked, record, index)
           }}/>
