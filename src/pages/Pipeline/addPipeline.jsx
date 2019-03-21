@@ -36,6 +36,8 @@ import {
   Row,
   Col,
 } from 'antd'
+import { bindActionCreators } from 'redux'
+import { PerformanceBranchTest } from '../Test/Performance/Branch'
 
 const BreadcrumbItem = Breadcrumb.Item
 const Step = Steps.Step
@@ -473,7 +475,7 @@ class AddPipeline extends Component {
                       {item[1].map((item, index) => {
                         // console.log(item)
                         return <div className='task-item' key={index}>
-                          <Row type='flex' align='space-around' justify='middle' className='task-item-row'>
+                          <Row type='flex' align='middle' justify='space-around' className='task-item-row'>
                             <Col span={20}>
                               <p className='item-info step-name' >{item.stepName}</p>
                               <p className='item-info step-desc'>{item.stepDesc}</p>
@@ -537,12 +539,23 @@ class AddPipeline extends Component {
   }
 }
 
-AddPipeline = connect((state) => {
+function mapStateToProps (state) {
+  const { project,pipeline } = state
   return {
-    projectId: state.project.projectId
+    projectId: project.projectId,
+    stepsList: pipeline.stepsList
   }
-}, { setStep, removeSteps, setSteps })(AddPipeline)
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    setStep: bindActionCreators(setStep, dispatch),
+    removeSteps: bindActionCreators(removeSteps, dispatch),
+    setSteps: bindActionCreators(setSteps, dispatch),
+  }
+}
 
 const pipelineAdd = Form.create()(AddPipeline)
 
-export default withRouter(pipelineAdd)
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(pipelineAdd))

@@ -40,11 +40,11 @@ export default function project (state = initialState, action = {}) {
     case SET_STEPS:
       if (action.payload) {
         localStorage.setItem('steps', JSON.stringify(action.payload))
-        Object.assign({}, initialState, { stepsList: action.payload })
+        return Object.assign({}, initialState, { stepsList: action.payload })
       } else {
+        return  Object.assign({}, initialState)
         localStorage.setItem('steps', initialState.stepsList)
       }
-
       break
     case REMOVE_STEPS:
       if (action.payload) {
