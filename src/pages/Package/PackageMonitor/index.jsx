@@ -389,6 +389,7 @@ class PackageMonitor extends Component {
     let resourceParams = this.state.resourceParams
     resourceParams.resourceType = type
     resourceParams.packageId = id
+    resourceParams.page=1
     if (isMark) {
       resourceParams.status = 1
     } else {
