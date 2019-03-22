@@ -46,31 +46,31 @@ export class PerformanceBranchTest extends Component {
           title: 'ID',
           dataIndex: 'rowNum',
           key: 'rowNum',
-          width:'40px'
+          width:'5%'
         },
         {
           title: '分支',
           dataIndex: 'branchName',
           key: 'branchName',
-          width: '240px'
+          width: '15%'
         },
         {
           title: '版本',
           dataIndex: 'appVersion',
           key: 'appVersion',
-          width: '70px'
+          width: '5%'
         },
         {
           title: '环境',
           dataIndex: 'envName',
           key: 'envName',
-          width: '64px',
+          width: '5%',
         },
         {
           title: '场景',
           dataIndex: 'sceneTexts',
           key: 'sceneTexts',
-          width: '180px',
+          width: '10%',
           render: (text) => <Popover content={<p style={{ width: 180, marginBottom: 0 }}>{text}</p>}
                                      trigger="hover">
             {truncate(text, 10)}<Icon type="exclamation-circle"/>
@@ -80,31 +80,32 @@ export class PerformanceBranchTest extends Component {
           title: '创建人',
           dataIndex: 'nickName',
           key: 'nickName',
-          width: '80px'
+          width: '8%'
         },
         {
           title: '时间',
           dataIndex: 'createTime',
           key: 'createTime',
-          width: '150px'
+          width: '15%'
         },
         {
           title: '状态',
           dataIndex: 'statusText',
           key: 'statusText',
-          width: '80px'
-        }, {
+          width: '5%'
+        },
+        {
           title: '机型',
           dataIndex: 'phones',
           key: 'phones',
-          width: '300px',
+          width:'14%',
           render: (text, record) => <div>
             {(text && text.length > 1) ? '组合' : text && text[0] && text[0].phoneName}
           </div>
         },
         {
           title: '操作',
-          width: '20%',
+          width:'18%',
           dataIndex: 'result',
           render: (text, record) => <div>
             {record &&
@@ -470,62 +471,62 @@ export class PerformanceBranchTest extends Component {
       const expandedColumns = [
         {
           title: 'ID',
-          dataIndex: 'placeholder1',
-          key: 'placeholder1',
-          width:'40px'
+          dataIndex: 'rowNum',
+          key: 'rowNum',
+          width:'5%'
         },
         {
           title: '分支',
-          dataIndex: 'placeholder2',
-          key: 'placeholder2',
-          width: '240px'
+          dataIndex: 'branchName',
+          key: 'branchName',
+          width: '15%'
         },
         {
           title: '版本',
-          dataIndex: 'placeholder3',
-          key: 'placeholder3',
-          width: '70px'
+          dataIndex: 'appVersion',
+          key: 'appVersion',
+          width: '5%'
         },
         {
           title: '环境',
-          dataIndex: 'placeholder4',
-          key: 'placeholder4',
-          width: '64px',
+          dataIndex: 'envName',
+          key: 'envName',
+          width: '5%',
         },
         {
-          title: 'placeholder5',
-          dataIndex: 'placeholder5',
-          key: 'placeholder5',
-          width: '150px',
+          title: '场景',
+          dataIndex: 'sceneTexts',
+          key: 'sceneTexts',
+          width: '10%'
         },
         {
           title: '创建人',
-          dataIndex: 'placeholder6',
-          key: 'placeholder6',
-          width: '80px'
+          dataIndex: 'nickName',
+          key: 'nickName',
+          width: '8%'
         },
         {
           title: '时间',
-          dataIndex: 'placeholder7',
-          key: 'placeholder7',
-          width: '130px'
+          dataIndex: 'createTime',
+          key: 'createTime',
+          width: '15%'
         },
         {
           title: '状态',
-          dataIndex: 'placeholder8',
-          key: 'placeholder8',
-          width: '72px'
+          dataIndex: 'statusText',
+          key: 'statusText',
+          width: '5%'
         },
         {
           title: '机型',
           dataIndex: 'phoneName',
           key: 'phoneName',
-          width: '300px',
+          width:'14%'
         },
         {
           title: '操作',
           key: 'edit',
-          width: '20%',
+          width:'18%',
           render: (text, record) => <div>
             {record &&
             record.status === 1 &&
