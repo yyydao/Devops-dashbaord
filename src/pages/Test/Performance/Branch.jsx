@@ -120,7 +120,6 @@ export class PerformanceBranchTest extends Component {
               <a>删除</a>
             </Popconfirm>
             {record.status === 1 &&
-            record.result === 1 &&
             <a href={`${window.location.origin}/performance/task/package/download?taskID=${record.taskID}`}><span
               style={{ color: '#eee' }}> | </span>下载</a>
             }
