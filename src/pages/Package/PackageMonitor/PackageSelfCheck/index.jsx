@@ -90,6 +90,9 @@ class PackageSelfCheck extends Component {
         apk: [],
         txt: []
       },
+      ipaList:[],
+      apkList:[],
+      txtList:[],
       platform: '',
       uploading: false,
       showLoading: false,
@@ -128,13 +131,34 @@ class PackageSelfCheck extends Component {
    * @desc 文件上传（判断是否一个文件）
    */
   beforeUpload = (file, fileList1, type) => {
-    let {fileList, uploading} = this.state
-    if (fileList[type].length === 1) {
-      message.error("只支持上传一个文件")
-    } else {
-      fileList[type].push(file)
-      uploading = type === 'ipa'
-      this.setState({fileList, uploading})
+    let {uploading} = this.state
+    if(type==='ipa'){
+      let ipaList = this.state.ipaList
+      if (ipaList.length === 1) {
+        message.error("只支持上传一个文件")
+      } else {
+        ipaList.push(file)
+        uploading = true
+        this.setState({ipaList, uploading})
+      }
+    }
+    if(type==='txt'){
+      let txtList = this.state.txtList
+      if (txtList.length === 1) {
+        message.error("只支持上传一个文件")
+      } else {
+        txtList.push(file)
+        this.setState({txtList, uploading})
+      }
+    }
+    if(type==='apk'){
+      let apkList = this.state.apkList
+      if (apkList.length === 1) {
+        message.error("只支持上传一个文件")
+      } else {
+        apkList.push(file)
+        this.setState({apkList, uploading})
+      }
     }
     return false
   }
@@ -143,24 +167,38 @@ class PackageSelfCheck extends Component {
    * @desc 文件移除事件
    */
   onRemove = (file, type) => {
-    let fileList = JSON.parse(JSON.stringify(this.state.fileList))
-    const index = fileList[type].indexOf(file);
-    fileList[type].splice(index, 1)
-    this.setState({fileList});
+    if(type==='ipa'){
+      let ipaList = this.state.ipaList
+      const index = ipaList.indexOf(file);
+      ipaList.splice(index, 1)
+      this.setState({ipaList});
+    }
+    if(type==='apk'){
+      let apkList = this.state.apkList
+      const index = apkList.indexOf(file);
+      apkList.splice(index, 1)
+      this.setState({apkList});
+    }
+    if(type==='txt'){
+      let txtList = this.state.txtList
+      const index = txtList.indexOf(file);
+      txtList.splice(index, 1)
+      this.setState({txtList});
+    }
   }
 
   /**
    * @desc android自检
    */
   onPackageSelfCheck = () => {
-    if (this.state.fileList.apk.length === 0) {
+    if (this.state.apkList.length === 0) {
       message.warning('请上传安装包')
       return
     }
     this.setState({showLoading: true}, () => {
       let formData = new FormData();
-      formData.append('files', this.state.fileList.apk[0])
-      formData.append('files', this.state.fileList.txt[0])
+      formData.append('files', this.state.apkList[0])
+      formData.append('files', this.state.txtList[0])
       formData.append('projectId', this.props.projectId)
       reqPostFormData('/packageBody/selfCheck', formData).then(res => {
         if (parseInt(res.code, 0) === 0) {
@@ -178,12 +216,12 @@ class PackageSelfCheck extends Component {
    * @desc ios自检
    */
   onIOSPackageSelfCheck = () => {
-    if (this.state.fileList.ipa.length === 0) {
+    if (this.state.ipaList.length === 0) {
       message.warning('请上传安装包')
     }
     this.setState({uploading: true}, () => {
       let formData = new FormData();
-      formData.append('files', this.state.fileList.ipa[0])
+      formData.append('files', this.state.ipaList[0])
       formData.append('projectId', this.props.projectId)
       reqPostFormData('/packageBody/selfCheck', formData).then(res => {
         if (parseInt(res.code, 0) === 0) {
@@ -266,7 +304,10 @@ class PackageSelfCheck extends Component {
       platform,
       showLoading,
       confirmLoading,
-      resourceList
+      resourceList,
+      ipaList,
+      apkList,
+      txtList
     } = this.state
     let dataList = (data) => {
       let list = [[], [], [], []], color = ['red', 'yellow', 'green', 'blue']
@@ -374,7 +415,7 @@ class PackageSelfCheck extends Component {
                      customRequest={() => {
                        this.onIOSPackageSelfCheck()
                      }}
-                     fileList={fileList.api}
+                     fileList={ipaList}
             >
               {getDraggerContext('ipa')}
             </Dragger>
@@ -411,7 +452,7 @@ class PackageSelfCheck extends Component {
                            }}
                            customRequest={() => {
                            }}
-                           fileList={fileList.apk}
+                           fileList={apkList}
                   >
                     {getDraggerContext('apk')}
                   </Dragger>
@@ -427,7 +468,7 @@ class PackageSelfCheck extends Component {
                            onRemove={(file) => {
                              this.onRemove(file, 'txt')
                            }}
-                           fileList={fileList.txt}
+                           fileList={txtList}
                            customRequest={() => {
                            }}
                   >
