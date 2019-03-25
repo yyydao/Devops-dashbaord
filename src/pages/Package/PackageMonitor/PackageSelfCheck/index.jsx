@@ -85,11 +85,6 @@ class PackageSelfCheck extends Component {
         uselessResourcesMark: '无用资源已标记'
       },
       currentData: null,
-      fileList: {
-        ipa: [],
-        apk: [],
-        txt: []
-      },
       ipaList:[],
       apkList:[],
       txtList:[],
@@ -293,7 +288,6 @@ class PackageSelfCheck extends Component {
 
   render() {
     const {
-      fileList,
       modalVisible,
       columns,
       modalTitle,
