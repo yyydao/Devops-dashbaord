@@ -42,7 +42,7 @@ class PerformanceAdd extends Component {
       // 机型列表
       modalList: [],
       selectedModalItems: [],
-      modalChildren: '',
+      defaultSelectedModal: [],
       // 场景列表
       sceneDataList: [],
       chooseSceneID: [],
@@ -246,13 +246,7 @@ class PerformanceAdd extends Component {
     reqGet(`/dictionary/performance/phonelist/`, {
       projectID: this.props.projectId
     }).then(res => {
-      this.setState({ modalList: res.data }, () => {
-        const modalChildren = this.state.modalList.map((item) => {
-          return <Option value={item.code} key={item.code}
-                         title={item.text}>{item.text}</Option>
-        })
-        this.setState({ modalChildren: modalChildren })
-      })
+      this.setState({ modalList: res.data })
     })
   }
 
@@ -262,6 +256,7 @@ class PerformanceAdd extends Component {
   changeModal = (selectedModalItems) => {
     if (selectedModalItems.includes('-1')) {
       selectedModalItems = ['-1']
+      this.setState({ defaultSelectedModal: ['-1'] })
     }
     this.setState({ selectedModalItems })
   }
@@ -270,7 +265,7 @@ class PerformanceAdd extends Component {
    * @desc 改变场景
    * @param a
    */
-  onSceneChange = (childrenKeys, parentKeys) => {
+  onSceneChange = (childrenKeys) => {
     this.setState({ chooseSceneID: childrenKeys })
   }
 
@@ -322,6 +317,14 @@ class PerformanceAdd extends Component {
 
   prev () {
     const current = this.state.current - 1
+    const selectedModalItems = this.state.selectedModalItems
+    if (this.state.current > 0) {
+      this.setState({
+
+        defaultSelectedModal: [...selectedModalItems],
+      })
+    }
+
     this.setState({ current })
   }
 
@@ -357,6 +360,7 @@ class PerformanceAdd extends Component {
       selectedBranchName,
       modalList,
       selectedModalItems,
+      defaultSelectedModal,
       timeType,
       buildName,
       buildPwd,
@@ -364,7 +368,7 @@ class PerformanceAdd extends Component {
 
     const filteredOptions = modalList.filter((o) => {
       if (selectedModalItems.includes('-1')) {
-        return false
+        return selectedModalItems.includes(o.code)
       } else {
         return !selectedModalItems.includes(o.code)
       }
@@ -428,12 +432,15 @@ class PerformanceAdd extends Component {
                 autoClearSearchValue={true}
                 style={{ width: 450 }}
                 onChange={this.changeModal}
+                defaultValue={defaultSelectedModal}
         >
-          {filteredOptions.map(item => (
-            <Select.Option value={item.code} key={item.code}>
-              {item.text}
-            </Select.Option>
-          ))}
+          {
+            filteredOptions.map((item, key) => (
+              <Select.Option value={item.code} key={key}>
+                {item.text}
+              </Select.Option>
+            ))
+          }
         </Select>
       </Form.Item>
       <Form.Item

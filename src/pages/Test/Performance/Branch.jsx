@@ -46,7 +46,7 @@ export class PerformanceBranchTest extends Component {
           title: 'ID',
           dataIndex: 'rowNum',
           key: 'rowNum',
-          width:'5%'
+          width: '5%'
         },
         {
           title: '分支',
@@ -98,24 +98,27 @@ export class PerformanceBranchTest extends Component {
           title: '机型',
           dataIndex: 'phones',
           key: 'phones',
-          width:'14%',
+          width: '14%',
           render: (text, record) => <div>
             {(text && text.length > 1) ? '组合' : text && text[0] && text[0].phoneName}
           </div>
         },
         {
           title: '操作',
-          width:'18%',
+          width: '18%',
           dataIndex: 'result',
           render: (text, record) => <div>
-            {record &&
-            record.phones && record.phones.length === 1 &&
-            (record.status === 1 ?
-              <a href={`${window.location.origin}/performance/task/phone/report?phoneID=${record.phones[0].phoneID}`}
-                 target='_blank'>查看报告<span
-                style={{ color: '#eee' }}> | </span></a>
-              : <a onClick={() => this.showLog(record.phones[0].phoneID)}>查看日志<span
-                style={{ color: '#eee' }}> | </span></a>)}
+            {/*{*/}
+              {/*record &&*/}
+              {/*record.phones && record.phones.length === 1 &&*/}
+              {/*(record.status === 1 ?*/}
+                {/*<a href={`${window.location.origin}/performance/task/phone/report?phoneID=${record.phones[0].phoneID}`}*/}
+                   {/*target='_blank'>查看报告<span*/}
+                  {/*style={{ color: '#eee' }}> | </span>*/}
+                {/*</a>*/}
+                {/*: <a onClick={() => this.showLog(record.phones[0].phoneID)}>查看日志<span*/}
+                  {/*style={{ color: '#eee' }}> | </span></a>)*/}
+            {/*}*/}
             <Popconfirm title="删除构建任务?" onConfirm={() => this.handleDeleteTask(record.taskID)}>
               <a>删除</a>
             </Popconfirm>
@@ -467,65 +470,84 @@ export class PerformanceBranchTest extends Component {
     } = this.state
 
     const expandedRowRender = (record) => {
+      // const expandedColumns = [
+      //   {
+      //     title: 'ID',
+      //     dataIndex: 'rowNum',
+      //     key: 'rowNum',
+      //     width: '5%'
+      //   },
+      //   {
+      //     title: '分支',
+      //     dataIndex: 'branchName',
+      //     key: 'branchName',
+      //     width: '15%'
+      //   },
+      //   {
+      //     title: '版本',
+      //     dataIndex: 'appVersion',
+      //     key: 'appVersion',
+      //     width: '5%'
+      //   },
+      //   {
+      //     title: '环境',
+      //     dataIndex: 'envName',
+      //     key: 'envName',
+      //     width: '5%',
+      //   },
+      //   {
+      //     title: '场景',
+      //     dataIndex: 'sceneTexts',
+      //     key: 'sceneTexts',
+      //     width: '10%'
+      //   },
+      //   {
+      //     title: '创建人',
+      //     dataIndex: 'nickName',
+      //     key: 'nickName',
+      //     width: '8%'
+      //   },
+      //   {
+      //     title: '时间',
+      //     dataIndex: 'createTime',
+      //     key: 'createTime',
+      //     width: '15%'
+      //   },
+      //   {
+      //     title: '状态',
+      //     dataIndex: 'statusText',
+      //     key: 'statusText',
+      //     width: '5%'
+      //   },
+      //   {
+      //     title: '机型',
+      //     dataIndex: 'phoneName',
+      //     key: 'phoneName',
+      //     width: '14%'
+      //   },
+      //   {
+      //     title: '操作',
+      //     key: 'edit',
+      //     width: '18%',
+      //     render: (text, record) => <div>
+      //       {record &&
+      //       record.status === 1 &&
+      //       (record.result === 1 ?
+      //         <a href={`${window.location.origin}/performance/task/phone/report?phoneID=${record.phoneID}`}
+      //            target='_blank'>查看报告</a>
+      //         : <a onClick={() => this.showLog(record.phoneID)}>查看日志</a>)}
+      //     </div>
+      //   }
+      // ]
       const expandedColumns = [
-        {
-          title: 'ID',
-          dataIndex: 'rowNum',
-          key: 'rowNum',
-          width:'5%'
-        },
-        {
-          title: '分支',
-          dataIndex: 'branchName',
-          key: 'branchName',
-          width: '15%'
-        },
-        {
-          title: '版本',
-          dataIndex: 'appVersion',
-          key: 'appVersion',
-          width: '5%'
-        },
-        {
-          title: '环境',
-          dataIndex: 'envName',
-          key: 'envName',
-          width: '5%',
-        },
-        {
-          title: '场景',
-          dataIndex: 'sceneTexts',
-          key: 'sceneTexts',
-          width: '10%'
-        },
-        {
-          title: '创建人',
-          dataIndex: 'nickName',
-          key: 'nickName',
-          width: '8%'
-        },
-        {
-          title: '时间',
-          dataIndex: 'createTime',
-          key: 'createTime',
-          width: '15%'
-        },
-        {
-          title: '状态',
-          dataIndex: 'statusText',
-          key: 'statusText',
-          width: '5%'
-        },
         {
           title: '机型',
           dataIndex: 'phoneName',
           key: 'phoneName',
-          width:'14%'
         },
         {
           title: '操作',
           key: 'edit',
-          width:'18%',
           render: (text, record) => <div>
             {record &&
             record.status === 1 &&
@@ -542,7 +564,8 @@ export class PerformanceBranchTest extends Component {
           columns={expandedColumns}
           dataSource={record.phones}
           pagination={false}
-          showHeader={false}
+          showHeader={true}
+          indentSize={1900}
           rowClassName="rowClass"
           rowKey={record => record.buildNum}
         />
@@ -654,7 +677,6 @@ export class PerformanceBranchTest extends Component {
               expandedRowRender={expandedRowRender}
               rowKey={record => record.rowNum}
               dataSource={listData}
-              indentSize={0}
               pagination={pagination}
               loading={loading}
               onChange={this.handleTableChange}/>
