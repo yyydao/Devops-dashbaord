@@ -1,7 +1,7 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { Link, withRouter } from 'react-router-dom'
-import { Breadcrumb, Row, Col, Button, message, Select, Card, Popover, Slider, Icon, DatePicker, Checkbox } from 'antd'
+import React, {Component} from 'react'
+import {connect} from 'react-redux'
+import {Link, withRouter} from 'react-router-dom'
+import {Breadcrumb, Row, Col, Button, message, Select, Card, Popover, Slider, Icon, DatePicker, Checkbox} from 'antd'
 
 import PipelineChart1 from './chart/PipelineChart1'
 import UnitTestChart from './chart/UnitTestChart'
@@ -9,23 +9,23 @@ import UiTestChart from './chart/UiTestChart'
 import PackageChart from './chart/PackageChart'
 import FluencyChart from './chart/FluencyChart'
 import CpuChart from './chart/CpuChart'
-import { reqGet } from '@/api/api'
+import {reqGet} from '@/api/api'
 import './index.scss'
 import DataSet from '@antv/data-set'
-import { setProjectId,setPlatform } from '@/store/actions/project'
+import {setProjectId, setPlatform} from '@/store/actions/project'
 import moment from 'moment'
-import { bindActionCreators } from 'redux'
+import {bindActionCreators} from 'redux'
 
 const BreadcrumbItem = Breadcrumb.Item
 const Option = Select.Option
 const RangePicker = DatePicker.RangePicker
 
 class Dashboard extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       projectId: props.projectId,
-      platform:props.platform,
+      platform: props.platform,
       currentTaskId: '',
       taskList: [],
       basicInformation: {},
@@ -57,7 +57,7 @@ class Dashboard extends Component {
     }
   }
 
-  componentWillMount () {
+  componentWillMount() {
     let id = this.props.match.params.id
     let platform = this.props.location.state && this.props.location.state.platform
     if (id) {
@@ -81,10 +81,10 @@ class Dashboard extends Component {
     this.getTaskList(id)
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     this.setState({
       projectId: nextProps.projectId
-    },()=>this.getTaskList(this.state.projectId))
+    }, () => this.getTaskList(this.state.projectId))
   }
 
   /**
@@ -114,7 +114,7 @@ class Dashboard extends Component {
    * @desc 流水线改变响应事件
    */
   onPipeLineChange = (e) => {
-    this.setState({ currentTaskId: e })
+    this.setState({currentTaskId: e})
     this.getBasicInfor(e)
   }
 
@@ -145,7 +145,7 @@ class Dashboard extends Component {
       endTime: this.state.endTime.format('YYYY-MM-DD')
     }).then((res) => {
       if (res.code === 0) {
-        this.setState({ selectedEndTime: this.state.endTime, selectedStartTime: this.state.startTime })
+        this.setState({selectedEndTime: this.state.endTime, selectedStartTime: this.state.startTime})
         res.data.unitTestMonitors.map(item => item.sqaleValue = parseFloat(item.sqaleValue))
         const type = ['', '源码', '加固', '补丁']
         res.data.packageBodyMonitors.map(item => {
@@ -235,7 +235,7 @@ class Dashboard extends Component {
       return item
     })
     data.fluentColdStartTimeAnalysis = cData
-    this.setState({ monitorData: data })
+    this.setState({monitorData: data})
   }
 
   /**
@@ -257,7 +257,7 @@ class Dashboard extends Component {
    * @param value 数据
    */
   sliderValueChange = (value) => {
-    this.setState({ sliderValue: value })
+    this.setState({sliderValue: value})
   }
 
   /**
@@ -266,7 +266,7 @@ class Dashboard extends Component {
    * @param dateStrings
    */
   changeDate = (dates, dateStrings) => {
-    this.setState({ selectedStartTime: dates[0], selectedEndTime: dates[1] })
+    this.setState({selectedStartTime: dates[0], selectedEndTime: dates[1]})
   }
 
   /**
@@ -274,13 +274,13 @@ class Dashboard extends Component {
    * @param e 是否选择
    */
   onDateTypeChange = (e) => {
-    this.setState({ isCheckCustomDate: e })
+    this.setState({isCheckCustomDate: e})
   }
   /**
    * @desc 时间筛选按钮确定事件
    */
   confirmDate = () => {
-    const { marks, isCheckCustomDate, sliderValue, selectedStartTime, selectedEndTime } = this.state
+    const {marks, isCheckCustomDate, sliderValue, selectedStartTime, selectedEndTime} = this.state
     let sliderBtnName = '', startTime = '', endTime = ''
     if (!isCheckCustomDate) {
       sliderBtnName = '最近' + marks[sliderValue]
@@ -314,7 +314,7 @@ class Dashboard extends Component {
           endTime = moment()
           break
       }
-      this.setState({ startTime, endTime }, () => this.getBasicInfor())
+      this.setState({startTime, endTime}, () => this.getBasicInfor())
     } else {
       sliderBtnName = selectedStartTime.format('YYYY-MM-DD') + '~' + selectedEndTime.format('YYYY-MM-DD')
       this.setState({
@@ -323,29 +323,55 @@ class Dashboard extends Component {
         sliderValue: 1
       }, () => this.getBasicInfor())
     }
-    this.setState({ popoverVisable: false, sliderBtnName })
+    this.setState({popoverVisable: false, sliderBtnName})
   }
 
-  render () {
-    const { currentTaskId, taskList, basicInformation, monitorData, sliderValue, popoverVisable, sliderBtnName, isCheckCustomDate, selectedStartTime, selectedEndTime, marks } = this.state
-    const popoverContent = <div style={{ width: 400, padding: 16 }}>
+  /**
+   * @desc popover显示改变事件
+   */
+  onVisibleChange = (visable) => {
+    let {sliderBtnName,marks,sliderValue}=this.state
+    if (visable) {
+      if(sliderBtnName.indexOf('最近')>-1){
+        let arr=sliderBtnName.split('最近')
+        for(let i in marks){
+          if(marks[i]===arr[1]){
+            sliderValue=i
+          }
+        }
+      }
+    }
+    this.setState({popoverVisable: visable,sliderValue})
+  }
+
+  render() {
+    const {currentTaskId, taskList, basicInformation, monitorData, sliderValue, popoverVisable, sliderBtnName, isCheckCustomDate, selectedStartTime, selectedEndTime, marks} = this.state
+    const popoverContent = <div style={{width: 400, padding: 16}}>
       {!isCheckCustomDate &&
-      <Slider marks={marks} onChange={this.sliderValueChange} value={sliderValue} min={0} max={5}
+      <Slider marks={marks} className="dashboard-slider"  onChange={this.sliderValueChange} value={sliderValue} min={0} max={5}
               tipFormatter={val => marks[val]}/>
       }
-      <Checkbox onChange={(e) => {this.onDateTypeChange(e.target.checked)}}
-                style={{ margin: '24px 0' }}>自定义时间</Checkbox>
+      <Checkbox onChange={(e) => {
+        this.onDateTypeChange(e.target.checked)
+      }}
+                style={{margin: '24px 0'}}>自定义时间</Checkbox>
       {
         isCheckCustomDate &&
         <RangePicker
           format="YYYY/MM/DD"
           value={[selectedStartTime, selectedEndTime]}
-          onChange={(dates, dateStrings) => {this.changeDate(dates, dateStrings)}}
+          onChange={(dates, dateStrings) => {
+            this.changeDate(dates, dateStrings)
+          }}
         />
       }
       <div className="popover-btn-group">
-        <Button onClick={(e) => {this.setState({ popoverVisable: false })}}>取消</Button>
-        <Button type="primary" onClick={() => {this.confirmDate()}}>确定</Button>
+        <Button onClick={(e) => {
+          this.setState({popoverVisable: false})
+        }}>取消</Button>
+        <Button type="primary" onClick={() => {
+          this.confirmDate()
+        }}>确定</Button>
       </div>
     </div>
     return (
@@ -357,26 +383,34 @@ class Dashboard extends Component {
         {currentTaskId &&
         <div>
           <div className="select-container">
-            <Select defaultValue={currentTaskId} onChange={e => {this.onPipeLineChange(e)}}
-                    style={{ minWidth: 294, float: 'left' }}>
+            <Select defaultValue={currentTaskId} onChange={e => {
+              this.onPipeLineChange(e)
+            }}
+                    style={{minWidth: 294, float: 'left'}}>
               {taskList.map((item, index) => <Option value={item.taskID} key={index}>{item.taskName}</Option>)}
             </Select>
             <Popover placement="bottom"
                      content={popoverContent}
                      trigger="click"
                      visible={popoverVisable}
-                     onVisibleChange={visable => {this.setState({ popoverVisable: visable })}}>
-              <Button style={{ float: 'left', marginLeft: 24 }} icon="clock-circle">{sliderBtnName}<Icon type="down"
-                                                                                                         style={{
-                                                                                                           fontSize: 13,
-                                                                                                           color: '#ccc',
-                                                                                                           paddingLeft: 8
-                                                                                                         }}/></Button>
+                     onVisibleChange={visable => {
+                       this.onVisibleChange(visable)
+                     }}>
+              <Button style={{float: 'left', marginLeft: 24}} icon="clock-circle">{sliderBtnName}<Icon type="down"
+                                                                                                       style={{
+                                                                                                         fontSize: 13,
+                                                                                                         color: '#ccc',
+                                                                                                         paddingLeft: 8
+                                                                                                       }}/></Button>
             </Popover>
-            <Button type="primary" onClick={(e) => {this.openUrl(basicInformation.sourceAppPath, 0)}}>原包下载</Button>
+            <Button type="primary" onClick={(e) => {
+              this.openUrl(basicInformation.sourceAppPath, 0)
+            }}>原包下载</Button>
             {
               basicInformation.reinforceAppPath &&
-              <Button onClick={(e) => {this.openUrl(basicInformation.reinforceAppPath, 1)}}>加固包下载</Button>
+              <Button onClick={(e) => {
+                this.openUrl(basicInformation.reinforceAppPath, 1)
+              }}>加固包下载</Button>
             }
           </div>
           <div className="basic-info-container">
@@ -464,13 +498,13 @@ class Dashboard extends Component {
             }
             {
               monitorData.unitTestMonitors && monitorData.unitTestMonitors.length > 0 &&
-              <Card title="单元测试监控分析" style={{ marginTop: 30 }}>
+              <Card title="单元测试监控分析" style={{marginTop: 30}}>
                 <UnitTestChart unitData={monitorData.unitTestMonitors}></UnitTestChart>
               </Card>
             }
             {
               monitorData.uiTestMonitors && monitorData.uiTestMonitors.rows.length > 0 &&
-              <Card title="UI测试监控分析" style={{ marginTop: 30 }}>
+              <Card title="UI测试监控分析" style={{marginTop: 30}}>
                 <UiTestChart uiData={monitorData.uiTestMonitors}></UiTestChart>
               </Card>
             }
@@ -478,7 +512,7 @@ class Dashboard extends Component {
               ((monitorData.cpuMemoryAnalysis && monitorData.cpuMemoryAnalysis.length > 0) ||
                 (monitorData.fluentColdStartTimeAnalysis && monitorData.fluentColdStartTimeAnalysis.length > 0) ||
                 (monitorData.packageBodyMonitors && monitorData.packageBodyMonitors.length > 0)) &&
-              <Card title="深度性能分析" style={{ marginTop: 30 }}>
+              <Card title="深度性能分析" style={{marginTop: 30}}>
                 {
                   monitorData.cpuMemoryAnalysis.length > 0 &&
                   <Card type="inner" title="CPU&内存分析">
@@ -487,13 +521,13 @@ class Dashboard extends Component {
                 }
                 {
                   monitorData.fluentColdStartTimeAnalysis.length > 0 &&
-                  <Card type="inner" title="流畅度&冷启动时间分析" style={{ marginTop: 18 }}>
+                  <Card type="inner" title="流畅度&冷启动时间分析" style={{marginTop: 18}}>
                     <FluencyChart fluencyData={monitorData.fluentColdStartTimeAnalysis}></FluencyChart>
                   </Card>
                 }
                 {
                   monitorData.packageBodyMonitors.length > 0 &&
-                  <Card type="inner" title="包体监控分析" style={{ marginTop: 18 }}>
+                  <Card type="inner" title="包体监控分析" style={{marginTop: 18}}>
                     <PackageChart packageData={monitorData.packageBodyMonitors}></PackageChart>
                   </Card>
                 }
@@ -508,8 +542,8 @@ class Dashboard extends Component {
   }
 }
 
-function mapStateToProps (state) {
-  const { project } = state
+function mapStateToProps(state) {
+  const {project} = state
   if (project.projectId) {
     return {
       projectId: project.projectId,
@@ -519,11 +553,11 @@ function mapStateToProps (state) {
 
   return {
     projectId: null,
-    platform:null
+    platform: null
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     setProjectId: bindActionCreators(setProjectId, dispatch),
     setPlatform: bindActionCreators(setPlatform, dispatch),

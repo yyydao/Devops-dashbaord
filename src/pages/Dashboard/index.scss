@@ -20,6 +20,9 @@
     margin-right: 24px;
   }
 }
+.dashboard-slider .ant-slider-mark-text:last-child{
+  width: 60px;
+}
 .select-container:after{
   display:block;
   clear:both;
