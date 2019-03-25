@@ -94,15 +94,15 @@ export class PerformanceBranchTest extends Component {
           key: 'statusText',
           width: '5%'
         },
-        {
-          title: '机型',
-          dataIndex: 'phones',
-          key: 'phones',
-          width: '14%',
-          render: (text, record) => <div>
-            {(text && text.length > 1) ? '组合' : text && text[0] && text[0].phoneName}
-          </div>
-        },
+        // {
+        //   title: '机型',
+        //   dataIndex: 'phones',
+        //   key: 'phones',
+        //   width: '14%',
+        //   render: (text, record) => <div>
+        //     {(text && text.length > 1) ? '组合' : text && text[0] && text[0].phoneName}
+        //   </div>
+        // },
         {
           title: '操作',
           width: '18%',
@@ -544,10 +544,12 @@ export class PerformanceBranchTest extends Component {
           title: '机型',
           dataIndex: 'phoneName',
           key: 'phoneName',
+          width:'50%'
         },
         {
           title: '操作',
           key: 'edit',
+          width:'50%',
           render: (text, record) => <div>
             {record &&
             record.status === 1 &&
